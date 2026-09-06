@@ -47,7 +47,7 @@ for folder in [root/'quick', root/'long', kroot/'quick']:
         rows.append(row)
     files.extend(f for f in folder.iterdir() if f.is_file())
 with (out/'performance-summary.csv').open('w', newline='', encoding='utf-8') as f:
-    w = csv.DictWriter(f, fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
+    w = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator="\n"); w.writeheader(); w.writerows(rows)
 
 for folder in [root/'quality-check', root/'arithmetic', kroot/'arithmetic']:
     files.extend(f for f in folder.rglob('*') if f.is_file() and f.suffix in ('.json', '.csv'))
@@ -67,12 +67,12 @@ manifest = dict(parent_revision=subprocess.check_output(['git','rev-parse','HEAD
     checkpoints={p: dict(sha256=sha(p), bytes=Path(p).stat().st_size) for p in [
         'models/llama-comparison/Qwen3.5-0.8B-Q4_0-pure.gguf',
         'models/llama-comparison/Qwen3.5-0.8B-Q4_K_M.gguf', 'models/hf-download-test/model.q35h']})
-(out/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n', encoding='utf-8')
+(out/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n', encoding='utf-8', newline='\n')
 with zipfile.ZipFile(out/'raw-results.zip', 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as z:
     for f in sorted(set(files)):
         assert f.is_file() and f.suffix not in ('.logits', '.gguf', '.q35h', '.safetensors')
         z.write(f, f.as_posix())
 with zipfile.ZipFile(out/'raw-results.zip') as z: assert z.testzip() is None
 artifacts = [out/'performance-summary.csv', out/'manifest.json', out/'raw-results.zip']
-(out/'SHA256SUMS').write_text(''.join(f'{sha(p)}  {p.name}\n' for p in artifacts), encoding='utf-8')
+(out/'SHA256SUMS').write_text(''.join(f'{sha(p)}  {p.name}\n' for p in artifacts), encoding='utf-8', newline='\n')
 print(f'Archived {len(rows)} cases and {len(set(files))} raw files in {out}')

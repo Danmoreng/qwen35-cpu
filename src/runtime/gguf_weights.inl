@@ -288,4 +288,3 @@ bool load_model_weights_from_quantized_gguf(
   }
   return true;
 }
-
