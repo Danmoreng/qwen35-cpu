@@ -1,121 +1,68 @@
-# Bounded release and comparison plan
+# Release and comparison status
 
-## 1. Independent CPU extraction — complete
+The bounded standalone comparison is complete. The
+[September 6, 2026 report](comparison-2026-09-06.md) contains the actual protocol,
+results, reproducible commands and limitations; the [README](../README.md)
+highlights the measured speed and quality separately.
 
-CPU-only CMake build, H128/Q4-G32-DOT4 loading/packing, native tokenizer and CLI,
-multi-request C++ engine, kernel/model tests, sequential benchmark runner and
-full-logit export. No upstream submodule or model weights are shipped.
+## Completed
 
-## 2. Freeze comparable quantization inputs — pending
+1. **Independent CPU extraction and publication.** CPU-only CMake build,
+   H128/Q4-G32-DOT4 loading and packing, native tokenizer/CLI, sampling, bounded
+   HTTP completions, multi-request library, CPU tests and full-logit export.
+   The GitHub repository, pinned Hugging Face model and Windows/Linux v0.1.1
+   binaries are public. Release CI includes real-model and extracted-package tests.
+2. **Frozen comparison inputs.** Fresh pinned llama.cpp build with CPU VNNI,
+   downloaded BF16/Q4_0/Q4_K_M/IQ4_XS GGUFs, and a locally generated pure Q4_0
+   control. Tensor payloads, actual bit budgets, artifact/binary/DLL hashes and
+   source provenance are recorded. All 187 source BF16 tensors match; seven
+   derived FP32 tensors have tiny conversion-rounding differences.
+3. **Bounded quality evaluation.** 8,192 teacher-forced positions from 16
+   deterministic WikiText-2 test article windows, with identical HF token IDs.
+   Full-vocabulary PPL, mean/p95 KL and top-1 agreement are retained. A separate
+   historical arithmetic regression is repeated without mixing it into the
+   corpus aggregate. H128 does not show a perplexity advantage on this subset.
+4. **Matched speed measurements.** P=512/1024/2048/4096, N=128/256/512/1024 at
+   B=1 with 8/12 threads; static independent B=4/16 with 8/16 threads. A second
+   eight-physical-core series checks prefill affinity sensitivity. There are
+   125 configurations and 500 sequential runs including warmups, with original
+   and controlled-affinity results preserved. Batched llama logits are checked
+   against independent single-sequence references.
+5. **Auditable README results.** Native-call speed, tensor storage, quality,
+   affinity, thread counts, repetition ranges and recipe differences are stated
+   explicitly. No HTTP throughput or universal x86 performance claim is inferred.
 
-Use one pinned Qwen3.5-0.8B BF16 checkpoint and record every source shard hash,
-model revision, configuration and tokenizer hash. Exclude MTP/draft tensors from
-both formats. Pin the llama.cpp commit at measurement time and record compiler,
-build flags, CPU, RAM, affinity and power configuration.
+## Remaining work beyond this comparison
 
-Generate candidates from that exact source:
+- **Broader task quality:** German/multilingual text, code, transcript cleanup,
+  instruction following and an actual task-accuracy suite. The English-prose
+  subset and one previously selected arithmetic case do not cover these.
+- **Controlled calibration:** the downloaded Unsloth GGUFs identify their
+  importance-matrix metadata, but the calibration contents and disjointness
+  from WikiText were not verified. Independently reproduce calibrated recipes
+  from a documented disjoint corpus before claiming a controlled calibration study.
+- **Tokenizer parity:** investigate the native multiple-whitespace segmentation
+  mismatch found in one article. The current comparison bypasses it with shared
+  external token IDs; it does not establish end-to-end tokenizer equivalence.
+- **Serving workloads:** continuous arrivals, HTTP latency/throughput, mixed
+  prefill/decode scheduling, cold/warm shared prefixes, total latency and memory
+  against an equivalently configured llama server. The current batch test uses
+  private states, sequential prompt initialization and static joint decode.
+- **Hardware coverage:** Intel i7-8750H validation and further x86 CPUs. Passing
+  Windows/Linux CI and one Ryzen benchmark are not exhaustive hardware validation.
 
-| Engine | Recipe | Purpose |
-| --- | --- | --- |
-| This project | H128/Q4-G32-DOT4 | Specialized candidate |
-| llama.cpp | Q4_0, pure | Uniform baseline |
-| llama.cpp | Q4_K_M | Mixed K-quant baseline |
-| llama.cpp | IQ4_XS | Importance-aware family baseline |
-| llama.cpp | BF16 | Common quality teacher |
+Grouped prefix attention, mixed prefill/decode projection batches and H256 remain
+deferred. They are not prerequisites for publishing this bounded comparison.
 
-Verify recipe availability in the pinned quantizer. If importance matrices are
-used or required, record their calibration corpus and generation command and
-keep it disjoint from the evaluation corpus. Do not silently substitute recipes.
-Report file bytes, actual quantization recipe and memory alongside quality.
+## Measurement rules for follow-up work
 
-The optional adapter in `tools/llama-comparison` accepts an external checkout:
+Use `scripts/benchmark-inference-seq.ps1` for every timed performance series,
+with three measured runs after one warmup, one process at a time and matched
+inputs/settings. Freeze binaries and checkpoints; retain JSON profiles, CSV,
+commands, hashes, CPU masks and upstream revisions. Exclude logit capture from
+speed timing. Run quality separately, aggregate token NLL before exponentiating
+and distinguish end-to-end engine arithmetic from isolated quantization error.
 
-```sh
-cmake -S tools/llama-comparison -B build-llama -G Ninja -DCMAKE_BUILD_TYPE=Release -DLLAMA_SOURCE_DIR=/absolute/path/to/llama.cpp
-cmake --build build-llama --target llama-fixed-cpu-bench llama-quantize
-```
-
-On Windows, use a Visual Studio developer shell. This adapter was inherited from
-the historical pinned version; compilation against a fresh upstream revision
-must be verified before use. It is single-sequence only today.
-
-## 3. Quality evaluation — pending
-
-Freeze a licensed held-out text corpus spanning prose, code and multilingual
-text. Record corpus hash, exact document boundaries, windows, stride, warmup
-prefix and scored-token count. Tokenize once and feed identical IDs to all engines.
-Do not use the repeated speed fixture as a representative perplexity corpus.
-
-Teacher-force the same real target tokens, with no sampling penalties or EOS
-truncation. Export raw full-vocabulary logits for the BF16 teacher and each
-candidate. Score only identical positions with identical preceding context.
-For each candidate report `exp(mean(target NLL))`, mean/p95
-`KL(p_BF16 || p_candidate)`, top-1 agreement and scored-token count. Compare all
-candidates to the same teacher; engine arithmetic differences remain part of
-this end-to-end measurement. Do not average per-window perplexities directly.
-
-The native CLI exports the same little-endian `Q35LGT1` format as the llama adapter:
-
-```powershell
-./build/qwen35_cpu.exe --model-dir models/qwen3.5-0.8b --weights models/qwen3.5-0.8b/model.q35h --tokens-file prompt.csv --forced-tokens-file targets.csv --logits-out candidate.logits
-python scripts/compare-logit-dumps.py --teacher teacher.logits --candidate candidate.logits --csv positions.csv --json quality.json
-```
-
-The comparison script requires NumPy. Raw logits cost about 0.99 MB per scored
-token per model; evaluate in bounded windows, aggregate token-level statistics
-and remove disposable dumps after retaining the reproducible results. Logit
-export is never included in speed timing. Self-comparison is only a plumbing
-test and does not validate model quality.
-
-## 4. Matched speed matrix — pending
-
-Start with P=512/1024/2048/4096 and N=128/256/512/1024, B=1. Use the same
-forced continuation and full vocabulary-head work for kernel comparison.
-Distinguish head-free prefill, time to first token and N-1 decode forwards.
-Align timer boundaries before comparing different harnesses.
-
-Then extend the llama adapter to independent sequence IDs and test B=4/16/32,
-the same admission/arrival pattern, resident limit, context lengths and output
-count. Measure cold prefixes and warm shared prefixes separately, including
-prefix construction when reporting cold total throughput. Report delivered
-tokens/s, TTFT, inter-token latency, total latency and peak memory.
-
-Sweep thread counts fairly for both engines, with matched CPU affinity. Show
-both equal-thread comparisons and separately tuned configurations. Run one
-benchmark process at a time, three measurements after one warmup, alternating
-engine order. Retain command lines, raw profiles, CSV, binary/model hashes and
-commit IDs. Do not divide aggregate batch throughput by a single-request
-llama.cpp result to advertise a speedup.
-
-The runner consumes a JSON array of cases (paths are relative to the caller):
-
-```json
-[
-  {
-    "name": "h128-b1",
-    "executable": "build/qwen35_cpu_bench.exe",
-    "args": ["--hf-model-dir", "models/qwen3.5-0.8b", "--cpu-q4-h128", "models/qwen3.5-0.8b/model.q35h", "--prompt-tokens-file", "prompt.csv", "--cpu-threads", "8", "--cpu-batch", "1", "--max-new-tokens", "128", "--max-context", "8192", "--temperature", "0", "--repeat-penalty", "1"]
-  }
-]
-```
-
-```powershell
-./scripts/benchmark-inference-seq.ps1 -Matrix matrix.json -Runs 3 -WarmupRuns 1
-```
-
-Use `--forced-output-tokens` with a CSV string for matched fixed-token speed
-comparisons. The runner appends `--profile-json`; do not supply that flag in cases.
-The example above is a greedy engine-only run, not a complete llama comparison.
-
-## 5. Publication status and remaining gates
-
-- Windows/MSVC and Linux/GCC builds, kernel tests, public model downloads,
-  real-model scheduler tests and extracted-package HTTP tests passed in CI.
-- Initial bounded native HTTP completions adapter published in v0.1.0.
-- Intel i7-8750H hardware validation remains pending.
-- Publish fresh quality/speed results with exact scope and reproducible inputs.
-- Engine repository, Hugging Face checkpoint and Windows/Linux v0.1.0 binaries
-  are public. See the README for download links and the pinned model revision.
-
-Grouped prefix attention, mixed prefill/decode projection batches and H256 are
-deferred. They are not required to finish the first focused release.
+Use the [report's reproduction commands](comparison-2026-09-06.md#reproduction)
+for the completed matrix. Adapt affinity masks to the target CPU instead of
+assuming the development machine's logical-processor numbering is universal.

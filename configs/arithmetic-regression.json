@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "de-basic-arithmetic-2-plus-2",
+      "chat_user": "Was ist 2 + 2? Antworte nur mit der Zahl.",
+      "prompt_tokens": [
+        248045,
+        846,
+        198,
+        25202,
+        5810,
+        220,
+        17,
+        478,
+        220,
+        17,
+        30,
+        175115,
+        16080,
+        11874,
+        5280,
+        2607,
+        79889,
+        13,
+        248046,
+        198,
+        248045,
+        74455,
+        198
+      ],
+      "expected_output_prefix": [248068, 271, 248069, 271],
+      "expected_next_token": 19,
+      "incorrect_q4_0_next_token": 17,
+      "max_context": 128,
+      "temperature": 0.0,
+      "top_k": 20,
+      "top_p": 0.8,
+      "repetition_penalty": 1.05,
+      "seed": 123
+    }
+  ]
+}

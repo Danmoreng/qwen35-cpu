@@ -65,7 +65,12 @@ try {
       $data = Get-Content -Raw -LiteralPath $profile | ConvertFrom-Json
       $row = [ordered]@{ name=$case.name; run=$run; warmup=($run -lt $WarmupRuns); profile="$stem.json" }
       foreach ($property in $data.PSObject.Properties) {
-        if ($property.Value -is [ValueType]) { $row[$property.Name] = $property.Value }
+        if ($property.Value -is [ValueType]) {
+          # Keep CSV numbers portable even when the host uses decimal commas.
+          $row[$property.Name] = if ($property.Value -is [IFormattable]) {
+            $property.Value.ToString($null, [Globalization.CultureInfo]::InvariantCulture)
+          } else { $property.Value }
+        }
       }
       $rows += [pscustomobject]$row
       Write-Host "Completed $($case.name), run $run"

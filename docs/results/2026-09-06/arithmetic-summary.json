@@ -1,0 +1,118 @@
+{
+  "case": {
+    "id": "de-basic-arithmetic-2-plus-2",
+    "chat_user": "Was ist 2 + 2? Antworte nur mit der Zahl.",
+    "prompt_tokens": [
+      248045,
+      846,
+      198,
+      25202,
+      5810,
+      220,
+      17,
+      478,
+      220,
+      17,
+      30,
+      175115,
+      16080,
+      11874,
+      5280,
+      2607,
+      79889,
+      13,
+      248046,
+      198,
+      248045,
+      74455,
+      198
+    ],
+    "expected_output_prefix": [
+      248068,
+      271,
+      248069,
+      271
+    ],
+    "expected_next_token": 19,
+    "incorrect_q4_0_next_token": 17,
+    "max_context": 128,
+    "temperature": 0.0,
+    "top_k": 20,
+    "top_p": 0.8,
+    "repetition_penalty": 1.05,
+    "seed": 123
+  },
+  "results": [
+    {
+      "model": "BF16",
+      "post_penalty_argmax": [
+        248068,
+        271,
+        248069,
+        271,
+        19
+      ],
+      "margin_4_minus_2": 4.351606369018555
+    },
+    {
+      "model": "H128-Q4",
+      "post_penalty_argmax": [
+        248068,
+        271,
+        248069,
+        271,
+        19
+      ],
+      "margin_4_minus_2": 3.2255783081054688,
+      "mean_kl": 0.027179468654720807
+    },
+    {
+      "model": "Q4_0-pure",
+      "post_penalty_argmax": [
+        248068,
+        271,
+        248069,
+        271,
+        17
+      ],
+      "margin_4_minus_2": -0.8590011596679688,
+      "mean_kl": 0.39538131144007305
+    },
+    {
+      "model": "Q4_0",
+      "post_penalty_argmax": [
+        248068,
+        271,
+        248069,
+        271,
+        19
+      ],
+      "margin_4_minus_2": 0.5226249694824219,
+      "mean_kl": 0.18067318964020615
+    },
+    {
+      "model": "Q4_K_M",
+      "post_penalty_argmax": [
+        248068,
+        271,
+        248069,
+        271,
+        19
+      ],
+      "margin_4_minus_2": 1.0790996551513672,
+      "mean_kl": 0.1137200664639478
+    },
+    {
+      "model": "IQ4_XS",
+      "post_penalty_argmax": [
+        248068,
+        271,
+        248069,
+        271,
+        19
+      ],
+      "margin_4_minus_2": 3.8270912170410156,
+      "mean_kl": 0.02414128077840459
+    }
+  ]
+}

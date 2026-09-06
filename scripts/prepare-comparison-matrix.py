@@ -38,6 +38,7 @@ def matrix(batch, threads, workloads):
 
 workloads = [(n, 2) for n in (512, 1024, 2048, 4096)] + [(512, n) for n in (128, 256, 512, 1024)]
 groups = {'single-ccd': matrix(1, [8, 12], workloads),
+          'single-physical-ccd': matrix(1, [8], workloads[:4] + [(512, 128)]),
           'batch-ccd': matrix(4, [8], [(512, 128)]) + matrix(16, [8], [(512, 128)]),
           'batch-physical': matrix(4, [16], [(512, 128)]) + matrix(16, [16], [(512, 128)])}
 for group, cases in groups.items():

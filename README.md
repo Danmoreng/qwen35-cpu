@@ -11,6 +11,72 @@ The HTTP server supports a **limited OpenAI-style `/v1/completions` API**:
 raw prompts, greedy or sampled decoding and non-streaming responses. Chat completions and
 SSE streaming are not implemented.
 
+## CPU benchmarks: speed and quality
+
+On the **Ryzen 9 9955HX3D**, this engine measured **1.90–1.98× prefill throughput**,
+**1.19× single-request decode** and **1.72× decode at batch 16** against the pinned
+llama.cpp Q4_0 `--pure`, with equal eight-thread settings and **identical tensor
+storage**. These are September 6, 2026 measurements of this standalone engine.
+Quality is evaluated separately below; the current H128 checkpoint does not show
+a perplexity advantage on the tested corpus.
+
+All values below are **tokens/s**, medians of three runs after one warmup.
+
+| Engine / checkpoint | Prefill 512 | Prefill 4,096 | Decode B=1 | Decode B=16, 8 threads |
+| --- | ---: | ---: | ---: | ---: |
+| **H128/Q4 (this engine)** | 2,201.0 | 1,929.5 | 125.7 | 620.7 |
+| llama.cpp Q4_0 `--pure` | 1,114.8 | 1,014.8 | 106.0 | 360.9 |
+| llama.cpp Unsloth Q4_0 | 930.0 | 883.9 | 92.8 | 299.6 |
+| llama.cpp Unsloth Q4_K_M | 698.5 | 682.2 | 86.7 | 269.3 |
+| llama.cpp Unsloth IQ4_XS | 872.4 | 844.8 | 89.2 | 270.9 |
+
+Single-request columns use eight physical cores on the V-Cache CCD (`0x5555`);
+the batch column uses eight threads on that CCD (`0xffff`). Both engines use the
+same mask within each comparison. Decode uses 512 input / 128 output tokens and
+counts 127 actual decode forwards per sequence. Prefill includes the final full
+vocabulary head. Both use fixed identical token IDs and FP16 K/V; load, tokenization
+and HTTP are outside timing. Batched requests have private state and no prefix-cache credit.
+
+At batch 16, this engine reaches **660.6 tokens/s with 16 physical-core threads**.
+llama.cpp pure Q4_0's best tested batch result is **360.9 with eight threads**:
+an **83% throughput advantage when each uses its better tested setting**.
+The report includes equal-thread comparisons and all tested 8/12/16-thread configurations.
+
+The initial SMT-eligible prefill runs varied substantially. Restricting the same
+CCD to one logical processor per core reduced H128's prefill spread to below 0.5%
+in the repeated series above. Both series are retained. Affinity and CPU placement
+matter; these numbers are not a guarantee for an unpinned server or every x86 CPU.
+
+**Quality: 8,192 scored tokens from 16 WikiText-2 test article windows**, using a
+common BF16 teacher and identical externally tokenized inputs. This is an
+English-prose subset, not full-corpus WikiText perplexity. Lower PPL and KL are better.
+
+| Checkpoint | Tensor payload, MB | Perplexity | Mean KL to BF16, nats |
+| --- | ---: | ---: | ---: |
+| BF16 teacher | 1,505.8 | 14.3856 | 0 |
+| **H128/Q4 (this engine)** | 424.9 | 18.5833 | 0.17484 |
+| llama.cpp Q4_0 `--pure` | 424.9 | 18.0259 | 0.14452 |
+| llama.cpp Unsloth Q4_0 | 496.2 | 15.5809 | 0.06839 |
+| llama.cpp Unsloth Q4_K_M | 521.6 | 14.7529 | 0.03469 |
+| llama.cpp Unsloth IQ4_XS | 481.6 | 15.1614 | 0.05054 |
+
+H128 and pure Q4_0 each store exactly **424,934,656 tensor bytes (4.518 bits/parameter)**.
+The downloaded Unsloth recipes use mixed precision and larger tensor budgets.
+H128's perplexity is **3.1% higher** than equal-payload pure Q4_0 on this subset;
+no general quality superiority is claimed. A separately repeated historical
+arithmetic case still favors H128: it selects **4** for “2 + 2”, while pure Q4_0
+selects **2**. One successful task example does not override the corpus result.
+
+llama.cpp revision: `73a43d1f69345aee8bb186ef4b3172cef892f2e5`, CPU-only MSVC
+AVX-512/VNNI build. Published quant revisions, hashes, calibration caveats, tokenizer
+limitations and exact timing boundaries are recorded in the report.
+
+**[Full comparison and all workload tables](docs/comparison-2026-09-06.md)** ·
+[Speed CSV with min/median/max](docs/results/2026-09-06/performance-summary.csv) ·
+[Quality CSV](docs/results/2026-09-06/quality-summary.csv) ·
+[Raw profiles, commands and hashes (ZIP)](docs/results/2026-09-06/raw-results.zip).
+The older predecessor comparison remains available as [historical data](docs/historical-results.md).
+
 ## Download and run
 
 The release workflow builds Windows x64 ZIP and Linux x64 tar.gz archives with
@@ -51,30 +117,6 @@ For sampling (v0.1.1+), send e.g. `"temperature":0.7, "top_p":0.8,
 "top_k":20, "repetition_penalty":1.05, "seed":42`. Omitting temperature keeps
 greedy decoding for compatibility. Each request has its own random state.
 See [server API and limits](docs/server.md) and [publishing](docs/publishing.md).
-
-## Performance against llama.cpp
-
-The predecessor's controlled single-request comparison on a **Ryzen 9 9955HX3D**
-measured **1.19–1.94× prefill throughput** and **1.17–1.19× decode throughput**
-at eight threads against llama.cpp **Q4_0 `--pure`**. Both used the same source
-checkpoint, fixed input/output token IDs and FP16 KV caches.
-
-| Historical workload, 8 threads | This engine's predecessor | llama.cpp | Ratio |
-| :--- | ---: | ---: | ---: |
-| Prefill, 512 tokens | 2,133.47 tok/s | 1,101.73 tok/s | 1.94× |
-| Prefill, 4,096 tokens | 1,190.83 tok/s | 1,000.60 tok/s | 1.19× |
-| Decode, 512 input / 128 output | 122.42 tok/s | 102.63 tok/s | 1.19× |
-
-These are **September 5, 2026 historical measurements**, not a fresh benchmark of
-this repository or a claim about current upstream llama.cpp. Later prefill and
-multi-request optimizations are included in this extraction. The historical
-llama.cpp revision was `74a7c897f049c17e7080423aa2111776eff6ebbf`.
-[Method and raw results](docs/historical-results.md).
-
-A new **Q4_0 / Q4_K_M / IQ4_XS** speed-and-quality comparison remains pending.
-No multi-request speedup over llama.cpp, perplexity advantage or KL advantage
-is claimed yet. Similar bit widths do not imply equivalent quantization quality.
-The [comparison protocol](docs/comparison-plan.md) specifies the next release gate.
 
 ## What is specialized
 

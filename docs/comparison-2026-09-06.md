@@ -26,6 +26,120 @@ a universal ranking of quantization methods.
 [Aggregate quality CSV](results/2026-09-06/quality-summary.csv) ·
 [Per-window means](results/2026-09-06/quality-windows.csv).
 
+## Speed results
+
+All values are tokens/s. B=1 decode uses P=512; output lengths count the first
+prediction made during prefill, so the decode numerator is N-1 per request.
+Full min/median/max results are in the [speed CSV](results/2026-09-06/performance-summary.csv).
+
+### Confirmed eight-physical-core configuration (`0x5555`)
+
+| Candidate | Prefill 512 | Prefill 1,024 | Prefill 2,048 | Prefill 4,096 | Decode N=128 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| **H128/Q4 (this engine)** | 2,200.99 | 2,177.86 | 2,096.51 | 1,929.52 | 125.65 |
+| llama.cpp Q4_0 `--pure` | 1,114.82 | 1,100.79 | 1,067.41 | 1,014.77 | 105.97 |
+| llama.cpp Unsloth Q4_0 | 929.98 | 938.35 | 923.05 | 883.90 | 92.81 |
+| llama.cpp Unsloth Q4_K_M | 698.47 | 707.41 | 701.36 | 682.21 | 86.65 |
+| llama.cpp Unsloth IQ4_XS | 872.43 | 892.79 | 882.37 | 844.78 | 89.19 |
+
+H128 prefill ranges across the three runs were 2,198.86–2,201.97 tok/s at P=512
+and 1,924.62–1,934.19 at P=4,096. The corresponding pure Q4_0 ranges were
+1,112.02–1,115.88 and 1,012.41–1,019.36. H128 decode was 125.60–125.79 tok/s,
+versus 105.69–106.00 for pure Q4_0. The controlled H128 prefill decrease from
+512 to 4,096 tokens is approximately 12.3%, rather than the much larger decline
+suggested by some SMT-eligible runs. Changing only the allowed logical processors
+strongly reduced variation; this does not isolate every scheduler or power-management effect.
+
+### Original single-request sweep (`0xffff`, SMT-eligible V-Cache CCD)
+
+These runs are retained in full. In particular, H128's eight-thread P=4,096
+prefill ranged from 1,209.85 to 1,864.31 tok/s, motivating the affinity check above.
+Do not treat its original median as a stable CPU limit.
+
+**Prefill, 8 threads**
+
+| Candidate | P=512 | P=1,024 | P=2,048 | P=4,096 |
+| --- | ---: | ---: | ---: | ---: |
+| **H128/Q4 (this engine)** | 2,162.97 | 1,706.14 | 2,103.25 | 1,590.18 |
+| llama.cpp Q4_0 `--pure` | 887.31 | 1,004.16 | 962.92 | 996.03 |
+| llama.cpp Unsloth Q4_0 | 907.88 | 915.97 | 879.62 | 851.04 |
+| llama.cpp Unsloth Q4_K_M | 681.31 | 685.01 | 665.77 | 656.42 |
+| llama.cpp Unsloth IQ4_XS | 821.92 | 869.23 | 828.63 | 837.28 |
+
+**Decode, 8 threads, P=512**
+
+| Candidate | N=128 | N=256 | N=512 | N=1,024 |
+| --- | ---: | ---: | ---: | ---: |
+| **H128/Q4 (this engine)** | 120.76 | 121.73 | 120.42 | 117.93 |
+| llama.cpp Q4_0 `--pure` | 103.29 | 103.08 | 102.28 | 101.60 |
+| llama.cpp Unsloth Q4_0 | 90.43 | 90.67 | 89.66 | 91.51 |
+| llama.cpp Unsloth Q4_K_M | 85.33 | 85.48 | 85.14 | 86.34 |
+| llama.cpp Unsloth IQ4_XS | 86.58 | 91.07 | 89.35 | 91.35 |
+
+**Prefill, 12 threads**
+
+| Candidate | P=512 | P=1,024 | P=2,048 | P=4,096 |
+| --- | ---: | ---: | ---: | ---: |
+| **H128/Q4 (this engine)** | 1,710.17 | 1,686.71 | 1,533.52 | 1,381.11 |
+| llama.cpp Q4_0 `--pure` | 1,015.56 | 986.38 | 952.40 | 886.89 |
+| llama.cpp Unsloth Q4_0 | 860.39 | 863.78 | 835.27 | 787.15 |
+| llama.cpp Unsloth Q4_K_M | 673.03 | 679.74 | 665.29 | 635.10 |
+| llama.cpp Unsloth IQ4_XS | 819.15 | 836.65 | 818.61 | 771.14 |
+
+**Decode, 12 threads, P=512**
+
+| Candidate | N=128 | N=256 | N=512 | N=1,024 |
+| --- | ---: | ---: | ---: | ---: |
+| **H128/Q4 (this engine)** | 119.25 | 119.64 | 118.13 | 118.40 |
+| llama.cpp Q4_0 `--pure` | 100.36 | 99.45 | 100.31 | 99.29 |
+| llama.cpp Unsloth Q4_0 | 86.49 | 87.94 | 88.63 | 87.92 |
+| llama.cpp Unsloth Q4_K_M | 83.04 | 84.21 | 81.90 | 83.59 |
+| llama.cpp Unsloth IQ4_XS | 88.25 | 87.88 | 86.84 | 87.95 |
+
+### Static independent batches, P=512 / N=128
+
+Eight threads use `0xffff`; sixteen threads use `0x55555555`. Each engine has
+the same sequence count, context, forced continuation and affinity in a column.
+
+| Candidate | B=4, 8t | B=4, 16t | B=16, 8t | B=16, 16t |
+| --- | ---: | ---: | ---: | ---: |
+| **H128/Q4 (this engine)** | 324.68 | 313.88 | 620.74 | 660.59 |
+| llama.cpp Q4_0 `--pure` | 245.12 | 199.36 | 360.89 | 301.64 |
+| llama.cpp Unsloth Q4_0 | 208.99 | 189.51 | 299.55 | 315.92 |
+| llama.cpp Unsloth Q4_K_M | 193.14 | 180.03 | 269.35 | 268.74 |
+| llama.cpp Unsloth IQ4_XS | 169.24 | 173.00 | 270.92 | 268.30 |
+
+Against equal-payload pure Q4_0, H128 has 1.72× B=16 throughput at equal eight
+threads and 2.19× at equal sixteen threads. Comparing each engine's better tested
+B=16 configuration instead gives 660.59 / 360.89 = **1.83×**. More threads are
+not universally faster: the pure Q4_0 llama baseline prefers eight here.
+These are static native decode batches, not continuously arriving HTTP requests.
+
+## Repeated historical arithmetic regression
+
+After the speed runs, the exact previously selected 23-token chat prompt
+“Was ist 2 + 2? Antworte nur mit der Zahl.” was revisited at 12 threads,
+greedy selection and repetition penalty 1.05. Full raw logits were captured at
+the four empty-thinking-wrapper positions and the following answer position.
+The same penalty is applied to previously seen tokens when deriving each argmax.
+
+| Candidate | Answer token after wrapper | Post-penalty logit(4) − logit(2) | Five-position mean KL |
+| --- | ---: | ---: | ---: |
+| BF16 teacher | 4 | +4.3516 | 0.00000 |
+| **H128/Q4 (this engine)** | 4 | +3.2256 | 0.02718 |
+| llama.cpp Q4_0 `--pure` | 2 | -0.8590 | 0.39538 |
+| llama.cpp Unsloth Q4_0 | 4 | +0.5226 | 0.18067 |
+| llama.cpp Unsloth Q4_K_M | 4 | +1.0791 | 0.11372 |
+| llama.cpp Unsloth IQ4_XS | 4 | +3.8271 | 0.02414 |
+
+The old case-specific improvement is reproducible with today's artifacts.
+This is a **previously selected regression example**, not a random test sample
+or an arithmetic-accuracy benchmark. It is excluded from the 8,192-token corpus
+scores. The two findings are compatible: H128 preserves this answer while having
+higher average NLL and KL on the English-prose subset.
+[Exact fixture](../configs/arithmetic-regression.json) ·
+[Current results](results/2026-09-06/arithmetic-summary.json).
+
 ## Frozen inputs
 
 - Engine runtime: `0992f9864d2faf47f58a7d88d4b533688067e093` (v0.1.1).
@@ -117,6 +231,11 @@ time including request allocation; the comparison uses its separately recorded
 
 - Single request: equal 8 and 12 threads, mask `0xffff` on the V-Cache CCD.
   P=512/1024/2048/4096 with N=2 for prefill; P=512 with N=128/256/512/1024 for decode.
+- Affinity confirmation: after observing large prefill variation in the initial
+  series, all five candidates repeat P=512/1024/2048/4096, N=2 and P=512, N=128 at
+  eight threads with mask `0x5555`. This restricts the same V-Cache CCD to one
+  logical processor per physical core. Each case again has one warmup and three
+  measured runs; the original series remains in the raw archive and summary CSV.
 - Static independent batches: B=4/16, P=512, N=128; both engines at 8 threads with
   mask `0xffff`, and at 16 threads with mask `0x55555555` (one logical processor per
   physical core across both CCDs). These are matched configurations, not an
@@ -165,6 +284,8 @@ python scripts/prepare-comparison-matrix.py
 ./scripts/benchmark-inference-seq.ps1 -Matrix benchmarks/comparison-2026-09-06/single-ccd-matrix.json -OutputDir benchmarks/comparison-2026-09-06/speed-single-ccd -Affinity 65535
 ./scripts/benchmark-inference-seq.ps1 -Matrix benchmarks/comparison-2026-09-06/batch-ccd-matrix.json -OutputDir benchmarks/comparison-2026-09-06/speed-batch-ccd -Affinity 65535
 ./scripts/benchmark-inference-seq.ps1 -Matrix benchmarks/comparison-2026-09-06/batch-physical-matrix.json -OutputDir benchmarks/comparison-2026-09-06/speed-batch-physical -Affinity 1431655765
+./scripts/benchmark-inference-seq.ps1 -Matrix benchmarks/comparison-2026-09-06/single-physical-ccd-matrix.json -OutputDir benchmarks/comparison-2026-09-06/speed-single-physical-ccd -Affinity 21845
+python scripts/evaluate-arithmetic-regression.py
 python scripts/summarize-comparison.py
 ```
 
@@ -174,9 +295,19 @@ directory must be new. The runner records source revision, executable hashes,
 commands and affinity; `record-comparison-inputs.py` additionally hashes the model
 files, tokenizer, speed fixture and llama DLLs. Raw logits are deleted after
 per-position metrics are retained, keeping temporary storage bounded.
+The original PowerShell CSVs use the host's decimal comma. Published summary CSVs
+are generated from numeric JSON profiles and use decimal points.
 
 WikiText data derives from Wikipedia and is attributed to the WikiText dataset
 authors and Wikipedia contributors. The pinned dataset card lists **CC BY-SA 3.0
 and GFDL**; retained token-derived evaluation data remains subject to those data
 licenses, not the engine's MIT license. Full source articles and model weights
 are not included in the results archive.
+
+## Audit bundle
+
+[Raw results ZIP](results/2026-09-06/raw-results.zip) contains all 500 timed profiles
+(125 configurations × four runs), exact commands, executable/DLL/model hashes,
+quality window metadata, per-position metrics, build/test evidence and batch
+validation results. [SHA256SUMS](results/2026-09-06/SHA256SUMS) covers the published
+result files. No weights or full-corpus source text are committed.

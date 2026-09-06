@@ -26,8 +26,10 @@ not accuracy against BF16 or another engine.
 Validated artifact SHA-256:
 `e73de30bf646dee502dd5e519939221f7d2b60068ccbbe16dc1701597919c42f`.
 Model weights and disposable output/logit files remain ignored local assets.
-No new quantization quality matrix or llama.cpp multi-request comparison has
-been measured in this standalone repository yet.
+The subsequent [standalone comparison](comparison-2026-09-06.md) records fresh
+quantization quality, prefill, decode and static multi-request measurements,
+with their exact scope and limitations. The extraction checks above remain
+correctness evidence rather than performance measurements.
 
 ## Published server and release validation
 
