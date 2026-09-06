@@ -51,6 +51,7 @@ struct CpuExecutionContext {
   std::vector<float> quantized_batch_scales;
   std::vector<cpu::Q8_0BlockX4> packed_q8_0_batch;
   std::vector<cpu::Q4_0ArgmaxResult> greedy_results;
+  std::vector<cpu::KQuantActivation> k_input, k_q8_input;
 };
 
 // A null sink avoids clock reads and allocations in production runs.
@@ -95,7 +96,15 @@ struct CpuGreedySamplingState {
   bool enabled = false;
 };
 
+struct GgufRowPart {
+  cpu::KQuantType type;
+  std::size_t rows;
+  std::shared_ptr<const std::vector<std::uint8_t>> bytes;
+};
 struct TensorData {
+  // Immutable original GGUF bytes, shared by individual and concatenated views.
+  std::vector<GgufRowPart> gguf_parts;
+
   std::vector<std::int64_t> shape;
   std::vector<float> data;
   std::vector<cpu::Q4_0Block> q4_0_blocks;
@@ -118,9 +127,11 @@ struct TensorData {
   }
 
   bool is_cpu_quantized() const noexcept {
-    return is_q4_0() || is_q8_0();
+    return !gguf_parts.empty() || is_q4_0() || is_q8_0();
   }
 };
+
+#include "gguf_matrix.inl"
 
 struct PackedQ4PrefillJob {
   const cpu::Q4_0BlockX8 * matrix = nullptr;
@@ -747,6 +758,20 @@ bool pack_quantized_row_concat(
     return false;
   }
 
+  const auto* first_part=*parts.begin();
+  if (first_part && first_part->shape.size()==2 && !first_part->gguf_parts.empty()) {
+    out = TensorData{};
+    out.shape = {0, (*parts.begin())->shape[1]};
+    out.q8_0_backend = (*parts.begin())->q8_0_backend;
+    for (const auto* part : parts) {
+      if (!part || part->shape.size()!=2 || part->shape[1]!=out.shape[1] || part->gguf_parts.empty()) {
+        error_message="Incompatible GGUF row concatenation.";return false;
+      }
+      out.shape[0]+=part->shape[0];
+      out.gguf_parts.insert(out.gguf_parts.end(),part->gguf_parts.begin(),part->gguf_parts.end());
+    }
+    return true;
+  }
   std::int64_t cols = -1;
   std::int64_t total_rows = 0;
   cpu::Q8_0Backend backend = cpu::Q8_0Backend::auto_select;
@@ -849,7 +874,7 @@ bool pack_quantized_row_concat(
     out.packed_q4_0_blocks.resize(
       (static_cast<std::size_t>(total_rows) / cpu::q4_0_packed_rows) *
       blocks_per_row);
-    cpu::q4_0_pack_rows_8(
+    (out.q4_dot4?cpu::q4_dot4_pack_rows_8:cpu::q4_0_pack_rows_8)(
       out.q4_0_blocks.data(), out.packed_q4_0_blocks.data(),
       static_cast<std::size_t>(total_rows), blocks_per_row);
   }
@@ -894,6 +919,9 @@ bool matvec_2d(CpuExecutionContext *cpu_context,
   }
 
 
+
+  if (!w.gguf_parts.empty())
+    return gguf_matmul(cpu_context,w,x,1,out,error_message);
 
   if (w.is_q4_0()) {
     if ((cols % static_cast<int>(cpu::q4_0_values_per_block)) != 0) {
@@ -1011,6 +1039,18 @@ bool greedy_q4_token(CpuExecutionContext *cpu_context,
   const float repetition_penalty,
   int & out_token,
   std::string & error_message) {
+  if (!weights.gguf_parts.empty()) {
+    std::vector<float> logits;
+    if(!matvec_2d(cpu_context,weights,input,logits,error_message))return false;
+    if(token_counts.size()<logits.size()) {error_message="Token count size mismatch.";return false;}
+    float best=-std::numeric_limits<float>::infinity();out_token=0;
+    for(std::size_t i=0;i<logits.size();++i) {
+      float v=logits[i];
+      if(token_counts[i]>0 && repetition_penalty>1) v=v>0?v/repetition_penalty:v*repetition_penalty;
+      if(v>best) {best=v;out_token=static_cast<int>(i);}
+    }
+    return true;
+  }
   if (!weights.is_q4_0() || cpu_context == nullptr ||
       cpu_context->executor == nullptr || weights.shape.size() != 2) {
     error_message = "Fused greedy Q4 selection requires packed weights and a CPU executor.";
@@ -1090,6 +1130,8 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
     error_message = "CPU batched matmul input shape mismatch.";
     return false;
   }
+  if (!w.gguf_parts.empty())
+    return gguf_matmul(cpu_context,w,inputs,batch_size,out,error_message);
   const std::size_t blocks_per_row = cols / cpu::q8_0_values_per_block;
   if (rows > std::numeric_limits<std::size_t>::max() / blocks_per_row ||
       batch_size > std::numeric_limits<std::size_t>::max() / blocks_per_row ||
@@ -1544,3 +1586,5 @@ bool load_model_weights_from_q4_h128(
   }
   return true;
 }
+
+#include "gguf_weights.inl"

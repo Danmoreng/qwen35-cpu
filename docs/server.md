@@ -3,7 +3,10 @@
 `qwen35_cpu_server --model-dir models/qwen3.5-0.8b --threads 8`
 
 The directory contains `model.q35h`, config and tokenizer files. `--weights`
-can override the artifact path. One owner drives the model/tokenizer and bounded
+can override the artifact path, including a supported Q4_0 `--pure` or Q4_K_M GGUF file in source
+builds. Config and tokenizer files are still read from `--model-dir`. A GGUF-backed
+server reports `Qwen3.5-0.8B-GGUF` from `/v1/models`; omit the request model field
+or use that ID. See [Q4_K_M support](q4km-native.md). One owner drives the model/tokenizer and bounded
 CpuEngine scheduler. HTTP workers never create separate inference executors.
 The process starts listening only after the model has loaded successfully.
 

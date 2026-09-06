@@ -1,7 +1,7 @@
 # Qwen3.5 CPU
 
 A small C++20 inference engine specialized for **Qwen3.5-0.8B text inference on
-CPUs**, using **H128/Q4-G32-DOT4** weights. No CUDA toolchain, GPU runtime or
+CPUs**, using **H128/Q4-G32-DOT4** or **native Q4_0** weights. No CUDA toolchain, GPU runtime or
 general-purpose model framework is required.
 
 The project contains a native HTTP server, text-completion CLI, checkpoint packer,
@@ -12,6 +12,32 @@ raw prompts, greedy or sampled decoding and non-streaming responses. Chat comple
 SSE streaming are not implemented.
 
 ## CPU benchmarks: speed and quality
+
+**New: native Q4_0 `--pure` in source builds.** It loads GGUF, losslessly packs
+weights into the existing DOT4 layout and skips H128. A fresh eight-thread
+comparison on the Ryzen 9 9955HX3D measures:
+
+| Engine / checkpoint | Prefill 512 | Prefill 4,096 | Decode P512/N128 |
+| --- | ---: | ---: | ---: |
+| This engine, H128/Q4 | 2,133.0 | 1,855.1 | 120.3 |
+| **This engine, pure Q4_0** | **2,037.1** | **1,771.6** | **120.5** |
+| llama.cpp, identical pure Q4_0 file | 1,042.6 | 972.9 | 100.2 |
+
+Tokens/s, median of three runs after one warmup, eight physical VCache cores
+(`0x5555`), FP16 KV, fixed tokens and full logits. Q4_0 decode matches H128;
+prefill is about 4.5% lower. Against llama.cpp with the same weights, native
+Q4_0 gives **1.82–1.95x prefill and 1.20x decode throughput**.
+[New report and raw results](docs/native-q4_0-2026-09-06.md) ·
+[GGUF setup and supported recipes](docs/q4km-native.md).
+
+Pure Q4_0 is different from the mixed file named Q4_0 below. Its earlier
+8,192-position **llama.cpp** evaluation measured KL **0.14452**, perplexity
+**18.0259**. The new native path has a bounded 512-position compatibility check,
+not a full new quality sweep. The historical “2 + 2” regression still fails
+with pure Q4_0. Released v0.1.1 binaries do not yet include GGUF support.
+
+### Original H128 comparison
+
 
 On the **Ryzen 9 9955HX3D**, this engine measured **1.90–1.98× prefill throughput**,
 **1.19× single-request decode** and **1.72× decode at batch 16** against the pinned
@@ -121,12 +147,14 @@ See [server API and limits](docs/server.md) and [publishing](docs/publishing.md)
 ## What is specialized
 
 - One architecture: Qwen3.5-0.8B, including its hybrid DeltaNet/full-attention layers.
-- One inference artifact recipe: H128 transforms, Q4 groups of 32 and CPU DOT4 packing.
+- Main weight paths: H128 transforms with Q4 groups of 32, or plain Q4_0, both using CPU DOT4 packing.
   Large projection weights use H128/Q4; embeddings and small retained tensors use
   their prescribed encodings. This is not an all-tensors-four-bit claim.
-- Weight packing and sign conversion happen during conversion. Inference reads
-  CPU-ready quantized blocks; ordinary loading still allocates runtime metadata,
-  scratch and packed projection groups.
+- H128 packing and sign conversion happen during checkpoint conversion. Plain
+  Q4_0 GGUF weights are losslessly repacked once at model load. Inference reads
+  the prepared blocks; loading also allocates metadata, scratch and projection groups.
+- Experimental Q4_K_M GGUF execution is retained but slower at prefill; further
+  K-quant optimization is paused. It does not use the optimized DOT4 path.
 - FP16 KV caches, FP32 recurrent state, CPU-dispatched scalar/AVX2/VNNI/AVX-512 kernels.
 - Batched decode, bounded scheduling, cancellation, output backpressure, exact-prefix
   reuse including recurrent state, and optional shared immutable KV pages.
@@ -203,7 +231,7 @@ serializes processes, records commands and binary hashes, alternates case order,
 and writes profiles plus a completed CSV. Three measured runs and one warmup
 are the default. Quality/logit-dump runs are separate from speed measurements.
 
-- CPU-only build and eight kernel/unit tests: passed.
+- CPU-only build and ten kernel/unit tests: passed.
 - Real-model scheduler/prefix/shared-page regression: passed.
 - Extraction versus frozen source executable: exact output-token matches for
   B=1 and B=4 with shared-prefix pages, sixteen generated tokens per request.

@@ -13,6 +13,7 @@ public:
   load(const ModelProfile &profile, const CpuLoadOptions &options,
        std::string &error);
   ~CpuModel();
+  const char* weight_format() const noexcept;
 
 private:
   struct Impl;

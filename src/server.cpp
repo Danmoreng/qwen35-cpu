@@ -17,7 +17,7 @@
 using namespace qwen35x;
 using Json = nlohmann::json;
 namespace {
-constexpr const char *model_name = "Qwen3.5-0.8B-H128-Q4-G32-DOT4";
+const char *model_name = "Qwen3.5-0.8B-H128-Q4-G32-DOT4";
 struct Reply { int status; Json body; };
 Reply failure(int status, const std::string &message) {
   return {status, {{"error", {{"message", message}, {"type", "request_error"}}}}};
@@ -123,6 +123,8 @@ public:
     if (!profile) throw std::runtime_error(error);
     auto model = CpuModel::load(*profile, load, error);
     if (!model) throw std::runtime_error(error);
+    if (std::string(model->weight_format()).starts_with("gguf-"))
+      model_name = "Qwen3.5-0.8B-GGUF";
     engine_ = CpuEngine::create(model, config, error);
     if (!engine_) throw std::runtime_error(error);
     worker_ = std::thread([this] { run(); });

@@ -12,6 +12,7 @@ struct SamplingOptions {
  float repetition_penalty=1.05f;std::int64_t seed=-1;
 };
 struct CpuLoadOptions {
+ // Historical field name: accepts H128 artifacts or supported GGUF files (magic detection).
  std::string model_dir,cpu_q4_h128_path;
  cpu::Q8_0Backend cpu_q8_backend=cpu::Q8_0Backend::auto_select;
 };

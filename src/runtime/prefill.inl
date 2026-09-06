@@ -531,19 +531,7 @@ bool run_forward_cpu_q8_batch(CpuExecutionContext *cpu_context,
       error_message = "Batched CPU prefill token id is outside the vocabulary.";
       return false;
     }
-    if (weights.embed_tokens.is_q4_0()) {
-      (weights.embed_tokens.q4_dot4 ? cpu::q4_dot4_dequantize_row : cpu::q4_0_packed_dequantize_row)(
-        weights.embed_tokens.packed_q4_0_blocks.data(),
-        static_cast<std::size_t>(token_id),
-        x.data() + token * hidden, embedding_blocks);
-    } else {
-      const std::size_t block_offset =
-        static_cast<std::size_t>(token_id) * embedding_blocks;
-      cpu::q8_0_dequantize(
-        weights.embed_tokens.q8_0_blocks.data() + block_offset,
-        x.data() + token * hidden, embedding_blocks,
-        weights.embed_tokens.q8_0_backend);
-    }
+    dequantize_embedding_row(weights.embed_tokens,token_id,x.data()+token*hidden,hidden);
   }
   if (profiling != nullptr) {
     profiling->embedding_ms += elapsed_ms(embedding_start);

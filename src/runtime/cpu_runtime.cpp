@@ -2,6 +2,8 @@
 
 #include "qwen35x/cpu/activation.h"
 
+#include "qwen35x/cpu/k_quant.h"
+#include "qwen35x/weights/gguf.h"
 #include "qwen35x/cpu/q4_0.h"
 #include "qwen35x/cpu/q4_dot4.h"
 #include "qwen35x/cpu/q4_h128.h"
@@ -19,6 +21,7 @@
 #include <cmath>
 #include <cstring>
 #include <filesystem>
+#include <fstream>
 #include <limits>
 #include <mutex>
 #include <numeric>

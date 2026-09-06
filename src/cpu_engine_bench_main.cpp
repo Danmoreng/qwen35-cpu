@@ -111,7 +111,7 @@ int main(int argc, char **argv) try {
     };
     if (arg == "--hf-model-dir")
       options.model_dir = value;
-    else if (arg == "--cpu-q4-h128")
+    else if ((arg == "--cpu-q4-h128" || arg == "--cpu-gguf"))
       options.cpu_q4_h128_path = value;
     else if (arg == "--cpu-batch")
       batch_size = positive();
@@ -278,7 +278,7 @@ int main(int argc, char **argv) try {
   if (!out)
     throw std::runtime_error("Cannot write benchmark profile");
   out << std::setprecision(12) << "{\n"
-      << "\"prefill_only\":false,\"cpu_batch\":" << batch_size
+      << "\"weight_format\":\"" << model->weight_format() << "\",\"prefill_only\":false,\"cpu_batch\":" << batch_size
       << ",\"cpu_batch_serial\":" << (serial ? "true" : "false")
       << ",\"prompt_tokens\":" << spec.prompt_tokens.size() * batch_size
       << ",\"generated_tokens\":" << delivered
@@ -287,6 +287,8 @@ int main(int argc, char **argv) try {
       << ",\"prefill_forward_time_ms\":" << prefill_forward_ms
       << ",\"prefill_forward_tokens_per_second\":" << newly_prefilled * 1000.0 / prefill_forward_ms
       << ",\"resolved_isa\":\"" << cpu::q8_0_backend_name(cpu::q8_0_resolve_backend(options.cpu_q8_backend)) << "\""
+      << ",\"projection_kernel\":\"" << (std::string(model->weight_format())=="gguf-k-quants" ?
+           (cpu::q8_0_backend_uses_avx2(options.cpu_q8_backend)?"k-quants-avx2":"k-quants-scalar") : "q4-dot4") << "\""
       << ",\"prefill_tokens_per_second\":"
       << newly_prefilled * 1000.0 / prefill_ms
       << ",\"new_prefill_tokens\":" << newly_prefilled

@@ -53,7 +53,7 @@ int main(int argc, char **argv) try {
   for (int i = 1; i < argc; ++i) {
     const std::string key = argv[i];
     if (key == "--help") {
-      std::cout << "Qwen3.5-0.8B CPU / H128-Q4-G32-DOT4\n"
+      std::cout << "Qwen3.5-0.8B CPU / H128-Q4-G32-DOT4 or Q4_0 / Q4_K_M GGUF\n"
         "--model-dir DIR --weights FILE --prompt TEXT | --prompt-file FILE | --tokens-file FILE\n"
         "[--threads N] [--max-context N] [--max-new-tokens N]\n"
         "[--temperature F] [--top-p F] [--top-k N] [--repetition-penalty F] [--seed N]\n"

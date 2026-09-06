@@ -4,16 +4,20 @@ struct CpuModel::Impl {
   RuntimeDims dims;
   ModelWeights weights;
   cpu::Q8_0Backend backend;
+  bool gguf=false;
 };
 CpuModel::CpuModel(std::shared_ptr<const Impl> impl) : impl_(std::move(impl)) {}
 CpuModel::~CpuModel() = default;
+const char* CpuModel::weight_format() const noexcept {
+  return !impl_->gguf?"h128-q4-dot4":impl_->weights.embed_tokens.is_q4_0()?"gguf-q4_0-dot4":"gguf-k-quants";
+}
 std::shared_ptr<const CpuModel>
 CpuModel::load(const ModelProfile &profile,
                const CpuLoadOptions &options, std::string &error) {
   error.clear();
   if (profile.family != "qwen3.5" ||
       options.cpu_q4_h128_path.empty()) {
-    error = "CpuModel currently requires a CPU Q4 H128 artifact.";
+    error = "CpuModel requires an H128 artifact or a supported Qwen3.5-0.8B GGUF.";
     return nullptr;
   }
   auto model = std::make_shared<Impl>();
@@ -26,8 +30,9 @@ CpuModel::load(const ModelProfile &profile,
       d.linear_num_v_heads!=16 || d.linear_head_k_dim!=128 || d.linear_head_v_dim!=128) {
     error="Only the Qwen3.5-0.8B text architecture is supported.";return nullptr;
   }
+  model->gguf=is_gguf_file(options.cpu_q4_h128_path);
   if (
-      !load_model_weights_from_q4_h128(options.cpu_q4_h128_path,
+      !(model->gguf ? load_model_weights_from_quantized_gguf : load_model_weights_from_q4_h128)(options.cpu_q4_h128_path,
                           model->dims, profile, model->backend, 0,
                           model->weights, error))
     return nullptr;
@@ -118,10 +123,8 @@ struct CpuEngine::Impl {
     b.residual.resize(count * hidden);
     b.mlp_hidden.resize(count * intermediate);
     for (std::size_t r = 0; r < count; ++r)
-      (w.embed_tokens.q4_dot4 ? cpu::q4_dot4_dequantize_row
-                              : cpu::q4_0_packed_dequantize_row)(
-          w.embed_tokens.packed_q4_0_blocks.data(), rows[r]->pending_token,
-          b.x.data() + r * hidden, hidden / 32);
+      dequantize_embedding_row(w.embed_tokens, rows[r]->pending_token,
+                               b.x.data()+r*hidden, hidden);
     std::size_t linear_index = 0, full_index = 0;
     auto project = [&](const TensorData &weight,
                        const std::vector<float> &input,
@@ -203,7 +206,7 @@ struct CpuEngine::Impl {
     rms_norm_qwen3next_batch(b.x, count, hidden, w.final_norm, d.rms_eps,
                              b.final_hidden);
     const bool greedy =
-        config.batch_greedy &&
+        config.batch_greedy && w.embed_tokens.gguf_parts.empty() &&
         std::all_of(rows.begin(), rows.end(), [](const auto *s) {
           return s->spec.sampling.temperature <= 1e-6F &&
                  s->spec.forced_output_tokens.empty() &&

@@ -85,3 +85,12 @@ prevent further cache admission. Contiguous KV remains the default reference pat
 scheduler, backpressure, cancellation, single-flight and paged-prefix paths.
 `cpu_prefix_model_test <model-dir> <artifact>` checks prefix/full-logit parity.
 Neither test's execution time is a performance benchmark.
+
+## Experimental GGUF loading
+
+The historical `CpuLoadOptions::cpu_q4_h128_path` field also accepts a Qwen3.5-0.8B
+GGUF containing pure Q4_0 matrices or the supported Q4_K_M recipe (Q4_K, Q5_K,
+Q6_K, Q8_0 matrices), plus F32 retained tensors.
+The loader selects by file magic, validates shapes and retains the packed bytes.
+`CpuModel::weight_format()` returns `h128-q4-dot4`, `gguf-q4_0-dot4` or `gguf-k-quants`.
+Config/tokenizer handling remains unchanged. See [format support](q4km-native.md).

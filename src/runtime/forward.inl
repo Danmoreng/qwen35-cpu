@@ -5,8 +5,7 @@ bool run_forward_single_token(CpuExecutionContext *context,
   if(token<0 || token>=d.vocab_size) {error="Token outside vocabulary.";return false;}
   auto &w=context->decode.forward;
   w.x.resize(d.hidden);
-  cpu::q4_dot4_dequantize_row(weights.embed_tokens.packed_q4_0_blocks.data(),
-      token,w.x.data(),static_cast<std::size_t>(d.hidden)/32);
+  dequantize_embedding_row(weights.embed_tokens,token,w.x.data(),d.hidden);
   std::size_t linear=0,full=0;
   for(const auto &layer:weights.layers) {
     rms_norm_qwen3next(w.x,layer.input_layernorm,d.rms_eps,w.normed);
