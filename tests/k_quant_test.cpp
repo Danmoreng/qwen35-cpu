@@ -52,6 +52,18 @@ int main(int argc,char** argv) try {
       }
     }
   }
+  for(int sample=0;sample<100;++sample) {
+    float input[512];for(int i=0;i<512;++i)input[i]=sample?std::sin(float(i*37+sample))*(i%11):0;
+    if(sample%3==1){input[31]=100;input[33]=-100;}
+    KQuantActivation reference[2]{},actual[2]{};
+    k_quant_prepare(input,reference,2,false,Q8_0Backend::scalar);
+    k_quant_prepare(input,actual,2,false,Q8_0Backend::auto_select);
+    for(int b=0;b<2;++b) {
+      for(int g=0;g<8;++g)check(reference[b].d[g]==actual[b].d[g],"Activation scale changed");
+      for(int i=0;i<256;++i)check(reference[b].qs[i]==actual[b].qs[i],"Activation rounding changed");
+      for(int g=0;g<16;++g)check(reference[b].sums[g]==actual[b].sums[g],"Activation sum changed");
+    }
+  }
   KQuantActivation a{};float x[256]{};x[1]=4;
   k_quant_prepare(x,&a,1,false,Q8_0Backend::scalar);
   check(a.qs[1]==-127 && a.d[0]<0,"Signed Q8_K scale");

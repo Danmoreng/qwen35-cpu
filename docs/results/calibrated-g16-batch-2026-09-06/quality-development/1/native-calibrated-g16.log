@@ -1,0 +1,10 @@
+ Engine / checkpoint | Prefill 512 | Prefill 4,096 | Decode P512/N128 |
+| --- | ---: | ---: | ---: |
+| This engine, H128/Q4 | 2,133.0 | 1,855.1 | 120.3 |
+| **This engine, pure Q4_0** | **2,037.1** | **1,771.6** | **120.5** |
+| llama.cpp, identical pure Q4_0 file | 1,042.6 | 972.9 | 100.2 |
+
+Tokens/s, median of three runs after one warmup, eight physical VCache cores
+(`0x5555`), FP16 KV, fixed tokens and full logits. Q4_0 decode matches H128;
+prefill is about 4.5% lower. Against llama.cpp with the same weights, native
+Q4_0 gives **1.82–1.95x prefill and 1.20x decode throughput

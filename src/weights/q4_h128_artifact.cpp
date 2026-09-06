@@ -137,6 +137,13 @@ std::uint64_t q4_h128_payload_size(
       return 0;
     }
   }
+  if (q4_g16_encoding(encoding)) {
+    std::uint64_t bytes=0;
+    if(shape.size()!=2 || shape[0]%8 || shape[1]%128 || !checked_multiply(elements/32,20,bytes)) {
+      error_message="G16 requires complete eight-row, H128-aligned tiles.";return 0;
+    }
+    return bytes;
+  }
   switch (encoding) {
     case Q4H128TensorEncoding::q8_0: {
       std::uint64_t bytes = 0;
@@ -227,15 +234,15 @@ bool Q4H128ArtifactWriter::open(
     }
     if (q4_h128_encoding_transformed(tensor.encoding)) {
       if (tensor.transform_size != cpu::q4_h128_transform_size ||
-          tensor.scale_group != cpu::q4_0_values_per_block ||
+          tensor.scale_group != (q4_g16_encoding(tensor.encoding) ? 16U : cpu::q4_0_values_per_block) ||
           tensor.sign_seed != metadata.sign_seed) {
         error_message = "Q4_H128 tensor transform metadata is inconsistent: " + tensor.name;
         close();
         return false;
       }
     } else if (tensor.transform_size != 0 || tensor.sign_seed != 0 ||
-               ((q4_h128_encoding_cpu_packed(tensor.encoding) || tensor.encoding == Q4H128TensorEncoding::q8_0) &&
-                tensor.scale_group != cpu::q4_0_values_per_block)) {
+               ((q4_g16_encoding(tensor.encoding) || q4_h128_encoding_cpu_packed(tensor.encoding) || tensor.encoding == Q4H128TensorEncoding::q8_0) &&
+                tensor.scale_group != (q4_g16_encoding(tensor.encoding) ? 16U : cpu::q4_0_values_per_block))) {
       error_message = "Untransformed tensor has invalid quantization metadata: " + tensor.name;
       close();
       return false;
@@ -453,7 +460,7 @@ bool Q4H128ArtifactReader::open(const std::string & path, std::string & error_me
       read_value(stream_, tensor.data_offset) && read_value(stream_, tensor.data_size) &&
       read_value(stream_, tensor.checksum);
     if (!ok || name_size == 0 || name_size > 4096 || rank == 0 || rank > 8 ||
-        encoding > static_cast<std::uint32_t>(Q4H128TensorEncoding::q8_0) ||
+        encoding > static_cast<std::uint32_t>(Q4H128TensorEncoding::q4_h128_g16_cpu_dot4) ||
         reserved != 0) {
       error_message = "Invalid Q4_H128 tensor directory entry.";
       close();
@@ -477,12 +484,12 @@ bool Q4H128ArtifactReader::open(const std::string & path, std::string & error_me
         tensor_end > file_size_ ||
         (q4_h128_encoding_transformed(tensor.encoding) &&
          (tensor.transform_size != cpu::q4_h128_transform_size ||
-          tensor.scale_group != cpu::q4_0_values_per_block ||
+          tensor.scale_group != (q4_g16_encoding(tensor.encoding) ? 16U : cpu::q4_0_values_per_block) ||
           tensor.sign_seed != metadata_.sign_seed)) ||
         (!q4_h128_encoding_transformed(tensor.encoding) &&
          (tensor.transform_size != 0 || tensor.sign_seed != 0)) ||
-        ((q4_h128_encoding_cpu_packed(tensor.encoding) || tensor.encoding == Q4H128TensorEncoding::q8_0) &&
-         tensor.scale_group != cpu::q4_0_values_per_block) ||
+        ((q4_g16_encoding(tensor.encoding) || q4_h128_encoding_cpu_packed(tensor.encoding) || tensor.encoding == Q4H128TensorEncoding::q8_0) &&
+         tensor.scale_group != (q4_g16_encoding(tensor.encoding) ? 16U : cpu::q4_0_values_per_block)) ||
         !tensor_index_.emplace(tensor.name, tensors_.size()).second) {
       error_message = "Invalid Q4_H128 tensor metadata: " + tensor.name;
       close();

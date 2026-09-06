@@ -39,6 +39,10 @@ void q4_h128_transform_block_inplace(
   std::uint64_t sign_seed = q4_h128_default_sign_seed,
   Q8_0Backend backend = Q8_0Backend::scalar) noexcept;
 
+// Inverse R^T = D H / sqrt(128), for tied embedding lookup. In-place safe.
+void q4_h128_inverse_block(float * values, std::size_t transform_block_index,
+  std::uint64_t sign_seed = q4_h128_default_sign_seed) noexcept;
+
 // rows are row-major and columns must be a non-zero multiple of 128. The
 // transform block index restarts at zero for each row.
 [[nodiscard]] bool q4_h128_transform_rows(

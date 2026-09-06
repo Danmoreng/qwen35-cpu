@@ -4,6 +4,9 @@
 namespace qwen35x::cpu {
 void k_quant_prepare(const float* x, KQuantActivation* out, std::size_t blocks,
                      bool q8, Q8_0Backend backend) noexcept {
+#if QWEN35X_Q8_0_HAS_AVX2_TU
+  if(!q8 && q8_0_backend_uses_avx2(backend)) {detail::k_quant_prepare_avx2(x,out,blocks);return;}
+#endif
   for(std::size_t b=0;b<blocks;++b,x+=256) {
     auto& a=out[b];
     if(q8) {

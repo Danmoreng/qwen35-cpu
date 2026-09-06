@@ -1,0 +1,128 @@
+{
+  "positions": 1024,
+  "candidate_ppl": 4.883445529958501,
+  "reference_ppl": 4.659449060259738,
+  "ppl_ratio": 1.0480735955693175,
+  "candidate_kl": 0.07127441495124141,
+  "reference_kl": 0.02516250274849839,
+  "compatibility_kl": 0.08728084626129942,
+  "top1": 0.8896484375,
+  "kl_p95": 0.27003098228092354,
+  "kl_p99": 0.5702555556465646,
+  "kl_max": 1.2397936000950982,
+  "strict_pass": false,
+  "engineering_pass": false,
+  "gates": {
+    "ppl_relative_tolerance": 0.01,
+    "kl_absolute_tolerance": 0.002,
+    "strict_ppl_relative_tolerance": 0,
+    "strict_kl_absolute_tolerance": 0
+  },
+  "domains": {
+    "code": {
+      "positions": 256,
+      "candidate_ppl": 2.040498161030283,
+      "reference_ppl": 2.012384578606916,
+      "ppl_ratio": 1.0139702831766026,
+      "candidate_kl": 0.07017949163484698,
+      "reference_kl": 0.022265816248698875,
+      "compatibility_kl": 0.08087717979562423,
+      "top1": 0.94140625,
+      "kl_p95": 0.34368551030140354,
+      "kl_p99": 0.6415877193803518,
+      "kl_max": 0.9492881791577609,
+      "strict_pass": false,
+      "engineering_pass": false
+    },
+    "english-prose": {
+      "positions": 256,
+      "candidate_ppl": 12.232571474161434,
+      "reference_ppl": 11.417920136804202,
+      "ppl_ratio": 1.0713484879554647,
+      "candidate_kl": 0.08709831186770939,
+      "reference_kl": 0.025035960394773765,
+      "compatibility_kl": 0.10007207561986477,
+      "top1": 0.82421875,
+      "kl_p95": 0.3296133674643662,
+      "kl_p99": 0.6619034874084171,
+      "kl_max": 0.7271290433574455,
+      "strict_pass": false,
+      "engineering_pass": false
+    },
+    "german-prose": {
+      "positions": 128,
+      "candidate_ppl": 24.587912838422273,
+      "reference_ppl": 20.986167861580157,
+      "ppl_ratio": 1.1716247101709272,
+      "candidate_kl": 0.12800660518094775,
+      "reference_kl": 0.04611745505331319,
+      "compatibility_kl": 0.16012526779507213,
+      "top1": 0.75,
+      "kl_p95": 0.33816769613683906,
+      "kl_p99": 0.45160466461687554,
+      "kl_max": 0.8967032035213893,
+      "strict_pass": false,
+      "engineering_pass": false
+    },
+    "long-recurrent-code": {
+      "positions": 128,
+      "candidate_ppl": 1.1820344128116305,
+      "reference_ppl": 1.1880683093135187,
+      "ppl_ratio": 0.994921254565426,
+      "candidate_kl": 0.02508211158616343,
+      "reference_kl": 0.012096023159446218,
+      "compatibility_kl": 0.03314349998890216,
+      "top1": 0.9765625,
+      "kl_p95": 0.1566550943004903,
+      "kl_p99": 0.292386993644725,
+      "kl_max": 0.4487239457503821,
+      "strict_pass": false,
+      "engineering_pass": false
+    },
+    "mathematics": {
+      "positions": 128,
+      "candidate_ppl": 1.023121678335156,
+      "reference_ppl": 1.0170637099641882,
+      "ppl_ratio": 1.005956331261865,
+      "candidate_kl": 0.004569849325894801,
+      "reference_kl": 0.0011638690279014516,
+      "compatibility_kl": 0.005214188121779883,
+      "top1": 1.0,
+      "kl_p95": 0.012947242317703929,
+      "kl_p99": 0.09799692252718933,
+      "kl_max": 0.17922822689172085,
+      "strict_pass": false,
+      "engineering_pass": false
+    },
+    "rendered-chat": {
+      "positions": 128,
+      "candidate_ppl": 17.459177170298393,
+      "reference_ppl": 16.594259208779285,
+      "ppl_ratio": 1.0521215168834726,
+      "candidate_kl": 0.09798114651181263,
+      "reference_kl": 0.047319121460380996,
+      "compatibility_kl": 0.13786530335366315,
+      "top1": 0.859375,
+      "kl_p95": 0.22587980689748083,
+      "kl_p99": 0.4057643894953359,
+      "kl_max": 1.2397936000950982,
+      "strict_pass": false,
+      "engineering_pass": false
+    }
+  },
+  "paired_document_bootstrap": {
+    "seed": 1234,
+    "repetitions": 2000,
+    "documents": 6,
+    "nll_delta_95": [
+      0.011464252444010307,
+      0.09375483903438246
+    ],
+    "kl_delta_95": [
+      0.02427070411742994,
+      0.0623829838748186
+    ]
+  },
+  "scope": "Declared windows only; regression prose does not establish general equivalence",
+  "compatibility_same_checkpoint": false
+}

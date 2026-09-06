@@ -47,6 +47,7 @@ struct CpuExecutionContext {
   std::vector<float> q4_h128_transform_scratch;
   std::vector<cpu::Q8_0Block> quantized_input;
   std::vector<cpu::Q8_0BlockX1> prepared_q4_input;
+  std::vector<cpu::Q4G16ActivationTile> g16_prepared_batch;
   std::vector<cpu::Q8_0Block> quantized_batch;
   std::vector<float> quantized_batch_scales;
   std::vector<cpu::Q8_0BlockX4> packed_q8_0_batch;
@@ -102,6 +103,7 @@ struct GgufRowPart {
   std::shared_ptr<const std::vector<std::uint8_t>> bytes;
 };
 struct TensorData {
+  std::vector<cpu::Q4G16Tile> g16_tiles;
   // Optional identity-basis Q8 B/A gate rows following the H128 DOT4 rows.
   // Immutable after loading; output order remains QKV, Z, B, A.
   std::size_t q8_gate_rows = 0;
@@ -132,7 +134,7 @@ struct TensorData {
   }
 
   bool is_cpu_quantized() const noexcept {
-    return !gguf_parts.empty() || is_q4_0() || is_q8_0();
+    return !g16_tiles.empty() || !gguf_parts.empty() || is_q4_0() || is_q8_0();
   }
 };
 
@@ -646,6 +648,17 @@ bool load_q4_h128_quantized_checked(
   std::string & error_message,
   const bool retain_scales = true) {
   const Q4H128TensorInfo * info = reader.find_tensor(tensor_name);
+  if(info && q4_g16_encoding(info->encoding) && tensor_name=="model.language_model.embed_tokens.weight" &&
+      q4_h128_shape_matches(info->shape,{rows,cols})) {
+    out=TensorData{};out.shape={rows,cols};out.q8_0_backend=backend;
+    out.uses_q4_h128_transform=q4_h128_encoding_transformed(info->encoding);
+    out.q4_h128_sign_seed=info->sign_seed;
+    out.g16_tiles.resize(static_cast<std::size_t>(info->data_size)/sizeof(cpu::Q4G16Tile));
+    if(!reader.read_tensor_into(tensor_name,out.g16_tiles.data(),info->data_size,error_message)) return false;
+    for(const auto& tile:out.g16_tiles) for(const auto& half:tile.d) for(auto scale:half)
+      if((scale & 0x7c00U)==0x7c00U) {error_message="Non-finite G16 scale";return false;}
+    return true;
+  }
   if (info && info->encoding == Q4H128TensorEncoding::q8_0 && !expect_h128 &&
       q4_h128_shape_matches(info->shape, {rows, cols})) {
     out = TensorData{}; out.shape = {rows, cols}; out.q8_0_backend = backend;
@@ -962,6 +975,7 @@ bool matvec_2d(CpuExecutionContext *cpu_context,
 
 
 
+  if (!w.g16_tiles.empty()) return g16_matmul(cpu_context,w,x,1,out,error_message);
   if (!w.gguf_parts.empty())
     return gguf_matmul(cpu_context,w,x,1,out,error_message);
 
@@ -1081,7 +1095,7 @@ bool greedy_q4_token(CpuExecutionContext *cpu_context,
   const float repetition_penalty,
   int & out_token,
   std::string & error_message) {
-  if (!weights.gguf_parts.empty() || weights.is_q8_0()) {
+  if (!weights.g16_tiles.empty() || !weights.gguf_parts.empty() || weights.is_q8_0()) {
     std::vector<float> logits;
     if(!matvec_2d(cpu_context,weights,input,logits,error_message))return false;
     if(token_counts.size()<logits.size()) {error_message="Token count size mismatch.";return false;}
@@ -1173,6 +1187,7 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
     error_message = "CPU batched matmul input shape mismatch.";
     return false;
   }
+  if (!w.g16_tiles.empty()) return g16_matmul(cpu_context,w,inputs,batch_size,out,error_message);
   if (!w.gguf_parts.empty())
     return gguf_matmul(cpu_context,w,inputs,batch_size,out,error_message);
   const std::size_t blocks_per_row = cols / cpu::q8_0_values_per_block;
@@ -1470,8 +1485,8 @@ bool load_model_weights_from_q4_h128(
   }
   const auto * embedding_info = reader.find_tensor("model.language_model.embed_tokens.weight");
   const bool cpu_packed = embedding_info != nullptr &&
-    (q4_h128_encoding_cpu_packed(embedding_info->encoding) || embedding_info->encoding == Q4H128TensorEncoding::q8_0);
-  if (!embedding_info || (!q4_h128_encoding_dot4(embedding_info->encoding) && embedding_info->encoding != Q4H128TensorEncoding::q8_0)) {
+    (q4_g16_encoding(embedding_info->encoding) || q4_h128_encoding_cpu_packed(embedding_info->encoding) || embedding_info->encoding == Q4H128TensorEncoding::q8_0);
+  if (!embedding_info || (!q4_g16_encoding(embedding_info->encoding) && !q4_h128_encoding_dot4(embedding_info->encoding) && embedding_info->encoding != Q4H128TensorEncoding::q8_0)) {
     error_message="Only CPU-ready H128/Q4-G32-DOT4 artifacts are supported.";return false;
   }
   const Q4H128ArtifactMetadata & metadata = reader.metadata();
@@ -1500,7 +1515,7 @@ bool load_model_weights_from_q4_h128(
 
   if (!load_q4_h128_quantized_checked(
         reader, "model.language_model.embed_tokens.weight",
-        dims.vocab_size, dims.hidden, false, backend,
+        dims.vocab_size, dims.hidden, q4_h128_encoding_transformed(embedding_info->encoding), backend,
         weights.embed_tokens, error_message, false) ||
       !load_f32(
         "model.language_model.norm.weight", {dims.hidden},

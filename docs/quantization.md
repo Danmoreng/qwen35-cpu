@@ -83,3 +83,14 @@ See the [selective Q8 experiment](q8-experiments-2026-09-06.md) for measured
 gate results and format details. The subsequent
 [Q8 embedding/output experiment](q8-head-experiment-2026-09-06.md) measures the
 large tied matrix separately, with the recurrent gates retained in Q4.
+
+## Optional head experiments
+
+`--head-g16` gives each sixteen-weight half of the tied vocabulary matrix its
+own FP16 scale. `--head-basis h128` rotates that matrix locally and applies the
+inverse during embedding lookup. Both options default off. G16 requires the MSE16
+fitter and now accepts identity-basis `--importance-dir` calibration; rotating the
+head still rejects calibration inputs. See the
+[head experiment report](head-experiments-2026-09-06.md) for format contracts,
+quality tradeoffs and matched timing. These options do not change the published
+calibrated standard.

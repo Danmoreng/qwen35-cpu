@@ -264,6 +264,26 @@ bool test_fused_decode_activation() {
 
 int main() {
   bool ok = true;
+  for (std::uint64_t seed : {UINT64_C(1), UINT64_C(42), qwen35x::cpu::q4_h128_default_sign_seed}) {
+    for (std::size_t block : {0U, 1U, 7U, 27U}) {
+      auto original = make_values(128, 0.31F);
+      auto rotated = original;
+      qwen35x::cpu::q4_h128_transform_block_inplace(rotated.data(), block, seed);
+      auto restored = rotated;
+      qwen35x::cpu::q4_h128_inverse_block(restored.data(), block, seed);
+      for (std::size_t i=0;i<128;++i)
+        ok = expect(std::abs(original[i]-restored[i])<2e-5F, "inverse round trip failed") && ok;
+      auto quantized = rotated;
+      // A perturbed stored row represents quantization; the inverse and head
+      // must still describe the same tied matrix, without access to originals.
+      for(auto& v:quantized) v=std::round(v*16)/16;
+      auto embedding=quantized;
+      qwen35x::cpu::q4_h128_inverse_block(embedding.data(),block,seed);
+      double lhs=0,rhs=0;
+      for(std::size_t i=0;i<128;++i) { lhs+=double(embedding[i])*original[i]; rhs+=double(quantized[i])*rotated[i]; }
+      ok=expect(std::abs(lhs-rhs)<1e-4,"tied inverse/head dot mismatch") && ok;
+    }
+  }
   ok = test_orthogonality() && ok;
   ok = test_rows_and_rejection() && ok;
   ok = test_avx2_parity() && ok;

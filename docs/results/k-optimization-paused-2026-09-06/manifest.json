@@ -1,0 +1,8 @@
+{
+  "scope": "Paused exploratory K optimization; final isolated activation-preparation source has no separate model benchmark",
+  "base_commit": "41376325da8c4331bd1170236a69c1dcf5d550a9",
+  "files": {
+    "performance.csv": "871aa79749cd6201ff73d0dc6415fcd5a7311f599220852d534bfe1ecd08b6aa",
+    "raw-results.zip": "e3a886cf583f31dee29371638215ca7cf485ae62b23642351bf30d362a123163"
+  }
+}

@@ -25,7 +25,8 @@ def report(root, ppl_tolerance=0.01, kl_tolerance=0.002, seed=1234):
         if not (len(candidate) == len(reference) == len(compat) == window['scored_tokens']):
             raise ValueError('Incomplete window')
         for c, r, k in zip(candidate, reference, compat):
-            if c['position'] != r['position'] or c['target_token'] != r['target_token']:
+            if any(c[field] != other[field]
+                   for other in (r, k) for field in ('position', 'target_token')):
                 raise ValueError('Paired token mismatch')
             records.append(dict(document=window.get('article_sha256', str(window['window'])),
                 domain=window.get('domain', 'english-prose-regression'),

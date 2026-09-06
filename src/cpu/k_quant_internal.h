@@ -3,6 +3,7 @@
 #include "q8_0_internal.h"
 #include <cstring>
 namespace qwen35x::cpu::detail {
+void k_quant_prepare_avx2(const float*, KQuantActivation*, std::size_t) noexcept;
 inline float k_half(const std::uint8_t* p) noexcept {
   return half_to_float(static_cast<std::uint16_t>(p[0] | (p[1]<<8)));
 }

@@ -1,0 +1,37 @@
+Test project C:/Development/qwen35-cpu/build
+      Start  1: full_attention_tiled
+ 1/16 Test  #1: full_attention_tiled .............   Passed   22.97 sec
+      Start  2: q4_dot4
+ 2/16 Test  #2: q4_dot4 ..........................   Passed    0.06 sec
+      Start  3: q4_0
+ 3/16 Test  #3: q4_0 .............................   Passed    0.01 sec
+      Start  4: q4_h128
+ 4/16 Test  #4: q4_h128 ..........................   Passed    0.02 sec
+      Start  5: q8_0
+ 5/16 Test  #5: q8_0 .............................   Passed    0.09 sec
+      Start  6: q4_h128_artifact
+ 6/16 Test  #6: q4_h128_artifact .................   Passed    0.03 sec
+      Start  7: delta_net
+ 7/16 Test  #7: delta_net ........................   Passed    0.01 sec
+      Start  8: kv_pages
+ 8/16 Test  #8: kv_pages .........................   Passed    0.04 sec
+      Start  9: k_quant
+ 9/16 Test  #9: k_quant ..........................   Passed    0.01 sec
+      Start 10: gguf_reader
+10/16 Test #10: gguf_reader ......................   Passed    0.03 sec
+      Start 11: q4_quantizer
+11/16 Test #11: q4_quantizer .....................   Passed    0.15 sec
+      Start 12: evaluation_scripts
+12/16 Test #12: evaluation_scripts ...............   Passed    3.24 sec
+      Start 13: gguf_profile
+13/16 Test #13: gguf_profile .....................   Passed    0.12 sec
+      Start 14: calibration_basis
+14/16 Test #14: calibration_basis ................   Passed    0.71 sec
+      Start 15: mixed_q8_runtime
+15/16 Test #15: mixed_q8_runtime .................   Passed    0.03 sec
+      Start 16: head_runtime
+16/16 Test #16: head_runtime .....................   Passed    0.05 sec
+
+100% tests passed, 0 tests failed out of 16
+
+Total Test time (real) =  27.63 sec

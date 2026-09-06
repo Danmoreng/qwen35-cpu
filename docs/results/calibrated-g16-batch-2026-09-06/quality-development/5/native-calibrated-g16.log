@@ -1,0 +1,12 @@
+));
+    } else {
+      destination.k_cache.assign(source.k_cache.begin(), source.k_cache.begin() +
+        static_cast<std::ptrdiff_t>(cache_values));
+      destination.v_cache.assign(source.v_cache.begin(), source.v_cache.begin() +
+        static_cast<std::ptrdiff_t>(cache_values));
+    }
+  }
+  snapshot.linear_states.resize(state.linear_states.size());
+  for (std::size_t layer = 0; layer < state.linear_states.size(); ++layer) {
+    snapshot.linear_states[layer].conv_state = state.linear_states[layer].conv_state;
+    snapshot.linear_states

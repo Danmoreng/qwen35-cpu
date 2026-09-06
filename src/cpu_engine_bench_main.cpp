@@ -1,5 +1,6 @@
 #include "qwen35x/compiler/compiler.h"
 #include "qwen35x/runtime/cpu_engine.h"
+#include "qwen35x/cpu/q4_g16.h"
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -289,6 +290,11 @@ int main(int argc, char **argv) try {
   out << std::setprecision(12) << "{\n"
       << "\"operation_instrumentation\":" << (config.operation_profile ? "true" : "false") << ","
       << "\"weight_format\":\"" << model->weight_format() << "\",\"prefill_only\":false,\"cpu_batch\":" << batch_size
+      << ",\"head_weight_format\":\"" << model->head_weight_format() << "\""
+      << ",\"head_kernel\":\"" << (std::string(model->head_weight_format()).find("g16")!=std::string::npos
+          ? (cpu::q8_0_backend_uses_avx2(options.cpu_q8_backend)?"q4-g16-avx2":"q4-g16-scalar") : "standard-dispatch") << "\""
+      << ",\"head_batch_kernel\":\"" << (std::string(model->head_weight_format()).find("g16")!=std::string::npos
+          ? cpu::q4_g16_batch_kernel_name(options.cpu_q8_backend) : "standard-dispatch") << "\""
       << ",\"cpu_batch_serial\":" << (serial ? "true" : "false")
       << ",\"prompt_tokens\":" << spec.prompt_tokens.size() * batch_size
       << ",\"generated_tokens\":" << delivered

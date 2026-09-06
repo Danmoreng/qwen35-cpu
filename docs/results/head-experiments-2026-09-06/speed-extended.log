@@ -1,0 +1,40 @@
+warning: in the working copy of 'CMakeLists.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'include/qwen35x/cpu/q4_h128.h', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'include/qwen35x/weights/q4_h128_artifact.h', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/cpu/k_quant.cpp', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/cpu/k_quant_avx2.cpp', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/cpu/k_quant_internal.h', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/cpu/q4_h128.cpp', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/q4_h128_convert_main.cpp', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/runtime/cpu_runtime.cpp', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/runtime/gguf_matrix.inl', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/runtime/weights.inl', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/weights/q4_h128_artifact.cpp', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tests/k_quant_test.cpp', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tests/q4_h128_artifact_test.cpp', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tests/q4_h128_test.cpp', CRLF will be replaced by LF the next time Git touches it
+Completed mse16-b1-t8-p4096-n2, run 0
+Completed g16-head-b1-t8-p4096-n2, run 0
+Completed mse16-b1-t8-p8192-n128, run 0
+Completed g16-head-b1-t8-p8192-n128, run 0
+Completed mse16-b16-t8-p512-n128, run 0
+Completed g16-head-b16-t8-p512-n128, run 0
+Completed g16-head-b16-t8-p512-n128, run 1
+Completed mse16-b16-t8-p512-n128, run 1
+Completed g16-head-b1-t8-p8192-n128, run 1
+Completed mse16-b1-t8-p8192-n128, run 1
+Completed g16-head-b1-t8-p4096-n2, run 1
+Completed mse16-b1-t8-p4096-n2, run 1
+Completed mse16-b1-t8-p4096-n2, run 2
+Completed g16-head-b1-t8-p4096-n2, run 2
+Completed mse16-b1-t8-p8192-n128, run 2
+Completed g16-head-b1-t8-p8192-n128, run 2
+Completed mse16-b16-t8-p512-n128, run 2
+Completed g16-head-b16-t8-p512-n128, run 2
+Completed g16-head-b16-t8-p512-n128, run 3
+Completed mse16-b16-t8-p512-n128, run 3
+Completed g16-head-b1-t8-p8192-n128, run 3
+Completed mse16-b1-t8-p8192-n128, run 3
+Completed g16-head-b1-t8-p4096-n2, run 3
+Completed mse16-b1-t8-p4096-n2, run 3
+Results: C:\Development\qwen35-cpu\benchmarks\head-speed-extended/results.csv

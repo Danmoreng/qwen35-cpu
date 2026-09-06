@@ -1,0 +1,7 @@
+-- Configuring done (5.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: C:/Development/qwen35-cpu/build
+[1/4] Building CXX object CMakeFiles\qwen35x_core.dir\src\runtime\cpu_runtime.cpp.obj
+[2/4] Building CXX object CMakeFiles\head_runtime_test.dir\tests\head_runtime_test.cpp.obj
+[3/4] Linking CXX static library qwen35x_core.lib
+[4/4] Linking CXX executable head_runtime_test.exe

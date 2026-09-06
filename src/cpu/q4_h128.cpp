@@ -84,6 +84,14 @@ void q4_h128_transform_block_scalar_unscaled(
 
 } // namespace detail
 
+void q4_h128_inverse_block(float * values, std::size_t block,
+    std::uint64_t seed) noexcept {
+  detail::hadamard_128_unscaled_inplace(values);
+  detail::apply_signs(values, block, seed);
+  for (std::size_t i=0; i<q4_h128_transform_size; ++i)
+    values[i] *= q4_h128_inverse_sqrt_size;
+}
+
 void q4_h128_transform_block(
   const float * input,
   float * output,

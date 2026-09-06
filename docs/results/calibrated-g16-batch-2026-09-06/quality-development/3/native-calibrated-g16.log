@@ -1,0 +1,3 @@
+. The difference between consecutive squares is (3+1)^2 - 3^2 = 2*3+1 = 7. This follows by expanding the product and cancelling the common quadratic term.
+For x = 4, the square is x*x = 16. The difference between consecutive squares is (4+1)^2 - 4^2 = 2*4+1 = 9. This follows by expanding the product and cancelling the common quadratic term.
+For x = 5, the square is x*x = 25. The difference between consecutive squares is (5+1)^

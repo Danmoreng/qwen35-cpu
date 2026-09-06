@@ -1,0 +1,128 @@
+{
+  "positions": 1024,
+  "candidate_ppl": 4.845648597177112,
+  "reference_ppl": 4.659449060259738,
+  "ppl_ratio": 1.0399617067402804,
+  "candidate_kl": 0.07222046810467782,
+  "reference_kl": 0.02516250274849839,
+  "compatibility_kl": 0.08964204709051352,
+  "top1": 0.880859375,
+  "kl_p95": 0.2780549843587483,
+  "kl_p99": 0.6088629704172597,
+  "kl_max": 1.6252861160823315,
+  "strict_pass": false,
+  "engineering_pass": false,
+  "gates": {
+    "ppl_relative_tolerance": 0.01,
+    "kl_absolute_tolerance": 0.002,
+    "strict_ppl_relative_tolerance": 0,
+    "strict_kl_absolute_tolerance": 0
+  },
+  "domains": {
+    "code": {
+      "positions": 256,
+      "candidate_ppl": 2.0460060791370696,
+      "reference_ppl": 2.012384578606916,
+      "ppl_ratio": 1.0167072938679684,
+      "candidate_kl": 0.0645327914518524,
+      "reference_kl": 0.022265816248698875,
+      "compatibility_kl": 0.07944727171213915,
+      "top1": 0.921875,
+      "kl_p95": 0.27498398341388486,
+      "kl_p99": 0.6926640165356177,
+      "kl_max": 1.6252861160823315,
+      "strict_pass": false,
+      "engineering_pass": false
+    },
+    "english-prose": {
+      "positions": 256,
+      "candidate_ppl": 12.021556731633643,
+      "reference_ppl": 11.417920136804202,
+      "ppl_ratio": 1.052867473900408,
+      "candidate_kl": 0.08799605686156017,
+      "reference_kl": 0.025035960394773765,
+      "compatibility_kl": 0.10180253625759106,
+      "top1": 0.83203125,
+      "kl_p95": 0.30310555794648064,
+      "kl_p99": 0.6180827203122827,
+      "kl_max": 0.6653215796881432,
+      "strict_pass": false,
+      "engineering_pass": false
+    },
+    "german-prose": {
+      "positions": 128,
+      "candidate_ppl": 23.996322336019755,
+      "reference_ppl": 20.986167861580157,
+      "ppl_ratio": 1.1434351661672524,
+      "candidate_kl": 0.13466482258245233,
+      "reference_kl": 0.04611745505331319,
+      "compatibility_kl": 0.1759546072101344,
+      "top1": 0.7265625,
+      "kl_p95": 0.3353296615659134,
+      "kl_p99": 0.6537985287490018,
+      "kl_max": 0.8696491982115574,
+      "strict_pass": false,
+      "engineering_pass": false
+    },
+    "long-recurrent-code": {
+      "positions": 128,
+      "candidate_ppl": 1.1649476033867323,
+      "reference_ppl": 1.1880683093135187,
+      "ppl_ratio": 0.9805392453064035,
+      "candidate_kl": 0.024839093451469993,
+      "reference_kl": 0.012096023159446218,
+      "compatibility_kl": 0.025758879829883684,
+      "top1": 0.9765625,
+      "kl_p95": 0.12304753142240991,
+      "kl_p99": 0.3396503872705325,
+      "kl_max": 0.6162902067842789,
+      "strict_pass": false,
+      "engineering_pass": false
+    },
+    "mathematics": {
+      "positions": 128,
+      "candidate_ppl": 1.0224596746320278,
+      "reference_ppl": 1.0170637099641882,
+      "ppl_ratio": 1.005305434276118,
+      "candidate_kl": 0.0036682984730413413,
+      "reference_kl": 0.0011638690279014516,
+      "compatibility_kl": 0.0050331347338072475,
+      "top1": 1.0,
+      "kl_p95": 0.01844393360009764,
+      "kl_p99": 0.0487905618813892,
+      "kl_max": 0.10519530300307367,
+      "strict_pass": false,
+      "engineering_pass": false
+    },
+    "rendered-chat": {
+      "positions": 128,
+      "candidate_ppl": 17.578540010957187,
+      "reference_ppl": 16.594259208779285,
+      "ppl_ratio": 1.0593145370211623,
+      "candidate_kl": 0.10953383370363373,
+      "reference_kl": 0.047319121460380996,
+      "compatibility_kl": 0.1478901390108224,
+      "top1": 0.8359375,
+      "kl_p95": 0.2843979539810319,
+      "kl_p99": 0.38119897678919984,
+      "kl_max": 0.46029235041082583,
+      "strict_pass": false,
+      "engineering_pass": false
+    }
+  },
+  "paired_document_bootstrap": {
+    "seed": 1234,
+    "repetitions": 2000,
+    "documents": 6,
+    "nll_delta_95": [
+      0.008862594833728048,
+      0.07838599355463578
+    ],
+    "kl_delta_95": [
+      0.024165466099989135,
+      0.06689071542898556
+    ]
+  },
+  "scope": "Declared windows only; regression prose does not establish general equivalence",
+  "compatibility_same_checkpoint": false
+}

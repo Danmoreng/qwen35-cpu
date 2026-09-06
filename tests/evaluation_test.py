@@ -93,6 +93,16 @@ class EvaluationTest(unittest.TestCase):
             self.assertEqual(result['positions'], 4)
             self.assertAlmostEqual(result['candidate_ppl'], math.exp(2.5))
             self.assertTrue(result['strict_pass'])
+            for filename in ['BF16-vs-llama.csv', 'llama-test-vs-native.csv']:
+                path = root/'0'/filename
+                valid = path.read_text()
+                for invalid in [valid.replace('0,0,1', '1,0,1'),
+                                valid.replace('0,0,1', '0,9,1'),
+                                valid.splitlines()[0]+'\n']:
+                    path.write_text(invalid)
+                    with self.assertRaises(ValueError):
+                        module.report(root)
+                path.write_text(valid)
 
 
 if __name__ == '__main__':

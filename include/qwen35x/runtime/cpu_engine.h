@@ -14,6 +14,7 @@ public:
        std::string &error);
   ~CpuModel();
   const char* weight_format() const noexcept;
+  const char* head_weight_format() const noexcept;
 
 private:
   struct Impl;

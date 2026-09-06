@@ -6,7 +6,11 @@ bool is_gguf_file(const std::string& path) {
 }
 void dequantize_embedding_row(const TensorData& w,std::size_t row,
                               float* out,std::size_t cols) {
-  if(!w.gguf_parts.empty()) {
+  if(!w.g16_tiles.empty()) {
+    cpu::q4_g16_dequantize_row(w.g16_tiles.data(),row,out,cols/32);
+    if(w.uses_q4_h128_transform) for(std::size_t b=0;b<cols/128;++b)
+      cpu::q4_h128_inverse_block(out+b*128,b,w.q4_h128_sign_seed);
+  } else if(!w.gguf_parts.empty()) {
     for(const auto& part:w.gguf_parts) {
       if(row<part.rows) {
         cpu::k_quant_dequantize(part.bytes->data()+row*(cols/256)*cpu::k_quant_block_bytes(part.type),
@@ -17,6 +21,9 @@ void dequantize_embedding_row(const TensorData& w,std::size_t row,
   } else if(w.is_q4_0()) {
     (w.q4_dot4?cpu::q4_dot4_dequantize_row:cpu::q4_0_packed_dequantize_row)(
       w.packed_q4_0_blocks.data(),row,out,cols/32);
+    if(w.uses_q4_h128_transform)
+      for(std::size_t block=0;block<cols/128;++block)
+        cpu::q4_h128_inverse_block(out+block*128,block,w.q4_h128_sign_seed);
   } else {
     cpu::q8_0_dequantize(w.q8_0_blocks.data()+row*(cols/32),out,cols/32,w.q8_0_backend);
   }
@@ -71,5 +78,62 @@ bool gguf_matmul(CpuExecutionContext* context,const TensorData& w,
       error="GGUF matrix executor failed.";return false;
     }
   } else gguf_matmul_rows(&job,0,tasks);
+  return true;
+}
+
+struct G16Job {
+  const TensorData* w;const cpu::Q8_0BlockX1* a;float* out;
+  const cpu::Q4G16ActivationTile* packed;
+  std::size_t blocks,rows,tiles,count;
+};
+void g16_rows(void* opaque,std::size_t begin,std::size_t end) noexcept {
+  const auto& j=*static_cast<G16Job*>(opaque);
+  for(auto task=begin;task<end;) {
+    const auto group=task/j.tiles,token=group*16,tile=(task%j.tiles)*32;
+    const auto stop=std::min(end,(group+1)*j.tiles);
+    const auto last=std::min(j.rows/8,(stop-group*j.tiles)*32);
+    const auto tile_count=last-tile;
+    if(j.count==1) {
+      cpu::q4_g16_matvec(j.w->g16_tiles.data()+tile*j.blocks,j.a,
+        j.out+tile*8,tile_count*8,j.blocks,j.w->q8_0_backend);
+    } else cpu::q4_g16_matmul(j.w->g16_tiles.data()+tile*j.blocks,j.packed+(token/16)*j.blocks,
+      j.out+token*j.rows+tile*8,tile_count*8,
+      std::min(std::size_t(16),j.count-token),j.blocks,j.rows,j.w->q8_0_backend);
+    task=stop;
+  }
+}
+bool g16_matmul(CpuExecutionContext* ctx,const TensorData& w,const std::vector<float>& x,
+    std::size_t count,std::vector<float>& out,std::string& error) {
+  const std::size_t rows=w.shape[0],cols=w.shape[1],blocks=cols/32;
+  if(!rows || rows%8 || !cols || cols%128 ||
+      count>std::numeric_limits<std::size_t>::max()/cols ||
+      count>std::numeric_limits<std::size_t>::max()/rows ||
+      w.g16_tiles.size()!=(rows/8)*blocks || x.size()!=count*cols) {
+    error="G16 matrix input mismatch";return false;
+  }
+  std::vector<cpu::Q8_0BlockX1> local;
+  auto& prepared=ctx?ctx->prepared_q4_input:local;
+  prepared.resize(count*blocks);
+  CpuDecodeProbe probe(ctx,"head-g16-matmul",rows,cols,count);
+  for(std::size_t t=0;t<count;++t) {
+    if(w.uses_q4_h128_transform) {
+      if(!cpu::q4_h128_prepare_activation_1(x.data()+t*cols,prepared.data()+t*blocks,
+          cols,w.q4_h128_sign_seed,w.q8_0_backend)) {error="G16 activation transform failed";return false;}
+    } else cpu::q8_0_quantize_vector_1(x.data()+t*cols,prepared.data()+t*blocks,blocks,w.q8_0_backend);
+  }
+  std::vector<cpu::Q4G16ActivationTile> local_packed;
+  auto& packed=ctx?ctx->g16_prepared_batch:local_packed;
+  if(count>1) {
+    packed.resize(((count+15)/16)*blocks);
+    cpu::q4_g16_pack_activations(prepared.data(),packed.data(),count,blocks);
+  }
+  out.resize(count*rows);probe.prepared();
+  G16Job job{&w,prepared.data(),out.data(),packed.data(),blocks,rows,(rows/8+31)/32,count};
+  const auto tasks=((count+15)/16)*job.tiles;
+  if(ctx && ctx->executor) {
+    if(ctx->executor->parallel_for_rows(tasks,g16_rows,&job,probe.executor_timing())!=cpu::CpuExecutorStatus::ok) {
+      error="G16 executor failed";return false;
+    }
+  } else g16_rows(&job,0,tasks);
   return true;
 }

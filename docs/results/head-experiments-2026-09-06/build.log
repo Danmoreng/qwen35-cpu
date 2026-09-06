@@ -1,0 +1,35 @@
+-- Configuring done (5.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: C:/Development/qwen35-cpu/build
+[1/32] Building CXX object CMakeFiles\qwen35x_core.dir\src\cpu\q4_h128_avx2.cpp.obj
+[2/32] Building CXX object CMakeFiles\qwen35x_core.dir\src\cpu\q4_h128.cpp.obj
+[3/32] Building CXX object CMakeFiles\qwen35x_core.dir\src\cpu\q4_quantizer.cpp.obj
+[4/32] Building CXX object CMakeFiles\q4_quantizer_test.dir\tests\q4_quantizer_test.cpp.obj
+[5/32] Building CXX object CMakeFiles\q4_h128_test.dir\tests\q4_h128_test.cpp.obj
+[6/32] Building CXX object CMakeFiles\qwen35_head_weight_screen.dir\tools\head_weight_screen.cpp.obj
+[7/32] Building CXX object CMakeFiles\qwen35x_core.dir\src\weights\q4_h128_artifact.cpp.obj
+[8/32] Building CXX object CMakeFiles\q4_h128_artifact_test.dir\tests\q4_h128_artifact_test.cpp.obj
+[9/32] Building CXX object CMakeFiles\qwen35_cpu_pack.dir\src\q4_h128_convert_main.cpp.obj
+[10/32] Building CXX object CMakeFiles\qwen35x_core.dir\src\runtime\cpu_runtime.cpp.obj
+[11/32] Building CXX object CMakeFiles\mixed_q8_runtime_test.dir\tests\mixed_q8_runtime_test.cpp.obj
+[12/32] Linking CXX static library qwen35x_core.lib
+[13/32] Linking CXX executable q4_dot4_test.exe
+[14/32] Linking CXX executable full_attention_tiled_test.exe
+[15/32] Linking CXX executable qwen35_cpu_pack.exe
+[16/32] Linking CXX executable q4_0_test.exe
+[17/32] Linking CXX executable qwen35_cpu_bench.exe
+[18/32] Linking CXX executable q4_h128_test.exe
+[19/32] Linking CXX executable q8_0_test.exe
+[20/32] Linking CXX executable delta_net_test.exe
+[21/32] Linking CXX executable qwen35_cpu.exe
+[22/32] Linking CXX executable kv_pages_test.exe
+[23/32] Linking CXX executable q4_h128_artifact_test.exe
+[24/32] Linking CXX executable k_quant_test.exe
+[25/32] Linking CXX executable qwen35_cpu_server.exe
+[26/32] Linking CXX executable gguf_reader_test.exe
+[27/32] Linking CXX executable q4_quantizer_test.exe
+[28/32] Linking CXX executable gguf_profile_test.exe
+[29/32] Linking CXX executable cpu_prefix_model_test.exe
+[30/32] Linking CXX executable qwen35_head_weight_screen.exe
+[31/32] Linking CXX executable cpu_scheduler_model_test.exe
+[32/32] Linking CXX executable mixed_q8_runtime_test.exe

@@ -1,3 +1,4 @@
+#include "qwen35x/cpu/q4_g16.h"
 #include "qwen35x/cpu/q4_dot4.h"
 #include "qwen35x/cpu/q8_0.h"
 #include "qwen35x/cpu/q4_quantizer.h"
@@ -313,6 +314,14 @@ bool convert_tensor(
         error="Invalid calibration importance: "+source.name;return false;
       }
     }
+    if (qwen35x::q4_g16_encoding(info.encoding)) {
+      std::vector<qwen35x::cpu::Q4G16Tile> tiles(tensor.data.size()/256);
+      if(!qwen35x::cpu::q4_g16_pack(tensor.data.data(),tiles.data(),source.shape[0],source.shape[1],
+            importance.empty()?nullptr:importance.data())) {
+        error="G16 quantization failed";return false;
+      }
+      return writer.write_tensor(info.name,tiles.data(),tiles.size()*sizeof(tiles[0]),error);
+    }
     const std::size_t columns=static_cast<std::size_t>(source.shape[1]);
     const std::size_t rows=static_cast<std::size_t>(source.shape[0]);
     for (std::size_t row=0; row<rows; ++row) {
@@ -357,11 +366,16 @@ int main(int argc, char ** argv) {
   std::string layout = "cpu-dot4";
   std::string quantizer = "mse16";
   bool q8_gates = false, q8_head = false;
+  std::string head_basis = "identity";
+  bool head_g16 = false;
   std::string importance_dir;
   for (int index = 1; index < argc; ++index) {
     const std::string argument = argv[index];
-    if (argument == "--q8-gates") { q8_gates = true;
+    if (argument == "--head-g16") { head_g16 = true;
+    } else if (argument == "--q8-gates") { q8_gates = true;
     } else if (argument == "--q8-head") { q8_head = true;
+    } else if (argument == "--head-basis" && index + 1 < argc) {
+      head_basis = argv[++index];
     } else if (argument == "--hf-model-dir" && index + 1 < argc) {
       model_dir = argv[++index];
     } else if (argument == "--output" && index + 1 < argc) {
@@ -373,7 +387,7 @@ int main(int argc, char ** argv) {
     } else if (argument == "--importance-dir" && index + 1 < argc) {
       importance_dir = argv[++index];
     } else if (argument == "--help") {
-      std::cout << "Usage: qwen35_cpu_pack --hf-model-dir <dir> --output <file> [--layout cpu-dot4] [--quantizer mse16|legacy-absmax15] [--importance-dir <Q35CAL1 directory>] [--q8-gates] [--q8-head]\nDefault quantizer: mse16; calibration is enabled only with --importance-dir.\n";
+      std::cout << "Usage: qwen35_cpu_pack --hf-model-dir <dir> --output <file> [--layout cpu-dot4] [--quantizer mse16|legacy-absmax15] [--importance-dir <Q35CAL1 directory>] [--q8-gates] [--q8-head] [--head-basis identity|h128] [--head-g16]\nDefault quantizer: mse16; calibration is enabled only with --importance-dir.\n";
       return 0;
     } else {
       std::cerr << "Unknown or incomplete argument: " << argument << '\n';
@@ -383,6 +397,14 @@ int main(int argc, char ** argv) {
   if (model_dir.empty() || output_path.empty()) {
     std::cerr << "Both --hf-model-dir and --output are required.\n";
     return 2;
+  }
+  if ((head_basis != "identity" && head_basis != "h128") ||
+      (head_basis == "h128" && (q8_head || !importance_dir.empty()))) {
+    std::cerr << "Head basis must be identity|h128; H128 head requires uncalibrated Q4.\n";
+    return 2;
+  }
+  if (head_g16 && (q8_head || quantizer != "mse16")) {
+    std::cerr << "G16 head requires MSE16 Q4.\n";return 2;
   }
   if (layout != "cpu-dot4") {
     std::cerr << "Unknown layout: " << layout << '\n';
@@ -428,6 +450,8 @@ int main(int argc, char ** argv) {
   }
 
   for (auto & tensor : tensors) {
+    if (head_basis == "h128" && tensor.name == "model.language_model.embed_tokens.weight")
+      tensor = make_tensor(tensor.name, tensor.shape, Q4H128TensorEncoding::q4_h128, metadata.sign_seed);
     const bool gate = tensor.name.ends_with("linear_attn.in_proj_a.weight") ||
                       tensor.name.ends_with("linear_attn.in_proj_b.weight");
     if ((q8_gates && gate) || (q8_head && tensor.name == "model.language_model.embed_tokens.weight")) {
@@ -435,7 +459,12 @@ int main(int argc, char ** argv) {
       tensor.transform_size = 0; tensor.sign_seed = 0; tensor.scale_group = 32;
     }
   }
-  const auto conversion = plan_conversion(tensors, layout != "canonical", layout == "cpu-dot4");
+  auto conversion = plan_conversion(tensors, layout != "canonical", layout == "cpu-dot4");
+  if (head_g16) {
+    auto& head=conversion.front().output;
+    head.encoding=head_basis=="h128"?Q4H128TensorEncoding::q4_h128_g16_cpu_dot4:Q4H128TensorEncoding::q4_g16_cpu_dot4;
+    head.scale_group=16;
+  }
   tensors.clear();
   for (const auto & item : conversion) {
     tensors.push_back(item.output);
@@ -498,6 +527,8 @@ int main(int argc, char ** argv) {
   std::ofstream mixed_sidecar(output_path + ".precision.json");
   mixed_sidecar << "{\n  \"q8_gates\": " << (q8_gates ? "true" : "false")
                 << ",\n  \"q8_head\": " << (q8_head ? "true" : "false")
+                << ",\n  \"head_basis\": \"" << head_basis << "\""
+                << ",\n  \"head_scale_group\": " << (head_g16 ? 16 : 32)
                 << ",\n  \"q8_basis\": \"identity\",\n  \"q8_quantizer\": \"scalar-absmax127-fp16\"\n}\n";
   if (!mixed_sidecar) { std::cerr << "Could not write precision provenance\n"; return 8; }
   if (!importance_dir.empty()) {

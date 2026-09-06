@@ -1,0 +1,33 @@
+-- Configuring done (5.3s)
+-- Generating done (0.1s)
+-- Build files have been written to: C:/Development/qwen35-cpu/build
+[1/30] Building CXX object CMakeFiles\qwen35x_core.dir\src\cpu\q4_g16.cpp.obj
+[2/30] Building CXX object CMakeFiles\qwen35x_core.dir\src\cpu\q4_g16_avx2.cpp.obj
+[3/30] Building CXX object CMakeFiles\qwen35x_core.dir\src\cpu\q4_g16_evex.cpp.obj
+[4/30] Building CXX object CMakeFiles\qwen35_cpu_pack.dir\src\q4_h128_convert_main.cpp.obj
+[5/30] Building CXX object CMakeFiles\qwen35x_core.dir\src\runtime\cpu_runtime.cpp.obj
+[6/30] Building CXX object CMakeFiles\mixed_q8_runtime_test.dir\tests\mixed_q8_runtime_test.cpp.obj
+[7/30] Building CXX object CMakeFiles\qwen35_cpu_bench.dir\src\cpu_engine_bench_main.cpp.obj
+[8/30] Building CXX object CMakeFiles\head_runtime_test.dir\tests\head_runtime_test.cpp.obj
+[9/30] Linking CXX static library qwen35x_core.lib
+[10/30] Linking CXX executable q4_dot4_test.exe
+[11/30] Linking CXX executable qwen35_cpu_pack.exe
+[12/30] Linking CXX executable full_attention_tiled_test.exe
+[13/30] Linking CXX executable q4_0_test.exe
+[14/30] Linking CXX executable q4_h128_test.exe
+[15/30] Linking CXX executable q8_0_test.exe
+[16/30] Linking CXX executable qwen35_cpu.exe
+[17/30] Linking CXX executable delta_net_test.exe
+[18/30] Linking CXX executable q4_h128_artifact_test.exe
+[19/30] Linking CXX executable qwen35_cpu_bench.exe
+[20/30] Linking CXX executable kv_pages_test.exe
+[21/30] Linking CXX executable k_quant_test.exe
+[22/30] Linking CXX executable qwen35_cpu_server.exe
+[23/30] Linking CXX executable q4_quantizer_test.exe
+[24/30] Linking CXX executable gguf_reader_test.exe
+[25/30] Linking CXX executable gguf_profile_test.exe
+[26/30] Linking CXX executable cpu_scheduler_model_test.exe
+[27/30] Linking CXX executable qwen35_head_weight_screen.exe
+[28/30] Linking CXX executable cpu_prefix_model_test.exe
+[29/30] Linking CXX executable mixed_q8_runtime_test.exe
+[30/30] Linking CXX executable head_runtime_test.exe

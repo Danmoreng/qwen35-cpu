@@ -1,0 +1,9 @@
+A coastal observatory replaced its temperature sensor during a winter storm.
+The replacement reported values two degrees higher than the old instrument. The technician
+did not immediately conclude that the air had warmed. She checked the installation height,
+the shelter around the sensor, and the time stamps in both logs. For three days the devices
+operated beside each other. Their readings agreed at night but diverged after sunrise.
+This pattern suggested that sunlight was heating one enclosure. The team moved both sensors
+into identical shelters and repeated the comparison. They preserved the original records
+and documented the equipment change so that future analysts could distinguish a measurement
+artifact from a change in the local climate.

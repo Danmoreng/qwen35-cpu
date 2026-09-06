@@ -1,0 +1,26 @@
+1'000'000;
+
+static_assert(std::is_trivially_copyable_v<cpu::Q8_0Block>);
+static_assert(std::is_trivially_copyable_v<cpu::Q4_0Block>);
+
+enum class GgufValueType : std::uint32_t {
+  uint8 = 0,
+  int8 = 1,
+  uint16 = 2,
+  int16 = 3,
+  uint32 = 4,
+  int32 = 5,
+  float32 = 6,
+  boolean = 7,
+  string = 8,
+  array = 9,
+  uint64 = 10,
+  int64 = 11,
+  float64 = 12,
+};
+
+bool checked_add_u64(const std::uint64_t a, const std::uint64_t b, std::uint64_t & out) {
+  if (a > std::numeric_limits<std::uint64_t>::max() - b) {
+    return false;
+  }
+  out = a + b

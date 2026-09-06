@@ -85,3 +85,37 @@ void k_quant_dot_rows_avx2(const std::uint8_t* w,KQuantType type,
   }
 }
 }
+
+#include <algorithm>
+#include <cmath>
+namespace qwen35x::cpu::detail {
+void k_quant_prepare_avx2(const float* x,KQuantActivation* out,std::size_t blocks) noexcept {
+  const auto sign=_mm256_set1_ps(-0.0f);
+  for(std::size_t b=0;b<blocks;++b,x+=256) {
+    __m256 maximum=_mm256_setzero_ps();
+    for(int i=0;i<256;i+=8)maximum=_mm256_max_ps(maximum,_mm256_andnot_ps(sign,_mm256_loadu_ps(x+i)));
+    float lanes[8];_mm256_storeu_ps(lanes,maximum);
+    float amax=0;for(float value:lanes)amax=std::max(amax,value);
+    float selected=0;
+    if(amax)for(int i=0;i<256;++i)if(std::abs(x[i])==amax) {selected=x[i];break;}
+    const float inv=amax?-127.0f/selected:0;
+    const float d=amax?1.0f/inv:0;
+    auto& a=out[b];_mm256_storeu_ps(a.d,_mm256_set1_ps(d));
+    for(int i=0;i<256;i+=8) {
+      auto values=_mm256_mul_ps(_mm256_loadu_ps(x+i),_mm256_set1_ps(inv));
+      values=_mm256_min_ps(_mm256_set1_ps(127),_mm256_max_ps(_mm256_set1_ps(-127),values));
+      auto integers=_mm256_cvtps_epi32(values);
+      auto shorts=_mm_packs_epi32(_mm256_castsi256_si128(integers),_mm256_extracti128_si256(integers,1));
+      auto bytes=_mm_packs_epi16(shorts,_mm_setzero_si128());
+      _mm_storel_epi64(reinterpret_cast<__m128i*>(a.qs+i),bytes);
+    }
+    for(int g=0;g<16;++g) {
+      auto q=_mm_loadu_si128(reinterpret_cast<const __m128i*>(a.qs+g*16));
+      auto sums=_mm_madd_epi16(_mm_cvtepi8_epi16(q),_mm_set1_epi16(1));
+      auto high=_mm_madd_epi16(_mm_cvtepi8_epi16(_mm_srli_si128(q,8)),_mm_set1_epi16(1));
+      sums=_mm_add_epi32(sums,high);sums=_mm_hadd_epi32(sums,sums);sums=_mm_hadd_epi32(sums,sums);
+      a.sums[g]=static_cast<std::int16_t>(_mm_cvtsi128_si32(sums));
+    }
+  }
+}
+}

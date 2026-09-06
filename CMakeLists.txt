@@ -18,6 +18,7 @@ add_library(qwen35x_core
   src/cpu/q4_0.cpp
   src/cpu/q4_h128.cpp
   src/cpu/q4_quantizer.cpp
+  src/cpu/q4_g16.cpp
   src/cpu/q8_0.cpp
   src/compiler/profile_loader.cpp
   src/runtime/cpu_runtime.cpp
@@ -37,7 +38,7 @@ if (QWEN35X_SYSTEM_PROCESSOR_LOWER MATCHES "^(x86_64|amd64|i[3-6]86)$" OR
   if (MSVC)
     set(QWEN35X_Q8_0_HAS_AVX2_TU ON)
     set_source_files_properties(
-      src/cpu/k_quant_avx2.cpp src/cpu/activation_avx2.cpp src/cpu/q4_0_avx2.cpp src/cpu/q4_dot4_avx2.cpp src/cpu/q4_h128_avx2.cpp src/cpu/q8_0_avx2.cpp src/cpu/delta_net_avx2.cpp src/cpu/full_attention_avx2.cpp src/cpu/full_attention_tiled_avx2.cpp
+      src/cpu/q4_g16_avx2.cpp src/cpu/k_quant_avx2.cpp src/cpu/activation_avx2.cpp src/cpu/q4_0_avx2.cpp src/cpu/q4_dot4_avx2.cpp src/cpu/q4_h128_avx2.cpp src/cpu/q8_0_avx2.cpp src/cpu/delta_net_avx2.cpp src/cpu/full_attention_avx2.cpp src/cpu/full_attention_tiled_avx2.cpp
       PROPERTIES COMPILE_OPTIONS "/arch:AVX2")
     # The AVX-VNNI intrinsic spellings used by the isolated backend are
     # available in the VS 2022 toolset. Older MSVCs keep the AVX2 backend.
@@ -52,13 +53,13 @@ if (QWEN35X_SYSTEM_PROCESSOR_LOWER MATCHES "^(x86_64|amd64|i[3-6]86)$" OR
         src/cpu/activation_avx512.cpp src/cpu/q4_h128_avx512.cpp src/cpu/full_attention_tiled_avx512.cpp
         PROPERTIES COMPILE_OPTIONS "/arch:AVX512")
       set_source_files_properties(
-        src/cpu/q4_0_avx512_vnni.cpp src/cpu/q4_0_evex_vnni.cpp src/cpu/q4_dot4_evex.cpp
+        src/cpu/q4_g16_evex.cpp src/cpu/q4_0_avx512_vnni.cpp src/cpu/q4_0_evex_vnni.cpp src/cpu/q4_dot4_evex.cpp
         PROPERTIES COMPILE_OPTIONS "/arch:AVX512")
     endif ()
   elseif (CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
     set(QWEN35X_Q8_0_HAS_AVX2_TU ON)
     set_source_files_properties(
-      src/cpu/k_quant_avx2.cpp src/cpu/activation_avx2.cpp src/cpu/q4_0_avx2.cpp src/cpu/q4_dot4_avx2.cpp src/cpu/q4_h128_avx2.cpp src/cpu/q8_0_avx2.cpp src/cpu/delta_net_avx2.cpp src/cpu/full_attention_avx2.cpp src/cpu/full_attention_tiled_avx2.cpp
+      src/cpu/q4_g16_avx2.cpp src/cpu/k_quant_avx2.cpp src/cpu/activation_avx2.cpp src/cpu/q4_0_avx2.cpp src/cpu/q4_dot4_avx2.cpp src/cpu/q4_h128_avx2.cpp src/cpu/q8_0_avx2.cpp src/cpu/delta_net_avx2.cpp src/cpu/full_attention_avx2.cpp src/cpu/full_attention_tiled_avx2.cpp
       PROPERTIES COMPILE_OPTIONS "-mavx2;-mfma;-mf16c;-mtune=skylake")
     check_cxx_compiler_flag("-mavxvnni" QWEN35X_COMPILER_HAS_MAVXVNNI)
     if (QWEN35X_COMPILER_HAS_MAVXVNNI)
@@ -78,7 +79,7 @@ if (QWEN35X_SYSTEM_PROCESSOR_LOWER MATCHES "^(x86_64|amd64|i[3-6]86)$" OR
       if (QWEN35X_COMPILER_HAS_MAVX512VNNI AND QWEN35X_COMPILER_HAS_MAVX512VL)
         set(QWEN35X_Q8_0_HAS_AVX512_VNNI_TU ON)
         set_source_files_properties(
-          src/cpu/q4_0_avx512_vnni.cpp src/cpu/q4_0_evex_vnni.cpp src/cpu/q4_dot4_evex.cpp
+          src/cpu/q4_g16_evex.cpp src/cpu/q4_0_avx512_vnni.cpp src/cpu/q4_0_evex_vnni.cpp src/cpu/q4_dot4_evex.cpp
           PROPERTIES COMPILE_OPTIONS "-mavx512f;-mavx512vl;-mavx512vnni;-mfma;-mf16c")
       endif ()
     endif ()
@@ -88,7 +89,7 @@ endif ()
 if (QWEN35X_Q8_0_HAS_AVX2_TU)
   target_sources(
     qwen35x_core PRIVATE
-    src/cpu/k_quant_avx2.cpp src/cpu/activation_avx2.cpp src/cpu/q4_0_avx2.cpp src/cpu/q4_dot4_avx2.cpp src/cpu/q4_h128_avx2.cpp src/cpu/q8_0_avx2.cpp src/cpu/delta_net_avx2.cpp src/cpu/full_attention_avx2.cpp src/cpu/full_attention_tiled_avx2.cpp)
+    src/cpu/q4_g16_avx2.cpp src/cpu/k_quant_avx2.cpp src/cpu/activation_avx2.cpp src/cpu/q4_0_avx2.cpp src/cpu/q4_dot4_avx2.cpp src/cpu/q4_h128_avx2.cpp src/cpu/q8_0_avx2.cpp src/cpu/delta_net_avx2.cpp src/cpu/full_attention_avx2.cpp src/cpu/full_attention_tiled_avx2.cpp)
   target_compile_definitions(qwen35x_core PRIVATE QWEN35X_Q8_0_HAS_AVX2_TU=1)
 else ()
   target_compile_definitions(qwen35x_core PRIVATE QWEN35X_Q8_0_HAS_AVX2_TU=0)
@@ -109,7 +110,7 @@ else ()
 endif ()
 
 if (QWEN35X_Q8_0_HAS_AVX512_VNNI_TU)
-  target_sources(qwen35x_core PRIVATE src/cpu/q4_0_avx512_vnni.cpp src/cpu/q4_0_evex_vnni.cpp src/cpu/q4_dot4_evex.cpp)
+  target_sources(qwen35x_core PRIVATE src/cpu/q4_g16_evex.cpp src/cpu/q4_0_avx512_vnni.cpp src/cpu/q4_0_evex_vnni.cpp src/cpu/q4_dot4_evex.cpp)
   target_compile_definitions(qwen35x_core PRIVATE QWEN35X_Q8_0_HAS_AVX512_VNNI_TU=1)
 else ()
   target_compile_definitions(qwen35x_core PRIVATE QWEN35X_Q8_0_HAS_AVX512_VNNI_TU=0)
@@ -218,3 +219,10 @@ target_link_libraries(q4_projection_probe PRIVATE qwen35x_core)
 add_executable(mixed_q8_runtime_test tests/mixed_q8_runtime_test.cpp)
 target_link_libraries(mixed_q8_runtime_test PRIVATE qwen35x_core)
 add_test(NAME mixed_q8_runtime COMMAND mixed_q8_runtime_test)
+
+add_executable(qwen35_head_weight_screen tools/head_weight_screen.cpp)
+target_link_libraries(qwen35_head_weight_screen PRIVATE qwen35x_core)
+
+add_executable(head_runtime_test tests/head_runtime_test.cpp)
+target_link_libraries(head_runtime_test PRIVATE qwen35x_core)
+add_test(NAME head_runtime COMMAND head_runtime_test)

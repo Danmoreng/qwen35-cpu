@@ -1,0 +1,34 @@
+-- Configuring done (5.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: C:/Development/qwen35-cpu/build
+[1/22] Linking CXX executable q4_dot4_test.exe
+[2/22] Linking CXX executable full_attention_tiled_test.exe
+[3/22] Linking CXX executable q4_0_test.exe
+[4/22] Linking CXX executable qwen35_cpu.exe
+[5/22] Linking CXX executable q4_h128_test.exe
+[6/22] Linking CXX executable q8_0_test.exe
+[7/22] Linking CXX executable qwen35_cpu_bench.exe
+[8/22] Linking CXX executable delta_net_test.exe
+[9/22] Linking CXX executable kv_pages_test.exe
+[10/22] Linking CXX executable qwen35_cpu_server.exe
+[11/22] Linking CXX executable gguf_reader_test.exe
+[12/22] Linking CXX executable k_quant_test.exe
+[13/22] Linking CXX executable q4_quantizer_test.exe
+[14/22] Linking CXX executable cpu_prefix_model_test.exe
+[15/22] Linking CXX executable gguf_profile_test.exe
+[16/22] Linking CXX executable qwen35_head_weight_screen.exe
+[17/22] Linking CXX executable cpu_scheduler_model_test.exe
+[18/22] Linking CXX executable qwen35_cpu_pack.exe
+FAILED: [code=4294967295] qwen35_cpu_pack.exe 
+C:\WINDOWS\system32\cmd.exe /C "cd . && "C:\Program Files\CMake\bin\cmake.exe" -E vs_link_exe --msvc-ver=1944 --intdir=CMakeFiles\qwen35_cpu_pack.dir --rc=C:\PROGRA~2\WINDOW~2\10\bin\100261~1.0\x64\rc.exe --mt=C:\PROGRA~2\WINDOW~2\10\bin\100261~1.0\x64\mt.exe --manifests  -- C:\PROGRA~2\MICROS~2\2022\BUILDT~1\VC\Tools\MSVC\1444~1.352\bin\Hostx64\x64\link.exe /nologo CMakeFiles\qwen35_cpu_pack.dir\src\q4_h128_convert_main.cpp.obj  /out:qwen35_cpu_pack.exe /implib:qwen35_cpu_pack.lib /pdb:qwen35_cpu_pack.pdb /version:0.0 /machine:x64 /INCREMENTAL:NO /subsystem:console  qwen35x_core.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+LINK: command "C:\PROGRA~2\MICROS~2\2022\BUILDT~1\VC\Tools\MSVC\1444~1.352\bin\Hostx64\x64\link.exe /nologo CMakeFiles\qwen35_cpu_pack.dir\src\q4_h128_convert_main.cpp.obj /out:qwen35_cpu_pack.exe /implib:qwen35_cpu_pack.lib /pdb:qwen35_cpu_pack.pdb /version:0.0 /machine:x64 /INCREMENTAL:NO /subsystem:console qwen35x_core.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST:EMBED,ID=1" failed (exit code 1104) with the following output:
+LINK : fatal error LNK1104: Datei "qwen35_cpu_pack.exe" kann nicht geöffnet werden.
+
+[19/22] Building CXX object CMakeFiles\q4_h128_artifact_test.dir\tests\q4_h128_artifact_test.cpp.obj
+[20/22] Building CXX object CMakeFiles\mixed_q8_runtime_test.dir\tests\mixed_q8_runtime_test.cpp.obj
+ninja: build stopped: subcommand failed.
+Exception: C:\Development\qwen35-cpu\scripts\build.ps1:20
+Line |
+  20 |  if($LASTEXITCODE -ne 0){throw 'Build failed.'}
+     |                          ~~~~~~~~~~~~~~~~~~~~~
+     | Build failed.

@@ -1,0 +1,857 @@
+def moving_average_2(values):
+    width = 2
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_3(values):
+    width = 3
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_4(values):
+    width = 4
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_5(values):
+    width = 5
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_6(values):
+    width = 6
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_7(values):
+    width = 7
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_8(values):
+    width = 8
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_9(values):
+    width = 9
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_10(values):
+    width = 10
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_11(values):
+    width = 11
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_12(values):
+    width = 12
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_13(values):
+    width = 13
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_14(values):
+    width = 14
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_15(values):
+    width = 15
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_16(values):
+    width = 16
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_17(values):
+    width = 17
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_18(values):
+    width = 18
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_19(values):
+    width = 19
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_20(values):
+    width = 20
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_21(values):
+    width = 21
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_22(values):
+    width = 22
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_23(values):
+    width = 23
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_24(values):
+    width = 24
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_25(values):
+    width = 25
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_26(values):
+    width = 26
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_27(values):
+    width = 27
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_28(values):
+    width = 28
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_29(values):
+    width = 29
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_30(values):
+    width = 30
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_31(values):
+    width = 31
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_32(values):
+    width = 32
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_33(values):
+    width = 33
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_34(values):
+    width = 34
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_35(values):
+    width = 35
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_36(values):
+    width = 36
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_37(values):
+    width = 37
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_38(values):
+    width = 38
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_39(values):
+    width = 39
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_40(values):
+    width = 40
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_41(values):
+    width = 41
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_42(values):
+    width = 42
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_43(values):
+    width = 43
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_44(values):
+    width = 44
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_45(values):
+    width = 45
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_46(values):
+    width = 46
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_47(values):
+    width = 47
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_48(values):
+    width = 48
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_49(values):
+    width = 49
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_50(values):
+    width = 50
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_51(values):
+    width = 51
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_52(values):
+    width = 52
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_53(values):
+    width = 53
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_54(values):
+    width = 54
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_55(values):
+    width = 55
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_56(values):
+    width = 56
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_57(values):
+    width = 57
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_58(values):
+    width = 58
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_59(values):
+    width = 59
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_60(values):
+    width = 60
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_61(values):
+    width = 61
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_62(values):
+    width = 62
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_63(values):
+    width = 63
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_64(values):
+    width = 64
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_65(values):
+    width = 65
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_66(values):
+    width = 66
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_67(values):
+    width = 67
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_68(values):
+    width = 68
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_69(values):
+    width = 69
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_70(values):
+    width = 70
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_71(values):
+    width = 71
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_72(values):
+    width = 72
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_73(values):
+    width = 73
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_74(values):
+    width = 74
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_75(values):
+    width = 75
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_76(values):
+    width = 76
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_77(values):
+    width = 77
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_78(values):
+    width = 78
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_79(values):
+    width = 79
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result

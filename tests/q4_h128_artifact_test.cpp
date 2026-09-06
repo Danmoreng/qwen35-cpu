@@ -194,6 +194,24 @@ int main() {
   reader.close();
   fs::remove(path);
 
+  for (auto encoding : {qwen35x::Q4H128TensorEncoding::q4_g16_cpu_dot4,
+                        qwen35x::Q4H128TensorEncoding::q4_h128_g16_cpu_dot4}) {
+    auto info=projection;info.encoding=encoding;info.scale_group=16;
+    if(!qwen35x::q4_h128_encoding_transformed(encoding)) {info.transform_size=0;info.sign_seed=0;}
+    std::vector<std::uint8_t> payload(640,0x12);
+    qwen35x::Q4H128ArtifactWriter g16_writer;
+    ok=expect(g16_writer.open(path.string(),metadata,{info},error),"G16 writer open") && ok;
+    ok=expect(g16_writer.write_tensor(info.name,payload.data(),payload.size(),error),"G16 payload write") && ok;
+    ok=expect(g16_writer.finalize(error),"G16 finalize") && ok;g16_writer.close();
+    ok=expect(reader.open(path.string(),error),"G16 reader open") && ok;
+    ok=expect(reader.read_tensor_bytes(info.name,bytes,error) && bytes==payload,"G16 round trip") && ok;
+    reader.close();fs::remove(path);
+    info.scale_group=32;
+    ok=expect(!g16_writer.open(path.string(),metadata,{info},error),"G16 accepted G32 metadata") && ok;
+    ok=expect(qwen35x::q4_h128_payload_size(encoding,{7,128},error)==0,"G16 accepted partial row tile") && ok;
+    ok=expect(qwen35x::q4_h128_payload_size(encoding,{8,129},error)==0,"G16 accepted partial column tile") && ok;
+  }
+
   if (ok) {
     std::cout << "Q4_H128 artifact tests passed\n";
     return 0;

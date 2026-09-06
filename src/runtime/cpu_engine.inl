@@ -8,6 +8,13 @@ struct CpuModel::Impl {
 };
 CpuModel::CpuModel(std::shared_ptr<const Impl> impl) : impl_(std::move(impl)) {}
 CpuModel::~CpuModel() = default;
+const char* CpuModel::head_weight_format() const noexcept {
+  const auto& head=impl_->weights.embed_tokens;
+  if(!head.g16_tiles.empty()) return head.uses_q4_h128_transform?"h128-q4-g16-dot4":"identity-q4-g16-dot4";
+  if(!head.gguf_parts.empty()) return "gguf-k-quant";
+  if(head.is_q8_0()) return "identity-q8-g32";
+  return head.uses_q4_h128_transform?"h128-q4-g32-dot4":"identity-q4-g32-dot4";
+}
 const char* CpuModel::weight_format() const noexcept {
   if (impl_->gguf) return impl_->weights.embed_tokens.is_q4_0()?"gguf-q4_0-dot4":"gguf-k-quants";
   const bool gates = std::any_of(impl_->weights.layers.begin(), impl_->weights.layers.end(),

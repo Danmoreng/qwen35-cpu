@@ -1,0 +1,6 @@
+{
+  "batch_gate": "Candidate median must not be lower than matched G32; collect balanced repetitions if noise prevents a conclusion.",
+  "slowdown_budget": 0,
+  "single_request_decode_minimum": 100,
+  "quality": "Assess directed teacher KL and token-weighted PPL separately; keep the published default until quality and speed support promotion."
+}

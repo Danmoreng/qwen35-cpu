@@ -1,0 +1,5 @@
+identity seed=0 normalized_sse_g32=0.00705792 normalized_sse_g16=0.00516308
+h128 seed=5856987619332796984 normalized_sse_g32=0.00655586 normalized_sse_g16=0.00489802
+h128 seed=1 normalized_sse_g32=0.00653453 normalized_sse_g16=0.00487375
+h128 seed=42 normalized_sse_g32=0.00655459 normalized_sse_g16=0.00488945
+h128 seed=2026 normalized_sse_g32=0.00655769 normalized_sse_g16=0.00489372

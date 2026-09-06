@@ -23,10 +23,16 @@ enum class Q4H128TensorEncoding : std::uint32_t {
   // Row-major Q8_0Block (FP16 scale + 32 signed bytes), identity input basis.
   // New ID; old readers reject it instead of reinterpreting a Q4 payload.
   q8_0 = 7,
+  q4_g16_cpu_dot4 = 8,
+  q4_h128_g16_cpu_dot4 = 9,
 };
 
+inline bool q4_g16_encoding(Q4H128TensorEncoding e) noexcept {
+  return e == Q4H128TensorEncoding::q4_g16_cpu_dot4 || e == Q4H128TensorEncoding::q4_h128_g16_cpu_dot4;
+}
+
 inline bool q4_h128_encoding_transformed(Q4H128TensorEncoding encoding) noexcept {
-  return encoding == Q4H128TensorEncoding::q4_h128 ||
+  return encoding == Q4H128TensorEncoding::q4_h128_g16_cpu_dot4 || encoding == Q4H128TensorEncoding::q4_h128 ||
     encoding == Q4H128TensorEncoding::q4_h128_cpu_x8 ||
     encoding == Q4H128TensorEncoding::q4_h128_cpu_dot4;
 }

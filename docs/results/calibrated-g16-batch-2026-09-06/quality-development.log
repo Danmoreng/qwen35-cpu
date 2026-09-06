@@ -1,0 +1,19 @@
+Window 0, reference BF16: native-calibrated-g16 PPL=24.587913, KL=0.12800661
+Window 0, reference llama-Q4_K_M: native-calibrated-g16 PPL=24.587913, KL=0.16012527
+Window 0, reference BF16: llama-Q4_K_M PPL=20.986168, KL=0.04611746
+Window 1, reference BF16: native-calibrated-g16 PPL=12.232571, KL=0.08709831
+Window 1, reference llama-Q4_K_M: native-calibrated-g16 PPL=12.232571, KL=0.10007208
+Window 1, reference BF16: llama-Q4_K_M PPL=11.417920, KL=0.02503596
+Window 2, reference BF16: native-calibrated-g16 PPL=2.040498, KL=0.07017949
+Window 2, reference llama-Q4_K_M: native-calibrated-g16 PPL=2.040498, KL=0.08087718
+Window 2, reference BF16: llama-Q4_K_M PPL=2.012385, KL=0.02226582
+Window 3, reference BF16: native-calibrated-g16 PPL=1.023122, KL=0.00456985
+Window 3, reference llama-Q4_K_M: native-calibrated-g16 PPL=1.023122, KL=0.00521419
+Window 3, reference BF16: llama-Q4_K_M PPL=1.017064, KL=0.00116387
+Window 4, reference BF16: native-calibrated-g16 PPL=17.459177, KL=0.09798115
+Window 4, reference llama-Q4_K_M: native-calibrated-g16 PPL=17.459177, KL=0.13786530
+Window 4, reference BF16: llama-Q4_K_M PPL=16.594259, KL=0.04731912
+Window 5, reference BF16: native-calibrated-g16 PPL=1.182034, KL=0.02508211
+Window 5, reference llama-Q4_K_M: native-calibrated-g16 PPL=1.182034, KL=0.03314350
+Window 5, reference BF16: llama-Q4_K_M PPL=1.188068, KL=0.01209602
+Quality validation completed.
