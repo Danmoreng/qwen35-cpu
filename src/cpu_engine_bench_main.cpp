@@ -2,6 +2,7 @@
 #include "qwen35x/runtime/cpu_engine.h"
 #include <algorithm>
 #include <chrono>
+#include <cmath>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
