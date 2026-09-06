@@ -110,7 +110,8 @@ The example above is a greedy engine-only run, not a complete llama comparison.
 ## 5. Publication gates — pending
 
 - Validate this standalone tree on Linux/GCC and the Intel i7-8750H AVX2 machine.
-- Add and test a bounded HTTP adapter before advertising an inference server.
+- Initial bounded native HTTP completions adapter implemented and tested on Windows;
+  validate the release pipeline and model download on both target platforms.
 - Publish fresh quality/speed results with exact scope and reproducible inputs.
 - Choose the public repository name and publish the prepared local repository.
 

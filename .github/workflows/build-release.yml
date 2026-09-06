@@ -1,0 +1,106 @@
+name: CPU build, test and release
+on:
+  push:
+    branches: ['main', 'master', 'codex/**']
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-2022
+            platform: windows-x64
+            suffix: .exe
+          - os: ubuntu-22.04
+            platform: linux-x64
+            suffix: ''
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build Windows (static C++ runtime)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./scripts/build.ps1
+      - name: Build Linux (Ubuntu 22.04 baseline)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build g++-12
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-12
+          cmake --build build --parallel 2
+      - name: Kernel tests
+        run: ctest --test-dir build --output-on-failure
+      - name: CLI checks
+        shell: bash
+        run: |
+          ./build/qwen35_cpu${{ matrix.suffix }} --help
+          ./build/qwen35_cpu_server${{ matrix.suffix }} --help
+      - name: Require pinned model for releases
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        env:
+          HF_REPO: ${{ vars.HF_MODEL_REPO }}
+          HF_REVISION: ${{ vars.HF_MODEL_REVISION }}
+        run: |
+          test -n "$HF_REPO"
+          [[ "$HF_REVISION" =~ ^[0-9a-f]{40}$ ]]
+      - name: Download published test model
+        if: vars.HF_MODEL_REPO != '' && vars.HF_MODEL_REVISION != ''
+        shell: pwsh
+        env:
+          HF_REPO: ${{ vars.HF_MODEL_REPO }}
+          HF_REVISION: ${{ vars.HF_MODEL_REVISION }}
+        run: ./scripts/download-model.ps1 -Repo $env:HF_REPO -Revision $env:HF_REVISION
+      - name: Real-model scheduler and HTTP tests
+        if: vars.HF_MODEL_REPO != '' && vars.HF_MODEL_REVISION != ''
+        shell: bash
+        run: |
+          ./build/cpu_scheduler_model_test${{ matrix.suffix }} models/qwen3.5-0.8b models/qwen3.5-0.8b/model.q35h --pages
+          python tests/server_smoke.py --server build/qwen35_cpu_server${{ matrix.suffix }} --model-dir models/qwen3.5-0.8b
+      - name: Package binaries
+        shell: bash
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          version="ci-${GITHUB_SHA:0:12}"
+          if [ "$REF_TYPE" = tag ]; then version="$REF_NAME"; fi
+          python scripts/package-release.py --version "$version" --platform '${{ matrix.platform }}'
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ matrix.platform }}
+          path: |
+            dist/*.zip
+            dist/*.tar.gz
+            dist/*.sha256
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Publish tested archives
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          cd dist
+          for checksum in *.sha256; do sha256sum -c "$checksum"; done
+          gh release create "$RELEASE_TAG" --verify-tag --title "$RELEASE_TAG" --generate-notes ./*

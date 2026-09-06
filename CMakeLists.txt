@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.24)
 project(qwen35_cpu VERSION 0.1.0 LANGUAGES CXX)
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -120,6 +121,36 @@ target_link_libraries(qwen35x_core PRIVATE Threads::Threads)
 
 add_executable(qwen35_cpu src/main.cpp)
 target_link_libraries(qwen35_cpu PRIVATE qwen35x_core)
+option(QWEN35_BUILD_SERVER "Build the native HTTP server" ON)
+if (QWEN35_BUILD_SERVER)
+  include(FetchContent)
+  FetchContent_Declare(http_headers
+    URL https://codeload.github.com/yhirose/cpp-httplib/tar.gz/refs/tags/v0.54.1
+    URL_HASH SHA256=7310f5312e1423830d649b38ed028e9db86303a979ccbfdbd1c4b1574f422dfb
+    SOURCE_SUBDIR unused)
+  FetchContent_Declare(json_headers
+    URL https://codeload.github.com/nlohmann/json/tar.gz/refs/tags/v3.12.0
+    URL_HASH SHA256=4b92eb0c06d10683f7447ce9406cb97cd4b453be18d7279320f7b2f025c10187
+    SOURCE_SUBDIR unused)
+  FetchContent_MakeAvailable(http_headers json_headers)
+  add_executable(qwen35_cpu_server src/server.cpp)
+  target_include_directories(qwen35_cpu_server PRIVATE
+    ${http_headers_SOURCE_DIR} ${json_headers_SOURCE_DIR}/single_include)
+  target_link_libraries(qwen35_cpu_server PRIVATE qwen35x_core Threads::Threads)
+  if (WIN32)
+    target_link_libraries(qwen35_cpu_server PRIVATE ws2_32 crypt32)
+  elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_link_options(qwen35_cpu_server PRIVATE -static-libgcc -static-libstdc++)
+  endif ()
+  install(TARGETS qwen35_cpu_server RUNTIME DESTINATION .)
+  install(FILES ${http_headers_SOURCE_DIR}/LICENSE DESTINATION licenses RENAME cpp-httplib.txt)
+  install(FILES ${json_headers_SOURCE_DIR}/LICENSE.MIT DESTINATION licenses RENAME nlohmann-json.txt)
+endif ()
+install(TARGETS qwen35_cpu RUNTIME DESTINATION .)
+install(FILES README.md LICENSE PROVENANCE.md DESTINATION .)
+install(DIRECTORY docs/ DESTINATION docs)
+install(PROGRAMS scripts/download-model.sh DESTINATION .)
+install(FILES scripts/download-model.ps1 DESTINATION .)
 add_executable(qwen35_cpu_bench src/cpu_engine_bench_main.cpp)
 target_link_libraries(qwen35_cpu_bench PRIVATE qwen35x_core)
 add_executable(qwen35_cpu_pack src/q4_h128_convert_main.cpp)

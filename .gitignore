@@ -2,6 +2,8 @@
 /models/
 /benchmarks/
 /.cache/
+/dist/
+/release/
 *.q35h
 *.gguf
 *.safetensors

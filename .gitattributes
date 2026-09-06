@@ -7,3 +7,5 @@
 *.json text eol=lf
 *.csv text eol=lf
 *.ps1 text eol=crlf
+*.sh text eol=lf
+*.yml text eol=lf

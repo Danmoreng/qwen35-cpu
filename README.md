@@ -4,10 +4,51 @@ A small C++20 inference engine specialized for **Qwen3.5-0.8B text inference on
 CPUs**, using **H128/Q4-G32-DOT4** weights. No CUDA toolchain, GPU runtime or
 general-purpose model framework is required.
 
-The project contains a native text-completion CLI, checkpoint packer, embeddable
-multi-request engine, CPU tests and comparison tools. It is an independent
+The project contains a native HTTP server, text-completion CLI, checkpoint packer,
+embeddable multi-request engine, CPU tests and comparison tools. It is an independent
 extraction of the validated CPU implementation in qwen35x; see [provenance](PROVENANCE.md).
-**An HTTP/OpenAI-compatible server is not included yet.**
+The HTTP server supports a **limited OpenAI-style `/v1/completions` API**:
+raw prompts, greedy decoding and non-streaming responses. Chat completions and
+SSE streaming are not implemented.
+
+## Download and run
+
+The release workflow builds Windows x64 ZIP and Linux x64 tar.gz archives with
+the server, CLI, model download scripts and licenses. Runtime needs no compiler,
+Python or CUDA. Windows uses a static MSVC runtime; Linux releases target
+Ubuntu 22.04 or newer (glibc 2.35+), not every Linux distribution.
+
+**Publication status:** the first model upload/release is being prepared.
+The intended model repository is `danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4`.
+Commands below become usable after publication; replace `MODEL_COMMIT` with
+the published model's immutable 40-character commit. No working download is
+claimed before that upload completes.
+
+After extracting a release archive, run from its directory:
+
+```powershell
+# Windows PowerShell 5.1+; no Python required
+./download-model.ps1 -Repo danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4 -Revision MODEL_COMMIT
+./qwen35_cpu_server.exe --model-dir models/qwen3.5-0.8b --threads 8
+```
+
+```sh
+# Linux: bash, curl and sha256sum
+bash ./download-model.sh danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4 MODEL_COMMIT
+./qwen35_cpu_server --model-dir models/qwen3.5-0.8b --threads 8
+```
+
+The downloader verifies every file against the pinned revision's SHA-256
+manifest. Download into a new directory. The checkpoint is already CPU-packed.
+The server defaults to localhost:8080, 16 resident requests, bounded queueing,
+FP16 shared KV pages and an 8192-token context limit.
+
+```sh
+curl http://127.0.0.1:8080/v1/completions -H "Content-Type: application/json" -d '{"prompt":"Once upon a time","max_tokens":64,"temperature":0}'
+```
+
+Use `curl.exe` on Windows, or `Invoke-RestMethod` with the same JSON body.
+See [server API and limits](docs/server.md) and [publishing](docs/publishing.md).
 
 ## Performance against llama.cpp
 
@@ -52,6 +93,9 @@ See the [engine API](docs/cpu-engine-api.md).
 ## Build
 
 Windows: Visual Studio 2022 C++ Build Tools, CMake 3.24+, Ninja and PowerShell 7.
+The server build downloads hash-pinned cpp-httplib and nlohmann/json headers;
+neither is required separately at runtime. Set `-DQWEN35_BUILD_SERVER=OFF` for
+an engine/CLI-only build with no downloaded dependencies.
 
 ```powershell
 ./scripts/build.ps1
@@ -117,7 +161,11 @@ are the default. Quality/logit-dump runs are separate from speed measurements.
 - Extraction versus frozen source executable: exact output-token matches for
   B=1 and B=4 with shared-prefix pages, sixteen generated tokens per request.
 - Native text CLI and full-vocabulary logit export: smoke-tested.
-- Fresh llama.cpp quantization/quality matrix, parallel comparison, HTTP adapter
-  and standalone Linux/Intel validation: pending.
+- Native HTTP adapter, concurrent request/prefix correctness and packaged Windows
+  server with the prepared Hugging Face model: passed locally.
+- Windows/Linux CI and tag-triggered release pipeline: implemented; remote CI
+  validation and the first public model/binary release remain pending.
+- Fresh llama.cpp quantization/quality matrix, parallel comparison and standalone
+  Linux/Intel model validation: pending.
 
 See [validation details](docs/validation.md) and the [bounded release plan](docs/comparison-plan.md).

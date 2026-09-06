@@ -57,7 +57,8 @@ Completed results remain until `release()`. Release them promptly: the record
 limit includes terminal results. A serving terminal request frees its resident
 model state. Stop-sequence prefixes are withheld until resolved. Callbacks must
 outlive their request. There are no background threads for scheduling and no
-HTTP transport in this repository; the executor's workers run CPU operations.
+HTTP transport inside `CpuEngine`; the executor's workers run CPU operations.
+The separate [native server](server.md) owns and drives this API.
 
 ## Prefix reuse
 
