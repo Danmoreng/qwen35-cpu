@@ -1,0 +1,26 @@
+{
+  "provenance": {
+    "llama_revision": "73a43d1f69345aee8bb186ef4b3172cef892f2e5",
+    "model_revision": "59f422b2d410fdaf4a9efc71ff12f278abc2a5d1",
+    "binaries": {
+      "ggml-base.dll": "f5a55be6cc0abb6fbacadf66947fbbaa56ac613251ad1f8be3e0ff7977dbf429",
+      "ggml-cpu.dll": "9be32088bbb19ab65c1cd24a382972e3f77424d46bfb1ceefe4d8f22e7c8e520",
+      "ggml.dll": "34329c44bd36e31c849321bbafa00bc3fdf1c45a9d079d615f9f0584d67e2a9d",
+      "llama-common.dll": "6b0fb523deadae5d9dfc4e5002b630f9adba2061adcd4c64f627357e8bd32fa5",
+      "llama-fixed-cpu-bench.exe": "a2b17b40a25eb4f68632bdf07ae3c4710bbba21b0ba5fe53fc92cfe4856bb1f4",
+      "llama-quantize-impl.dll": "6948259c7a4c0f5b35c13e5585d6d8c355a3a8dd365cb7beb3473e4137373cc4",
+      "llama.dll": "e9406e10aa3a5e24cfc82ea5b2755a94db7cfa5b286c7da93e8664adc1717a5e",
+      "qwen35_cpu_bench.exe": "887d29207e7854c41c62485b59a3d38dd1441c5a01cce4f824738141645b6d3c"
+    }
+  },
+  "quality_sources": [
+    "docs/results/2026-09-06/raw-results.zip",
+    "docs/results/implementation-plan-2026-09-06/raw-results.zip"
+  ],
+  "quality_contract": "Same BF16 teacher hash, 16 article windows, 8192 positions; full scoring masks verified.",
+  "files": {
+    "performance.csv": "abc137516f2770a4c5a7b0198cc12702bb0a12ad9f755c9e9d845509fd074ea7",
+    "quality.csv": "7db41243ddcd108b687e0d9ddd7e1ce183c9f8b457b36bb845d32c5123c1395b",
+    "raw-results.zip": "6d5549a301672d3a9337c9a2c5dd6f7c69794ae700eacca1c9cf9646b0fc08ad"
+  }
+}

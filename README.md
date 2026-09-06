@@ -1,7 +1,7 @@
 # Qwen3.5 CPU
 
 A small C++20 inference engine specialized for **Qwen3.5-0.8B text inference on
-CPUs**, using **H128/Q4-G32-DOT4** or **native Q4_0** weights. No CUDA toolchain, GPU runtime or
+CPUs**, using **calibrated MSE16 H128/Q4-G32-DOT4** weights. No CUDA toolchain, GPU runtime or
 general-purpose model framework is required.
 
 The project contains a native HTTP server, text-completion CLI, checkpoint packer,
@@ -13,78 +13,76 @@ SSE streaming are not implemented.
 
 ## CPU benchmarks: speed and quality
 
-**The standard published model is calibrated MSE16 H128/Q4-G32-DOT4.**
-It improves perplexity at essentially unchanged speed and size. This is a new
-quantization recipe in the **same `.q35h` format and DOT4 layout**; the runtime
-still executes the same kernels. Source builds also support native pure Q4_0
-and experimental Q4_K_M GGUF execution.
-
-### Quality
-
-Identical prompts and scoring masks, 8,192 scored tokens from 16 WikiText-2 test
-article windows, common BF16 teacher. This is an English-prose subset, not
-full-corpus WikiText perplexity. Lower PPL and KL are better.
-
-| Native checkpoint | Tensor payload, MB | Perplexity | Mean KL to BF16, nats |
-| --- | ---: | ---: | ---: |
-| Legacy H128 | 424.9 | 18.58329 | 0.174841 |
-| MSE16 H128, without calibration | 424.9 | 16.86128 | 0.105864 |
-| **Calibrated MSE16 H128 (standard download)** | **424.9** | **16.04087** | **0.096456** |
-| Pure Q4_0 | 424.9 | 18.03818 | 0.144650 |
-| Q4_K_M | 521.6 | 14.78432 | 0.034708 |
-
-Calibrated MSE16 reduces PPL by **13.68%** and KL by **44.83%** versus Legacy,
-with exactly **424,934,656 tensor bytes** and a **424,964,864-byte file**.
-On the separate six-document, 1,024-token screening suite, PPL improves from
-5.16899 to **4.85143**. Unweighted MSE16 is slightly better on that small suite
-(4.81958). Calibration uses four disjoint English prose documents; these results
-do not establish universal quality superiority. Q4_K_M still has better measured
-quality and a larger payload.
-
-The existing German **`2 + 2` regression returns `4`** with both new variants
-in independent free greedy generation, with no forced output tokens. The full
-expected prefix and answer also pass a separate logit-level check. This is one
-regression, not a broad arithmetic benchmark. Pure Q4_0 failed the historical
-arithmetic case; the new free-generation check covers the three H128 variants.
+**Calibrated MSE16 H128/Q4-G32-DOT4** combines fast CPU inference with
+**16.04087 perplexity** and **0.096456 mean KL to BF16** on the evaluated corpus,
+using a **424.9 MB tensor payload**. The following tables compare the current
+published model with llama.cpp pure Q4_0 and Unsloth's mixed-precision quants.
+Quality and speed are measured separately.
 
 ### Speed
 
-Ryzen 9 9955HX3D, eight threads pinned to physical VCache cores (`0x5555`),
-FP16 KV, fixed identical tokens and full-vocabulary logits. Tokens/s are medians
-of three measured runs after one warmup. All performance runs are sequential.
+Ryzen 9 9955HX3D, eight threads on physical VCache cores (`0x5555`), FP16 KV,
+fixed identical tokens and full-vocabulary logits. All five candidates were
+measured together in a fresh sequential series: **three measured runs after
+one warmup**, alternating case order. Values are median **tokens/s**.
 
-| Native checkpoint | Prefill 512 | Prefill 4,096 | Decode B=1 | Decode B=16 |
+| Engine / checkpoint | Prefill 512 | Prefill 4,096 | Decode B=1 | Decode B=16 |
 | --- | ---: | ---: | ---: | ---: |
-| Legacy H128 | 2,147.90 | 1,880.17 | 117.79 | 605.28 |
-| MSE16 H128 | 2,150.71 | 1,882.79 | 117.94 | 605.64 |
-| **Calibrated MSE16 H128** | **2,150.69** | **1,884.19** | **118.35** | **603.26** |
-| Pure Q4_0 | 2,013.67 | 1,782.53 | 118.49 | 596.75 |
-| Q4_K_M | 369.82 | 362.09 | 87.31 | 209.42 |
+| **This engine, calibrated MSE16 H128** | **2,169.80** | **1,887.38** | **119.94** | **613.34** |
+| llama.cpp Q4_0 `--pure` | 1,071.24 | 983.86 | 100.61 | 351.30 |
+| llama.cpp Unsloth Q4_0 | 894.28 | 860.69 | 88.84 | 294.86 |
+| llama.cpp Unsloth Q4_K_M | 679.80 | 663.53 | 83.91 | 264.86 |
+| llama.cpp Unsloth IQ4_XS | 842.57 | 823.99 | 80.21 | 268.08 |
 
-Prefill columns are single-request forward throughput; decode uses 512 input /
-128 output tokens and counts 127 actual decode forwards per sequence. Batch 16
-is aggregate throughput, compared only with batch 16. Load, tokenization and
-HTTP are outside timing; requests have private state and no prefix-cache credit.
+Against equal-payload llama.cpp pure Q4_0, calibrated H128 delivers **1.92–2.03×
+prefill throughput**, **1.19× single-request decode** and **1.75× batch-16 decode**,
+while also reducing perplexity and KL divergence as shown below.
 
-Both MSE16 variants stay within a 3% slowdown tolerance across all five tested
-workloads. A separate six-measurement follow-up finds calibrated decode **-0.33%**
-versus Legacy at batch 16 and **+0.52%** at an 8,192-token prompt. This supports
-essentially unchanged speed; it is not a statistical proof of equivalence or a
-speed guarantee for other CPUs. Quality gains come from offline conversion.
+Prefill columns use one request. Decode uses 512 input / 128 output tokens
+and counts 127 actual decode forwards per request. Batch 16 is aggregate
+throughput across 16 requests, compared only with batch 16. Load, tokenization
+and HTTP are excluded; requests have private state and no prefix-cache credit.
+Three runs describe this CPU and workload, not a universal speed guarantee.
 
-**[Full report, tests and scope](docs/implementation-plan-results-2026-09-06.md)** ·
-[Quality and gates](docs/results/implementation-plan-2026-09-06/quality-and-gates.csv) ·
-[Speed with min/median/max](docs/results/implementation-plan-2026-09-06/performance.csv) ·
-[Six-run follow-up](docs/results/implementation-plan-2026-09-06/performance-followup.csv) ·
-[Raw profiles, commands and hashes](docs/results/implementation-plan-2026-09-06/raw-results.zip).
+### Perplexity and KL divergence
 
-Earlier llama.cpp speed comparisons used Legacy weights and separate timing
-series; they are retained as [historical comparisons](docs/comparison-2026-09-06.md),
-including [native Q4_0 versus the identical llama.cpp checkpoint](docs/native-q4_0-2026-09-06.md).
-Their speed ratios are not reattributed to the new model. See
-[GGUF setup](docs/q4km-native.md) and [quantization recipe details](docs/quantization.md).
-Released v0.1.1 binaries do not include GGUF support; the new H128 artifact keeps
-the existing `.q35h` layout.
+Identical prompts and scoring masks, **8,192 scored tokens from 16 WikiText-2
+test article windows**, common BF16 teacher. This is an English-prose subset,
+not full-corpus WikiText perplexity. Lower PPL and KL are better.
+
+| Engine / checkpoint | Tensor payload, MB | Perplexity | Mean KL to BF16, nats |
+| --- | ---: | ---: | ---: |
+| BF16 teacher | 1,505.8 | 14.38556 | 0 |
+| **This engine, calibrated MSE16 H128** | **424.9** | **16.04087** | **0.096456** |
+| llama.cpp Q4_0 `--pure` | 424.9 | 18.02588 | 0.144522 |
+| llama.cpp Unsloth Q4_0 | 496.2 | 15.58088 | 0.068388 |
+| llama.cpp Unsloth Q4_K_M | 521.6 | 14.75290 | 0.034693 |
+| llama.cpp Unsloth IQ4_XS | 481.6 | 15.16145 | 0.050539 |
+
+At the same **424,934,656-byte tensor budget** as pure Q4_0, calibrated H128
+has **11.0% lower perplexity** and **33.3% lower KL**. The larger Unsloth
+mixed-precision recipes achieve lower PPL and KL; the table makes that storage
+and quality tradeoff explicit. The full H128 file is **424,964,864 bytes**.
+
+Calibration uses four disjoint English prose documents. On a separate
+six-document, 1,024-token screening suite, the current model measures PPL
+**4.85143** and KL **0.071835**. These bounded evaluations do not establish
+universal quality superiority.
+
+The German **`2 + 2` regression returns `4`** in independent free greedy
+generation, with no forced output tokens. The expected prefix and answer also
+pass a separate logit-level check. This is one regression, not a broad
+arithmetic benchmark.
+
+**[Current comparison and measurement details](docs/readme-comparison-2026-09-06.md)** ·
+[Speed CSV](docs/results/readme-calibrated-2026-09-06/performance.csv) ·
+[Quality CSV](docs/results/readme-calibrated-2026-09-06/quality.csv) ·
+[Raw speed profiles, commands and hashes](docs/results/readme-calibrated-2026-09-06/raw-results.zip) ·
+[Quantization and validation report](docs/implementation-plan-results-2026-09-06.md).
+
+See [the calibrated recipe](docs/quantization.md) for the unchanged `.q35h`
+layout and offline fitting method. Additional GGUF execution paths and their
+limitations are documented in [GGUF setup](docs/q4km-native.md).
 
 ## Download and run
 
@@ -178,14 +176,14 @@ Place the original Qwen3.5-0.8B Hugging Face checkpoint and tokenizer files in
 has its own license; the engine's MIT license does not replace it.
 
 ```powershell
-./build/qwen35_cpu_pack.exe --hf-model-dir models/qwen3.5-0.8b --output models/qwen3.5-0.8b/model.q35h
+./build/qwen35_cpu_pack.exe --hf-model-dir models/qwen3.5-0.8b --output models/qwen3.5-0.8b/model.q35h --quantizer mse16 --importance-dir benchmarks/plan-calibration-fit
 ./build/qwen35_cpu.exe --model-dir models/qwen3.5-0.8b --weights models/qwen3.5-0.8b/model.q35h --prompt "Once upon a time" --threads 8 --max-new-tokens 128
 ```
 
-The packer defaults to `cpu-dot4` and **unweighted `mse16`**. It rejects other
-layout selections. The published standard artifact adds activation calibration;
-reproducing that recipe requires `--importance-dir` with the fitted calibration
-data. Use `--quantizer legacy-absmax15` only to reproduce the old artifact.
+The command above reproduces the calibrated recipe after collecting and fitting
+teacher inputs into `benchmarks/plan-calibration-fit`. The packer uses `cpu-dot4`
+layout. Downloading the prepared standard model requires no calibration or
+conversion at runtime.
 See [the standard recipe and conversion workflow](docs/quantization.md). Runtime
 loading requires the matching `.q35h`, `config.json` and tokenizer files, not
 the original BF16 shards. The validated local artifact is about 425 MB
@@ -227,15 +225,13 @@ are the default. Quality/logit-dump runs are separate from speed measurements.
   server with the prepared Hugging Face model: passed locally.
 - Windows/Linux builds, kernel tests and packaging pass in GitHub CI. The public
   Hugging Face model is pinned for real-model tests and tag-triggered releases.
-- Fresh llama.cpp quantization/quality matrix, parallel comparison and standalone
+- Broader calibration, a new llama.cpp quantization sweep and standalone
   Intel i7-8750H model validation: pending.
 
 See [validation details](docs/validation.md) and the [bounded release plan](docs/comparison-plan.md).
 
-Offline `--quantizer mse16` conversion improves H128 perplexity
-while retaining the existing DOT4 runtime and payload size. Optional
-`--importance-dir` enables calibration in the correct H128 basis. Both measured
-variants preserve the free `2+2 = 4` regression. See the
+Calibrated MSE16 fitting runs offline and preserves the DOT4 runtime and payload
+size. The standard download passes the free `2+2 = 4` regression. See the
 [implementation and benchmark report](docs/implementation-plan-results-2026-09-06.md)
 for quality scores, sequential speed measurements, reproduction and remaining
-plan stages. MSE16 conversion is the default; the standard download is calibrated MSE16.
+plan stages.
