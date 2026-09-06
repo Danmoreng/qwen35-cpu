@@ -107,13 +107,15 @@ Use `--forced-output-tokens` with a CSV string for matched fixed-token speed
 comparisons. The runner appends `--profile-json`; do not supply that flag in cases.
 The example above is a greedy engine-only run, not a complete llama comparison.
 
-## 5. Publication gates — pending
+## 5. Publication status and remaining gates
 
-- Validate this standalone tree on Linux/GCC and the Intel i7-8750H AVX2 machine.
-- Initial bounded native HTTP completions adapter implemented and tested on Windows;
-  validate the release pipeline and model download on both target platforms.
+- Windows/MSVC and Linux/GCC builds, kernel tests, public model downloads,
+  real-model scheduler tests and extracted-package HTTP tests passed in CI.
+- Initial bounded native HTTP completions adapter published in v0.1.0.
+- Intel i7-8750H hardware validation remains pending.
 - Publish fresh quality/speed results with exact scope and reproducible inputs.
-- Choose the public repository name and publish the prepared local repository.
+- Engine repository, Hugging Face checkpoint and Windows/Linux v0.1.0 binaries
+  are public. See the README for download links and the pinned model revision.
 
 Grouped prefix attention, mixed prefill/decode projection batches and H256 are
 deferred. They are not required to finish the first focused release.
