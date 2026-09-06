@@ -1,0 +1,75 @@
+{
+  "created_utc": "2026-09-05T21:46:40.4969574Z",
+  "engine_commit": "a760d229ec37b607782c1d1a189b1f27d0301717",
+  "llama_commit": "74a7c897f049c17e7080423aa2111776eff6ebbf",
+  "thread_counts": [
+    8,
+    12
+  ],
+  "affinity": 65535,
+  "runs": 3,
+  "warmups": 1,
+  "cpu": [
+    {
+      "Name": "AMD Ryzen 9 9955HX3D 16-Core Processor         ",
+      "NumberOfCores": 16,
+      "NumberOfLogicalProcessors": 32
+    }
+  ],
+  "qwen_model": "models/qwen3.5-0.8b/model-q4-h128-cpu-dot4.q35h",
+  "llama_model": "models/gguf/qwen3.5-0.8b-review-target-Q4_0.gguf",
+  "qwen_sha256": "E73DE30BF646DEE502DD5E519939221F7D2B60068CCBBE16DC1701597919C42F",
+  "llama_sha256": "7B658F223EC9F1AECAF89BC2CCDB66DDDBEFB5FC7C87D67F96046E1A41C82921",
+  "qwen_exe_sha256": "F36A1B572532344795954C572DCF9C28935A6971C8F832DD6071E4AAF5C965C5",
+  "llama_exe_sha256": "643A3F955639C4E5DED7E57169F92CB3795DA615AC994075670EA82FD63FFD8E",
+  "fixture_sha256": "C4918AC68EA3DC888649FBDA93AF858932D705A5650D753388961A2B35266495",
+  "kv_cache": "fp16",
+  "llama_flash_attention": "on",
+  "llama_batch": 2048,
+  "llama_ubatch": 512,
+  "qwen_chunk": 64,
+  "max_context": 8192,
+  "workloads": [
+    {
+      "Name": "pp512",
+      "Prompt": 512,
+      "Output": 0
+    },
+    {
+      "Name": "pp1024",
+      "Prompt": 1024,
+      "Output": 0
+    },
+    {
+      "Name": "pp2048",
+      "Prompt": 2048,
+      "Output": 0
+    },
+    {
+      "Name": "pp4096",
+      "Prompt": 4096,
+      "Output": 0
+    },
+    {
+      "Name": "p512-out128",
+      "Prompt": 512,
+      "Output": 128
+    },
+    {
+      "Name": "p512-out256",
+      "Prompt": 512,
+      "Output": 256
+    },
+    {
+      "Name": "p512-out512",
+      "Prompt": 512,
+      "Output": 512
+    },
+    {
+      "Name": "p512-out1024",
+      "Prompt": 512,
+      "Output": 1024
+    }
+  ],
+  "semantics": "Prefill-only emits no logits. Decode uses fixed continuation with full-vocabulary logits; N outputs require N-1 timed forwards, first prediction occurs in prefill. No sampling or speculative decoding."
+}

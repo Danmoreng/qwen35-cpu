@@ -1,0 +1,9 @@
+/build*/
+/models/
+/benchmarks/
+/.cache/
+*.q35h
+*.gguf
+*.safetensors
+*.logits
+__pycache__/
