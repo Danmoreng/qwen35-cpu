@@ -4,7 +4,8 @@ The small recurrent gate experiment shows **a small KL benefit but no consistent
 PPL improvement**, with roughly 2-3% lower prefill throughput.
 The calibrated MSE16 H128/Q4-G32-DOT4 download remains the standard. The optional
 Q8 embedding/output experiment was conditional on a successful gate experiment
-and has not been run.
+and was not run at that stage. A subsequent explicit request led to a separate
+[Q8 head experiment](q8-head-experiment-2026-09-06.md).
 
 ## Implementation and storage
 
@@ -86,8 +87,9 @@ as broad capability gains.
   Existing encodings and the container version remain unchanged. Older engines
   reject this new encoding, so experimental checkpoints require this engine.
 - `--q8-head` is implemented as an opt-in conversion of the tied embedding/output
-  matrix. Its greedy fallback has unit coverage, but **model quality and speed
-  have not been measured**. It is not a recommended artifact or a default.
+  matrix. Its greedy fallback has unit coverage; model quality and speed were
+  measured later in the [separate head report](q8-head-experiment-2026-09-06.md).
+  It is not a default.
 
 ## Reproduction and evidence
 

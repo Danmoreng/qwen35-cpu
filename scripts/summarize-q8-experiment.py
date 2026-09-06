@@ -10,7 +10,7 @@ import numpy as np
 from evaluation_common import sha, source_identity
 
 p=argparse.ArgumentParser()
-p.add_argument('--label',required=True,choices=['q8-gates','q8-gates-head'])
+p.add_argument('--label',required=True,choices=['q8-gates','q8-head','q8-gates-head'])
 args=p.parse_args()
 label=args.label
 root=Path('benchmarks')
@@ -73,7 +73,7 @@ quality_pass=all(r['quality_pass'] for r in quality.values())
 audit=read(root/f'{label}-audit.json')
 result=dict(candidate=label,quality=quality,performance=performance,audit=audit,arithmetic=arithmetic,
     gates=dict(speed_tolerance=.03,quality_pass=quality_pass,speed_pass=speed_pass,arithmetic_pass=arithmetic_pass,
-               proceed_to_head=quality_pass and speed_pass and arithmetic_pass))
+               promotion_screen_pass=quality_pass and speed_pass and arithmetic_pass))
 with (out/'performance.csv').open('w',newline='',encoding='utf-8') as f:
     writer=csv.DictWriter(f,fieldnames=list(performance[0]),lineterminator='\n');writer.writeheader();writer.writerows(performance)
 (out/'results.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8',newline='\n')
@@ -85,6 +85,8 @@ for folder in [root/f'{label}-speed',root/f'{label}-speed-inputs',root/f'{label}
 files += [root/f'{label}-audit.json',root/f'{label}-pack.log',root/f'{label}-scheduler.log',root/f'{label}-prefix.log',root/'q8-ctest.log']
 checkpoint=Path('models/qwen3.5-0.8b')/f'model-calibrated-{label}.q35h'
 files += [Path(str(checkpoint)+suffix) for suffix in ('.precision.json','.quantization.json','.calibration.json')]
+if label=='q8-head':
+    files.append(root/'q8-head-q4km-inventory.json')
 with zipfile.ZipFile(out/'raw-results.zip','w',zipfile.ZIP_DEFLATED,compresslevel=9) as archive:
     for f in sorted(set(files)):
         assert f.is_file() and f.suffix not in ('.exe','.dll','.q35h','.gguf','.logits')

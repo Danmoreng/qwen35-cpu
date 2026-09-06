@@ -28,4 +28,6 @@ for batch,prompt,output in [(1,512,128),(1,4096,2),(4,512,128),(16,512,128),(1,8
 (args.out/'contract.json').write_text(json.dumps(dict(
     baseline='calibrated',candidate=args.label,quality='PPL and KL improve on regression and heldout screening',
     speed_equivalence_tolerance=.03,additional_measurements_if_borderline=True,
-    conditional_head_experiment='Only after the gate candidate improves quality and retains speed'),indent=2)+'\n')
+    experiment_scope=('Explicitly requested head quality/speed experiment; gates remain Q4'
+                      if args.label=='q8-head' else 'Selective mixed-precision experiment'),
+    promotion='Measure tradeoffs; do not automatically replace the published standard'),indent=2)+'\n')

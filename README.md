@@ -85,6 +85,8 @@ layout and offline fitting method. Additional GGUF execution paths and their
 limitations are documented in [GGUF setup](docs/q4km-native.md).
 The [selective Q8 gate experiment](docs/q8-experiments-2026-09-06.md) is reported
 separately; its mixed quality result did not replace the calibrated Q4 standard.
+The [Q8 embedding/output experiment](docs/q8-head-experiment-2026-09-06.md)
+reports the larger matrix's quality, memory and decode-speed tradeoff.
 
 ## Download and run
 

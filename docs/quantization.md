@@ -80,4 +80,6 @@ to off. These artifacts introduce tensor encoding ID 7 and require a new
 engine; older readers reject them. The packer writes a `.precision.json`
 sidecar identifying these choices. They do not alter the published standard.
 See the [selective Q8 experiment](q8-experiments-2026-09-06.md) for measured
-gate results, format details and the unmeasured head limitation.
+gate results and format details. The subsequent
+[Q8 embedding/output experiment](q8-head-experiment-2026-09-06.md) measures the
+large tied matrix separately, with the recurrent gates retained in Q4.
