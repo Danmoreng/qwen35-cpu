@@ -8,7 +8,7 @@ The project contains a native HTTP server, text-completion CLI, checkpoint packe
 embeddable multi-request engine, CPU tests and comparison tools. It is an independent
 extraction of the validated CPU implementation in qwen35x; see [provenance](PROVENANCE.md).
 The HTTP server supports a **limited OpenAI-style `/v1/completions` API**:
-raw prompts, greedy decoding and non-streaming responses. Chat completions and
+raw prompts, greedy or sampled decoding and non-streaming responses. Chat completions and
 SSE streaming are not implemented.
 
 ## Download and run
@@ -47,6 +47,9 @@ curl http://127.0.0.1:8080/v1/completions -H "Content-Type: application/json" -d
 ```
 
 Use `curl.exe` on Windows, or `Invoke-RestMethod` with the same JSON body.
+For sampling (v0.1.1+), send e.g. `"temperature":0.7, "top_p":0.8,
+"top_k":20, "repetition_penalty":1.05, "seed":42`. Omitting temperature keeps
+greedy decoding for compatibility. Each request has its own random state.
 See [server API and limits](docs/server.md) and [publishing](docs/publishing.md).
 
 ## Performance against llama.cpp
@@ -131,7 +134,9 @@ loading requires the matching `.q35h`, `config.json` and tokenizer files, not
 the original BF16 shards. The validated local artifact is about 425 MB
 (decimal); it is not shipped in this repository.
 
-The CLI performs **raw text completion** with greedy decoding. It does not
+The CLI performs **raw text completion**, defaulting to greedy decoding. Use
+`--temperature 0.7 --top-p 0.8 --top-k 20 --repetition-penalty 1.05 --seed 42`
+for sampling (v0.1.1+). It does not
 automatically render chat templates. For chat, pass an already rendered prompt
 using `--prompt-file`. Tokenization and teacher-forced logit export are also
 available through `--help`. On Linux, omit `.exe` in executable names.

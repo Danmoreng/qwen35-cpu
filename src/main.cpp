@@ -2,6 +2,7 @@
 #include "qwen35x/runtime/cpu_engine.h"
 #include "qwen35x/tokenizer/tokenizer.h"
 #include <algorithm>
+#include <cmath>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -55,8 +56,9 @@ int main(int argc, char **argv) try {
       std::cout << "Qwen3.5-0.8B CPU / H128-Q4-G32-DOT4\n"
         "--model-dir DIR --weights FILE --prompt TEXT | --prompt-file FILE | --tokens-file FILE\n"
         "[--threads N] [--max-context N] [--max-new-tokens N]\n"
+        "[--temperature F] [--top-p F] [--top-k N] [--repetition-penalty F] [--seed N]\n"
         "[--tokenize-out FILE] [--forced-tokens-file FILE --logits-out FILE]\n"
-        "Raw text completion; supply your own rendered chat template. Greedy decoding.\n";
+        "Raw text completion; supply your own rendered chat template. Default: greedy.\n";
       return 0;
     }
     if (++i == argc) throw std::runtime_error("Missing value for " + key);
@@ -67,6 +69,12 @@ int main(int argc, char **argv) try {
       if (used != value.size() || n <= 0 || n > 100000000)
         throw std::runtime_error("Invalid positive integer for " + key);
       return static_cast<std::size_t>(n);
+    };
+    auto real = [&]() {
+      std::size_t used;
+      const float n = std::stof(value, &used);
+      if (used != value.size() || !std::isfinite(n)) throw std::runtime_error("Invalid number for " + key);
+      return n;
     };
     if (key == "--model-dir") load.model_dir = value;
     else if (key == "--weights") load.cpu_q4_h128_path = value;
@@ -79,6 +87,17 @@ int main(int argc, char **argv) try {
     } else if (key == "--threads") config.threads = static_cast<int>(number());
     else if (key == "--max-context") config.max_context = number();
     else if (key == "--max-new-tokens") request.max_new_tokens = number();
+    else if (key == "--temperature") request.sampling.temperature = real();
+    else if (key == "--top-p") request.sampling.top_p = real();
+    else if (key == "--repetition-penalty") request.sampling.repetition_penalty = real();
+    else if (key == "--top-k" || key == "--seed") {
+      std::size_t used;
+      const auto n = std::stoll(value, &used);
+      if (used != value.size() || (key == "--top-k" ? (n < 0 || n > 248320) :
+          (n < -1 || n > 4294967295LL))) throw std::runtime_error("Invalid value for " + key);
+      if (key == "--top-k") request.sampling.top_k = static_cast<int>(n);
+      else request.sampling.seed = n;
+    }
     else if (key == "--tokenize-out") tokenize_out = value;
     else if (key == "--logits-out") logits_out = value;
     else if (key == "--forced-tokens-file") request.forced_output_tokens = tokens(read(value));

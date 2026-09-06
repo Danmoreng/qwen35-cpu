@@ -4,6 +4,8 @@
 #include "httplib.h"
 #include <nlohmann/json.hpp>
 #include <atomic>
+#include <cmath>
+#include <limits>
 #include <condition_variable>
 #include <cstdlib>
 #include <deque>
@@ -141,20 +143,22 @@ std::shared_ptr<Job> parse(const std::string &body, std::size_t context) {
   if (!j.is_object()) throw std::runtime_error("Expected JSON object");
   for (const auto &[key, value] : j.items())
     if (key != "model" && key != "prompt" && key != "max_tokens" && key != "temperature" &&
-        key != "stream" && key != "n" && key != "prefix_tokens")
+        key != "stream" && key != "n" && key != "prefix_tokens" && key != "top_p" &&
+        key != "top_k" && key != "seed" && key != "repetition_penalty")
       throw std::runtime_error("Unsupported field: " + key);
   if (j.contains("model") && j.at("model").get<std::string>() != model_name)
     throw std::runtime_error("Unknown model");
   if (j.value("stream", false)) throw std::runtime_error("Streaming is not supported yet");
   if (j.contains("n") && j.at("n") != 1) throw std::runtime_error("Only n=1 is supported");
-  if (j.contains("temperature") && j.at("temperature") != 0)
-    throw std::runtime_error("This server currently supports greedy temperature=0 only");
   auto job = std::make_shared<Job>();
   job->prompt = j.at("prompt").get<std::string>();
   if (job->prompt.empty() || job->prompt.size() > 65536) throw std::runtime_error("Prompt must contain 1..65536 bytes");
   auto integer = [&](const char *name, std::int64_t fallback) {
     if (!j.contains(name)) return fallback;
     if (!j.at(name).is_number_integer()) throw std::runtime_error(std::string(name) + " must be an integer");
+    if (j.at(name).is_number_unsigned() && j.at(name).get<std::uint64_t>() >
+        static_cast<std::uint64_t>(std::numeric_limits<std::int64_t>::max()))
+      throw std::runtime_error(std::string(name) + " is out of range");
     return j.at(name).get<std::int64_t>();
   };
   const auto max_tokens = integer("max_tokens", 128), prefix = integer("prefix_tokens", 0);
@@ -163,7 +167,25 @@ std::shared_ptr<Job> parse(const std::string &body, std::size_t context) {
   job->spec.max_new_tokens = static_cast<std::size_t>(max_tokens);
   job->spec.register_prefix_tokens = static_cast<std::size_t>(prefix);
   job->spec.trust_namespace = "local-server";
-  job->spec.sampling.temperature = 0; job->spec.sampling.repetition_penalty = 1;
+  auto real = [&](const char *name, float fallback) {
+    if (!j.contains(name)) return fallback;
+    if (!j.at(name).is_number()) throw std::runtime_error(std::string(name) + " must be a number");
+    const double value = j.at(name).get<double>();
+    if (!std::isfinite(value) || std::abs(value) > std::numeric_limits<float>::max())
+      throw std::runtime_error(std::string(name) + " must be finite and representable");
+    return static_cast<float>(value);
+  };
+  auto &sampling = job->spec.sampling;
+  sampling.temperature = real("temperature", 0);
+  sampling.top_p = real("top_p", 0.8f);
+  sampling.repetition_penalty = real("repetition_penalty", 1);
+  const auto top_k = integer("top_k", 20), seed = integer("seed", -1);
+  if (sampling.temperature < 0 || sampling.top_p <= 0 || sampling.top_p > 1 ||
+      sampling.repetition_penalty < 1 || top_k < 0 || top_k > 248320 ||
+      seed < -1 || seed > std::numeric_limits<std::uint32_t>::max())
+    throw std::runtime_error("Sampling parameter out of range");
+  sampling.top_k = static_cast<int>(top_k);
+  sampling.seed = seed;
   return job;
 }
 }
@@ -181,7 +203,7 @@ int main(int argc, char **argv) try {
     if (key == "--help") {
       std::cout << "Qwen3.5 CPU HTTP server\n--model-dir DIR [--weights FILE] [--threads N]\n"
         "[--host 127.0.0.1] [--port 8080] [--max-context 8192] [--residents 16]\n"
-        "GET /health, GET /v1/models, POST /v1/completions (greedy, non-streaming)\n";
+        "GET /health, GET /v1/models, POST /v1/completions (sampling, non-streaming)\n";
       return 0;
     }
     if (++i == argc) throw std::runtime_error("Missing value: " + key);

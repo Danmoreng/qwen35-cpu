@@ -19,6 +19,10 @@ The process starts listening only after the model has loaded successfully.
   "prompt": "Once upon a time",
   "max_tokens": 128,
   "temperature": 0,
+  "top_p": 0.8,
+  "top_k": 20,
+  "repetition_penalty": 1,
+  "seed": -1,
   "stream": false,
   "n": 1,
   "prefix_tokens": 0
@@ -35,8 +39,29 @@ same trust namespace and optional API key.
 Responses contain `id`, `object`, `created`, `model`, one text choice,
 `finish_reason` and token `usage`. Stop IDs come from the model tokenizer.
 Prompt text must already contain any desired chat template. Unsupported fields,
-multiple completions, nonzero temperature and streaming are rejected explicitly.
+multiple completions and streaming are rejected explicitly.
 This is a limited completions API, not complete OpenAI API compatibility.
+
+## Sampling (v0.1.1+)
+
+The server uses the engine's existing per-request sampler. Defaults above retain
+v0.1.0 greedy behavior; a positive temperature enables sampling.
+
+| Field | Valid values | Meaning |
+| --- | --- | --- |
+| `temperature` | finite, >=0 | <=1e-6 selects greedy; otherwise scales logits |
+| `top_k` | integer 0..248320 | 0 disables Top-K filtering |
+| `top_p` | finite, (0,1] | nucleus probability cutoff; 1 disables it |
+| `repetition_penalty` | finite, >=1 | 1 disables the penalty |
+| `seed` | integer -1..4294967295 | -1 uses a random seed; otherwise seeds a private RNG |
+
+The engine applies repetition penalty to tokens in the prompt and generated
+history, then temperature, Top-K and Top-P before drawing a token. Requests do
+not share RNG state. A fixed seed reproduces sampling with the same inputs,
+settings, executable and CPU path; it is not a cross-platform bitwise guarantee.
+Mixed greedy/sampling batches use full logits; eligible all-greedy batches keep
+the optimized vocabulary reduction. `top_k`, `seed` and `repetition_penalty` are
+API extensions, not standard OpenAI completions parameters.
 
 ## Bounds and lifecycle
 
@@ -66,5 +91,6 @@ python tests/server_smoke.py --server build/qwen35_cpu_server --model-dir models
 ```
 
 This real-model test checks authorization, invalid input, repeated requests and
-exact greedy output parity for four concurrent prefix-sharing requests. It is
+exact greedy/seeded-sampling parity for concurrent prefix-sharing requests,
+mixed sampling settings, Top-K/Top-P edge cases and CLI/API sampling agreement. It is
 a correctness test, not a server throughput measurement.
