@@ -256,6 +256,7 @@ int main(int argc, char **argv) try {
   const auto stats = engine->stats();
   std::size_t forwards = 0, delivered = 0, newly_prefilled = 0, cached = 0;
   double restore_ms = 0;
+  double prefill_forward_ms = 0;
   std::vector<CpuRequestResult> results(batch_size);
   for (std::size_t r = 0; r < ids.size(); ++r) {
     check(engine->result(ids[r], results[r]));
@@ -264,6 +265,7 @@ int main(int argc, char **argv) try {
     newly_prefilled += results[r].prefill_tokens;
     cached += results[r].cached_prefix_tokens;
     restore_ms += results[r].prefix_restore_ms;
+    prefill_forward_ms += results[r].prefill_ms;
   }
   std::sort(ticks.begin(), ticks.end());
   auto percentile = [&](double p) {
@@ -282,6 +284,9 @@ int main(int argc, char **argv) try {
       << ",\"generated_tokens\":" << delivered
       << ",\"decode_forwards\":" << forwards << ",\"load_time_ms\":" << load_ms
       << ",\"prefill_time_ms\":" << prefill_ms
+      << ",\"prefill_forward_time_ms\":" << prefill_forward_ms
+      << ",\"prefill_forward_tokens_per_second\":" << newly_prefilled * 1000.0 / prefill_forward_ms
+      << ",\"resolved_isa\":\"" << cpu::q8_0_backend_name(cpu::q8_0_resolve_backend(options.cpu_q8_backend)) << "\""
       << ",\"prefill_tokens_per_second\":"
       << newly_prefilled * 1000.0 / prefill_ms
       << ",\"new_prefill_tokens\":" << newly_prefilled
