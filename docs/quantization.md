@@ -1,6 +1,6 @@
 # Standard quantization recipe
 
-The standard Hugging Face download is **activation-weighted MSE16
+The standard [Hugging Face download](https://huggingface.co/danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4/tree/59f422b2d410fdaf4a9efc71ff12f278abc2a5d1) is **activation-weighted MSE16
 H128/Q4-G32-DOT4**, also called calibrated MSE16. The file format is unchanged:
 `.q35h`, signed H128 transforms, Q4 groups of 32 with FP16 scales, and the same
 CPU DOT4 byte layout. No new loader or kernel is required to interpret its
@@ -66,3 +66,8 @@ The old public artifact remains reproducible by pinning Hugging Face revision
 new revision rather than mutable `main`; tokenizer and model checksums are
 verified together. The runtime's model identity changes with the checkpoint,
 so prefix state must not be shared across old and new weights.
+
+The promoted model revision is `59f422b2d410fdaf4a9efc71ff12f278abc2a5d1`.
+Its metadata references engine implementation commit
+`97c72de`, which includes the evaluated quantizer, tests and benchmark report.
+The rebuilt default converter reproduces the calibrated artifact hash exactly.

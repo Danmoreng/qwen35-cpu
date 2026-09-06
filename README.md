@@ -102,13 +102,13 @@ After extracting a release archive, run from its directory:
 
 ```powershell
 # Windows PowerShell 5.1+; no Python required
-./download-model.ps1 -Repo danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4 -Revision cc7df08da7ef7ac15db62e80b4eda85e19a143da
+./download-model.ps1 -Repo danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4 -Revision 59f422b2d410fdaf4a9efc71ff12f278abc2a5d1
 ./qwen35_cpu_server.exe --model-dir models/qwen3.5-0.8b --threads 8
 ```
 
 ```sh
 # Linux: bash, curl and sha256sum
-bash ./download-model.sh danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4 cc7df08da7ef7ac15db62e80b4eda85e19a143da
+bash ./download-model.sh danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4 59f422b2d410fdaf4a9efc71ff12f278abc2a5d1
 ./qwen35_cpu_server --model-dir models/qwen3.5-0.8b --threads 8
 ```
 
