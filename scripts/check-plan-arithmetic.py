@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Check the fixed arithmetic regression and independently generate its answer."""
+import argparse
 import json
 from pathlib import Path
 import re
@@ -8,20 +9,31 @@ import subprocess
 import numpy as np
 from evaluation_common import sha
 
-out = Path('benchmarks/plan-arithmetic')
+parser = argparse.ArgumentParser()
+parser.add_argument('--out', type=Path, default=Path('benchmarks/plan-arithmetic'))
+parser.add_argument('--native', type=Path, default=Path('benchmarks/plan-final-tools/qwen35_cpu.exe'))
+parser.add_argument('--checkpoint', type=Path)
+parser.add_argument('--label', default='candidate')
+parser.add_argument('--model-dir', default='models/hf-download-test')
+args = parser.parse_args()
+if any(c not in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-' for c in args.label):
+    parser.error('Unsafe candidate label')
+out = args.out
 out.mkdir(parents=True, exist_ok=True)
 case = json.loads(Path('configs/arithmetic-regression.json').read_text())['cases'][0]
 prompt = case['prompt_tokens']
 expected = case['expected_output_prefix'] + [case['expected_next_token']]
 for name, tokens in [('prompt', prompt), ('targets', expected)]:
     (out/f'{name}.csv').write_text(','.join(map(str, tokens)))
-binary = Path('benchmarks/plan-final-tools/qwen35_cpu.exe')
+binary = args.native
 models = {'legacy': 'models/hf-download-test/model.q35h',
           'mse16': 'models/qwen3.5-0.8b/model-mse16.q35h',
           'calibrated': 'models/qwen3.5-0.8b/model-calibrated-mse16.q35h'}
+if args.checkpoint:
+    models = {args.label: str(args.checkpoint)}
 rows = []
 for name, checkpoint in models.items():
-    command = [str(binary), '--model-dir', 'models/hf-download-test', '--weights', checkpoint,
+    command = [str(binary), '--model-dir', args.model_dir, '--weights', checkpoint,
                '--tokens-file', str(out/'prompt.csv'), '--threads', '8',
                '--max-context', str(case['max_context']), '--max-new-tokens', '32']
     for key in ('temperature', 'top_k', 'top_p', 'repetition_penalty', 'seed'):

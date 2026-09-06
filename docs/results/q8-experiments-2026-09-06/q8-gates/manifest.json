@@ -1,0 +1,20 @@
+{
+  "source": {
+    "revision": "7ef8906dac5162d66ccfca3e9f1972093ef41ecd",
+    "diff_sha256": "ef930950537115593d7e1e04d8ba79712d5d5cc3563d2844f976d76070800793",
+    "source_tree_sha256": "8749486b4dbadb386c3f4b5a5997ea15ea214c11c64ed702d8b5578b562f7b87"
+  },
+  "binary_sha256": {
+    "cpu_prefix_model_test.exe": "ff948c568f1460f34618abda1cda12b448e97920892f603986dfdbf9b0c9714c",
+    "cpu_scheduler_model_test.exe": "c269c8060b3599620edb563049ec5b62b3c12ac100eade48922272b9249c7f7f",
+    "qwen35_cpu.exe": "9e0249198938a2727645650c6b488b704f575c314bac5085d4e23a7bc1af0bf6",
+    "qwen35_cpu_bench.exe": "1176211778a50ccad1ae488c95130fb020d9716df2ee66984e106dcacdcf2ead",
+    "qwen35_cpu_pack.exe": "ffb2d9d6ce5a48a86f96ad12f8531e774b8cc14f3797d6c83bc371754140429b",
+    "qwen35_cpu_server.exe": "9ca27f8cb7f484ea6682b39a77181dfdc9d0bb66231ca4cf7295891f2e919e48"
+  },
+  "files": {
+    "performance.csv": "b6787e0d5eb561be3572d6781742bf112494aeb6af39e5732293c4c585063390",
+    "raw-results.zip": "32e5fb73e211323e86f1e15c4e9d414d274b8dcaf56e225c84eb76cc3f3fda06",
+    "results.json": "a85587b46c55c6cd3eca383bce2f4c65d6fd94c0f0a5b1d1677af6e2cad9121c"
+  }
+}

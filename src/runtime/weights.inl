@@ -102,6 +102,11 @@ struct GgufRowPart {
   std::shared_ptr<const std::vector<std::uint8_t>> bytes;
 };
 struct TensorData {
+  // Optional identity-basis Q8 B/A gate rows following the H128 DOT4 rows.
+  // Immutable after loading; output order remains QKV, Z, B, A.
+  std::size_t q8_gate_rows = 0;
+  std::vector<cpu::Q8_0Block> q8_gate_blocks;
+  std::vector<float> q8_gate_scales;
   // Immutable original GGUF bytes, shared by individual and concatenated views.
   std::vector<GgufRowPart> gguf_parts;
 
@@ -641,6 +646,19 @@ bool load_q4_h128_quantized_checked(
   std::string & error_message,
   const bool retain_scales = true) {
   const Q4H128TensorInfo * info = reader.find_tensor(tensor_name);
+  if (info && info->encoding == Q4H128TensorEncoding::q8_0 && !expect_h128 &&
+      q4_h128_shape_matches(info->shape, {rows, cols})) {
+    out = TensorData{}; out.shape = {rows, cols}; out.q8_0_backend = backend;
+    out.q8_0_blocks.resize(static_cast<std::size_t>(rows)*(static_cast<std::size_t>(cols)/32));
+    if (!reader.read_tensor_into(tensor_name, out.q8_0_blocks.data(),
+          out.q8_0_blocks.size()*sizeof(cpu::Q8_0Block), error_message)) return false;
+    out.q8_0_scales.resize(out.q8_0_blocks.size());
+    cpu::q8_0_scales_to_f32(out.q8_0_blocks.data(), out.q8_0_scales.data(), out.q8_0_blocks.size());
+    for (float scale : out.q8_0_scales) if (!std::isfinite(scale) || scale < 0) {
+      error_message = "Invalid Q8 weight scale: " + tensor_name; return false;
+    }
+    return true;
+  }
   const auto dot4_encoding = expect_h128 ? Q4H128TensorEncoding::q4_h128_cpu_dot4
                                          : Q4H128TensorEncoding::q4_0_cpu_dot4;
   if (info == nullptr || info->encoding != dot4_encoding ||
@@ -906,12 +924,36 @@ bool prepare_q4_decode_activation(
   return true;
 }
 
+// Small Q8 tail: prepare each original-basis input once and write directly
+// into the fused output stride. Avoid a second executor launch for 32 rows.
+bool run_q8_gate_tail(CpuExecutionContext *context, const TensorData &w,
+                     const float *inputs, std::size_t count, float *output,
+                     std::string &error) {
+  if (!w.q8_gate_rows) return true;
+  const auto columns = static_cast<std::size_t>(w.shape[1]);
+  const auto stride = static_cast<std::size_t>(w.shape[0]);
+  const auto blocks = columns/32;
+  if (w.q8_gate_rows >= stride || w.q8_gate_blocks.size() != w.q8_gate_rows*blocks ||
+      w.q8_gate_scales.size() != w.q8_gate_blocks.size()) {
+    error = "Invalid mixed Q4/Q8 gate storage"; return false;
+  }
+  std::vector<cpu::Q8_0Block> local;
+  auto &prepared = context ? context->quantized_batch : local;
+  prepared.resize(count*blocks);
+  cpu::q8_0_quantize(inputs, prepared.data(), count*blocks, w.q8_0_backend);
+  cpu::q8_0_matmul(w.q8_gate_blocks.data(), prepared.data(),
+      output+stride-w.q8_gate_rows, w.q8_gate_rows, count, blocks, stride,
+      w.q8_0_backend, nullptr, w.q8_gate_scales.data());
+  return true;
+}
+
 bool matvec_2d(CpuExecutionContext *cpu_context,
   const TensorData & w,
   const std::vector<float> & x,
   std::vector<float> & out,
   std::string & error_message) {
-  const int rows = static_cast<int>(w.shape[0]);
+  const int output_rows = static_cast<int>(w.shape[0]);
+  const int rows = output_rows-static_cast<int>(w.q8_gate_rows);
   const int cols = static_cast<int>(w.shape[1]);
   if (static_cast<int>(x.size()) != cols) {
     error_message = "matvec input size mismatch.";
@@ -946,7 +988,7 @@ bool matvec_2d(CpuExecutionContext *cpu_context,
       return false;
     }
     probe.prepared();
-    out.resize(static_cast<std::size_t>(rows));
+    out.resize(static_cast<std::size_t>(output_rows));
     if (cpu_context != nullptr && cpu_context->executor != nullptr) {
       PackedQ4MatvecJob job{
         w.packed_q4_0_blocks.data(), prepared_input.data(), out.data(),
@@ -967,7 +1009,7 @@ bool matvec_2d(CpuExecutionContext *cpu_context,
         w.packed_q4_0_blocks.data(), prepared_input.data(), out.data(),
         static_cast<std::size_t>(rows), blocks_per_row, w.q8_0_backend);
     }
-    return true;
+    return run_q8_gate_tail(cpu_context, w, x.data(), 1, out.data(), error_message);
   }
 
   if (w.is_q8_0()) {
@@ -1039,7 +1081,7 @@ bool greedy_q4_token(CpuExecutionContext *cpu_context,
   const float repetition_penalty,
   int & out_token,
   std::string & error_message) {
-  if (!weights.gguf_parts.empty()) {
+  if (!weights.gguf_parts.empty() || weights.is_q8_0()) {
     std::vector<float> logits;
     if(!matvec_2d(cpu_context,weights,input,logits,error_message))return false;
     if(token_counts.size()<logits.size()) {error_message="Token count size mismatch.";return false;}
@@ -1122,7 +1164,8 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
     error_message = "CPU batched matmul requires a 2D Q4_0/Q8_0 tensor with a runtime.";
     return false;
   }
-  const std::size_t rows = static_cast<std::size_t>(w.shape[0]);
+  const std::size_t output_stride = static_cast<std::size_t>(w.shape[0]);
+  const std::size_t rows = output_stride-w.q8_gate_rows;
   const std::size_t cols = static_cast<std::size_t>(w.shape[1]);
   if (cols == 0 || (cols % cpu::q8_0_values_per_block) != 0 ||
       batch_size > std::numeric_limits<std::size_t>::max() / cols ||
@@ -1135,7 +1178,7 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
   const std::size_t blocks_per_row = cols / cpu::q8_0_values_per_block;
   if (rows > std::numeric_limits<std::size_t>::max() / blocks_per_row ||
       batch_size > std::numeric_limits<std::size_t>::max() / blocks_per_row ||
-      batch_size > std::numeric_limits<std::size_t>::max() / rows) {
+      rows == 0 || output_stride == 0 || batch_size > std::numeric_limits<std::size_t>::max() / output_stride) {
     error_message = "CPU batched matmul storage size overflow or mismatch.";
     return false;
   }
@@ -1151,7 +1194,7 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
     return false;
   }
 
-  out.resize(batch_size * rows);
+  out.resize(batch_size * output_stride);
   if (batch_size == 0 || rows == 0) {
     return true;
   }
@@ -1233,7 +1276,7 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
       if (cpu_context->executor != nullptr) {
         PackedQ4PrefillJob job{
           w.packed_q4_0_blocks.data(), packed.data(), out.data(),
-          packed_vector_count, blocks_per_row, rows, w.q8_0_backend, w.q4_dot4,
+          packed_vector_count, blocks_per_row, output_stride, w.q8_0_backend, w.q4_dot4,
         };
         const cpu::CpuExecutorStatus status =
           cpu_context->executor->parallel_for_rows(
@@ -1246,7 +1289,7 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
       } else {
         (w.q4_dot4 ? cpu::q4_dot4_matmul : cpu::q4_0_packed_matmul_q8_0)(
           w.packed_q4_0_blocks.data(), packed.data(), out.data(), rows,
-          packed_vector_count, blocks_per_row, rows, w.q8_0_backend);
+          packed_vector_count, blocks_per_row, output_stride, w.q8_0_backend);
       }
     }
 
@@ -1263,11 +1306,11 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
         }
       }
       probe.prepared();
-      float * tail_output = out.data() + packed_vector_count * rows;
+      float * tail_output = out.data() + packed_vector_count * output_stride;
       for (std::size_t token = 0; token < tail_vector_count; ++token) {
         const cpu::Q8_0BlockX1 * tail_vector =
           prepared.data() + token * blocks_per_row;
-        float * token_output = tail_output + token * rows;
+        float * token_output = tail_output + token * output_stride;
         if (cpu_context->executor != nullptr) {
           PackedQ4MatvecJob job{
             w.packed_q4_0_blocks.data(), tail_vector, token_output,
@@ -1290,7 +1333,7 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
         }
       }
     }
-    return true;
+    return run_q8_gate_tail(cpu_context, w, inputs.data(), batch_size, out.data(), error_message);
   }
 
   std::vector<cpu::Q8_0Block> & quantized = cpu_context->quantized_batch;
@@ -1427,8 +1470,8 @@ bool load_model_weights_from_q4_h128(
   }
   const auto * embedding_info = reader.find_tensor("model.language_model.embed_tokens.weight");
   const bool cpu_packed = embedding_info != nullptr &&
-    q4_h128_encoding_cpu_packed(embedding_info->encoding);
-  if (!embedding_info || !q4_h128_encoding_dot4(embedding_info->encoding)) {
+    (q4_h128_encoding_cpu_packed(embedding_info->encoding) || embedding_info->encoding == Q4H128TensorEncoding::q8_0);
+  if (!embedding_info || (!q4_h128_encoding_dot4(embedding_info->encoding) && embedding_info->encoding != Q4H128TensorEncoding::q8_0)) {
     error_message="Only CPU-ready H128/Q4-G32-DOT4 artifacts are supported.";return false;
   }
   const Q4H128ArtifactMetadata & metadata = reader.metadata();
@@ -1491,8 +1534,10 @@ bool load_model_weights_from_q4_h128(
     }
 
     if (layer.is_linear) {
+      const auto *gate_info = reader.find_tensor(base + "linear_attn.in_proj_ba.weight");
+      const int gate_rows = gate_info ? 2*dims.linear_num_v_heads : 0;
       const int combined_rows = dims.linear_conv_channels + dims.linear_v_dim +
-        2 * dims.linear_num_v_heads;
+        2 * dims.linear_num_v_heads - gate_rows;
       if ((cpu_packed
             ? !load_q4(base + "linear_attn.in_proj_all.weight", combined_rows, dims.hidden,
                             layer.linear.in_proj_all_cpu, false)
@@ -1521,6 +1566,20 @@ bool load_model_weights_from_q4_h128(
           !load_f32(base + "linear_attn.dt_bias",
                     {dims.linear_num_v_heads}, layer.linear.dt_bias)) {
         return false;
+      }
+      if (gate_info) {
+        TensorData gate;
+        if (!cpu_packed || gate_info->encoding != Q4H128TensorEncoding::q8_0 ||
+            !load_q4_h128_quantized_checked(reader, base+"linear_attn.in_proj_ba.weight",
+              gate_rows, dims.hidden, false, backend, gate, error_message)) {
+          if (error_message.empty()) error_message = "Invalid Q8 recurrent gate group";
+          return false;
+        }
+        auto &projection = layer.linear.in_proj_all_cpu;
+        projection.q8_gate_rows = static_cast<std::size_t>(gate_rows);
+        projection.q8_gate_blocks = std::move(gate.q8_0_blocks);
+        projection.q8_gate_scales = std::move(gate.q8_0_scales);
+        projection.shape[0] += gate_rows;
       }
       layer.linear.conv1d.shape = {dims.linear_conv_channels, dims.linear_kernel};
       layer.linear.ssm_a.resize(static_cast<std::size_t>(dims.linear_num_v_heads));

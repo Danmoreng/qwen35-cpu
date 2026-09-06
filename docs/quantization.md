@@ -71,3 +71,13 @@ The promoted model revision is `59f422b2d410fdaf4a9efc71ff12f278abc2a5d1`.
 Its metadata references engine implementation commit
 `97c72de`, which includes the evaluated quantizer, tests and benchmark report.
 The rebuilt default converter reproduces the calibrated artifact hash exactly.
+
+## Optional mixed Q8 experiment
+
+`--q8-gates` promotes the small recurrent B/A projections to identity-basis
+Q8_0; `--q8-head` promotes the tied embedding/output matrix. Both flags default
+to off. These artifacts introduce tensor encoding ID 7 and require a new
+engine; older readers reject them. The packer writes a `.precision.json`
+sidecar identifying these choices. They do not alter the published standard.
+See the [selective Q8 experiment](q8-experiments-2026-09-06.md) for measured
+gate results, format details and the unmeasured head limitation.

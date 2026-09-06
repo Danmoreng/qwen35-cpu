@@ -105,8 +105,17 @@ int main() {
   invalid_embedding.scale_group = 64;
   ok = expect(!writer.open(path.string(), metadata, {invalid_embedding}, error),
               "packed embedding accepted incompatible scale group") && ok;
+  auto q8 = packed_embedding;
+  q8.name = "q8.weight"; q8.encoding = qwen35x::Q4H128TensorEncoding::q8_0;
+  std::vector<qwen35x::cpu::Q8_0Block> q8_data(32);
+  for (auto &block : q8_data) { block.d = 0x3c00; for (auto &v : block.qs) v = -127; }
+  auto bad_q8 = q8; bad_q8.scale_group = 64;
+  ok = expect(!writer.open(path.string(), metadata, {bad_q8}, error), "Q8 accepted bad group") && ok;
+  bad_q8 = q8; bad_q8.sign_seed = 1;
+  ok = expect(!writer.open(path.string(), metadata, {bad_q8}, error), "Q8 accepted transformed basis") && ok;
+  ok = expect(qwen35x::q4_h128_payload_size(q8.encoding, {8,129}, error)==0, "Q8 accepted bad columns") && ok;
   error.clear();
-  ok = expect(writer.open(path.string(), metadata, {norm, projection, packed_projection, packed_embedding, dot4_projection, dot4_embedding}, error),
+  ok = expect(writer.open(path.string(), metadata, {norm, projection, packed_projection, packed_embedding, dot4_projection, dot4_embedding, q8}, error),
               error.c_str()) && ok;
   ok = expect(writer.write_tensor(
                 norm.name, norm_data.data(), norm_data.size() * sizeof(float), error),
@@ -120,6 +129,7 @@ int main() {
     ok = expect(writer.write_tensor(info.name, payload.data(),
                   packed_data.size() * sizeof(packed_data[0]), error), error.c_str()) && ok;
   }
+  ok = expect(writer.write_tensor(q8.name,q8_data.data(),q8_data.size()*sizeof(q8_data[0]),error),error.c_str()) && ok;
   ok = expect(writer.finalize(error), error.c_str()) && ok;
 
   qwen35x::Q4H128ArtifactReader reader;
@@ -135,6 +145,9 @@ int main() {
   ok = expect(bytes.size() == projection_data.size() * sizeof(qwen35x::cpu::Q4_0Block) &&
                 std::memcmp(bytes.data(), projection_data.data(), bytes.size()) == 0,
               "artifact tensor payload mismatch") && ok;
+  std::vector<qwen35x::cpu::Q8_0Block> q8_read(32);
+  ok = expect(reader.read_tensor_into(q8.name,q8_read.data(),q8_read.size()*sizeof(q8_read[0]),error),error.c_str()) && ok;
+  ok = expect(std::memcmp(q8_read.data(),q8_data.data(),q8_data.size()*sizeof(q8_data[0]))==0,"Q8 roundtrip changed bytes") && ok;
   const std::uint64_t projection_offset = loaded == nullptr ? 0 : loaded->data_offset;
   const auto * packed_info = reader.find_tensor(packed_projection.name);
   const std::uint64_t packed_offset = packed_info == nullptr ? 0 : packed_info->data_offset;

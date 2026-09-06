@@ -1,4 +1,5 @@
 #include "qwen35x/cpu/q4_dot4.h"
+#include "qwen35x/cpu/q8_0.h"
 #include "qwen35x/cpu/q4_quantizer.h"
 #include <fstream>
 #include <cmath>
@@ -190,7 +191,14 @@ std::vector<ConversionTensor> plan_conversion(
   std::vector<ConversionTensor> plan;
   for (const auto & source : sources) {
     auto output = source;
-    if (cpu_packed && source.encoding != Q4H128TensorEncoding::f32) {
+    if (source.encoding == Q4H128TensorEncoding::q8_0) {
+      for (const std::string suffix : {"linear_attn.in_proj_b.weight", "linear_attn.in_proj_a.weight"}) {
+        if (output.name.ends_with(suffix)) {
+          output.name.replace(output.name.size()-suffix.size(), suffix.size(), "linear_attn.in_proj_ba.weight");
+          break;
+        }
+      }
+    } else if (cpu_packed && source.encoding != Q4H128TensorEncoding::f32) {
       output.encoding = source.encoding == Q4H128TensorEncoding::q4_h128
         ? Q4H128TensorEncoding::q4_h128_cpu_x8
         : Q4H128TensorEncoding::q4_0_cpu_x8;
@@ -247,6 +255,7 @@ bool convert_tensor(
     packed_blocks.resize(static_cast<std::size_t>(size) / sizeof(packed_blocks[0]));
   }
   std::size_t packed_offset = 0;
+  std::vector<qwen35x::cpu::Q8_0Block> q8_blocks;
   for (const auto & source : conversion.sources) {
     qwen35x::SafetensorTensorF32 tensor;
     if (!qwen35x::SafetensorLoader::read_tensor_f32(
@@ -262,6 +271,18 @@ bool convert_tensor(
         info.name, tensor.data.data(), tensor.data.size() * sizeof(float), error);
     }
     const std::size_t block_count = tensor.data.size() / qwen35x::cpu::q4_0_values_per_block;
+    if (source.encoding == Q4H128TensorEncoding::q8_0) {
+      for (float value : tensor.data) {
+        if (!std::isfinite(value) || std::abs(value) > 65504.0F) {
+          error = "Invalid Q8 source value: " + source.name; return false;
+        }
+      }
+      const auto offset = q8_blocks.size();
+      q8_blocks.resize(offset + block_count);
+      qwen35x::cpu::q8_0_quantize(tensor.data.data(), q8_blocks.data()+offset,
+                                block_count, qwen35x::cpu::Q8_0Backend::scalar);
+      continue;
+    }
     std::vector<qwen35x::cpu::Q4_0Block> blocks(block_count);
     if (source.encoding == Q4H128TensorEncoding::q4_h128) {
       if (!qwen35x::cpu::q4_h128_transform_rows(tensor.data.data(), tensor.data.data(),
@@ -317,6 +338,9 @@ bool convert_tensor(
       static_cast<std::size_t>(source.shape[1]) / qwen35x::cpu::q4_0_values_per_block);
     packed_offset += block_count / 8;
   }
+  if (info.encoding == Q4H128TensorEncoding::q8_0) {
+    return writer.write_tensor(info.name, q8_blocks.data(), q8_blocks.size()*sizeof(q8_blocks[0]), error);
+  }
   if (packed_offset != packed_blocks.size()) {
     error = "CPU packing did not fill the output tensor: " + info.name;
     return false;
@@ -332,10 +356,13 @@ int main(int argc, char ** argv) {
   std::string output_path;
   std::string layout = "cpu-dot4";
   std::string quantizer = "mse16";
+  bool q8_gates = false, q8_head = false;
   std::string importance_dir;
   for (int index = 1; index < argc; ++index) {
     const std::string argument = argv[index];
-    if (argument == "--hf-model-dir" && index + 1 < argc) {
+    if (argument == "--q8-gates") { q8_gates = true;
+    } else if (argument == "--q8-head") { q8_head = true;
+    } else if (argument == "--hf-model-dir" && index + 1 < argc) {
       model_dir = argv[++index];
     } else if (argument == "--output" && index + 1 < argc) {
       output_path = argv[++index];
@@ -346,7 +373,7 @@ int main(int argc, char ** argv) {
     } else if (argument == "--importance-dir" && index + 1 < argc) {
       importance_dir = argv[++index];
     } else if (argument == "--help") {
-      std::cout << "Usage: qwen35_cpu_pack --hf-model-dir <dir> --output <file> [--layout cpu-dot4] [--quantizer mse16|legacy-absmax15] [--importance-dir <Q35CAL1 directory>]\nDefault quantizer: mse16; calibration is enabled only with --importance-dir.\n";
+      std::cout << "Usage: qwen35_cpu_pack --hf-model-dir <dir> --output <file> [--layout cpu-dot4] [--quantizer mse16|legacy-absmax15] [--importance-dir <Q35CAL1 directory>] [--q8-gates] [--q8-head]\nDefault quantizer: mse16; calibration is enabled only with --importance-dir.\n";
       return 0;
     } else {
       std::cerr << "Unknown or incomplete argument: " << argument << '\n';
@@ -400,6 +427,14 @@ int main(int argc, char ** argv) {
     return 3;
   }
 
+  for (auto & tensor : tensors) {
+    const bool gate = tensor.name.ends_with("linear_attn.in_proj_a.weight") ||
+                      tensor.name.ends_with("linear_attn.in_proj_b.weight");
+    if ((q8_gates && gate) || (q8_head && tensor.name == "model.language_model.embed_tokens.weight")) {
+      tensor.encoding = Q4H128TensorEncoding::q8_0;
+      tensor.transform_size = 0; tensor.sign_seed = 0; tensor.scale_group = 32;
+    }
+  }
   const auto conversion = plan_conversion(tensors, layout != "canonical", layout == "cpu-dot4");
   tensors.clear();
   for (const auto & item : conversion) {
@@ -460,6 +495,11 @@ int main(int argc, char ** argv) {
           << "\",\n  \"layout\": \"cpu-dot4\",\n  \"sign_seed\": " << metadata.sign_seed
           << ",\n  \"importance\": " << (importance_dir.empty()?"null":"\"Q35CAL1\"") << ",\n  \"rounding\": \"code ties away from zero; stored FP16 scale\"\n}\n";
   sidecar.close();
+  std::ofstream mixed_sidecar(output_path + ".precision.json");
+  mixed_sidecar << "{\n  \"q8_gates\": " << (q8_gates ? "true" : "false")
+                << ",\n  \"q8_head\": " << (q8_head ? "true" : "false")
+                << ",\n  \"q8_basis\": \"identity\",\n  \"q8_quantizer\": \"scalar-absmax127-fp16\"\n}\n";
+  if (!mixed_sidecar) { std::cerr << "Could not write precision provenance\n"; return 8; }
   if (!importance_dir.empty()) {
     std::error_code copy_error;
     fs::copy_file(fs::path(importance_dir)/"manifest.json", output_path+".calibration.json", copy_error);

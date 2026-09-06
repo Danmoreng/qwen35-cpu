@@ -298,7 +298,8 @@ int main(int argc, char **argv) try {
       << ",\"prefill_forward_tokens_per_second\":" << newly_prefilled * 1000.0 / prefill_forward_ms
       << ",\"resolved_isa\":\"" << cpu::q8_0_backend_name(cpu::q8_0_resolve_backend(options.cpu_q8_backend)) << "\""
       << ",\"projection_kernel\":\"" << (std::string(model->weight_format())=="gguf-k-quants" ?
-           (cpu::q8_0_backend_uses_avx2(options.cpu_q8_backend)?"k-quants-avx2":"k-quants-scalar") : "q4-dot4") << "\""
+           (cpu::q8_0_backend_uses_avx2(options.cpu_q8_backend)?"k-quants-avx2":"k-quants-scalar") :
+           (std::string(model->weight_format()).find("q8-") != std::string::npos ? "q4-dot4+q8_0" : "q4-dot4")) << "\""
       << ",\"prefill_tokens_per_second\":"
       << newly_prefilled * 1000.0 / prefill_ms
       << ",\"new_prefill_tokens\":" << newly_prefilled

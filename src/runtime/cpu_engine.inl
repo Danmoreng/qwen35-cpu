@@ -9,7 +9,11 @@ struct CpuModel::Impl {
 CpuModel::CpuModel(std::shared_ptr<const Impl> impl) : impl_(std::move(impl)) {}
 CpuModel::~CpuModel() = default;
 const char* CpuModel::weight_format() const noexcept {
-  return !impl_->gguf?"h128-q4-dot4":impl_->weights.embed_tokens.is_q4_0()?"gguf-q4_0-dot4":"gguf-k-quants";
+  if (impl_->gguf) return impl_->weights.embed_tokens.is_q4_0()?"gguf-q4_0-dot4":"gguf-k-quants";
+  const bool gates = std::any_of(impl_->weights.layers.begin(), impl_->weights.layers.end(),
+      [](const auto &layer) { return layer.linear.in_proj_all_cpu.q8_gate_rows != 0; });
+  if (impl_->weights.embed_tokens.is_q8_0()) return gates?"h128-q4-dot4-q8-gates-head":"h128-q4-dot4-q8-head";
+  return gates?"h128-q4-dot4-q8-gates":"h128-q4-dot4";
 }
 std::shared_ptr<const CpuModel>
 CpuModel::load(const ModelProfile &profile,
@@ -206,7 +210,7 @@ struct CpuEngine::Impl {
     rms_norm_qwen3next_batch(b.x, count, hidden, w.final_norm, d.rms_eps,
                              b.final_hidden);
     const bool greedy =
-        config.batch_greedy && w.embed_tokens.gguf_parts.empty() &&
+        config.batch_greedy && w.embed_tokens.is_q4_0() &&
         std::all_of(rows.begin(), rows.end(), [](const auto *s) {
           return s->spec.sampling.temperature <= 1e-6F &&
                  s->spec.forced_output_tokens.empty() &&

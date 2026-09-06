@@ -215,3 +215,6 @@ endif()
 # Optional local numerical diagnostics; not part of runtime packaging.
 add_executable(q4_projection_probe EXCLUDE_FROM_ALL tools/projection_probe.cpp)
 target_link_libraries(q4_projection_probe PRIVATE qwen35x_core)
+add_executable(mixed_q8_runtime_test tests/mixed_q8_runtime_test.cpp)
+target_link_libraries(mixed_q8_runtime_test PRIVATE qwen35x_core)
+add_test(NAME mixed_q8_runtime COMMAND mixed_q8_runtime_test)
