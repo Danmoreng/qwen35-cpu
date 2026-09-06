@@ -20,7 +20,7 @@ using ReferenceLogitsCallback=bool(*)(void*,std::size_t,std::int32_t,const float
 
 struct CpuDecodeStage {
   std::string kind;
-  std::size_t rows{}, columns{}, participants{};
+  std::size_t rows{}, columns{}, participants{}, vectors{1};
   double prepare_ms{}, wall_ms{}, dispatch_ms{}, caller_ms{}, wait_ms{};
 };
 

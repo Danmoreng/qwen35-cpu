@@ -71,9 +71,9 @@ struct CpuDecodeProbe {
   CpuDecodeStage event;
   cpu::CpuExecutorTiming timing;
   Clock::time_point start{}, kernel_start{};
-  CpuDecodeProbe(CpuExecutionContext *rt, const char *kind, std::size_t rows, std::size_t cols)
+  CpuDecodeProbe(CpuExecutionContext *rt, const char *kind, std::size_t rows, std::size_t cols, std::size_t vectors=1)
       : sink(rt ? rt->decode_stages : nullptr) {
-    if (sink) { event.kind=kind; event.rows=rows; event.columns=cols; start=kernel_start=Clock::now(); }
+    if (sink) { event.kind=kind; event.rows=rows; event.columns=cols; event.vectors=vectors; start=kernel_start=Clock::now(); }
   }
   void prepared() {
     if (sink) { kernel_start=Clock::now(); event.prepare_ms=std::chrono::duration<double,std::milli>(kernel_start-start).count(); }
@@ -1196,6 +1196,7 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
       return false;
     }
     if (packed_vector_count != 0) {
+      CpuDecodeProbe probe(cpu_context, "q4-matmul", rows, cols, packed_vector_count);
       std::vector<cpu::Q8_0BlockX4> & packed =
         cpu_context->packed_q8_0_batch;
       packed.resize(
@@ -1228,6 +1229,7 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
           quantization_inputs, packed.data(), packed_vector_count, blocks_per_row,
           w.q8_0_backend);
       }
+      probe.prepared();
       if (cpu_context->executor != nullptr) {
         PackedQ4PrefillJob job{
           w.packed_q4_0_blocks.data(), packed.data(), out.data(),
@@ -1235,7 +1237,7 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
         };
         const cpu::CpuExecutorStatus status =
           cpu_context->executor->parallel_for_rows(
-            rows / cpu::q4_0_packed_rows, run_packed_q4_prefill_tiles, &job);
+            rows / cpu::q4_0_packed_rows, run_packed_q4_prefill_tiles, &job, probe.executor_timing());
         if (status != cpu::CpuExecutorStatus::ok) {
           error_message = std::string("Packed Q4_0 CPU batch executor failed: ") +
             cpu::cpu_executor_status_name(status) + ".";
@@ -1250,6 +1252,7 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
 
     const std::size_t tail_vector_count = batch_size - packed_vector_count;
     if (tail_vector_count != 0) {
+      CpuDecodeProbe probe(cpu_context, "q4-matvec-tail", rows, cols, tail_vector_count);
       auto & prepared = cpu_context->prepared_q4_input;
       prepared.resize(tail_vector_count * blocks_per_row);
       for (std::size_t token = 0; token < tail_vector_count; ++token) {
@@ -1259,6 +1262,7 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
           return false;
         }
       }
+      probe.prepared();
       float * tail_output = out.data() + packed_vector_count * rows;
       for (std::size_t token = 0; token < tail_vector_count; ++token) {
         const cpu::Q8_0BlockX1 * tail_vector =
@@ -1273,7 +1277,7 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
             cpu_context->executor->parallel_for_rows(
               rows / cpu::q4_0_packed_rows,
               run_packed_q4_matvec_tiles,
-              &job);
+              &job, probe.executor_timing());
           if (status != cpu::CpuExecutorStatus::ok) {
             error_message = std::string("Packed Q4_0 CPU batch tail executor failed: ") +
               cpu::cpu_executor_status_name(status) + ".";

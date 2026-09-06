@@ -1,4 +1,8 @@
 #include "qwen35x/cpu/q4_dot4.h"
+#include "qwen35x/cpu/q4_quantizer.h"
+#include <fstream>
+#include <cmath>
+#include <cstring>
 #include "qwen35x/common/model_profile.h"
 #include "qwen35x/compiler/compiler.h"
 #include "qwen35x/cpu/q4_0.h"
@@ -228,6 +232,8 @@ std::vector<ConversionTensor> plan_conversion(
 bool convert_tensor(
   const std::string & model_dir,
   const ConversionTensor & conversion,
+  const qwen35x::cpu::Q4Quantizer recipe,
+  const std::string & importance_dir,
   qwen35x::Q4H128ArtifactWriter & writer,
   std::string & error) {
   const auto & info = conversion.output;
@@ -258,15 +264,43 @@ bool convert_tensor(
     const std::size_t block_count = tensor.data.size() / qwen35x::cpu::q4_0_values_per_block;
     std::vector<qwen35x::cpu::Q4_0Block> blocks(block_count);
     if (source.encoding == Q4H128TensorEncoding::q4_h128) {
-      if (!qwen35x::cpu::q4_h128_quantize_matrix(
-            tensor.data.data(), blocks.data(),
+      if (!qwen35x::cpu::q4_h128_transform_rows(tensor.data.data(), tensor.data.data(),
             static_cast<std::size_t>(source.shape[0]),
             static_cast<std::size_t>(source.shape[1]), source.sign_seed)) {
-        error = "Q4_H128 projection conversion failed for '" + source.name + "'.";
+        error = "H128 transform failed for " + source.name;
         return false;
       }
-    } else {
-      qwen35x::cpu::q4_h128_quantize_transformed(tensor.data.data(), blocks.data(), block_count);
+    }
+    std::vector<float> importance;
+    if (!importance_dir.empty()) {
+      std::ifstream calibration(std::filesystem::path(importance_dir)/(source.name+".cal"), std::ios::binary);
+      char magic[8]{}; std::uint64_t columns=0, seed=0, samples=0; std::uint32_t basis=0;
+      calibration.read(magic,8);calibration.read(reinterpret_cast<char*>(&columns),8);
+      calibration.read(reinterpret_cast<char*>(&seed),8);calibration.read(reinterpret_cast<char*>(&basis),4);
+      calibration.read(reinterpret_cast<char*>(&samples),8);
+      const bool transformed=source.encoding==Q4H128TensorEncoding::q4_h128;
+      if (!calibration || std::memcmp(magic,"Q35CAL1\0",8) || columns!=source.shape[1] || !samples ||
+          basis!=(transformed?1U:0U) || seed!=(transformed?source.sign_seed:0)) {
+        error="Missing/incompatible calibration basis, seed or shape: "+source.name;return false;
+      }
+      importance.resize(static_cast<std::size_t>(columns));
+      calibration.read(reinterpret_cast<char*>(importance.data()),importance.size()*sizeof(float));
+      if (!calibration || calibration.peek()!=std::char_traits<char>::eof()) {
+        error="Truncated or oversized calibration input: "+source.name;return false;
+      }
+      for(float h:importance)if(!std::isfinite(h) || h<0) {
+        error="Invalid calibration importance: "+source.name;return false;
+      }
+    }
+    const std::size_t columns=static_cast<std::size_t>(source.shape[1]);
+    const std::size_t rows=static_cast<std::size_t>(source.shape[0]);
+    for (std::size_t row=0; row<rows; ++row) {
+      if (!qwen35x::cpu::q4_quantize_offline(tensor.data.data()+row*columns,
+            blocks.data()+row*(columns/32), columns/32, recipe,
+            importance.empty()?nullptr:importance.data())) {
+        error = "Non-finite source or binary16 scale overflow in " + source.name;
+        return false;
+      }
     }
     if (!packed) {
       return writer.write_tensor(info.name, blocks.data(), blocks.size() * sizeof(blocks[0]), error);
@@ -297,6 +331,8 @@ int main(int argc, char ** argv) {
   std::string model_dir;
   std::string output_path;
   std::string layout = "cpu-dot4";
+  std::string quantizer = "mse16";
+  std::string importance_dir;
   for (int index = 1; index < argc; ++index) {
     const std::string argument = argv[index];
     if (argument == "--hf-model-dir" && index + 1 < argc) {
@@ -305,8 +341,12 @@ int main(int argc, char ** argv) {
       output_path = argv[++index];
     } else if (argument == "--layout" && index + 1 < argc) {
       layout = argv[++index];
+    } else if (argument == "--quantizer" && index + 1 < argc) {
+      quantizer = argv[++index];
+    } else if (argument == "--importance-dir" && index + 1 < argc) {
+      importance_dir = argv[++index];
     } else if (argument == "--help") {
-      std::cout << "Usage: qwen35_cpu_pack --hf-model-dir <dir> --output <file> [--layout cpu-dot4]\n";
+      std::cout << "Usage: qwen35_cpu_pack --hf-model-dir <dir> --output <file> [--layout cpu-dot4] [--quantizer mse16|legacy-absmax15] [--importance-dir <Q35CAL1 directory>]\nDefault quantizer: mse16; calibration is enabled only with --importance-dir.\n";
       return 0;
     } else {
       std::cerr << "Unknown or incomplete argument: " << argument << '\n';
@@ -321,6 +361,16 @@ int main(int argc, char ** argv) {
     std::cerr << "Unknown layout: " << layout << '\n';
     return 2;
   }
+  if (quantizer != "legacy-absmax15" && quantizer != "mse16") {
+    std::cerr << "Unknown quantizer: " << quantizer << '\n';
+    return 2;
+  }
+  if (!importance_dir.empty() && (quantizer != "mse16" ||
+      !std::filesystem::exists(std::filesystem::path(importance_dir)/"manifest.json"))) {
+    std::cerr << "Importance requires mse16 and a calibration manifest\n";return 2;
+  }
+  const auto recipe = quantizer == "mse16" ? qwen35x::cpu::Q4Quantizer::mse16
+                                         : qwen35x::cpu::Q4Quantizer::legacy_absmax15;
   namespace fs = std::filesystem;
   if (fs::exists(output_path)) {
     std::cerr << "Refusing to overwrite existing output: " << output_path << '\n';
@@ -365,7 +415,7 @@ int main(int argc, char ** argv) {
   }
   for (std::size_t index = 0; index < tensors.size(); ++index) {
     const auto started = std::chrono::steady_clock::now();
-    if (!convert_tensor(model_dir, conversion[index], writer, error)) {
+    if (!convert_tensor(model_dir, conversion[index], recipe, importance_dir, writer, error)) {
       writer.close();
       std::error_code ignored;
       fs::remove(partial, ignored);
@@ -405,6 +455,17 @@ int main(int argc, char ** argv) {
       return 7;
     }
   }
+  std::ofstream sidecar(output_path + ".quantization.json");
+  sidecar << "{\n  \"version\": 1,\n  \"quantizer\": \"" << quantizer
+          << "\",\n  \"layout\": \"cpu-dot4\",\n  \"sign_seed\": " << metadata.sign_seed
+          << ",\n  \"importance\": " << (importance_dir.empty()?"null":"\"Q35CAL1\"") << ",\n  \"rounding\": \"code ties away from zero; stored FP16 scale\"\n}\n";
+  sidecar.close();
+  if (!importance_dir.empty()) {
+    std::error_code copy_error;
+    fs::copy_file(fs::path(importance_dir)/"manifest.json", output_path+".calibration.json", copy_error);
+    if (copy_error) { std::cerr << "Could not copy calibration provenance\n";return 8; }
+  }
+  if (!sidecar) { std::cerr << "Could not write quantizer sidecar\n"; return 8; }
   std::cout << "Wrote and checksum-verified " << verifier.tensors().size()
             << " tensors in " << output_path << " (" << fs::file_size(output_path)
             << " bytes).\n";

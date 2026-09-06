@@ -61,6 +61,8 @@ int main(int argc, char **argv) try {
   std::size_t prefix_tokens = 0;
   bool identical_prompts = false;
   std::string profile_path;
+  std::string operation_profile_path;
+  std::vector<CpuDecodeStage> operation_profile;
   bool serial = false, strict = false;
   bool serving = false;
   std::size_t residents = 16;
@@ -143,6 +145,8 @@ int main(int argc, char **argv) try {
       spec.sampling.seed = std::stoll(value);
     else if (arg == "--profile-json")
       profile_path = value;
+    else if (arg == "--operation-profile")
+      operation_profile_path = value;
     else if (arg == "--prompt-tokens")
       spec.prompt_tokens = tokens(value);
     else if (arg == "--forced-output-tokens")
@@ -176,6 +180,11 @@ int main(int argc, char **argv) try {
         "Require explicit prompt tokens, profile JSON, B=1..100");
   if (strict && !cpu::q8_0_backend_available(options.cpu_q8_backend))
     throw std::runtime_error("Requested CPU ISA unavailable");
+  if (!operation_profile_path.empty()) {
+    if (batch_size != 1 || serving)
+      throw std::runtime_error("Operation profiling requires a single non-serving request");
+    config.operation_profile = &operation_profile;
+  }
   std::string error;
   auto check = [&](bool ok) {
     if (!ok)
@@ -278,6 +287,7 @@ int main(int argc, char **argv) try {
   if (!out)
     throw std::runtime_error("Cannot write benchmark profile");
   out << std::setprecision(12) << "{\n"
+      << "\"operation_instrumentation\":" << (config.operation_profile ? "true" : "false") << ","
       << "\"weight_format\":\"" << model->weight_format() << "\",\"prefill_only\":false,\"cpu_batch\":" << batch_size
       << ",\"cpu_batch_serial\":" << (serial ? "true" : "false")
       << ",\"prompt_tokens\":" << spec.prompt_tokens.size() * batch_size
@@ -326,6 +336,15 @@ int main(int argc, char **argv) try {
   out << "]}\n";
   if (!out)
     throw std::runtime_error("Failed writing profile");
+  if (!operation_profile_path.empty()) {
+    std::ofstream stages(operation_profile_path);
+    stages << "kind,rows,columns,vectors,prepare_ms,wall_ms,dispatch_ms,caller_ms,wait_ms,participants\n";
+    for (const auto & event : operation_profile)
+      stages << event.kind << ',' << event.rows << ',' << event.columns << ',' << event.vectors << ','
+             << event.prepare_ms << ',' << event.wall_ms << ',' << event.dispatch_ms << ','
+             << event.caller_ms << ',' << event.wait_ms << ',' << event.participants << '\n';
+    if (!stages) throw std::runtime_error("Failed writing operation profile");
+  }
   std::cout << "B=" << batch_size << " aggregate_decode=" << throughput
             << " token/s tick_p50=" << percentile(.50) << " ms\n";
   return 0;

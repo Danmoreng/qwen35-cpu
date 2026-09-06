@@ -459,6 +459,7 @@ CpuEngine::create(std::shared_ptr<const CpuModel> model,
   if (!impl->context)
     return nullptr;
   auto &rt = *impl->context;
+  rt.decode_stages = config.operation_profile;
   rt.automatic_attention = true;
   rt.attention_gqa = true;
   rt.attention_backend = impl->model->impl_->backend;

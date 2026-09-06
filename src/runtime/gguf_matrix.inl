@@ -60,7 +60,7 @@ bool gguf_matmul(CpuExecutionContext* context,const TensorData& w,
   bool need_k=false,need_q8=false;
   for(const auto& part:w.gguf_parts)
     (part.type==cpu::KQuantType::q8_0?need_q8:need_k)=true;
-  CpuDecodeProbe probe(context,count==1?"k-quant-matvec":"k-quant-matmul",rows,cols);
+  CpuDecodeProbe probe(context,count==1?"k-quant-matvec":"k-quant-matmul",rows,cols,count);
   if(need_k) {k.resize(count*blocks);cpu::k_quant_prepare(input.data(),k.data(),count*blocks,false,w.q8_0_backend);}
   if(need_q8) {q8.resize(count*blocks);cpu::k_quant_prepare(input.data(),q8.data(),count*blocks,true,w.q8_0_backend);}
   output.resize(count*rows);probe.prepared();

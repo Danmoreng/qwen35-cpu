@@ -63,8 +63,11 @@ def log_softmax_f64(logits):
 
 def top_indices(logits, count):
     count = min(count, logits.size)
-    selected = np.argpartition(logits, -count)[-count:]
-    return selected[np.argsort(logits[selected])[::-1]]
+    cutoff = np.partition(logits, -count)[-count]
+    greater = np.flatnonzero(logits > cutoff)
+    tied = np.flatnonzero(logits == cutoff)[:count - len(greater)]
+    selected = np.concatenate((greater, tied))
+    return selected[np.lexsort((selected, -logits[selected]))]
 
 
 def percentile(values, q):
@@ -167,8 +170,8 @@ def main():
                 "teacher_margin": float(logits_t[top_t[0]] - logits_t[top_t[1]]),
                 "teacher_top1_in_candidate_top5": teacher_top1 in top_c_5,
                 "teacher_top1_in_candidate_top10": teacher_top1 in top_c_10,
-                "top5_overlap": len(top_t_5 & top_c_5) / 5.0,
-                "top10_overlap": len(top_t_10 & top_c_10) / 10.0,
+                "top5_overlap": len(top_t_5 & top_c_5) / min(5, teacher.vocab),
+                "top10_overlap": len(top_t_10 & top_c_10) / min(10, teacher.vocab),
                 "centered_logit_rmse": float(np.sqrt(np.mean(difference * difference))),
                 "centered_logit_cosine": cosine,
             })

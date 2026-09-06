@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Archive the bounded native-GGUF experiments; never include weights/logits."""
+import argparse
 import csv
 import hashlib
 import json
@@ -8,9 +9,12 @@ import statistics
 import subprocess
 import zipfile
 
-root = Path('benchmarks/native-q4_0-2026-09-06')
-kroot = Path('benchmarks/native-q4km-2026-09-06')
-out = Path('docs/results/native-q4_0-2026-09-06')
+parser = argparse.ArgumentParser()
+parser.add_argument('--root', type=Path, default=Path('benchmarks/native-q4_0-2026-09-06'))
+parser.add_argument('--kroot', type=Path, default=Path('benchmarks/native-q4km-2026-09-06'))
+parser.add_argument('--out', type=Path, default=Path('docs/results/native-q4_0-2026-09-06'))
+args = parser.parse_args()
+root, kroot, out = args.root, args.kroot, args.out
 out.mkdir(parents=True, exist_ok=True)
 
 def sha(path):

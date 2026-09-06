@@ -104,7 +104,7 @@ bool load_model_weights_from_quantized_gguf(
   }
 
   GgufReader reader;
-  if (!reader.open(gguf_path, error_message)) {
+  if (!reader.open(gguf_path, error_message) || !reader.validate_profile(profile, error_message)) {
     return false;
   }
 

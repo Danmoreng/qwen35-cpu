@@ -4,6 +4,7 @@
 #include <array>
 #include <bit>
 #include <cstring>
+#include <cmath>
 #include <fstream>
 #include <limits>
 #include <new>
@@ -452,7 +453,57 @@ std::string tensor_not_found_message(const std::string_view tensor_name) {
 
 } // namespace
 
+bool GgufReader::validate_profile(const ModelProfile & profile, std::string & error) const {
+  if (!is_open_) { error = "GGUF reader is not open"; return false; }
+  const auto text = [&](const char * key, const char * expected) {
+    const auto it = model_strings_.find(key);
+    if (it == model_strings_.end() || it->second != expected) {
+      error = std::string("Missing or incompatible GGUF metadata: ") + key; return false;
+    }
+    return true;
+  };
+  if (!text("general.architecture", "qwen35") || !text("tokenizer.ggml.model", "gpt2") ||
+      !text("tokenizer.ggml.pre", "qwen35")) return false;
+  const auto & c = profile.text;
+  const std::pair<const char *, double> expected[] = {
+    {"block_count", double(c.num_hidden_layers)}, {"embedding_length", double(c.hidden_size)},
+    {"feed_forward_length", double(c.intermediate_size)}, {"context_length", double(c.max_position_embeddings)},
+    {"attention.head_count", double(c.num_attention_heads)}, {"attention.head_count_kv", double(c.num_key_value_heads)},
+    {"attention.key_length", double(c.head_dim)}, {"attention.value_length", double(c.head_dim)},
+    {"attention.layer_norm_rms_epsilon", c.rms_norm_eps}, {"rope.freq_base", c.rope_theta},
+    {"rope.dimension_count", double(c.head_dim)*c.partial_rotary_factor},
+    {"ssm.conv_kernel", double(c.linear_conv_kernel_dim)}, {"ssm.state_size", double(c.linear_key_head_dim)},
+    {"ssm.group_count", double(c.linear_num_key_heads)}, {"ssm.time_step_rank", double(c.linear_num_value_heads)},
+    {"ssm.inner_size", double(c.linear_num_value_heads)*c.linear_value_head_dim},
+    {"full_attention_interval", double(c.full_attention_interval)}};
+  for (const auto & [suffix, value] : expected) {
+    const std::string key = std::string("qwen35.") + suffix;
+    const auto it = model_numbers_.find(key);
+    if (it == model_numbers_.end() || it->second != value) {
+      error = "Missing or contradictory GGUF metadata: " + key; return false;
+    }
+  }
+  if (tokenizer_count_ != static_cast<std::uint64_t>(c.vocab_size)) {
+    error = "GGUF tokenizer token count differs from external vocabulary"; return false;
+  }
+  if (rope_sections_ != std::vector<std::uint32_t>{11,11,10,0}) {
+    error = "Unsupported GGUF rope dimension sections"; return false;
+  }
+  if (!c.tie_word_embeddings || find_tensor("output.weight")) {
+    error = "Supported GGUF execution requires a tied embedding/output head"; return false;
+  }
+  if (profile.fingerprint.attention_schedule.size() != static_cast<std::size_t>(c.num_hidden_layers) ||
+      c.full_attention_interval <= 0) { error = "Invalid external attention schedule"; return false; }
+  for (std::size_t i=0; i<profile.fingerprint.attention_schedule.size(); ++i)
+    if (profile.fingerprint.attention_schedule[i] !=
+        ((i+1)%c.full_attention_interval == 0 ? AttentionBlock::full : AttentionBlock::linear)) {
+      error = "External attention schedule contradicts GGUF interval"; return false;
+    }
+  return true;
+}
+
 void GgufReader::close() noexcept {
+  model_numbers_.clear(); model_strings_.clear(); rope_sections_.clear(); tokenizer_count_ = 0;
   is_open_ = false;
   path_.clear();
   version_ = 0;
@@ -549,6 +600,38 @@ bool GgufReader::open(const std::string & gguf_file, std::string & error_message
         if (!cursor.read_u32(parsed_alignment, "general.alignment", error_message)) {
           return false;
         }
+      } else if (key == "general.architecture" || key == "tokenizer.ggml.model" || key == "tokenizer.ggml.pre") {
+        if (type != GgufValueType::string ||
+            !cursor.read_string(model_strings_[key], key, error_message)) {
+          error_message = "Expected GGUF string metadata: " + key; return false;
+        }
+      } else if (key == "tokenizer.ggml.tokens") {
+        std::uint32_t element_type = 0;
+        if (type != GgufValueType::array || !cursor.read_u32(element_type, key, error_message) ||
+            element_type != static_cast<std::uint32_t>(GgufValueType::string) ||
+            !cursor.read_u64(tokenizer_count_, key, error_message) || tokenizer_count_ > cursor.remaining()/8) {
+          error_message = "Invalid GGUF tokenizer token array"; return false;
+        }
+        for (std::uint64_t token=0; token<tokenizer_count_; ++token)
+          if (!cursor.skip_string(key, error_message)) return false;
+      } else if (key == "qwen35.rope.dimension_sections") {
+        std::uint32_t element_type = 0;
+        std::uint64_t count = 0;
+        if (type != GgufValueType::array || !cursor.read_u32(element_type, key, error_message) ||
+            element_type != static_cast<std::uint32_t>(GgufValueType::int32) ||
+            !cursor.read_u64(count, key, error_message) || count != 4) {
+          error_message = "Expected four INT32 rope sections"; return false;
+        }
+        rope_sections_.resize(4);
+        for (auto & section : rope_sections_)
+          if (!cursor.read_u32(section, key, error_message)) return false;
+      } else if (key.starts_with("qwen35.") &&
+                 (type == GgufValueType::uint32 || type == GgufValueType::float32)) {
+        std::uint32_t raw = 0;
+        if (!cursor.read_u32(raw, key, error_message)) return false;
+        const double value = type == GgufValueType::float32 ? std::bit_cast<float>(raw) : double(raw);
+        if (!std::isfinite(value)) { error_message = "Non-finite GGUF metadata: " + key; return false; }
+        model_numbers_[key] = value;
       } else if (!skip_metadata_value(cursor, type, key, error_message)) {
         return false;
       }

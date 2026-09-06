@@ -8,6 +8,7 @@ from huggingface_hub import HfApi, ModelCard
 p = argparse.ArgumentParser()
 p.add_argument('--folder', type=Path, required=True)
 p.add_argument('--repo', required=True)
+p.add_argument('--update', action='store_true', help='Update an existing repository with an optimistic parent-commit check')
 args = p.parse_args()
 expected = {'model.q35h', 'config.json', 'tokenizer.json', 'tokenizer_config.json',
             'vocab.json', 'merges.txt', 'chat_template.jinja', 'LICENSE', 'NOTICE',
@@ -32,8 +33,13 @@ for name, sha in manifest.items():
 ModelCard.load(args.folder / 'README.md').validate()
 api = HfApi()
 api.whoami()  # Fail before creating a public repository if login is unavailable.
-api.create_repo(args.repo, repo_type='model', private=False, exist_ok=False)
+parent = None
+if args.update:
+    parent = api.model_info(args.repo).sha
+else:
+    api.create_repo(args.repo, repo_type='model', private=False, exist_ok=False)
 commit = api.upload_folder(repo_id=args.repo, repo_type='model', folder_path=args.folder,
-                         commit_message='Publish validated CPU-ready H128/Q4-G32-DOT4 model')
+                         parent_commit=parent,
+                         commit_message='Publish calibrated MSE16 H128/Q4-G32-DOT4 standard model')
 print('Published:', commit.repo_url)
 print('Pin this model revision in README and CI:', commit.oid)

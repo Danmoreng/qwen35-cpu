@@ -2,6 +2,7 @@
 
 #include "qwen35x/cpu/q4_0.h"
 #include "qwen35x/cpu/q8_0.h"
+#include "qwen35x/common/model_profile.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -71,10 +72,15 @@ struct GgufTensorQ4_0 {
 //
 // Tensor payload types other than F32, Q4_0, Q8_0, Q4_K, Q5_K and Q6_K are rejected at
 // open time. Every GGUF metadata scalar/array/string type defined by v3 is
-// nevertheless validated and safely skipped.
+// is validated. Required Qwen3.5 scalars, rope sections and tokenizer count
+// are retained for validate_profile; unrelated values are safely skipped.
 class GgufReader {
 public:
   bool open(const std::string & gguf_file, std::string & error_message);
+  // Semantic checks for the supported profile, separate from structural parsing.
+  // Token count/type is checked; trusted tokenizer file hashes remain necessary
+  // to establish full external tokenizer identity.
+  bool validate_profile(const ModelProfile &, std::string & error_message) const;
   void close() noexcept;
 
   bool is_open() const noexcept {
@@ -132,6 +138,10 @@ public:
     std::string & error_message) const;
 
 private:
+  std::unordered_map<std::string, double> model_numbers_;
+  std::unordered_map<std::string, std::string> model_strings_;
+  std::vector<std::uint32_t> rope_sections_;
+  std::uint64_t tokenizer_count_ = 0;
   bool is_open_ = false;
   std::string path_;
   std::uint32_t version_ = 0;

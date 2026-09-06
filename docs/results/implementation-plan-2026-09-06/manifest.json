@@ -1,0 +1,22 @@
+{
+  "source": {
+    "revision": "d58f3df475498f895d2bf273667ec18e98915f8d",
+    "diff_sha256": "c49f69439e2b040b0ddc9efe96ecd160535b35e8aac063d1b6e872e4ed7482e2",
+    "source_tree_sha256": "59691082ddf5e0d068ec4e051a10bc89e89304b42087c2b7f8d77572ae557e58"
+  },
+  "files": {
+    "performance-followup.csv": "6c5e7a07a0f358a1ad4d3fe7deb9489bcbac6c5891c27439b53505426a2dcc16",
+    "performance.csv": "b02a50f4656689c50dbd1dfd44c0434d22149b49b65e028ec3ced3720c38a275",
+    "quality-and-gates.csv": "3bb9f4dcebc8a7e0b43efa6d1c0e71c7079fa8283fb50e01c90dd90b82bf56bd",
+    "raw-results.zip": "59335903de6b7220124b0f9e90b0587359a2a50a46101b9432919032d9876800",
+    "results.json": "51f4ad01185359bb7c2bd98056fcd15ad6d5c2bcf0bea7aba48bf2e36f8cbcc9"
+  },
+  "limitations": [
+    "No general quality certification from the six-document held-out screening suite.",
+    "The calibration pilot covers four disjoint English prose documents; broader calibration remains open.",
+    "Three speed measurements support a variability report, not strong confidence intervals.",
+    "Tokenizer count and type checks do not prove external tokenizer identity; input hashes are recorded.",
+    "Original baseline sweeps started before comparator snapshotting was added. A later comparator change only made top-k tie breaking deterministic and fixed overlap denominators for vocabularies below ten; NLL and KL formulas were unchanged. Subsequent sweeps archive their comparator snapshot.",
+    "Mixed precision, reversible K packing, optimized K tiles and full release gates remain open."
+  ]
+}

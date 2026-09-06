@@ -17,6 +17,7 @@ add_library(qwen35x_core
   src/weights/gguf.cpp
   src/cpu/q4_0.cpp
   src/cpu/q4_h128.cpp
+  src/cpu/q4_quantizer.cpp
   src/cpu/q8_0.cpp
   src/compiler/profile_loader.cpp
   src/runtime/cpu_runtime.cpp
@@ -194,3 +195,23 @@ add_test(NAME k_quant COMMAND k_quant_test ${CMAKE_CURRENT_SOURCE_DIR}/tests/fix
 add_executable(gguf_reader_test tests/gguf_reader_test.cpp)
 target_link_libraries(gguf_reader_test PRIVATE qwen35x_core)
 add_test(NAME gguf_reader COMMAND gguf_reader_test)
+
+add_executable(q4_quantizer_test tests/q4_quantizer_test.cpp)
+target_link_libraries(q4_quantizer_test PRIVATE qwen35x_core)
+add_test(NAME q4_quantizer COMMAND q4_quantizer_test)
+find_package(Python3 COMPONENTS Interpreter QUIET)
+if(Python3_Interpreter_FOUND)
+  execute_process(COMMAND ${Python3_EXECUTABLE} -c "import numpy" RESULT_VARIABLE QWEN35_NUMPY)
+  if(QWEN35_NUMPY EQUAL 0)
+    add_test(NAME evaluation_scripts COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/evaluation_test.py)
+  endif()
+endif()
+add_executable(gguf_profile_test tests/gguf_profile_test.cpp)
+target_link_libraries(gguf_profile_test PRIVATE qwen35x_core)
+add_test(NAME gguf_profile COMMAND gguf_profile_test)
+if(Python3_Interpreter_FOUND AND QWEN35_NUMPY EQUAL 0)
+  add_test(NAME calibration_basis COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/calibration_test.py $<TARGET_FILE:q4_quantizer_test>)
+endif()
+# Optional local numerical diagnostics; not part of runtime packaging.
+add_executable(q4_projection_probe EXCLUDE_FROM_ALL tools/projection_probe.cpp)
+target_link_libraries(q4_projection_probe PRIVATE qwen35x_core)

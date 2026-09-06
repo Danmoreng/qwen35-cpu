@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include "capture-inputs.h"
 using Clock = std::chrono::steady_clock;
 static double elapsed(Clock::time_point t) {
   return std::chrono::duration<double, std::milli>(Clock::now() - t).count();
@@ -24,6 +25,7 @@ static std::vector<llama_token> tokens(const std::string & csv) {
 }
 int main(int argc, char ** argv) try {
   std::string model_path, profile_path, logits_path, final_logits_path;
+  ProjectionCapture projection_capture;
   std::vector<llama_token> prompt, forced;
   int threads = 8, context = 8192, generated = 128, sequences = 1;
   bool prefill_only = false;
@@ -37,6 +39,7 @@ int main(int argc, char ** argv) try {
     else if (arg == "--profile-json") profile_path = value();
     else if (arg == "--logits-out") logits_path = value();
     else if (arg == "--final-logits-out") final_logits_path = value();
+    else if (arg == "--capture-inputs") projection_capture.directory = value();
     else if (arg == "--prompt-tokens-file") {
       std::ifstream file(value()); std::stringstream text; text << file.rdbuf();
       if(!file) throw std::runtime_error("Could not read prompt tokens");
@@ -70,6 +73,13 @@ int main(int argc, char ** argv) try {
   for (const auto & list : {&prompt, &forced}) for (auto token : *list)
     if (token < 0 || token >= vocab) throw std::runtime_error("Token out of range");
   auto cp = llama_context_default_params();
+  if (!projection_capture.directory.empty()) {
+    if (sequences != 1 || std::filesystem::exists(projection_capture.directory))
+      throw std::runtime_error("Capture requires one sequence and a new output directory");
+    std::filesystem::create_directories(projection_capture.directory);
+    cp.cb_eval = ProjectionCapture::callback;
+    cp.cb_eval_user_data = &projection_capture;
+  }
   cp.n_ctx = context * sequences; cp.n_seq_max = sequences;
   cp.n_batch = 2048; cp.n_ubatch = 512;
   cp.n_threads = threads; cp.n_threads_batch = threads;
@@ -141,6 +151,7 @@ int main(int argc, char ** argv) try {
     capture(i+1);
   }
   const double decode_ms = prefill_only ? 0.0 : elapsed(decode_start);
+  if (!projection_capture.directory.empty()) projection_capture.finish();
   // Match engine semantics: first output is predicted during prefill. The
   // summary normalizes throughput by generated-1 actual decode forwards.
   const int outputs = prefill_only ? 0 : generated * sequences;
@@ -160,7 +171,7 @@ int main(int argc, char ** argv) try {
   }
   std::ofstream out(profile_path);
   out << std::setprecision(12) << "{\"prefill_only\":" << (prefill_only ? "true" : "false")
-      << ",\"quality_capture\":" << (logits_path.empty() ? "false" : "true")
+      << ",\"quality_capture\":" << (logits_path.empty() && projection_capture.directory.empty() ? "false" : "true")
       << ",\"cpu_batch\":" << sequences
       << ",\"prompt_tokens\":" << prompt.size() * sequences << ",\"generated_tokens\":" << outputs
       << ",\"decode_forward_steps\":" << (prefill_only ? 0 : (generated - 1) * sequences)

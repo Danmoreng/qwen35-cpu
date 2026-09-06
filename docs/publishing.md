@@ -8,25 +8,30 @@ GitHub Releases host small Windows/Linux executable archives and checksums.
 ## Prepare and publish the model
 
 ```sh
-python scripts/prepare-hf-package.py --source models/qwen3.5-0.8b --artifact models/qwen3.5-0.8b/model-q4-h128-cpu-dot4.q35h --output dist/huggingface
+python scripts/prepare-hf-package.py --source models/qwen3.5-0.8b --artifact models/qwen3.5-0.8b/model-calibrated-mse16.q35h --output dist/huggingface-mse16
 ```
 
 Preparation allows only the validated artifact hash. It copies a fixed file list,
 records BF16 shard hashes and refuses an existing output directory. Test the
 prepared directory directly with the release server before upload. The original
 BF16 source revision was not retained; source hashes are recorded instead of
-inventing a revision. No new quality advantage is asserted in the model card.
+inventing a revision. The model card reports the measured calibrated MSE16
+quality and speed separately, with corpus limitations. Quantization provenance
+includes the converter sidecar and calibration manifest. The format is unchanged.
 
 Authenticate locally, then upload the checked package:
 
 ```sh
 hf auth login
-python scripts/upload-hf-package.py --folder dist/huggingface --repo danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4
+python scripts/upload-hf-package.py --folder dist/huggingface-mse16 --repo danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4 --update
 ```
 
 The upload script requires `huggingface_hub`, validates the exact manifest and
-model card, creates a new public model repository, and uploads its files in one
-commit. It refuses to reuse an existing repository to avoid accidental replacement.
+model card, and uploads its files in one commit. Without `--update` it creates
+a new public repository and refuses to reuse an existing one. With `--update`
+it requires an existing repository and checks its parent commit when uploading,
+so a concurrent update cannot be silently overwritten. Old artifacts remain
+accessible through their immutable revisions.
 Do not put access tokens in source files, command arguments or GitHub model vars.
 
 Record the returned model commit, replace `MODEL_COMMIT` in the README and set
