@@ -18,23 +18,22 @@ the server, CLI, model download scripts and licenses. Runtime needs no compiler,
 Python or CUDA. Windows uses a static MSVC runtime; Linux releases target
 Ubuntu 22.04 or newer (glibc 2.35+), not every Linux distribution.
 
-**Publication status:** the first model upload/release is being prepared.
-The intended model repository is `danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4`.
-Commands below become usable after publication; replace `MODEL_COMMIT` with
-the published model's immutable 40-character commit. No working download is
-claimed before that upload completes.
+Model: [danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4](https://huggingface.co/danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4).
+Download binaries from [GitHub Releases](https://github.com/Danmoreng/qwen35-cpu/releases).
+The commands below pin the validated model revision, so later uploads cannot
+silently change the weights or tokenizer.
 
 After extracting a release archive, run from its directory:
 
 ```powershell
 # Windows PowerShell 5.1+; no Python required
-./download-model.ps1 -Repo danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4 -Revision MODEL_COMMIT
+./download-model.ps1 -Repo danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4 -Revision cc7df08da7ef7ac15db62e80b4eda85e19a143da
 ./qwen35_cpu_server.exe --model-dir models/qwen3.5-0.8b --threads 8
 ```
 
 ```sh
 # Linux: bash, curl and sha256sum
-bash ./download-model.sh danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4 MODEL_COMMIT
+bash ./download-model.sh danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4 cc7df08da7ef7ac15db62e80b4eda85e19a143da
 ./qwen35_cpu_server --model-dir models/qwen3.5-0.8b --threads 8
 ```
 
@@ -110,8 +109,9 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-Windows/MSVC is validated for this extraction. Linux/GCC and Intel AVX2 release
-validation remain pending. ISA dispatch is designed for x86 portability, but
+Windows/MSVC and Linux/GCC builds and kernel tests pass in GitHub CI.
+Real-model release tests are required on both platforms before a release tag
+publishes binaries; Intel i7-8750H hardware validation remains pending. ISA dispatch is designed for x86 portability, but
 this is not a claim of testing every x86 CPU. AVX2 or newer is the practical
 performance target; keep the portable core free of global `-march=native` flags.
 
@@ -163,9 +163,9 @@ are the default. Quality/logit-dump runs are separate from speed measurements.
 - Native text CLI and full-vocabulary logit export: smoke-tested.
 - Native HTTP adapter, concurrent request/prefix correctness and packaged Windows
   server with the prepared Hugging Face model: passed locally.
-- Windows/Linux CI and tag-triggered release pipeline: implemented; remote CI
-  validation and the first public model/binary release remain pending.
+- Windows/Linux builds, kernel tests and packaging pass in GitHub CI. The public
+  Hugging Face model is pinned for real-model tests and tag-triggered releases.
 - Fresh llama.cpp quantization/quality matrix, parallel comparison and standalone
-  Linux/Intel model validation: pending.
+  Intel i7-8750H model validation: pending.
 
 See [validation details](docs/validation.md) and the [bounded release plan](docs/comparison-plan.md).

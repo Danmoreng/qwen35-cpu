@@ -53,19 +53,25 @@ jobs:
         run: |
           test -n "$HF_REPO"
           [[ "$HF_REVISION" =~ ^[0-9a-f]{40}$ ]]
-      - name: Download published test model
-        if: vars.HF_MODEL_REPO != '' && vars.HF_MODEL_REVISION != ''
+      - name: Download published test model (Windows)
+        if: runner.os == 'Windows' && vars.HF_MODEL_REPO != '' && vars.HF_MODEL_REVISION != ''
         shell: pwsh
         env:
           HF_REPO: ${{ vars.HF_MODEL_REPO }}
           HF_REVISION: ${{ vars.HF_MODEL_REVISION }}
         run: ./scripts/download-model.ps1 -Repo $env:HF_REPO -Revision $env:HF_REVISION
-      - name: Real-model scheduler and HTTP tests
+      - name: Download published test model (Linux)
+        if: runner.os == 'Linux' && vars.HF_MODEL_REPO != '' && vars.HF_MODEL_REVISION != ''
+        shell: bash
+        env:
+          HF_REPO: ${{ vars.HF_MODEL_REPO }}
+          HF_REVISION: ${{ vars.HF_MODEL_REVISION }}
+        run: bash scripts/download-model.sh "$HF_REPO" "$HF_REVISION"
+      - name: Real-model scheduler tests
         if: vars.HF_MODEL_REPO != '' && vars.HF_MODEL_REVISION != ''
         shell: bash
         run: |
           ./build/cpu_scheduler_model_test${{ matrix.suffix }} models/qwen3.5-0.8b models/qwen3.5-0.8b/model.q35h --pages
-          python tests/server_smoke.py --server build/qwen35_cpu_server${{ matrix.suffix }} --model-dir models/qwen3.5-0.8b
       - name: Package binaries
         shell: bash
         env:
@@ -75,6 +81,17 @@ jobs:
           version="ci-${GITHUB_SHA:0:12}"
           if [ "$REF_TYPE" = tag ]; then version="$REF_NAME"; fi
           python scripts/package-release.py --version "$version" --platform '${{ matrix.platform }}'
+      - name: Verify extracted release and HTTP service
+        shell: bash
+        env:
+          HF_REPO: ${{ vars.HF_MODEL_REPO }}
+          HF_REVISION: ${{ vars.HF_MODEL_REVISION }}
+        run: |
+          extra=()
+          if [ -n "$HF_REPO" ] && [ -n "$HF_REVISION" ]; then
+            extra=(--model-dir models/qwen3.5-0.8b)
+          fi
+          python scripts/verify-release.py --directory dist "${extra[@]}"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{ matrix.platform }}
