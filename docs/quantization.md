@@ -1,6 +1,6 @@
 # Standard quantization recipe
 
-The standard Hugging Face download is **H128/Q4-G32-DOT4 with 256-document
+The standard [Hugging Face download](https://huggingface.co/danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4/tree/f6cb5cf04a9094670f9041578a3f4e44b94a1395) is **H128/Q4-G32-DOT4 with 256-document
 calibration, weighted MSE16 and block-128 error compensation (B+C)**. The `.q35h`
 format, signed H128 transform, groups of 32 with FP16 scales and CPU DOT4 layout
 are unchanged. No new runtime loader or GPU backend is required.

@@ -81,3 +81,13 @@ Sources: [Hugging Face upload guide](https://huggingface.co/docs/huggingface_hub
 Keep raw benchmark profiles, per-token dumps, activation manifests and archives
 under ignored `benchmarks/`. Commit only code, narrative reports and compact
 aggregate CSV/JSON results. Do not copy complete run directories into Git.
+
+## Current model publication
+
+B+C 256 is published at immutable Hugging Face revision
+`f6cb5cf04a9094670f9041578a3f4e44b94a1395`, with model SHA256
+`013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a`.
+The public package was downloaded through the documented checksum-verifying
+script and passed HTTP validation, greedy/seeded sampling, mixed batches and
+prefix parity. README and CI pin this revision. Model metadata is compact;
+full activation-input manifests remain local, outside the engine repository.
