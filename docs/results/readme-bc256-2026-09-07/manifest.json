@@ -1,0 +1,31 @@
+{
+  "provenance": {
+    "llama_revision": "73a43d1f69345aee8bb186ef4b3172cef892f2e5",
+    "binaries": {
+      "ggml-base.dll": "f5a55be6cc0abb6fbacadf66947fbbaa56ac613251ad1f8be3e0ff7977dbf429",
+      "ggml-cpu.dll": "9be32088bbb19ab65c1cd24a382972e3f77424d46bfb1ceefe4d8f22e7c8e520",
+      "ggml.dll": "34329c44bd36e31c849321bbafa00bc3fdf1c45a9d079d615f9f0584d67e2a9d",
+      "llama-common.dll": "6b0fb523deadae5d9dfc4e5002b630f9adba2061adcd4c64f627357e8bd32fa5",
+      "llama-fixed-cpu-bench.exe": "a2b17b40a25eb4f68632bdf07ae3c4710bbba21b0ba5fe53fc92cfe4856bb1f4",
+      "llama-quantize-impl.dll": "6948259c7a4c0f5b35c13e5585d6d8c355a3a8dd365cb7beb3473e4137373cc4",
+      "llama.dll": "e9406e10aa3a5e24cfc82ea5b2755a94db7cfa5b286c7da93e8664adc1717a5e",
+      "qwen35_cpu_bench.exe": "887d29207e7854c41c62485b59a3d38dd1441c5a01cce4f824738141645b6d3c"
+    },
+    "previous_model_revision": "59f422b2d410fdaf4a9efc71ff12f278abc2a5d1",
+    "model_sha256": "013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a",
+    "binary_directory": "benchmarks\\readme-calibrated-2026-09-06\\bin"
+  },
+  "quality_sources": [
+    "docs/results/2026-09-06/raw-results.zip",
+    "benchmarks/bc-large-study/full-bc-full"
+  ],
+  "local_raw_archive": {
+    "path": "benchmarks\\readme-bc256-2026-09-07\\raw-results.zip",
+    "sha256": "5b0b58bd288a5d20031e6a37ed013e8e9c543b737c6ea64fc2b5bd03c010a758"
+  },
+  "quality_contract": "Same BF16 teacher hash, 16 article windows, 8192 positions; full scoring masks verified.",
+  "files": {
+    "performance.csv": "057b8a5456fdcd645359a2400dc722658fdaad5e63e36bf2a40f65dcbc77ba9e",
+    "quality.csv": "52ddf635d35fb897b9c67f2a41531e722f07d9398d2587acea9b01e7fc9685bd"
+  }
+}

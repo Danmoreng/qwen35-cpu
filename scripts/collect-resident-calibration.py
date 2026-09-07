@@ -17,6 +17,7 @@ p.add_argument('--collector', type=Path, default=Path('build-llama-calibration-c
 p.add_argument('--documents', type=int, help='Optional small validation subset')
 p.add_argument('--sequential-teacher', action='store_true')
 p.add_argument('--minimum-free-gib', type=float, default=16)
+p.add_argument('--block-covariance', action='store_true', help='Persist full and stratified 40-document block moments before raw cleanup')
 a = p.parse_args()
 if a.documents is not None and a.documents <= 0:
     p.error('documents must be positive')
@@ -41,6 +42,18 @@ metadata = dict(version=1, teacher_backend='cuda', resident=True,
     batched_teacher=not a.sequential_teacher, teacher_sha256=sha(teacher), collector_sha256=sha(a.collector),
     selection_sha256=sha(a.corpus/'selection.json'), source=source_identity(Path('.')),
     command=command, documents=[], maximum_pending_raw_documents=2)
+small_limits = dict(de=10, en=10, code=8, chat=8, math=4)
+small_counts = {key: 0 for key in small_limits}
+small_ids = set()
+for document in documents:
+    domain = document['domain']
+    if small_counts[domain] < small_limits[domain]:
+        small_ids.add(document['id'])
+        small_counts[domain] += 1
+if a.block_covariance:
+    from block_covariance_accumulator import BlockAccumulator
+    full_covariance = BlockAccumulator(a.out / 'covariance-full')
+    small_covariance = BlockAccumulator(a.out / 'covariance-small')
 
 
 def save_manifest():
@@ -50,6 +63,11 @@ def save_manifest():
 
 
 def compact(document):
+    if a.block_covariance:
+        captured = dict(**document, directory=str(captures/document['id']))
+        full_covariance.add(captured)
+        if document['id'] in small_ids:
+            small_covariance.add(captured)
     cleanup = a.out/(document['id']+'-cleanup.json')
     with (a.out/(document['id']+'-compaction.log')).open('w') as log:
         subprocess.run([sys.executable, str(Path(__file__).with_name('compact-calibration-captures.py')),
@@ -103,3 +121,7 @@ with (a.out/'teacher.log').open('w') as log, ThreadPoolExecutor(max_workers=1) a
         process.stdin.close()
         process.stdout.close()
 print('Resident collection and raw cleanup completed.',flush=True)
+for name, selected in [('full', metadata['documents']), ('small', [d for d in metadata['documents'] if d['id'] in small_ids])]:
+    folder = a.out / name
+    folder.mkdir()
+    (folder / 'manifest.json').write_text(json.dumps(dict(metadata, documents=selected), indent=2) + '\n')

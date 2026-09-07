@@ -40,6 +40,6 @@ else:
     api.create_repo(args.repo, repo_type='model', private=False, exist_ok=False)
 commit = api.upload_folder(repo_id=args.repo, repo_type='model', folder_path=args.folder,
                          parent_commit=parent,
-                         commit_message='Publish calibrated MSE16 H128/Q4-G32-DOT4 standard model')
+                         commit_message='Publish B+C 256-document H128/Q4-G32-DOT4 standard model')
 print('Published:', commit.repo_url)
 print('Pin this model revision in README and CI:', commit.oid)

@@ -15,10 +15,22 @@ spec.loader.exec_module(diagonal)
 
 
 def fit(root, out, damping):
-    manifest = json.loads((root / 'manifest.json').read_text())
+    compact = root / 'block-statistics.json'
+    manifest = json.loads((compact if compact.exists() else root / 'manifest.json').read_text())
     statistics = {}
     inputs = []
-    for document in manifest['documents']:
+    if compact.exists():
+        archive_path = root / 'block-statistics.npz'
+        if manifest['sign_seed'] != diagonal.SEED or sha(archive_path) != manifest['statistics_sha256']:
+            raise ValueError('Invalid compact block statistics')
+        with np.load(archive_path, allow_pickle=False) as archive:
+            for tensor in manifest['tensors']:
+                h = archive[tensor['name']].copy()
+                if not np.isfinite(h).all() or h.shape[1:] != (128, 128) or tensor['samples'] <= 0:
+                    raise ValueError('Invalid second moments')
+                statistics[tensor['name']] = [h, tensor['samples'], tensor['basis']]
+        inputs.append(dict(path=str(archive_path), sha256=sha(archive_path)))
+    for document in ([] if compact.exists() else manifest['documents']):
         folder = Path(document['directory'])
         capture = json.loads((folder / 'capture.json').read_text())
         if capture['version'] != 1 or capture['basis'] != 'identity':
@@ -60,7 +72,7 @@ def fit(root, out, damping):
     (out / 'manifest.json').write_text(json.dumps(dict(version=1,
         recipe='g32-error-compensation-block128', damping=damping,
         limitation='Cross-block covariance omitted; teacher inputs, not sequential layer recalibration.',
-        source_manifest_sha256=sha(root / 'manifest.json'), inputs=inputs, tensors=outputs), indent=2) + '\n')
+        source_manifest_sha256=sha(compact if compact.exists() else root / 'manifest.json'), inputs=inputs, tensors=outputs), indent=2) + '\n')
 
 
 if __name__ == '__main__':

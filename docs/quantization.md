@@ -1,76 +1,60 @@
 # Standard quantization recipe
 
-The standard [Hugging Face download](https://huggingface.co/danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4/tree/59f422b2d410fdaf4a9efc71ff12f278abc2a5d1) is **activation-weighted MSE16
-H128/Q4-G32-DOT4**, also called calibrated MSE16. The file format is unchanged:
-`.q35h`, signed H128 transforms, Q4 groups of 32 with FP16 scales, and the same
-CPU DOT4 byte layout. No new loader or kernel is required to interpret its
-weights. The format identifier describes storage; `quantization.json` describes
-how the values were fitted. A better recipe does not require a new format name.
+The standard Hugging Face download is **H128/Q4-G32-DOT4 with 256-document
+calibration, weighted MSE16 and block-128 error compensation (B+C)**. The `.q35h`
+format, signed H128 transform, groups of 32 with FP16 scales and CPU DOT4 layout
+are unchanged. No new runtime loader or GPU backend is required.
 
-## What changed
+## Offline fitting
 
-Legacy conversion chooses a scale from the largest absolute weight in a group.
-MSE16 instead searches both signs of the scale, uses all 16 signed codes
-`[-8,7]`, refines candidate scales by least squares, and scores reconstruction
-using the FP16 scale that will actually be stored. It keeps the legacy candidate
-when no candidate improves the fitting objective. Code ties round away from
-zero, and equal objective scores retain the first candidate for determinism.
+MSE16 searches both scale signs and all signed codes `[-8,7]`, evaluates stored
+FP16 scales, and weights reconstruction error by real BF16 teacher activations
+in the correct H128 basis (identity for the tied embedding/output matrix).
+B+C additionally uses second moments within 128-channel blocks, damping 0.01,
+and error propagation across remaining channels in each block. It retains the
+MSE16 candidate if the undamped reconstruction objective does not improve.
+Cross-block covariance is omitted; this is not full-matrix GPTQ or sequential
+layer recalibration.
 
-The calibrated recipe weights squared error by the second moment of real BF16
-teacher inputs. Those inputs are captured after the relevant normalization or
-nonlinearity and transformed with exactly the weight transform's seed and H128
-basis. The tied output head uses identity. Fitting also retains the unweighted
-MSE16 candidate. This is diagonal activation weighting, not full-covariance GPTQ.
-Improvement of this local objective alone is not proof of better perplexity;
-the published candidate was separately evaluated.
-
-Only offline conversion does more work. Inference reads the same number of
-weight bytes and performs the same operations, explaining why the quality
-improvement does not incur an inference-speed cost. The measured speed varies
-slightly between runs. Both new artifacts have 424,934,656 tensor bytes and
-424,964,864 total file bytes.
+The published recipe uses 256 independent selected documents / 262,144 tokens,
+with approximately 25% German, 25% English, 20% Python code, 20% rendered dialogs
+and 10% mathematics. A separate resident CUDA teacher collected activations;
+CPU inference requires no CUDA. Dataset revisions, selection hashes and held-out
+separation are recorded in the [study](g32-large-calibration-2026-09-07.md).
+More data alone did not help MSE16, and the larger corpus is not better on every
+suite. The method and the resulting checkpoint were evaluated separately.
 
 ## Defaults and reproduction
 
-There are two explicit defaults:
-
-- **Download:** the calibrated artifact, SHA-256
-  `8c47dffa6cbc77e2af663a79012a6f847142d78479d9d7adcf28c5b300e2d83d`.
-- **Source conversion:** unweighted `mse16` when no calibration directory is
-  supplied. Calibration is never silently inferred from a local directory.
+- **Download:** B+C 256, SHA256
+  `013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a`.
+- **Source conversion:** unweighted `mse16` unless explicit fitting directories
+  are supplied. The converter never silently discovers calibration files.
 
 ```powershell
-# Default conversion, no calibration corpus required
+# Published recipe, after preparing its fitting statistics
+build/qwen35_cpu_pack.exe --hf-model-dir models/qwen3.5-0.8b --output models/qwen3.5-0.8b/model-bc256.q35h --importance-dir benchmarks/bc-large-study/full-importance --covariance-dir benchmarks/bc-large-study/full-covariance
+
+# Unweighted conversion without calibration inputs
 build/qwen35_cpu_pack.exe --hf-model-dir models/qwen3.5-0.8b --output models/qwen3.5-0.8b/model-mse16.q35h
-
-# Calibrated conversion after collecting and fitting teacher inputs
-build/qwen35_cpu_pack.exe --hf-model-dir models/qwen3.5-0.8b --output models/qwen3.5-0.8b/model-calibrated-mse16.q35h --importance-dir benchmarks/plan-calibration-fit
-
-# Exact historical recipe, explicitly selected
-build/qwen35_cpu_pack.exe --hf-model-dir models/qwen3.5-0.8b --output models/qwen3.5-0.8b/model-legacy.q35h --quantizer legacy-absmax15
 ```
 
-The packer writes quantization and calibration provenance sidecars. Publication
-embeds those records in `quantization.json`; runtime does not need calibration
-inputs. The versioned Q35CAL1 records validate columns, transform seed, basis,
-sample count, finite nonnegative weights and exact file length.
+The [study driver](../scripts/run-large-calibration-study.py) and archived
+source/provenance describe preparation, fitting, quality comparisons and matched
+CPU speed measurements. Diagonal and covariance fitting statistics are offline
+inputs, not runtime dependencies. The complete file is 424,964,864 bytes with
+424,934,656 tensor bytes, unchanged from the earlier Q4 recipe.
 
-See [the measured report](implementation-plan-results-2026-09-06.md) for
-calibration collection, BF16 source hashes, raw results and limitations. Its
-statements that Legacy was the default describe the initial experiment, before
-the new recipe was promoted to the standard download and converter default.
-The four-document English calibration pilot is not general quality certification.
+The independent mixed final set measures PPL **12.71898** and teacher KL
+**0.064178**; the English 8,192-position regression subset measures **15.80467**
+and **0.060190**. These are different test sets and must not be compared directly.
+See the [README](../README.md) for the matched llama.cpp/Unsloth comparison.
 
-The old public artifact remains reproducible by pinning Hugging Face revision
-`cc7df08da7ef7ac15db62e80b4eda85e19a143da`. Updated download examples pin the
-new revision rather than mutable `main`; tokenizer and model checksums are
-verified together. The runtime's model identity changes with the checkpoint,
-so prefix state must not be shared across old and new weights.
-
-The promoted model revision is `59f422b2d410fdaf4a9efc71ff12f278abc2a5d1`.
-Its metadata references engine implementation commit
-`97c72de`, which includes the evaluated quantizer, tests and benchmark report.
-The rebuilt default converter reproduces the calibrated artifact hash exactly.
+The previous four-document MSE16 artifact remains at Hugging Face revision
+`59f422b2d410fdaf4a9efc71ff12f278abc2a5d1`; legacy remains at
+`cc7df08da7ef7ac15db62e80b4eda85e19a143da`. Current download commands in the README
+pin the new immutable revision. Prefix state must never be shared across
+checkpoint identities. The source converter default has not changed.
 
 ## Optional mixed Q8 experiment
 

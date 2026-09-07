@@ -9,3 +9,16 @@
 *.safetensors
 *.logits
 __pycache__/
+
+# New benchmark publications contain compact summaries only. Raw evidence stays local.
+/docs/results/g32-large-calibration-2026-09-07/*
+!/docs/results/g32-large-calibration-2026-09-07/summary.json
+/docs/results/readme-bc256-2026-09-07/*
+!/docs/results/readme-bc256-2026-09-07/performance.csv
+!/docs/results/readme-bc256-2026-09-07/quality.csv
+!/docs/results/readme-bc256-2026-09-07/manifest.json
+!/docs/results/readme-bc256-2026-09-07/SHA256SUMS
+/docs/results/**/raw-results.zip
+/docs/results/**/captures/
+/docs/results/**/runs/
+/docs/results/**/source/

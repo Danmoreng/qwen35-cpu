@@ -46,7 +46,7 @@ def records(url):
                 yield from batch.to_pylist()
 
 
-def main(out):
+def main(out, expand_from=None):
     out.mkdir(parents=True, exist_ok=False)
     tokenizer = AutoTokenizer.from_pretrained('models/hf-download-test', local_files_only=True)
     excluded = set()
@@ -55,11 +55,15 @@ def main(out):
             excluded |= paragraphs(path.read_text(encoding='utf-8'))
     all_documents = []
     provenance = {}
+    previous = json.loads((expand_from / 'selection.json').read_text()) if expand_from else None
+    counts = dict(de=64, en=64, code=51, chat=51, math=26)
     for domain, (repo, filename, count) in SOURCES.items():
+        if previous:
+            count = counts[domain]
         response = requests.get('https://huggingface.co/api/datasets/' + repo, timeout=60)
         response.raise_for_status()
         info = response.json()
-        revision = info['sha']
+        revision = previous['sources'][domain]['revision'] if previous else info['sha']
         url = f'https://huggingface.co/datasets/{repo}/resolve/{revision}/{filename}'
         provenance[domain] = dict(repository=repo, revision=revision, file=filename,
                                   card=info.get('cardData', {}))
@@ -112,13 +116,18 @@ def main(out):
             raise ValueError(f'Insufficient independent {domain} records')
         (out / 'selection.json').write_text(json.dumps(dict(documents=all_documents, sources=provenance), indent=2))
     calibration = [d for d in all_documents if d['split'] == 'calibration']
-    mixture = [d for d in calibration if d['domain'] != 'en'] + [d for d in calibration if d['domain'] == 'en'][:10]
+    mixture = calibration if previous else [d for d in calibration if d['domain'] != 'en'] + [d for d in calibration if d['domain'] == 'en'][:10]
     prose = [d for d in calibration if d['domain'] == 'en']
     for name, documents in [('mixture', mixture), ('prose', prose)]:
         (out / (name + '.json')).write_text(json.dumps(dict(version=1, documents=documents,
             selection='First eligible independent records in pinned first-shard order; not a random corpus sample.',
             tokens=sum(d['tokens'] for d in documents),
-            limitation='40 x 1024-token screening subset; Python-only code substitute; longer contexts and 256-sequence expansion deferred.'), indent=2) + '\n')
+            limitation='Pinned first-shard selection; Python-only code substitute; 1024-token contexts.'), indent=2) + '\n')
+    if previous:
+        old_final = {d['id']: (d['source_sha256'], d['token_sha256']) for d in previous['documents'] if d['split'] == 'final'}
+        new_final = {d['id']: (d['source_sha256'], d['token_sha256']) for d in all_documents if d['split'] == 'final'}
+        if old_final != new_final:
+            raise ValueError('Reserved final documents changed')
     final = out / 'final'
     final.mkdir()
     windows = []
@@ -136,4 +145,6 @@ def main(out):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', type=Path, required=True)
-    main(parser.parse_args().out)
+    parser.add_argument('--expand-from', type=Path, help='Reuse pinned revisions and final split; select 256 calibration documents')
+    args = parser.parse_args()
+    main(args.out, args.expand_from)

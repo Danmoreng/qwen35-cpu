@@ -8,22 +8,22 @@ GitHub Releases host small Windows/Linux executable archives and checksums.
 ## Prepare and publish the model
 
 ```sh
-python scripts/prepare-hf-package.py --source models/qwen3.5-0.8b --artifact models/qwen3.5-0.8b/model-calibrated-mse16.q35h --output dist/huggingface-mse16
+python scripts/prepare-hf-package.py --source models/qwen3.5-0.8b --artifact models/qwen3.5-0.8b/model-calibrated-large-full-bc.q35h --output dist/huggingface-bc256
 ```
 
 Preparation allows only the validated artifact hash. It copies a fixed file list,
 records BF16 shard hashes and refuses an existing output directory. Test the
 prepared directory directly with the release server before upload. The original
 BF16 source revision was not retained; source hashes are recorded instead of
-inventing a revision. The model card reports the measured calibrated MSE16
+inventing a revision. The model card reports the measured B+C 256-document
 quality and speed separately, with corpus limitations. Quantization provenance
-includes the converter sidecar and calibration manifest. The format is unchanged.
+includes converter, calibration and covariance sidecars, plus corpus provenance. The format is unchanged.
 
 Authenticate locally, then upload the checked package:
 
 ```sh
 hf auth login
-python scripts/upload-hf-package.py --folder dist/huggingface-mse16 --repo danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4 --update
+python scripts/upload-hf-package.py --folder dist/huggingface-bc256 --repo danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4 --update
 ```
 
 The upload script requires `huggingface_hub`, validates the exact manifest and
@@ -75,3 +75,9 @@ the build succeeded on a GitHub runner.
 
 Sources: [Hugging Face upload guide](https://huggingface.co/docs/huggingface_hub/guides/upload),
 [GitHub workflow permissions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax).
+
+## Evidence size policy
+
+Keep raw benchmark profiles, per-token dumps, activation manifests and archives
+under ignored `benchmarks/`. Commit only code, narrative reports and compact
+aggregate CSV/JSON results. Do not copy complete run directories into Git.

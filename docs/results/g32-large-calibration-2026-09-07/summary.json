@@ -1,0 +1,881 @@
+{
+  "artifact_sha256": "013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a",
+  "quality": {
+    "small-b-development": {
+      "overall": {
+        "positions": 1024,
+        "baseline_ppl": 4.851429550982861,
+        "candidate_ppl": 4.837582500213658,
+        "ppl_change_percent": -0.2854220724775129,
+        "baseline_kl": 0.07183477183997745,
+        "candidate_kl": 0.06994569834017599,
+        "kl_change_percent": -2.6297480334588674
+      },
+      "domains": {
+        "german-prose": {
+          "positions": 128,
+          "baseline_ppl": 24.585222404073853,
+          "candidate_ppl": 24.79883969358177,
+          "ppl_change_percent": 0.8688849179274492,
+          "baseline_kl": 0.13376943607378902,
+          "candidate_kl": 0.1361264943778223,
+          "kl_change_percent": 1.7620305304517192
+        },
+        "english-prose": {
+          "positions": 256,
+          "baseline_ppl": 12.102618495670761,
+          "candidate_ppl": 12.090224537759875,
+          "ppl_change_percent": -0.10240724282368796,
+          "baseline_kl": 0.09033109516283085,
+          "candidate_kl": 0.08526430686733089,
+          "kl_change_percent": -5.6091297092840104
+        },
+        "code": {
+          "positions": 256,
+          "baseline_ppl": 2.019088909700726,
+          "candidate_ppl": 2.008639990523498,
+          "ppl_change_percent": -0.5175066401002076,
+          "baseline_kl": 0.06741240320615983,
+          "candidate_kl": 0.06320867031595861,
+          "kl_change_percent": -6.235844874637408
+        },
+        "mathematics": {
+          "positions": 128,
+          "baseline_ppl": 1.0228329265196174,
+          "candidate_ppl": 1.0239256232986496,
+          "ppl_change_percent": 0.1068304266220941,
+          "baseline_kl": 0.0032655758147337,
+          "candidate_kl": 0.003622190793725511,
+          "kl_change_percent": 10.920431777539118
+        },
+        "rendered-chat": {
+          "positions": 128,
+          "baseline_ppl": 17.162566331770154,
+          "candidate_ppl": 16.529602469073623,
+          "ppl_change_percent": -3.688049039174467,
+          "baseline_kl": 0.09484362909977466,
+          "candidate_kl": 0.09671121414213883,
+          "kl_change_percent": 1.9691201824420856
+        },
+        "long-recurrent-code": {
+          "positions": 128,
+          "baseline_ppl": 1.190768095682007,
+          "candidate_ppl": 1.2116911949125255,
+          "ppl_change_percent": 1.7571094914610432,
+          "baseline_kl": 0.027312536993540883,
+          "candidate_kl": 0.026159733041142233,
+          "kl_change_percent": -4.220786786197406
+        }
+      },
+      "paired_document_bootstrap": {
+        "documents": 6,
+        "seed": 1234,
+        "repetitions": 2000,
+        "ppl_change_percent_95": [
+          -1.5486401317330536,
+          0.7505425263822498
+        ],
+        "kl_delta_95": [
+          -0.0037878273716211554,
+          0.0012752577645676888
+        ]
+      }
+    },
+    "small-bc-development": {
+      "overall": {
+        "positions": 1024,
+        "baseline_ppl": 4.851429550982861,
+        "candidate_ppl": 4.705461095473356,
+        "ppl_change_percent": -3.0087720325637317,
+        "baseline_kl": 0.07183477183997745,
+        "candidate_kl": 0.047436939223950716,
+        "kl_change_percent": -33.96382001515437
+      },
+      "domains": {
+        "german-prose": {
+          "positions": 128,
+          "baseline_ppl": 24.585222404073853,
+          "candidate_ppl": 22.763986841733235,
+          "ppl_change_percent": -7.407846601537484,
+          "baseline_kl": 0.13376943607378902,
+          "candidate_kl": 0.07062022087764801,
+          "kl_change_percent": -47.207506475026975
+        },
+        "english-prose": {
+          "positions": 256,
+          "baseline_ppl": 12.102618495670761,
+          "candidate_ppl": 11.478463934238741,
+          "ppl_change_percent": -5.157186121790803,
+          "baseline_kl": 0.09033109516283085,
+          "candidate_kl": 0.04879554091592011,
+          "kl_change_percent": -45.98145762767377
+        },
+        "code": {
+          "positions": 256,
+          "baseline_ppl": 2.019088909700726,
+          "candidate_ppl": 2.049732610319902,
+          "ppl_change_percent": 1.5176994173930605,
+          "baseline_kl": 0.06741240320615983,
+          "candidate_kl": 0.05702356773879565,
+          "kl_change_percent": -15.410866507151766
+        },
+        "mathematics": {
+          "positions": 128,
+          "baseline_ppl": 1.0228329265196174,
+          "candidate_ppl": 1.0164681791335772,
+          "ppl_change_percent": -0.622266571696834,
+          "baseline_kl": 0.0032655758147337,
+          "candidate_kl": 0.0013568330686247188,
+          "kl_change_percent": -58.45041898880656
+        },
+        "rendered-chat": {
+          "positions": 128,
+          "baseline_ppl": 17.162566331770154,
+          "candidate_ppl": 15.808154791708045,
+          "ppl_change_percent": -7.8916609199343055,
+          "baseline_kl": 0.09484362909977466,
+          "candidate_kl": 0.08002681014177879,
+          "kl_change_percent": -15.62236609736718
+        },
+        "long-recurrent-code": {
+          "positions": 128,
+          "baseline_ppl": 1.190768095682007,
+          "candidate_ppl": 1.1869494784969727,
+          "ppl_change_percent": -0.32068521140945744,
+          "baseline_kl": 0.027312536993540883,
+          "candidate_kl": 0.015853432394122718,
+          "kl_change_percent": -41.95547488733148
+        }
+      },
+      "paired_document_bootstrap": {
+        "documents": 6,
+        "seed": 1234,
+        "repetitions": 2000,
+        "ppl_change_percent_95": [
+          -6.0348096195697005,
+          -0.013618334826705913
+        ],
+        "kl_delta_95": [
+          -0.040689306479509926,
+          -0.008362780852052429
+        ]
+      }
+    },
+    "full-b-development": {
+      "overall": {
+        "positions": 1024,
+        "baseline_ppl": 4.851429550982861,
+        "candidate_ppl": 4.841935723035573,
+        "ppl_change_percent": -0.19569134927175602,
+        "baseline_kl": 0.07183477183997745,
+        "candidate_kl": 0.07220013005272564,
+        "kl_change_percent": 0.5086091364806977
+      },
+      "domains": {
+        "german-prose": {
+          "positions": 128,
+          "baseline_ppl": 24.585222404073853,
+          "candidate_ppl": 24.36378867809182,
+          "ppl_change_percent": -0.900678148615581,
+          "baseline_kl": 0.13376943607378902,
+          "candidate_kl": 0.13731139081405672,
+          "kl_change_percent": 2.647805690317706
+        },
+        "english-prose": {
+          "positions": 256,
+          "baseline_ppl": 12.102618495670761,
+          "candidate_ppl": 12.042137548277378,
+          "ppl_change_percent": -0.49973439561874994,
+          "baseline_kl": 0.09033109516283085,
+          "candidate_kl": 0.08774836900336248,
+          "kl_change_percent": -2.8591772908462376
+        },
+        "code": {
+          "positions": 256,
+          "baseline_ppl": 2.019088909700726,
+          "candidate_ppl": 2.0218548123020392,
+          "ppl_change_percent": 0.13698765755309983,
+          "baseline_kl": 0.06741240320615983,
+          "candidate_kl": 0.06540155359044102,
+          "kl_change_percent": -2.9829074770843844
+        },
+        "mathematics": {
+          "positions": 128,
+          "baseline_ppl": 1.0228329265196174,
+          "candidate_ppl": 1.0218571224098405,
+          "ppl_change_percent": -0.09540210179751707,
+          "baseline_kl": 0.0032655758147337,
+          "candidate_kl": 0.003284078059123607,
+          "kl_change_percent": 0.5665844383838214
+        },
+        "rendered-chat": {
+          "positions": 128,
+          "baseline_ppl": 17.162566331770154,
+          "candidate_ppl": 16.903955261754184,
+          "ppl_change_percent": -1.5068321661035298,
+          "baseline_kl": 0.09484362909977466,
+          "candidate_kl": 0.10656501732749965,
+          "kl_change_percent": 12.358645845778637
+        },
+        "long-recurrent-code": {
+          "positions": 128,
+          "baseline_ppl": 1.190768095682007,
+          "candidate_ppl": 1.2109374896817418,
+          "ppl_change_percent": 1.6938137722091733,
+          "baseline_kl": 0.027312536993540883,
+          "candidate_kl": 0.024140709033518185,
+          "kl_change_percent": -11.613084353067604
+        }
+      },
+      "paired_document_bootstrap": {
+        "documents": 6,
+        "seed": 1234,
+        "repetitions": 2000,
+        "ppl_change_percent_95": [
+          -0.8526029220555019,
+          0.528297069679103
+        ],
+        "kl_delta_95": [
+          -0.0022024950844598827,
+          0.0054661451717074065
+        ]
+      }
+    },
+    "full-bc-development": {
+      "overall": {
+        "positions": 1024,
+        "baseline_ppl": 4.851429550982861,
+        "candidate_ppl": 4.652825406267068,
+        "ppl_change_percent": -4.093724182299156,
+        "baseline_kl": 0.07183477183997745,
+        "candidate_kl": 0.04649398942499471,
+        "kl_change_percent": -35.2764848636717
+      },
+      "domains": {
+        "german-prose": {
+          "positions": 128,
+          "baseline_ppl": 24.585222404073853,
+          "candidate_ppl": 21.92624034909579,
+          "ppl_change_percent": -10.815367098478882,
+          "baseline_kl": 0.13376943607378902,
+          "candidate_kl": 0.07678332956685222,
+          "kl_change_percent": -42.600244255722586
+        },
+        "english-prose": {
+          "positions": 256,
+          "baseline_ppl": 12.102618495670761,
+          "candidate_ppl": 11.297221900177036,
+          "ppl_change_percent": -6.65473009648138,
+          "baseline_kl": 0.09033109516283085,
+          "candidate_kl": 0.050124487745794394,
+          "kl_change_percent": -44.510262323909636
+        },
+        "code": {
+          "positions": 256,
+          "baseline_ppl": 2.019088909700726,
+          "candidate_ppl": 2.003725410829526,
+          "ppl_change_percent": -0.7609124490449973,
+          "baseline_kl": 0.06741240320615983,
+          "candidate_kl": 0.048103936046472194,
+          "kl_change_percent": -28.642306521306928
+        },
+        "mathematics": {
+          "positions": 128,
+          "baseline_ppl": 1.0228329265196174,
+          "candidate_ppl": 1.0248704880457942,
+          "ppl_change_percent": 0.19920765878255955,
+          "baseline_kl": 0.0032655758147337,
+          "candidate_kl": 0.0041986007554361705,
+          "kl_change_percent": 28.5715289932277
+        },
+        "rendered-chat": {
+          "positions": 128,
+          "baseline_ppl": 17.162566331770154,
+          "candidate_ppl": 15.940534508278475,
+          "ppl_change_percent": -7.120332704728067,
+          "baseline_kl": 0.09484362909977466,
+          "candidate_kl": 0.08186449019281886,
+          "kl_change_percent": -13.68477675321962
+        },
+        "long-recurrent-code": {
+          "positions": 128,
+          "baseline_ppl": 1.190768095682007,
+          "candidate_ppl": 1.1966806874793092,
+          "ppl_change_percent": 0.4965359601708008,
+          "baseline_kl": 0.027312536993540883,
+          "candidate_kl": 0.01264864730031731,
+          "kl_change_percent": -53.68922592833988
+        }
+      },
+      "paired_document_bootstrap": {
+        "documents": 6,
+        "seed": 1234,
+        "repetitions": 2000,
+        "ppl_change_percent_95": [
+          -7.420899961716636,
+          -1.027436299918277
+        ],
+        "kl_delta_95": [
+          -0.03808154479593527,
+          -0.009464918148581561
+        ]
+      }
+    },
+    "small-b-full": {
+      "overall": {
+        "positions": 8192,
+        "baseline_ppl": 16.0408741050163,
+        "candidate_ppl": 15.975891385246108,
+        "ppl_change_percent": -0.40510709918151433,
+        "baseline_kl": 0.09645639512510064,
+        "candidate_kl": 0.09956838698330722,
+        "kl_change_percent": 3.226319887002238
+      },
+      "domains": {
+        "english-prose-regression": {
+          "positions": 8192,
+          "baseline_ppl": 16.040874105016215,
+          "candidate_ppl": 15.975891385246058,
+          "ppl_change_percent": -0.4051070991812932,
+          "baseline_kl": 0.09645639512510033,
+          "candidate_kl": 0.09956838698330713,
+          "kl_change_percent": 3.22631988700246
+        }
+      },
+      "paired_document_bootstrap": {
+        "documents": 16,
+        "seed": 1234,
+        "repetitions": 2000,
+        "ppl_change_percent_95": [
+          -0.8926624924356552,
+          0.12518576605941933
+        ],
+        "kl_delta_95": [
+          0.0017059928153266043,
+          0.0045281945877411085
+        ]
+      }
+    },
+    "small-bc-full": {
+      "overall": {
+        "positions": 8192,
+        "baseline_ppl": 16.0408741050163,
+        "candidate_ppl": 15.699949861080729,
+        "ppl_change_percent": -2.125347045950295,
+        "baseline_kl": 0.09645639512510064,
+        "candidate_kl": 0.06045390870628451,
+        "kl_change_percent": -37.325141969199805
+      },
+      "domains": {
+        "english-prose-regression": {
+          "positions": 8192,
+          "baseline_ppl": 16.040874105016215,
+          "candidate_ppl": 15.699949861080785,
+          "ppl_change_percent": -2.125347045949426,
+          "baseline_kl": 0.09645639512510033,
+          "candidate_kl": 0.060453908706284365,
+          "kl_change_percent": -37.32514196919975
+        }
+      },
+      "paired_document_bootstrap": {
+        "documents": 16,
+        "seed": 1234,
+        "repetitions": 2000,
+        "ppl_change_percent_95": [
+          -3.9542855065949167,
+          -0.1797732335509548
+        ],
+        "kl_delta_95": [
+          -0.03908581683425695,
+          -0.03268540268254567
+        ]
+      }
+    },
+    "full-b-full": {
+      "overall": {
+        "positions": 8192,
+        "baseline_ppl": 16.0408741050163,
+        "candidate_ppl": 16.089494001843864,
+        "ppl_change_percent": 0.30310004622729225,
+        "baseline_kl": 0.09645639512510064,
+        "candidate_kl": 0.09944745739236105,
+        "kl_change_percent": 3.1009475974932643
+      },
+      "domains": {
+        "english-prose-regression": {
+          "positions": 8192,
+          "baseline_ppl": 16.040874105016215,
+          "candidate_ppl": 16.089494001843693,
+          "ppl_change_percent": 0.30310004622675774,
+          "baseline_kl": 0.09645639512510033,
+          "candidate_kl": 0.09944745739236069,
+          "kl_change_percent": 3.10094759749322
+        }
+      },
+      "paired_document_bootstrap": {
+        "documents": 16,
+        "seed": 1234,
+        "repetitions": 2000,
+        "ppl_change_percent_95": [
+          -0.08658151459645813,
+          0.6998234767465394
+        ],
+        "kl_delta_95": [
+          0.001432366636927304,
+          0.004764294297626539
+        ]
+      }
+    },
+    "full-bc-full": {
+      "overall": {
+        "positions": 8192,
+        "baseline_ppl": 16.0408741050163,
+        "candidate_ppl": 15.804667911191034,
+        "ppl_change_percent": -1.4725269475894587,
+        "baseline_kl": 0.09645639512510064,
+        "candidate_kl": 0.06019020842233651,
+        "kl_change_percent": -37.59853004637809
+      },
+      "domains": {
+        "english-prose-regression": {
+          "positions": 8192,
+          "baseline_ppl": 16.040874105016215,
+          "candidate_ppl": 15.804667911190958,
+          "ppl_change_percent": -1.472526947589415,
+          "baseline_kl": 0.09645639512510033,
+          "candidate_kl": 0.06019020842233628,
+          "kl_change_percent": -37.59853004637812
+        }
+      },
+      "paired_document_bootstrap": {
+        "documents": 16,
+        "seed": 1234,
+        "repetitions": 2000,
+        "ppl_change_percent_95": [
+          -2.8022144610403976,
+          -0.11834956842525327
+        ],
+        "kl_delta_95": [
+          -0.039606613839803885,
+          -0.0327962164726492
+        ]
+      }
+    },
+    "full-bc-final": {
+      "overall": {
+        "positions": 1280,
+        "baseline_ppl": 13.108597140203862,
+        "candidate_ppl": 12.718975388072002,
+        "ppl_change_percent": -2.972261241722777,
+        "baseline_kl": 0.1062560103622979,
+        "candidate_kl": 0.06417806757164336,
+        "kl_change_percent": -39.60052955798232
+      },
+      "domains": {
+        "de": {
+          "positions": 256,
+          "baseline_ppl": 46.01177666144283,
+          "candidate_ppl": 42.622321091649525,
+          "ppl_change_percent": -7.366495744628826,
+          "baseline_kl": 0.15439441275744697,
+          "candidate_kl": 0.09165635853795209,
+          "kl_change_percent": -40.634925253452096
+        },
+        "en": {
+          "positions": 256,
+          "baseline_ppl": 27.165429929145247,
+          "candidate_ppl": 26.74864496657771,
+          "ppl_change_percent": -1.5342476215345169,
+          "baseline_kl": 0.12256297948514899,
+          "candidate_kl": 0.06354726318188249,
+          "kl_change_percent": -48.151339459251204
+        },
+        "code": {
+          "positions": 256,
+          "baseline_ppl": 6.461378462168384,
+          "candidate_ppl": 6.320190098625555,
+          "ppl_change_percent": -2.185112114535494,
+          "baseline_kl": 0.08553345202142848,
+          "candidate_kl": 0.06044638075076389,
+          "kl_change_percent": -29.330128362385732
+        },
+        "chat": {
+          "positions": 256,
+          "baseline_ppl": 5.383594945546285,
+          "candidate_ppl": 5.1592859729570115,
+          "ppl_change_percent": -4.166527661499474,
+          "baseline_kl": 0.08608291440507933,
+          "candidate_kl": 0.06280557680671044,
+          "kl_change_percent": -27.040601214815997
+        },
+        "math": {
+          "positions": 256,
+          "baseline_ppl": 8.902212182244083,
+          "candidate_ppl": 8.95368908784589,
+          "ppl_change_percent": 0.5782484684478741,
+          "baseline_kl": 0.08270629314238562,
+          "candidate_kl": 0.042434758580907915,
+          "kl_change_percent": -48.6922252604732
+        }
+      },
+      "paired_document_bootstrap": {
+        "documents": 10,
+        "seed": 1234,
+        "repetitions": 2000,
+        "ppl_change_percent_95": [
+          -5.341998969667441,
+          -0.8528651337025632
+        ],
+        "kl_delta_95": [
+          -0.0528153723394628,
+          -0.030879545095269405
+        ]
+      }
+    },
+    "old-c-final": {
+      "overall": {
+        "positions": 1280,
+        "baseline_ppl": 13.108597140203862,
+        "candidate_ppl": 13.08678360404114,
+        "ppl_change_percent": -0.16640633570027302,
+        "baseline_kl": 0.1062560103622979,
+        "candidate_kl": 0.09059745108813826,
+        "kl_change_percent": -14.736633928536492
+      },
+      "domains": {
+        "de": {
+          "positions": 256,
+          "baseline_ppl": 46.01177666144283,
+          "candidate_ppl": 44.434090416326434,
+          "ppl_change_percent": -3.4288748655047474,
+          "baseline_kl": 0.15439441275744697,
+          "candidate_kl": 0.13854626370450981,
+          "kl_change_percent": -10.264716688831577
+        },
+        "en": {
+          "positions": 256,
+          "baseline_ppl": 27.165429929145247,
+          "candidate_ppl": 26.298755952726275,
+          "ppl_change_percent": -3.1903561941758007,
+          "baseline_kl": 0.12256297948514899,
+          "candidate_kl": 0.08171897522669447,
+          "kl_change_percent": -33.32491134764197
+        },
+        "code": {
+          "positions": 256,
+          "baseline_ppl": 6.461378462168384,
+          "candidate_ppl": 6.676696442951427,
+          "ppl_change_percent": 3.3323845994123107,
+          "baseline_kl": 0.08553345202142848,
+          "candidate_kl": 0.10117107101575677,
+          "kl_change_percent": 18.28245981515002
+        },
+        "chat": {
+          "positions": 256,
+          "baseline_ppl": 5.383594945546285,
+          "candidate_ppl": 5.164701194474126,
+          "ppl_change_percent": -4.065940199554671,
+          "baseline_kl": 0.08608291440507933,
+          "candidate_kl": 0.05920456633449106,
+          "kl_change_percent": -31.223789594421902
+        },
+        "math": {
+          "positions": 256,
+          "baseline_ppl": 8.902212182244083,
+          "candidate_ppl": 9.525905634342466,
+          "ppl_change_percent": 7.006050174162009,
+          "baseline_kl": 0.08270629314238562,
+          "candidate_kl": 0.07234637915923892,
+          "kl_change_percent": -12.526149570397582
+        }
+      },
+      "paired_document_bootstrap": {
+        "documents": 10,
+        "seed": 1234,
+        "repetitions": 2000,
+        "ppl_change_percent_95": [
+          -3.6005726280511565,
+          3.51304638159366
+        ],
+        "kl_delta_95": [
+          -0.02774462834295403,
+          -0.0024079846516714934
+        ]
+      }
+    }
+  },
+  "speed": {
+    "16": {
+      "full-bc": {
+        "decode_runs": [
+          617.66665236,
+          619.101417556,
+          621.199281463
+        ],
+        "prefill_runs": [
+          2138.25627863,
+          2137.67916828,
+          2157.46644965
+        ],
+        "decode_median": 619.101417556,
+        "prefill_median": 2138.25627863,
+        "decode_change_percent": 0.4879384449753221,
+        "prefill_change_percent": -0.8792821992451905
+      },
+      "old-c": {
+        "decode_runs": [
+          612.940501214,
+          619.706439082,
+          615.720837748
+        ],
+        "prefill_runs": [
+          2137.60793687,
+          2149.4555373,
+          2153.5273632
+        ],
+        "decode_median": 615.720837748,
+        "prefill_median": 2149.4555373,
+        "decode_change_percent": -0.06077213138819815,
+        "prefill_change_percent": -0.3601308845496698
+      },
+      "baseline": {
+        "decode_runs": [
+          616.095251964,
+          622.305664537,
+          614.644268731
+        ],
+        "prefill_runs": [
+          2157.2243685,
+          2159.69909739,
+          2146.50566721
+        ],
+        "decode_median": 616.095251964,
+        "prefill_median": 2157.2243685,
+        "decode_change_percent": 0.0,
+        "prefill_change_percent": 0.0
+      }
+    },
+    "8": {
+      "full-bc": {
+        "decode_runs": [
+          403.738619618,
+          401.929578457,
+          400.750160123
+        ],
+        "prefill_runs": [
+          2142.04857032,
+          2144.65319267,
+          2145.52573028
+        ],
+        "decode_median": 401.929578457,
+        "prefill_median": 2144.65319267,
+        "decode_change_percent": 0.01710969926880246,
+        "prefill_change_percent": -0.41381439374131856
+      },
+      "old-c": {
+        "decode_runs": [
+          400.249762155,
+          403.132482229,
+          402.821638706
+        ],
+        "prefill_runs": [
+          2154.92738931,
+          2158.24510224,
+          2143.47386257
+        ],
+        "decode_median": 402.821638706,
+        "prefill_median": 2154.92738931,
+        "decode_change_percent": 0.2390920876391922,
+        "prefill_change_percent": 0.06326416471429397
+      },
+      "baseline": {
+        "decode_runs": [
+          400.160158589,
+          401.860821279,
+          402.559852746
+        ],
+        "prefill_runs": [
+          2154.8540402,
+          2147.16487742,
+          2153.56495443
+        ],
+        "decode_median": 401.860821279,
+        "prefill_median": 2153.56495443,
+        "decode_change_percent": 0.0,
+        "prefill_change_percent": 0.0
+      }
+    },
+    "4": {
+      "full-bc": {
+        "decode_runs": [
+          321.062834272,
+          322.522256099,
+          322.117493878
+        ],
+        "prefill_runs": [
+          2156.41279048,
+          2145.11807576,
+          2137.1784736
+        ],
+        "decode_median": 322.117493878,
+        "prefill_median": 2145.11807576,
+        "decode_change_percent": 0.757001474336505,
+        "prefill_change_percent": 0.16767114302913555
+      },
+      "old-c": {
+        "decode_runs": [
+          321.953992014,
+          310.670548744,
+          321.390410836
+        ],
+        "prefill_runs": [
+          2148.57997014,
+          2154.25632347,
+          2142.87941469
+        ],
+        "decode_median": 321.390410836,
+        "prefill_median": 2148.57997014,
+        "decode_change_percent": 0.5295729473950184,
+        "prefill_change_percent": 0.3293265324019856
+      },
+      "baseline": {
+        "decode_runs": [
+          316.92165759,
+          319.697379998,
+          320.631750584
+        ],
+        "prefill_runs": [
+          2143.92027966,
+          2141.52735237,
+          2131.95289383
+        ],
+        "decode_median": 319.697379998,
+        "prefill_median": 2141.52735237,
+        "decode_change_percent": 0.0,
+        "prefill_change_percent": 0.0
+      }
+    },
+    "2": {
+      "full-bc": {
+        "decode_runs": [
+          157.73577866,
+          161.579232158,
+          162.225778558
+        ],
+        "prefill_runs": [
+          2146.6267668,
+          2131.11386704,
+          2158.04838243
+        ],
+        "decode_median": 161.579232158,
+        "prefill_median": 2146.6267668,
+        "decode_change_percent": -0.13094279192911173,
+        "prefill_change_percent": -0.5185864547834429
+      },
+      "old-c": {
+        "decode_runs": [
+          153.402865094,
+          162.018469468,
+          162.973959071
+        ],
+        "prefill_runs": [
+          2140.58456354,
+          2144.87544432,
+          2145.71230524
+        ],
+        "decode_median": 162.018469468,
+        "prefill_median": 2144.87544432,
+        "decode_change_percent": 0.14054145424811093,
+        "prefill_change_percent": -0.5997482284920697
+      },
+      "baseline": {
+        "decode_runs": [
+          162.541108822,
+          161.336004397,
+          161.791085923
+        ],
+        "prefill_runs": [
+          2157.81691303,
+          2166.56895243,
+          2146.83288688
+        ],
+        "decode_median": 161.791085923,
+        "prefill_median": 2157.81691303,
+        "decode_change_percent": 0.0,
+        "prefill_change_percent": 0.0
+      }
+    },
+    "1": {
+      "full-bc": {
+        "decode_runs": [
+          120.491609562,
+          120.960997983,
+          120.976518648
+        ],
+        "prefill_runs": [
+          2122.64845169,
+          2146.40493941,
+          2126.72011989
+        ],
+        "decode_median": 120.960997983,
+        "prefill_median": 2126.72011989,
+        "decode_change_percent": 0.12901871409973786,
+        "prefill_change_percent": -0.4331530748017731
+      },
+      "old-c": {
+        "decode_runs": [
+          120.038635427,
+          120.815790072,
+          120.828916814
+        ],
+        "prefill_runs": [
+          2127.88506096,
+          2131.13737386,
+          2129.06544423
+        ],
+        "decode_median": 120.815790072,
+        "prefill_median": 2129.06544423,
+        "decode_change_percent": 0.008818601002147375,
+        "prefill_change_percent": -0.3233518144634906
+      },
+      "baseline": {
+        "decode_runs": [
+          120.183310778,
+          120.805136749,
+          120.922058307
+        ],
+        "prefill_runs": [
+          2135.97214893,
+          2145.33289533,
+          2119.77121376
+        ],
+        "decode_median": 120.805136749,
+        "prefill_median": 2135.97214893,
+        "decode_change_percent": 0.0,
+        "prefill_change_percent": 0.0
+      }
+    }
+  },
+  "candidate_decision": {
+    "candidate": "full-bc",
+    "references": [
+      "baseline",
+      "old-c"
+    ],
+    "frozen_before_final_evaluation": true,
+    "reason": "Best mixed development point estimates for both PPL and KL; both improve over original G32 on the English regression suite. Small B+C has better English PPL, so corpus-size benefit is mixed, not universal.",
+    "no_retuning_on_final": true
+  },
+  "collection_checks": {
+    "model_loads": 1,
+    "documents": 256,
+    "control_documents": 40,
+    "projections": 187,
+    "raw_tensor_files_remaining": 0,
+    "all_statistics_checksums_valid": true,
+    "collection_wall_ms": 1914487.9759,
+    "free_gib": 56.60343551635742
+  },
+  "local_evidence": "benchmarks\\bc-large-evidence",
+  "evidence_policy": "Raw profiles, per-token results and full manifests are retained locally, not in Git."
+}
