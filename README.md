@@ -21,7 +21,7 @@ measured separately; the unchanged custom format needs no GPU at runtime.
 
 ### Speed
 
-Speed is reported as three complete platform-specific comparison series. All use FP16 KV,
+Speed includes three complete platform-specific series and an additional Linux IK comparison. All use FP16 KV,
 identical fixed tokens, full-vocabulary logits and **three measured runs after
 one warmup**, with alternating case order. Values are median **tokens/s**.
 
@@ -92,13 +92,50 @@ HTTP and prefix-cache credit are excluded. Three runs describe this CPU/workload
 not a universal guarantee. In a separate matched G32 comparison, B+C decode
 medians remained within -0.13% to +0.76% of the previous standard across B1/2/4/8/16.
 
+#### Additional Linux/Ryzen comparison: ik_llama.cpp
+
+A fresh eleven-candidate series uses the same desktop, affinity and workload
+conditions above. IK runs the same four GGUF files with runtime repacking enabled,
+plus two IK-specific quantizations made directly from BF16 without calibration.
+All values below belong to this new series; the earlier batch-16 table remains
+separate. Units are tokens/s, medians of three measured runs after one warmup.
+
+| Engine / checkpoint | Prefill 512 | Prefill 4,096 | Decode B=1 |
+| --- | ---: | ---: | ---: |
+| **This engine, H128 B+C 256** | 2,180.04 | 1,910.84 | 122.64 |
+| llama.cpp Q4_0 `--pure` | 1,060.22 | 1,069.80 | 108.53 |
+| ik_llama.cpp Q4_0 `--pure` | 2,894.20 | 2,520.52 | 122.18 |
+| ik_llama.cpp IQ4_K_R4 `--pure` | 1,988.23 | 1,795.99 | 118.16 |
+| ik_llama.cpp IQ4_KS_R4 `--pure` | 2,061.58 | 1,838.91 | 129.37 |
+| llama.cpp Unsloth Q4_0 | 927.35 | 944.17 | 94.27 |
+| ik_llama.cpp Unsloth Q4_0 | 2,733.27 | 2,432.20 | 104.31 |
+| llama.cpp Unsloth Q4_K_M | 666.18 | 657.12 | 88.28 |
+| ik_llama.cpp Unsloth Q4_K_M | 1,977.99 | 1,795.43 | 98.74 |
+| llama.cpp Unsloth IQ4_XS | 926.87 | 835.48 | 94.37 |
+| ik_llama.cpp Unsloth IQ4_XS | 1,946.21 | 1,773.20 | 107.50 |
+
+For identical GGUF files, IK delivers **1.11–1.14× decode** and **2.10–2.97×
+prefill** relative to mainline llama.cpp in this series. The smaller IQ4_KS_R4
+reaches **129.37 tok/s**, 5.5% above native H128, with somewhat worse quality
+on the shared test subset. Equal-payload IQ4_K_R4 reaches 118.16 tok/s and
+trades slightly lower PPL for higher KL than native H128; see the quality table.
+
+**Storage is not RAM usage:** IQ4_K_R4 and IQ4_KS_R4 have 424.93 and 401.44 MB
+of on-disk tensors, but IK reports 567.97 and 540.11 MB of loaded model tensors
+in this configuration, before KV and compute buffers. The stock IK pure-Q4_0
+batch-16 warmup hit a graph-capacity assertion, so no IK B16 result is published.
+See [IK details and reproduction](docs/ik-linux-comparison-2026-09-07.md),
+[speed CSV](docs/results/ik-linux-2026-09-07/performance.csv) and
+[provenance](docs/results/ik-linux-2026-09-07/manifest.json).
+
 ### Perplexity and KL divergence
 
 Identical prompts and scoring masks, **8,192 scored tokens from 16 WikiText-2
 test article windows**, common BF16 teacher. This is an English-prose subset,
 not full-corpus WikiText perplexity. Lower PPL and KL are better. These
-checkpoint-level scores were not rerun per operating system; ISA-dependent
-floating-point rounding may still produce negligible numerical differences.
+original checkpoint-level scores were not rerun per operating system. The three
+IK rows were scored separately on Linux against the same cached BF16 teacher;
+backend-dependent numerical differences are visible in the pure-Q4_0 control.
 
 | Engine / checkpoint | Tensor payload, MB | Perplexity | Mean KL to BF16, nats |
 | --- | ---: | ---: | ---: |
@@ -108,6 +145,9 @@ floating-point rounding may still produce negligible numerical differences.
 | llama.cpp Unsloth Q4_0 | 496.2 | 15.58088 | 0.068388 |
 | llama.cpp Unsloth Q4_K_M | 521.6 | 14.75290 | 0.034693 |
 | llama.cpp Unsloth IQ4_XS | 481.6 | 15.16145 | 0.050539 |
+| ik_llama.cpp Q4_0 `--pure`, control | 424.9 | 18.08595 | 0.145799 |
+| ik_llama.cpp IQ4_K_R4 `--pure` | 424.9 | 15.78482 | 0.073289 |
+| ik_llama.cpp IQ4_KS_R4 `--pure` | 401.4 | 15.90097 | 0.090599 |
 
 At the same **424,934,656-byte tensor budget** as pure Q4_0, B+C H128 has
 **12.3% lower perplexity** and **58.4% lower KL**. Unsloth Q4_0 has lower PPL

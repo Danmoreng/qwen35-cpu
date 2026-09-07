@@ -32,6 +32,9 @@ int main(int argc, char ** argv) try {
   std::vector<llama_token> prompt, forced;
   int threads = 8, context = 8192, generated = 128, sequences = 1;
   bool prefill_only = false;
+#ifdef QWEN35_IK_LLAMA
+  bool ik_repack = false;
+#endif
   for (int i = 1; i < argc; ++i) {
     const std::string arg = argv[i];
     const auto value = [&]() -> std::string {
@@ -56,6 +59,9 @@ int main(int argc, char ** argv) try {
     else if (arg == "--max-context") context = std::stoi(value());
     else if (arg == "--max-new-tokens") generated = std::stoi(value());
     else if (arg == "--prefill-only") prefill_only = true;
+#ifdef QWEN35_IK_LLAMA
+    else if (arg == "--ik-repack") ik_repack = true;
+#endif
     else throw std::runtime_error("Unsupported argument: " + arg);
   }
   if(projection_capture.directory=="@profile") projection_capture.directory=profile_path+".captures";
@@ -65,7 +71,9 @@ int main(int argc, char ** argv) try {
       (!prefill_only && (generated < 2 || forced.size() != std::size_t(generated))) ||
       context < int(prompt.size()) + (prefill_only ? 0 : generated))
     throw std::runtime_error("Invalid fixed benchmark configuration");
+#ifndef QWEN35_IK_LLAMA
   ggml_backend_load_all();
+#endif
   llama_backend_init();
   const auto load_start = Clock::now();
   auto mp = llama_model_default_params();
@@ -74,32 +82,59 @@ int main(int argc, char ** argv) try {
   if(projection_capture.directory.empty()) throw std::runtime_error("CUDA collector requires --capture-inputs");
 #else
   mp.n_gpu_layers = 0;
+#ifdef QWEN35_IK_LLAMA
+  mp.devices = nullptr;
+  mp.repack_tensors = ik_repack;
+  mp.use_mmap = !ik_repack;
+  mp.max_ctx_size = context * sequences;
+  mp.n_seq_max = sequences;
+  mp.n_ubatch = 512;
+  mp.type_k = GGML_TYPE_F16; mp.type_v = GGML_TYPE_F16;
+  mp.flash_attn = true;
+#else
   // CPU-only build and explicit empty device list prevent accelerator offload.
   ggml_backend_dev_t devices[] = {nullptr}; mp.devices = devices;
 #endif
-  std::unique_ptr<llama_model, decltype(&llama_model_free)> model(
-    llama_model_load_from_file(model_path.c_str(), mp), llama_model_free);
+#endif
+#ifdef QWEN35_IK_LLAMA
+  auto model_deleter = llama_free_model;
+#else
+  auto model_deleter = llama_model_free;
+#endif
+  std::unique_ptr<llama_model, decltype(model_deleter)> model(
+    llama_model_load_from_file(model_path.c_str(), mp), model_deleter);
   if (!model) throw std::runtime_error("Model load failed");
   const int vocab = llama_vocab_n_tokens(llama_model_get_vocab(model.get()));
   for (const auto & list : {&prompt, &forced}) for (auto token : *list)
     if (token < 0 || token >= vocab) throw std::runtime_error("Token out of range");
   auto cp = llama_context_default_params();
   if (!projection_capture.directory.empty()) {
+#ifdef QWEN35_IK_LLAMA
+    throw std::runtime_error("Projection capture is unavailable in the IK comparison harness");
+#else
     if (sequences != 1 || std::filesystem::exists(projection_capture.directory))
       throw std::runtime_error("Capture requires one sequence and a new output directory");
     std::filesystem::create_directories(projection_capture.directory);
     cp.cb_eval = ProjectionCapture::callback;
     cp.cb_eval_user_data = &projection_capture;
+#endif
   }
   cp.n_ctx = context * sequences; cp.n_seq_max = sequences;
   cp.n_batch = 2048; cp.n_ubatch = 512;
   cp.n_threads = threads; cp.n_threads_batch = threads;
   cp.type_k = GGML_TYPE_F16; cp.type_v = GGML_TYPE_F16;
+#ifdef QWEN35_IK_LLAMA
+  cp.flash_attn = true;
+#else
   cp.flash_attn_type = LLAMA_FLASH_ATTN_TYPE_ENABLED;
+#endif
 #ifdef QWEN35_CALIBRATION_CUDA
   cp.offload_kqv = true; cp.op_offload = true;
 #else
-  cp.offload_kqv = false; cp.op_offload = false;
+  cp.offload_kqv = false;
+#ifndef QWEN35_IK_LLAMA
+  cp.op_offload = false;
+#endif
 #endif
   std::unique_ptr<llama_context, decltype(&llama_free)> ctx(
     llama_init_from_model(model.get(), cp), llama_free);
@@ -185,7 +220,12 @@ int main(int argc, char ** argv) try {
     }
   }
   std::ofstream out(profile_path);
-  out << std::setprecision(12) << "{\"prefill_only\":" << (prefill_only ? "true" : "false")
+#ifdef QWEN35_IK_LLAMA
+  out << "{\"engine\":\"ik_llama.cpp\",\"runtime_repack\":" << (ik_repack ? "true" : "false") << ',';
+#else
+  out << '{';
+#endif
+  out << std::setprecision(12) << "\"prefill_only\":" << (prefill_only ? "true" : "false")
       << ",\"quality_capture\":" << (logits_path.empty() && projection_capture.directory.empty() ? "false" : "true")
       << ",\"cpu_batch\":" << sequences
       << ",\"prompt_tokens\":" << prompt.size() * sequences << ",\"generated_tokens\":" << outputs
