@@ -5,6 +5,8 @@
 #include <fstream>
 #include <cmath>
 #include <cstring>
+#include <atomic>
+#include <thread>
 #include "qwen35x/common/model_profile.h"
 #include "qwen35x/compiler/compiler.h"
 #include "qwen35x/cpu/q4_0.h"
@@ -243,6 +245,7 @@ bool convert_tensor(
   const ConversionTensor & conversion,
   const qwen35x::cpu::Q4Quantizer recipe,
   const std::string & importance_dir,
+  const std::string & covariance_dir,
   qwen35x::Q4H128ArtifactWriter & writer,
   std::string & error) {
   const auto & info = conversion.output;
@@ -324,14 +327,40 @@ bool convert_tensor(
     }
     const std::size_t columns=static_cast<std::size_t>(source.shape[1]);
     const std::size_t rows=static_cast<std::size_t>(source.shape[0]);
-    for (std::size_t row=0; row<rows; ++row) {
-      if (!qwen35x::cpu::q4_quantize_offline(tensor.data.data()+row*columns,
-            blocks.data()+row*(columns/32), columns/32, recipe,
-            importance.empty()?nullptr:importance.data())) {
-        error = "Non-finite source or binary16 scale overflow in " + source.name;
-        return false;
+    std::vector<float> covariance;
+    if(!covariance_dir.empty()) {
+      std::ifstream file(std::filesystem::path(covariance_dir)/(source.name+".cov"),std::ios::binary);
+      char magic[8]{}; std::uint64_t width=0,seed=0,samples=0;std::uint32_t basis=0;
+      file.read(magic,8);file.read(reinterpret_cast<char*>(&width),8);file.read(reinterpret_cast<char*>(&seed),8);
+      file.read(reinterpret_cast<char*>(&basis),4);file.read(reinterpret_cast<char*>(&samples),8);
+      const bool transformed=source.encoding==Q4H128TensorEncoding::q4_h128;
+      if(!file || std::memcmp(magic,"Q35COV1\0",8) || width!=columns || columns%128 || !samples ||
+          basis!=(transformed?1U:0U) || seed!=(transformed?source.sign_seed:0)) {
+        error="Invalid covariance metadata: "+source.name;return false;
+      }
+      covariance.resize((columns/128)*32768);
+      file.read(reinterpret_cast<char*>(covariance.data()),covariance.size()*sizeof(float));
+      if(!file || file.peek()!=std::char_traits<char>::eof()) {error="Invalid covariance size";return false;}
+      for(float v:covariance)if(!std::isfinite(v)){error="Nonfinite covariance";return false;}
+      for(std::size_t b=0;b<columns/128;++b)for(int i=0;i<128;++i) {
+        if(covariance[b*32768+16384+i*128+i]<=0){error="Invalid covariance factor diagonal";return false;}
       }
     }
+    std::atomic<bool> fit_ok{true};
+    const std::size_t workers=std::min<std::size_t>(8,rows);
+    std::vector<std::thread> fitting;
+    for(std::size_t worker=0;worker<workers;++worker)fitting.emplace_back([&,worker] {
+      for(std::size_t row=worker;row<rows && fit_ok.load(std::memory_order_relaxed);row+=workers) {
+        const bool valid=covariance.empty()
+            ? qwen35x::cpu::q4_quantize_offline(tensor.data.data()+row*columns,
+                blocks.data()+row*(columns/32),columns/32,recipe,importance.empty()?nullptr:importance.data())
+            : qwen35x::cpu::q4_quantize_covariance128(tensor.data.data()+row*columns,
+                blocks.data()+row*(columns/32),columns,importance.data(),covariance.data());
+        if(!valid)fit_ok.store(false,std::memory_order_relaxed);
+      }
+    });
+    for(auto & worker:fitting)worker.join();
+    if(!fit_ok){error="Offline quantization failed: "+source.name;return false;}
     if (!packed) {
       return writer.write_tensor(info.name, blocks.data(), blocks.size() * sizeof(blocks[0]), error);
     }
@@ -369,6 +398,7 @@ int main(int argc, char ** argv) {
   std::string head_basis = "identity";
   bool head_g16 = false;
   std::string importance_dir;
+  std::string covariance_dir;
   for (int index = 1; index < argc; ++index) {
     const std::string argument = argv[index];
     if (argument == "--head-g16") { head_g16 = true;
@@ -384,10 +414,12 @@ int main(int argc, char ** argv) {
       layout = argv[++index];
     } else if (argument == "--quantizer" && index + 1 < argc) {
       quantizer = argv[++index];
+    } else if (argument == "--covariance-dir" && index + 1 < argc) {
+      covariance_dir = argv[++index];
     } else if (argument == "--importance-dir" && index + 1 < argc) {
       importance_dir = argv[++index];
     } else if (argument == "--help") {
-      std::cout << "Usage: qwen35_cpu_pack --hf-model-dir <dir> --output <file> [--layout cpu-dot4] [--quantizer mse16|legacy-absmax15] [--importance-dir <Q35CAL1 directory>] [--q8-gates] [--q8-head] [--head-basis identity|h128] [--head-g16]\nDefault quantizer: mse16; calibration is enabled only with --importance-dir.\n";
+      std::cout << "Usage: qwen35_cpu_pack --hf-model-dir <dir> --output <file> [--layout cpu-dot4] [--quantizer mse16|legacy-absmax15] [--importance-dir <Q35CAL1 directory>] [--covariance-dir <Q35COV1 directory>] [--q8-gates] [--q8-head] [--head-basis identity|h128] [--head-g16]\nDefault quantizer: mse16; calibration is enabled only with --importance-dir.\n";
       return 0;
     } else {
       std::cerr << "Unknown or incomplete argument: " << argument << '\n';
@@ -417,6 +449,10 @@ int main(int argc, char ** argv) {
   if (!importance_dir.empty() && (quantizer != "mse16" ||
       !std::filesystem::exists(std::filesystem::path(importance_dir)/"manifest.json"))) {
     std::cerr << "Importance requires mse16 and a calibration manifest\n";return 2;
+  }
+  if (!covariance_dir.empty() && (importance_dir.empty() || quantizer!="mse16" || head_g16 || q8_head || q8_gates || head_basis!="identity" ||
+      !std::filesystem::exists(std::filesystem::path(covariance_dir)/"manifest.json"))) {
+    std::cerr<<"Covariance fitting requires calibrated MSE16 G32 with identity head.\n";return 2;
   }
   const auto recipe = quantizer == "mse16" ? qwen35x::cpu::Q4Quantizer::mse16
                                          : qwen35x::cpu::Q4Quantizer::legacy_absmax15;
@@ -479,7 +515,7 @@ int main(int argc, char ** argv) {
   }
   for (std::size_t index = 0; index < tensors.size(); ++index) {
     const auto started = std::chrono::steady_clock::now();
-    if (!convert_tensor(model_dir, conversion[index], recipe, importance_dir, writer, error)) {
+    if (!convert_tensor(model_dir, conversion[index], recipe, importance_dir, covariance_dir, writer, error)) {
       writer.close();
       std::error_code ignored;
       fs::remove(partial, ignored);
@@ -522,7 +558,7 @@ int main(int argc, char ** argv) {
   std::ofstream sidecar(output_path + ".quantization.json");
   sidecar << "{\n  \"version\": 1,\n  \"quantizer\": \"" << quantizer
           << "\",\n  \"layout\": \"cpu-dot4\",\n  \"sign_seed\": " << metadata.sign_seed
-          << ",\n  \"importance\": " << (importance_dir.empty()?"null":"\"Q35CAL1\"") << ",\n  \"rounding\": \"code ties away from zero; stored FP16 scale\"\n}\n";
+          << ",\n  \"importance\": " << (importance_dir.empty()?"null":"\"Q35CAL1\"") << ",\n  \"error_compensation\": " << (covariance_dir.empty()?"null":"\"block128\"") << ",\n  \"rounding\": \"code ties away from zero; stored FP16 scale\"\n}\n";
   sidecar.close();
   std::ofstream mixed_sidecar(output_path + ".precision.json");
   mixed_sidecar << "{\n  \"q8_gates\": " << (q8_gates ? "true" : "false")
@@ -535,6 +571,11 @@ int main(int argc, char ** argv) {
     std::error_code copy_error;
     fs::copy_file(fs::path(importance_dir)/"manifest.json", output_path+".calibration.json", copy_error);
     if (copy_error) { std::cerr << "Could not copy calibration provenance\n";return 8; }
+  }
+  if(!covariance_dir.empty()) {
+    std::error_code ec;
+    fs::copy_file(fs::path(covariance_dir)/"manifest.json",output_path+".covariance.json",ec);
+    if(ec){std::cerr<<"Could not write covariance provenance\n";return 8;}
   }
   if (!sidecar) { std::cerr << "Could not write quantizer sidecar\n"; return 8; }
   std::cout << "Wrote and checksum-verified " << verifier.tensors().size()

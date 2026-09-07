@@ -26,6 +26,9 @@ static std::vector<llama_token> tokens(const std::string & csv) {
 int main(int argc, char ** argv) try {
   std::string model_path, profile_path, logits_path, final_logits_path;
   ProjectionCapture projection_capture;
+#ifdef QWEN35_CALIBRATION_CUDA
+  projection_capture.bulk_download = true;
+#endif
   std::vector<llama_token> prompt, forced;
   int threads = 8, context = 8192, generated = 128, sequences = 1;
   bool prefill_only = false;
@@ -39,6 +42,7 @@ int main(int argc, char ** argv) try {
     else if (arg == "--profile-json") profile_path = value();
     else if (arg == "--logits-out") logits_path = value();
     else if (arg == "--final-logits-out") final_logits_path = value();
+    else if (arg == "--capture-reservoir") projection_capture.reservoir = true;
     else if (arg == "--capture-inputs") projection_capture.directory = value();
     else if (arg == "--prompt-tokens-file") {
       std::ifstream file(value()); std::stringstream text; text << file.rdbuf();
@@ -54,6 +58,8 @@ int main(int argc, char ** argv) try {
     else if (arg == "--prefill-only") prefill_only = true;
     else throw std::runtime_error("Unsupported argument: " + arg);
   }
+  if(projection_capture.directory=="@profile") projection_capture.directory=profile_path+".captures";
+  if(final_logits_path=="@profile") final_logits_path=profile_path+".final-logits";
   if (model_path.empty() || profile_path.empty() || prompt.empty() || threads < 1 ||
       sequences < 1 || sequences > 100 || (!logits_path.empty() && sequences != 1) ||
       (!prefill_only && (generated < 2 || forced.size() != std::size_t(generated))) ||
@@ -63,9 +69,14 @@ int main(int argc, char ** argv) try {
   llama_backend_init();
   const auto load_start = Clock::now();
   auto mp = llama_model_default_params();
+#ifdef QWEN35_CALIBRATION_CUDA
+  mp.n_gpu_layers = 999;
+  if(projection_capture.directory.empty()) throw std::runtime_error("CUDA collector requires --capture-inputs");
+#else
   mp.n_gpu_layers = 0;
   // CPU-only build and explicit empty device list prevent accelerator offload.
   ggml_backend_dev_t devices[] = {nullptr}; mp.devices = devices;
+#endif
   std::unique_ptr<llama_model, decltype(&llama_model_free)> model(
     llama_model_load_from_file(model_path.c_str(), mp), llama_model_free);
   if (!model) throw std::runtime_error("Model load failed");
@@ -85,7 +96,11 @@ int main(int argc, char ** argv) try {
   cp.n_threads = threads; cp.n_threads_batch = threads;
   cp.type_k = GGML_TYPE_F16; cp.type_v = GGML_TYPE_F16;
   cp.flash_attn_type = LLAMA_FLASH_ATTN_TYPE_ENABLED;
+#ifdef QWEN35_CALIBRATION_CUDA
+  cp.offload_kqv = true; cp.op_offload = true;
+#else
   cp.offload_kqv = false; cp.op_offload = false;
+#endif
   std::unique_ptr<llama_context, decltype(&llama_free)> ctx(
     llama_init_from_model(model.get(), cp), llama_free);
   if (!ctx) throw std::runtime_error("Context creation failed");

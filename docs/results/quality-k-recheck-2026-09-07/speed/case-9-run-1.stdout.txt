@@ -1,0 +1,2 @@
+B=8 aggregate_decode=415.874 token/s tick_p50=19.2414 ms
+

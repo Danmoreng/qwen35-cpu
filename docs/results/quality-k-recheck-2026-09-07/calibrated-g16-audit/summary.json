@@ -1,0 +1,128 @@
+{
+  "positions": 384,
+  "candidate_ppl": 6.021577850973442,
+  "reference_ppl": 5.769487605429328,
+  "ppl_ratio": 1.043693697392969,
+  "candidate_kl": 0.0647098780400404,
+  "reference_kl": 0.024791999562051876,
+  "compatibility_kl": 0.08220089229416147,
+  "top1": 0.8932291666666666,
+  "kl_p95": 0.23001722460841634,
+  "kl_p99": 0.3424051530749037,
+  "kl_max": 0.5230710465311266,
+  "strict_pass": false,
+  "engineering_pass": false,
+  "gates": {
+    "ppl_relative_tolerance": 0.01,
+    "kl_absolute_tolerance": 0.002,
+    "strict_ppl_relative_tolerance": 0,
+    "strict_kl_absolute_tolerance": 0
+  },
+  "domains": {
+    "code": {
+      "positions": 64,
+      "candidate_ppl": 1.0335927316068443,
+      "reference_ppl": 1.0287500858708598,
+      "ppl_ratio": 1.0047073101645334,
+      "candidate_kl": 0.004906823537014085,
+      "reference_kl": 0.0026406674430962443,
+      "compatibility_kl": 0.006926816574896988,
+      "top1": 1.0,
+      "kl_p95": 0.028187558606277103,
+      "kl_p99": 0.04912384360026644,
+      "kl_max": 0.05271878566755937,
+      "strict_pass": false,
+      "engineering_pass": false
+    },
+    "english-prose": {
+      "positions": 64,
+      "candidate_ppl": 42.22115716680763,
+      "reference_ppl": 38.650649363891795,
+      "ppl_ratio": 1.092378986166568,
+      "candidate_kl": 0.10390068258264987,
+      "reference_kl": 0.030038540710250833,
+      "compatibility_kl": 0.1215616518791339,
+      "top1": 0.84375,
+      "kl_p95": 0.274377591725124,
+      "kl_p99": 0.4678097235078138,
+      "kl_max": 0.5230710465311266,
+      "strict_pass": false,
+      "engineering_pass": false
+    },
+    "german-prose": {
+      "positions": 64,
+      "candidate_ppl": 26.18516324078718,
+      "reference_ppl": 27.013973956725962,
+      "ppl_ratio": 0.9693191857937502,
+      "candidate_kl": 0.11537280895060317,
+      "reference_kl": 0.05426964129464133,
+      "compatibility_kl": 0.14412182611118302,
+      "top1": 0.734375,
+      "kl_p95": 0.29683285516847835,
+      "kl_p99": 0.3704393971196803,
+      "kl_max": 0.42435238844778855,
+      "strict_pass": false,
+      "engineering_pass": false
+    },
+    "long-recurrent-code": {
+      "positions": 64,
+      "candidate_ppl": 1.0000437401498983,
+      "reference_ppl": 1.0000263795914421,
+      "ppl_ratio": 1.0000173601005038,
+      "candidate_kl": 1.5400488490429166e-05,
+      "reference_kl": 4.021900466510197e-06,
+      "compatibility_kl": 1.8761299338858207e-05,
+      "top1": 1.0,
+      "kl_p95": 4.201383561292318e-05,
+      "kl_p99": 0.00013001416600263944,
+      "kl_max": 0.0001633672067133407,
+      "strict_pass": false,
+      "engineering_pass": true
+    },
+    "mathematics": {
+      "positions": 64,
+      "candidate_ppl": 1.2603806578850552,
+      "reference_ppl": 1.2127758025398803,
+      "ppl_ratio": 1.0392528076875192,
+      "candidate_kl": 0.024170632870357693,
+      "reference_kl": 0.00509986339443091,
+      "compatibility_kl": 0.028947543105165643,
+      "top1": 1.0,
+      "kl_p95": 0.13126325193680977,
+      "kl_p99": 0.22915241709810802,
+      "kl_max": 0.3601229254917847,
+      "strict_pass": false,
+      "engineering_pass": false
+    },
+    "rendered-chat": {
+      "positions": 64,
+      "candidate_ppl": 33.09834234861446,
+      "reference_ppl": 28.31237698549035,
+      "ppl_ratio": 1.169041453692738,
+      "candidate_kl": 0.13989291981112711,
+      "reference_kl": 0.05669926262942545,
+      "compatibility_kl": 0.19162875479525043,
+      "top1": 0.78125,
+      "kl_p95": 0.2909570494701265,
+      "kl_p99": 0.31898373643083905,
+      "kl_max": 0.3294287755081702,
+      "strict_pass": false,
+      "engineering_pass": false
+    }
+  },
+  "paired_document_bootstrap": {
+    "seed": 1234,
+    "repetitions": 2000,
+    "documents": 5,
+    "nll_delta_95": [
+      -0.002056199557812856,
+      0.10514979556868172
+    ],
+    "kl_delta_95": [
+      0.013093435430941484,
+      0.0731937873855077
+    ]
+  },
+  "scope": "Declared windows only; regression prose does not establish general equivalence",
+  "compatibility_same_checkpoint": false
+}

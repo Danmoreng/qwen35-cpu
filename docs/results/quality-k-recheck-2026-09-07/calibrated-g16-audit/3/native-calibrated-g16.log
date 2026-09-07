@@ -1,0 +1,10 @@
+ in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width)
+    return result
+
+def moving_average_4(values):
+    width = 4
+    if len(values) < width:
+        return []
+    total = sum(values

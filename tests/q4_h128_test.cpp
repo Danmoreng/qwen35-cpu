@@ -1,4 +1,5 @@
 #include "qwen35x/cpu/q4_h128.h"
+#include "qwen35x/cpu/q4_quantizer.h"
 
 #include <algorithm>
 #include <cmath>
@@ -262,6 +263,35 @@ bool test_fused_decode_activation() {
 
 } // namespace
 
+bool test_covariance_fit() {
+  using namespace qwen35x::cpu;
+  bool ok=true;int improvements=0;
+  for(float rho:{0.0F,0.9F})for(int trial=0;trial<12;++trial) {
+    std::vector<float> cov(32768,0),h(128,1),w(128),a(128),b(128);
+    for(int i=0;i<128;i+=2) {
+      cov[i*128+i]=cov[(i+1)*128+i+1]=1;
+      cov[i*128+i+1]=cov[(i+1)*128+i]=rho;
+      cov[16384+i*128+i]=1/std::sqrt(1-rho*rho);
+      cov[16384+i*128+i+1]=-rho/std::sqrt(1-rho*rho);
+      cov[16384+(i+1)*128+i+1]=1;
+    }
+    for(int i=0;i<128;++i)w[i]=std::sin((i+1)*(trial+1)*0.17F)+0.07F*std::cos(i*0.61F);
+    Q4_0Block baseline[4],candidate[4];
+    ok=expect(q4_quantize_offline(w.data(),baseline,4,Q4Quantizer::mse16,h.data()),"baseline fit")&&ok;
+    ok=expect(q4_quantize_covariance128(w.data(),candidate,128,h.data(),cov.data()),"covariance fit")&&ok;
+    q4_0_dequantize(baseline,a.data(),4);q4_0_dequantize(candidate,b.data(),4);
+    const auto loss=[&](const std::vector<float>& q){double sum=0;for(int i=0;i<128;i+=2){
+      const double x=w[i]-q[i],y=w[i+1]-q[i+1];sum+=x*x+y*y+2*rho*x*y;}return sum;};
+    const double old_loss=loss(a),new_loss=loss(b);
+    ok=expect(new_loss<=old_loss+1e-7,"covariance reconstruction fallback")&&ok;
+    if(new_loss<old_loss-1e-6)++improvements;
+    if(rho==0)ok=expect(std::memcmp(baseline,candidate,sizeof(baseline))==0,"diagonal covariance keeps MSE baseline")&&ok;
+    cov[16384]=0;
+    ok=expect(!q4_quantize_covariance128(w.data(),candidate,128,h.data(),cov.data()),"reject singular factor")&&ok;
+  }
+  return expect(improvements>0,"correlated synthetic inputs benefit")&&ok;
+}
+
 int main() {
   bool ok = true;
   for (std::uint64_t seed : {UINT64_C(1), UINT64_C(42), qwen35x::cpu::q4_h128_default_sign_seed}) {
@@ -284,6 +314,7 @@ int main() {
       ok=expect(std::abs(lhs-rhs)<1e-4,"tied inverse/head dot mismatch") && ok;
     }
   }
+  ok = test_covariance_fit() && ok;
   ok = test_orthogonality() && ok;
   ok = test_rows_and_rejection() && ok;
   ok = test_avx2_parity() && ok;

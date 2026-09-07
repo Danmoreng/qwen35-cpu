@@ -1,0 +1,8 @@
+ 52
+    if len(values) < width:
+        return []
+    total = sum(values[:width])
+    result = [total / width]
+    for i in range(width, len(values)):
+        total += values[i] - values[i-width]
+        result.append(total / width

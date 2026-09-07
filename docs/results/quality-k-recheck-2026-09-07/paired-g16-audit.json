@@ -1,0 +1,83 @@
+{
+  "baseline": "benchmarks\\quality-k-recheck-2026-09-07\\calibrated-g32-audit",
+  "candidate": "benchmarks\\quality-k-recheck-2026-09-07\\calibrated-g16-audit",
+  "overall": {
+    "positions": 384,
+    "baseline_ppl": 6.132136594124596,
+    "candidate_ppl": 6.0215778509734434,
+    "ppl_change_percent": -1.8029399941462811,
+    "baseline_kl": 0.06919640569444419,
+    "candidate_kl": 0.0647098780400404,
+    "kl_change_percent": -6.483758237697046
+  },
+  "domains": {
+    "english-prose": {
+      "positions": 64,
+      "baseline_ppl": 45.78632504800656,
+      "candidate_ppl": 42.22115716680761,
+      "ppl_change_percent": -7.7865342489507565,
+      "baseline_kl": 0.11852280354244066,
+      "candidate_kl": 0.10390068258264985,
+      "kl_change_percent": -12.336968518091895
+    },
+    "german-prose": {
+      "positions": 64,
+      "baseline_ppl": 27.037731472647,
+      "candidate_ppl": 26.18516324078724,
+      "ppl_change_percent": -3.1532535661221077,
+      "baseline_kl": 0.11371161247020817,
+      "candidate_kl": 0.11537280895060317,
+      "kl_change_percent": 1.4608855193485537
+    },
+    "mathematics": {
+      "positions": 64,
+      "baseline_ppl": 1.2776101424131765,
+      "candidate_ppl": 1.2603806578850552,
+      "ppl_change_percent": -1.3485713643113384,
+      "baseline_kl": 0.030282870999543986,
+      "candidate_kl": 0.024170632870357693,
+      "kl_change_percent": -20.183813249669534
+    },
+    "code": {
+      "positions": 64,
+      "baseline_ppl": 1.0323569780586492,
+      "candidate_ppl": 1.0335927316068443,
+      "ppl_change_percent": 0.11970215482234367,
+      "baseline_kl": 0.004621906407599998,
+      "candidate_kl": 0.004906823537014084,
+      "kl_change_percent": 6.16449370211356
+    },
+    "rendered-chat": {
+      "positions": 64,
+      "baseline_ppl": 32.56231569318245,
+      "candidate_ppl": 33.098342348614395,
+      "ppl_change_percent": 1.6461564358095722,
+      "baseline_kl": 0.14802057212611439,
+      "candidate_kl": 0.13989291981112714,
+      "kl_change_percent": -5.490893730678492
+    },
+    "long-recurrent-code": {
+      "positions": 64,
+      "baseline_ppl": 1.000049168154309,
+      "candidate_ppl": 1.0000437401498983,
+      "ppl_change_percent": -0.0005427737538972979,
+      "baseline_kl": 1.866862075792299e-05,
+      "candidate_kl": 1.5400488490429163e-05,
+      "kl_change_percent": -17.5060188423766
+    }
+  },
+  "paired_document_bootstrap": {
+    "documents": 5,
+    "seed": 1234,
+    "repetitions": 2000,
+    "ppl_change_percent_95": [
+      -5.046318821253834,
+      0.30703277387670375
+    ],
+    "kl_delta_95": [
+      -0.010322356935748456,
+      -0.00031807816772902036
+    ]
+  },
+  "interpretation": "Negative changes favor candidate; quantization quality, not implementation equivalence."
+}

@@ -9,10 +9,15 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <cstdint>
+#include <random>
+#include <cstring>
 
 struct ProjectionCapture {
-  struct Entry { std::size_t columns=0, rows=0, output_rows=0; };
+  struct Entry { std::size_t columns=0, rows=0, output_rows=0, seen=0; std::mt19937_64 random{1234}; };
   std::filesystem::path directory;
+  bool reservoir = false;
+  bool bulk_download = false;
   std::map<std::string,Entry> entries;
   std::mutex mutex;
   std::string error;
@@ -35,17 +40,32 @@ struct ProjectionCapture {
       auto & entry=self.entries[name];
       if(entry.columns && entry.columns!=std::size_t(x->ne[0]))throw std::runtime_error("Capture shape changed");
       entry.columns=x->ne[0];entry.output_rows=w->ne[1];
-      const std::size_t count=std::min(std::size_t(x->ne[1]),std::size_t(256)-entry.rows);
-      if(!count)return true;
       std::vector<float> row(entry.columns);
-      std::ofstream file(self.directory/(name+".f32"),std::ios::binary|std::ios::app);
-      for(std::size_t i=0;i<count;++i) {
-        ggml_backend_tensor_get(x,row.data(),i*x->nb[1],row.size()*sizeof(float));
+      // A GPU download per retained row would serialize hundreds of tiny copies.
+      std::vector<unsigned char> downloaded;
+      if(self.bulk_download && x->ne[1]>0) {
+        downloaded.resize((x->ne[1]-1)*x->nb[1]+row.size()*sizeof(float));
+        ggml_backend_tensor_get(x,downloaded.data(),0,downloaded.size());
+      }
+      const auto path=self.directory/(name+".f32");
+      if(!std::filesystem::exists(path)) { std::ofstream create(path,std::ios::binary); }
+      std::fstream file(path,std::ios::binary|std::ios::in|std::ios::out);
+      for(std::size_t i=0;i<std::size_t(x->ne[1]);++i) {
+        const auto seen=entry.seen++;
+        std::size_t slot=seen;
+        if(seen>=256) {
+          if(!self.reservoir)continue;
+          slot=std::uniform_int_distribution<std::size_t>(0,seen)(entry.random);
+          if(slot>=256)continue;
+        }
+        if(downloaded.empty())ggml_backend_tensor_get(x,row.data(),i*x->nb[1],row.size()*sizeof(float));
+        else std::memcpy(row.data(),downloaded.data()+i*x->nb[1],row.size()*sizeof(float));
         for(float value:row)if(!std::isfinite(value))throw std::runtime_error("Non-finite captured input");
+        file.seekp(slot*row.size()*sizeof(float));
         file.write(reinterpret_cast<const char*>(row.data()),row.size()*sizeof(float));
+        entry.rows=std::min(entry.seen,std::size_t(256));
       }
       if(!file)throw std::runtime_error("Could not write captured inputs");
-      entry.rows+=count;
     } catch(const std::exception & e) { self.error=e.what(); }
     return true;
   }
@@ -54,11 +74,12 @@ struct ProjectionCapture {
     if(entries.empty())throw std::runtime_error("No projection inputs captured");
     std::ofstream file(directory/"capture.json");
     file<<"{\"version\":1,\"dtype\":\"little-endian-f32\",\"basis\":\"identity\",\"tensors\":[";
+    file<<" ";
     bool first=true;
     for(const auto & [name,entry]:entries) {
       if(!first)file<<',';first=false;
       file<<"{\"name\":\""<<name<<"\",\"columns\":"<<entry.columns<<",\"samples\":"<<entry.rows
-          <<",\"output_rows\":"<<entry.output_rows<<'}';
+          <<",\"seen\":"<<entry.seen<<",\"output_rows\":"<<entry.output_rows<<'}';
     }
     file<<"]}\n";
     if(!file)throw std::runtime_error("Could not write capture manifest");

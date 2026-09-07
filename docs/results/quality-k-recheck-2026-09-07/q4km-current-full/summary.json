@@ -1,0 +1,53 @@
+{
+  "positions": 8192,
+  "candidate_ppl": 14.784321215275074,
+  "reference_ppl": 14.752902350120749,
+  "ppl_ratio": 1.002129673498047,
+  "candidate_kl": 0.03470790612240289,
+  "reference_kl": 0.03469310955808924,
+  "compatibility_kl": 0.0037032037976125315,
+  "top1": 0.903076171875,
+  "kl_p95": 0.09817540119715991,
+  "kl_p99": 0.18731199922257413,
+  "kl_max": 2.235308259652554,
+  "strict_pass": false,
+  "engineering_pass": true,
+  "gates": {
+    "ppl_relative_tolerance": 0.01,
+    "kl_absolute_tolerance": 0.002,
+    "strict_ppl_relative_tolerance": 0,
+    "strict_kl_absolute_tolerance": 0
+  },
+  "domains": {
+    "english-prose-regression": {
+      "positions": 8192,
+      "candidate_ppl": 14.784321215275074,
+      "reference_ppl": 14.752902350120749,
+      "ppl_ratio": 1.002129673498047,
+      "candidate_kl": 0.03470790612240289,
+      "reference_kl": 0.03469310955808924,
+      "compatibility_kl": 0.0037032037976125315,
+      "top1": 0.903076171875,
+      "kl_p95": 0.09817540119715991,
+      "kl_p99": 0.18731199922257413,
+      "kl_max": 2.235308259652554,
+      "strict_pass": false,
+      "engineering_pass": true
+    }
+  },
+  "paired_document_bootstrap": {
+    "seed": 1234,
+    "repetitions": 2000,
+    "documents": 16,
+    "nll_delta_95": [
+      -0.00013318612712360443,
+      0.004404253054481877
+    ],
+    "kl_delta_95": [
+      -0.000412954835777235,
+      0.0004150004612082397
+    ]
+  },
+  "scope": "Declared windows only; regression prose does not establish general equivalence",
+  "compatibility_same_checkpoint": true
+}

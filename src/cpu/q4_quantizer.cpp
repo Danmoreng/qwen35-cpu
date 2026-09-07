@@ -77,4 +77,47 @@ bool q4_quantize_offline(const float * input, Q4_0Block * output,
   }
   return true;
 }
+
+bool q4_quantize_covariance128(const float * input, Q4_0Block * output,
+    std::size_t columns, const float * importance, const float * covariance) noexcept {
+  if (!input || !output || !importance || !covariance || !columns || columns % 128) return false;
+  for (std::size_t base=0; base<columns; base+=128) {
+    const float * h=covariance+(base/128)*32768;
+    const float * u=h+16384;
+    Q4_0Block baseline[4], candidate[4]{};
+    if(!q4_quantize_offline(input+base,baseline,4,Q4Quantizer::mse16,importance+base)) return false;
+    float work[128]; std::copy_n(input+base,128,work);
+    for(int group=0; group<4; ++group) {
+      // Choose the actual stored scale before compensating codes within G32.
+      Q4_0Block fit;
+      if(!q4_quantize_offline(work+32*group,&fit,1,Q4Quantizer::mse16,importance+base+32*group)) return false;
+      candidate[group].d=fit.d;
+      const double d=detail::half_to_float(fit.d);
+      for(int lane=0;lane<32;++lane) {
+        const int i=32*group+lane;
+        if(!std::isfinite(work[i]) || !std::isfinite(u[i*128+i]) || u[i*128+i]<=0) return false;
+        const int q=d==0?0:static_cast<int>(std::clamp(std::round(work[i]/d),-8.0,7.0));
+        candidate[group].qs[lane%16] |= static_cast<unsigned char>((q+8)<<(lane<16?0:4));
+        const double error=(work[i]-d*q)/u[i*128+i];
+        for(int j=i+1;j<128;++j) work[j]-=static_cast<float>(error*u[i*128+j]);
+      }
+    }
+    const auto loss=[&](const Q4_0Block * quantized) {
+      double error[128];
+      for(int i=0;i<128;++i) error[i]=input[base+i]-
+          double(detail::half_to_float(quantized[i/32].d))*code(quantized[i/32],i%32);
+      double sum=0;
+      for(int i=0;i<128;++i) {
+        double dot=0;
+        for(int j=0;j<128;++j) dot+=h[i*128+j]*error[j];
+        sum+=error[i]*dot;
+      }
+      return sum;
+    };
+    const double old_loss=loss(baseline), new_loss=loss(candidate);
+    if(!std::isfinite(old_loss) || !std::isfinite(new_loss)) return false;
+    std::copy_n(new_loss<old_loss?candidate:baseline,4,output+base/32);
+  }
+  return true;
+}
 }

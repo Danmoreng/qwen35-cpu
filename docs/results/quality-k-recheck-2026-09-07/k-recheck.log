@@ -1,0 +1,111 @@
+Window 0, reference BF16: native-Q4_K_M PPL=7.533715, KL=0.02614653
+Window 0, reference llama-Q4_K_M: native-Q4_K_M PPL=7.533715, KL=0.00341466
+Window 0, reference BF16: llama-Q4_K_M PPL=7.594788, KL=0.02820646
+Window 1, reference BF16: native-Q4_K_M PPL=13.674191, KL=0.03310517
+Window 1, reference llama-Q4_K_M: native-Q4_K_M PPL=13.674191, KL=0.00348869
+Window 1, reference BF16: llama-Q4_K_M PPL=13.593818, KL=0.03247551
+Window 2, reference BF16: native-Q4_K_M PPL=19.148027, KL=0.03176227
+Window 2, reference llama-Q4_K_M: native-Q4_K_M PPL=19.148027, KL=0.00417468
+Window 2, reference BF16: llama-Q4_K_M PPL=18.944551, KL=0.03162756
+Window 3, reference BF16: native-Q4_K_M PPL=11.234965, KL=0.03468254
+Window 3, reference llama-Q4_K_M: native-Q4_K_M PPL=11.234965, KL=0.00357912
+Window 3, reference BF16: llama-Q4_K_M PPL=11.259413, KL=0.03480197
+Window 4, reference BF16: native-Q4_K_M PPL=11.578735, KL=0.03712840
+Window 4, reference llama-Q4_K_M: native-Q4_K_M PPL=11.578735, KL=0.00378931
+Window 4, reference BF16: llama-Q4_K_M PPL=11.497415, KL=0.03780654
+Window 5, reference BF16: native-Q4_K_M PPL=17.108264, KL=0.04061572
+Window 5, reference llama-Q4_K_M: native-Q4_K_M PPL=17.108264, KL=0.00379617
+Window 5, reference BF16: llama-Q4_K_M PPL=17.134946, KL=0.03923369
+Window 6, reference BF16: native-Q4_K_M PPL=13.372068, KL=0.03411029
+Window 6, reference llama-Q4_K_M: native-Q4_K_M PPL=13.372068, KL=0.00359214
+Window 6, reference BF16: llama-Q4_K_M PPL=13.294987, KL=0.03406666
+Window 7, reference BF16: native-Q4_K_M PPL=12.997203, KL=0.03268542
+Window 7, reference llama-Q4_K_M: native-Q4_K_M PPL=12.997203, KL=0.00331986
+Window 7, reference BF16: llama-Q4_K_M PPL=13.034709, KL=0.03350726
+Window 8, reference BF16: native-Q4_K_M PPL=32.159794, KL=0.03816130
+Window 8, reference llama-Q4_K_M: native-Q4_K_M PPL=32.159794, KL=0.00422978
+Window 8, reference BF16: llama-Q4_K_M PPL=32.204430, KL=0.03754600
+Window 9, reference BF16: native-Q4_K_M PPL=19.545256, KL=0.04389392
+Window 9, reference llama-Q4_K_M: native-Q4_K_M PPL=19.545256, KL=0.00382337
+Window 9, reference BF16: llama-Q4_K_M PPL=19.508753, KL=0.04256873
+Window 10, reference BF16: native-Q4_K_M PPL=12.703917, KL=0.04185060
+Window 10, reference llama-Q4_K_M: native-Q4_K_M PPL=12.703917, KL=0.00424948
+Window 10, reference BF16: llama-Q4_K_M PPL=12.648566, KL=0.04124003
+Window 11, reference BF16: native-Q4_K_M PPL=14.118390, KL=0.03323761
+Window 11, reference llama-Q4_K_M: native-Q4_K_M PPL=14.118390, KL=0.00344104
+Window 11, reference BF16: llama-Q4_K_M PPL=14.007452, KL=0.03316966
+Window 12, reference BF16: native-Q4_K_M PPL=12.851401, KL=0.03317423
+Window 12, reference llama-Q4_K_M: native-Q4_K_M PPL=12.851401, KL=0.00360514
+Window 12, reference BF16: llama-Q4_K_M PPL=12.788748, KL=0.03280804
+Window 13, reference BF16: native-Q4_K_M PPL=17.081447, KL=0.03123194
+Window 13, reference llama-Q4_K_M: native-Q4_K_M PPL=17.081447, KL=0.00379313
+Window 13, reference BF16: llama-Q4_K_M PPL=17.099895, KL=0.03236744
+Window 14, reference BF16: native-Q4_K_M PPL=13.656700, KL=0.02913649
+Window 14, reference llama-Q4_K_M: native-Q4_K_M PPL=13.656700, KL=0.00321895
+Window 14, reference BF16: llama-Q4_K_M PPL=13.642776, KL=0.02893673
+Window 15, reference BF16: native-Q4_K_M PPL=20.202347, KL=0.03440409
+Window 15, reference llama-Q4_K_M: native-Q4_K_M PPL=20.202347, KL=0.00373575
+Window 15, reference BF16: llama-Q4_K_M PPL=20.166955, KL=0.03472746
+Quality validation completed.
+Q4_K_M quality complete. Starting sequential speed comparison.
+Completed calibrated-g32-b1-t8-p512-n128, run 0
+Completed q4km-current-b1-t8-p512-n128, run 0
+Completed q4km-original-b1-t8-p512-n128, run 0
+Completed calibrated-g32-b2-t8-p512-n128, run 0
+Completed q4km-current-b2-t8-p512-n128, run 0
+Completed q4km-original-b2-t8-p512-n128, run 0
+Completed calibrated-g32-b4-t8-p512-n128, run 0
+Completed q4km-current-b4-t8-p512-n128, run 0
+Completed q4km-original-b4-t8-p512-n128, run 0
+Completed calibrated-g32-b8-t8-p512-n128, run 0
+Completed q4km-current-b8-t8-p512-n128, run 0
+Completed q4km-original-b8-t8-p512-n128, run 0
+Completed calibrated-g32-b16-t8-p512-n128, run 0
+Completed q4km-current-b16-t8-p512-n128, run 0
+Completed q4km-original-b16-t8-p512-n128, run 0
+Completed q4km-original-b16-t8-p512-n128, run 1
+Completed q4km-current-b16-t8-p512-n128, run 1
+Completed calibrated-g32-b16-t8-p512-n128, run 1
+Completed q4km-original-b8-t8-p512-n128, run 1
+Completed q4km-current-b8-t8-p512-n128, run 1
+Completed calibrated-g32-b8-t8-p512-n128, run 1
+Completed q4km-original-b4-t8-p512-n128, run 1
+Completed q4km-current-b4-t8-p512-n128, run 1
+Completed calibrated-g32-b4-t8-p512-n128, run 1
+Completed q4km-original-b2-t8-p512-n128, run 1
+Completed q4km-current-b2-t8-p512-n128, run 1
+Completed calibrated-g32-b2-t8-p512-n128, run 1
+Completed q4km-original-b1-t8-p512-n128, run 1
+Completed q4km-current-b1-t8-p512-n128, run 1
+Completed calibrated-g32-b1-t8-p512-n128, run 1
+Completed calibrated-g32-b1-t8-p512-n128, run 2
+Completed q4km-current-b1-t8-p512-n128, run 2
+Completed q4km-original-b1-t8-p512-n128, run 2
+Completed calibrated-g32-b2-t8-p512-n128, run 2
+Completed q4km-current-b2-t8-p512-n128, run 2
+Completed q4km-original-b2-t8-p512-n128, run 2
+Completed calibrated-g32-b4-t8-p512-n128, run 2
+Completed q4km-current-b4-t8-p512-n128, run 2
+Completed q4km-original-b4-t8-p512-n128, run 2
+Completed calibrated-g32-b8-t8-p512-n128, run 2
+Completed q4km-current-b8-t8-p512-n128, run 2
+Completed q4km-original-b8-t8-p512-n128, run 2
+Completed calibrated-g32-b16-t8-p512-n128, run 2
+Completed q4km-current-b16-t8-p512-n128, run 2
+Completed q4km-original-b16-t8-p512-n128, run 2
+Completed q4km-original-b16-t8-p512-n128, run 3
+Completed q4km-current-b16-t8-p512-n128, run 3
+Completed calibrated-g32-b16-t8-p512-n128, run 3
+Completed q4km-original-b8-t8-p512-n128, run 3
+Completed q4km-current-b8-t8-p512-n128, run 3
+Completed calibrated-g32-b8-t8-p512-n128, run 3
+Completed q4km-original-b4-t8-p512-n128, run 3
+Completed q4km-current-b4-t8-p512-n128, run 3
+Completed calibrated-g32-b4-t8-p512-n128, run 3
+Completed q4km-original-b2-t8-p512-n128, run 3
+Completed q4km-current-b2-t8-p512-n128, run 3
+Completed calibrated-g32-b2-t8-p512-n128, run 3
+Completed q4km-original-b1-t8-p512-n128, run 3
+Completed q4km-current-b1-t8-p512-n128, run 3
+Completed calibrated-g32-b1-t8-p512-n128, run 3
+Results: C:\Development\qwen35-cpu\benchmarks\quality-k-recheck-2026-09-07\speed/results.csv

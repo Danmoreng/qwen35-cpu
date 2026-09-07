@@ -1,0 +1,38 @@
+{
+  "baseline": "benchmarks\\quality-k-recheck-2026-09-07\\calibrated-g32-full",
+  "candidate": "benchmarks\\quality-k-recheck-2026-09-07\\calibrated-g16-full",
+  "overall": {
+    "positions": 8192,
+    "baseline_ppl": 16.0408741050163,
+    "candidate_ppl": 16.061300519936133,
+    "ppl_change_percent": 0.1273397870097647,
+    "baseline_kl": 0.09645639512510064,
+    "candidate_kl": 0.09437088621076359,
+    "kl_change_percent": -2.1621261209608944
+  },
+  "domains": {
+    "english-prose-regression": {
+      "positions": 8192,
+      "baseline_ppl": 16.040874105016215,
+      "candidate_ppl": 16.061300519936,
+      "ppl_change_percent": 0.1273397870094979,
+      "baseline_kl": 0.09645639512510033,
+      "candidate_kl": 0.09437088621076378,
+      "kl_change_percent": -2.1621261209603837
+    }
+  },
+  "paired_document_bootstrap": {
+    "documents": 16,
+    "seed": 1234,
+    "repetitions": 2000,
+    "ppl_change_percent_95": [
+      -0.39766150948102624,
+      0.6418724774148106
+    ],
+    "kl_delta_95": [
+      -0.0036897966503777065,
+      -0.0005446128181326459
+    ]
+  },
+  "interpretation": "Negative changes favor candidate; quantization quality, not implementation equivalence."
+}

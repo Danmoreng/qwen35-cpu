@@ -1,0 +1,33 @@
+[
+  {
+    "command": [
+      "benchmarks\\g16-calibrated-batch\\tools-v3\\cpu_scheduler_model_test.exe",
+      "models/hf-download-test",
+      "models/qwen3.5-0.8b/model-calibrated-g16-head.q35h"
+    ],
+    "executable_sha256": "073dfba9b7f27aa4f5cd06ed627052ad21ce67867b0505e446d840022d0ed2aa",
+    "exit_code": 0,
+    "log": "benchmarks\\quality-k-recheck-2026-09-07\\cpu_scheduler_model_test.log"
+  },
+  {
+    "command": [
+      "benchmarks\\g16-calibrated-batch\\tools-v3\\cpu_scheduler_model_test.exe",
+      "models/hf-download-test",
+      "models/qwen3.5-0.8b/model-calibrated-g16-head.q35h",
+      "--pages"
+    ],
+    "executable_sha256": "073dfba9b7f27aa4f5cd06ed627052ad21ce67867b0505e446d840022d0ed2aa",
+    "exit_code": 0,
+    "log": "benchmarks\\quality-k-recheck-2026-09-07\\cpu_scheduler_model_test-pages.log"
+  },
+  {
+    "command": [
+      "benchmarks\\g16-calibrated-batch\\tools-v3\\cpu_prefix_model_test.exe",
+      "models/hf-download-test",
+      "models/qwen3.5-0.8b/model-calibrated-g16-head.q35h"
+    ],
+    "executable_sha256": "9e7a92c20e6a671440a94d0659f69e6589cf62681ed85272dd65d4bc5637f9f7",
+    "exit_code": 0,
+    "log": "benchmarks\\quality-k-recheck-2026-09-07\\cpu_prefix_model_test.log"
+  }
+]

@@ -1,0 +1,34 @@
+{
+  "positions": 512,
+  "kld": {
+    "mean": 0.0035921403294753673,
+    "median": 0.0028925300314069026,
+    "p95": 0.009490878599756865,
+    "p99": 0.019199601331497604,
+    "max": 0.03495746828562289
+  },
+  "target_nll": {
+    "teacher_perplexity": 13.294986905869287,
+    "candidate_perplexity": 13.372068295209315,
+    "teacher_mean": 2.587387039803132,
+    "candidate_mean": 2.593168075874253,
+    "delta_mean": 0.00578103607112055,
+    "delta_p95": 0.17654452716100705,
+    "perplexity_ratio": 1.0057977785074759
+  },
+  "agreement": {
+    "top1": 0.966796875,
+    "teacher_top1_in_candidate_top5": 1.0,
+    "teacher_top1_in_candidate_top10": 1.0,
+    "top5_overlap": 0.9617187500000001,
+    "top10_overlap": 0.9611328125
+  },
+  "logits": {
+    "centered_rmse_mean": 0.11465072578369562,
+    "centered_cosine_mean": 0.9989397506514037
+  },
+  "argmax_flips": 17,
+  "teacher": "benchmarks\\quality-k-recheck-2026-09-07\\q4km-current-full\\6\\llama-Q4_K_M.logits",
+  "candidate": "benchmarks\\quality-k-recheck-2026-09-07\\q4km-current-full\\6\\native-Q4_K_M.logits",
+  "vocabulary_size": 248320
+}

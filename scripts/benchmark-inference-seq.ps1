@@ -91,6 +91,7 @@ try {
       $metadata | ConvertTo-Json -Depth 15 | Set-Content -LiteralPath "$out/metadata.json"
       $process = [Diagnostics.Process]::new(); $process.StartInfo = $info
       $started = $false
+      $processTimer = [Diagnostics.Stopwatch]::StartNew()
       try {
         [void]$process.Start()
         $started = $true
@@ -98,6 +99,7 @@ try {
         $stdout = $process.StandardOutput.ReadToEndAsync()
         $stderr = $process.StandardError.ReadToEndAsync()
         $process.WaitForExit()
+        $processTimer.Stop()
         # Some platforms no longer expose process counters after exit. Native
         # profiles also report their own peak RSS before process teardown.
         $peakWorkingSet = $null
@@ -110,7 +112,7 @@ try {
         $process.Dispose()
       }
       $data = Get-Content -Raw -LiteralPath $profile | ConvertFrom-Json
-      $row = [ordered]@{ name=$case.name; run=$run; warmup=($run -lt $WarmupRuns); profile="$stem.json"; peak_working_set_bytes=$peakWorkingSet }
+      $row = [ordered]@{ name=$case.name; run=$run; warmup=($run -lt $WarmupRuns); profile="$stem.json"; peak_working_set_bytes=$peakWorkingSet; process_wall_time_ms=$processTimer.Elapsed.TotalMilliseconds.ToString('R', [Globalization.CultureInfo]::InvariantCulture) }
       foreach ($property in $data.PSObject.Properties) {
         if ($property.Value -is [ValueType]) {
           # Keep CSV numbers portable even when the host uses decimal commas.

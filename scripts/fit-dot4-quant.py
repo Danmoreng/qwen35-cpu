@@ -49,16 +49,41 @@ def hf_name(name):
     return f'model.language_model.layers.{match[1]}.{mapping[match[2]]}.weight', 1
 
 
-def fit(root, out):
+def fit(root, out, use_compact=True):
     manifest = json.loads((root/'manifest.json').read_text())
     statistics, inputs = {}, []
     names = None
     for document in manifest['documents']:
         folder = Path(document['directory'])
+        compact = folder/'diagonal-statistics.json'
+        if use_compact and compact.exists():
+            saved = json.loads(compact.read_text())
+            path = folder/'diagonal-statistics.npz'
+            if saved['version'] != 1 or saved['sign_seed'] != SEED or sha(path) != saved['statistics_sha256']:
+                raise ValueError('Invalid compacted statistics')
+            current = {t['name'] for t in saved['tensors']}
+            if names is not None and names != current:
+                raise ValueError('Projection inventory changed between documents')
+            names = current
+            with np.load(path, allow_pickle=False) as archive:
+                if set(archive.files) != current:
+                    raise ValueError('Compacted projection inventory mismatch')
+                for tensor in saved['tensors']:
+                    name, basis, count = tensor['name'], tensor['basis'], tensor['samples']
+                    sums = archive[name].copy()
+                    if not count or sums.ndim != 1 or not np.isfinite(sums).all() or np.any(sums < 0):
+                        raise ValueError('Invalid compacted moments')
+                    if name not in statistics:
+                        statistics[name] = [sums, count, basis]
+                    else:
+                        statistics[name][0] += sums
+                        statistics[name][1] += count
+                    inputs.append(dict(path=tensor['path'], sha256=tensor['sha256']))
+            continue
         capture = json.loads((folder/'capture.json').read_text())
         if capture['version'] != 1 or capture['basis'] != 'identity':
             raise ValueError('Expected raw teacher inputs in the identity basis')
-        current = {t['name'] for t in capture['tensors']}
+        current = {hf_name(t['name'])[0] for t in capture['tensors']}
         if names is not None and names != current:
             raise ValueError('Projection inventory changed between documents')
         names = current
@@ -106,5 +131,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('root', type=Path)
     parser.add_argument('--out', type=Path, required=True)
+    parser.add_argument('--raw-inputs', action='store_true', help='Read raw captures even if compacted moments exist')
     args = parser.parse_args()
-    fit(args.root, args.out)
+    fit(args.root, args.out, not args.raw_inputs)
