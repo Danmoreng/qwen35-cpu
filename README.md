@@ -21,10 +21,14 @@ measured separately; the unchanged custom format needs no GPU at runtime.
 
 ### Speed
 
-Ryzen 9 9955HX3D, eight threads on physical VCache cores (`0x5555`), FP16 KV,
-identical fixed tokens and full-vocabulary logits. All five candidates were
-measured together in a fresh sequential series: **three measured runs after
-one warmup**, alternating case order. Values are median **tokens/s**.
+Speed is reported as two complete platform-specific series. Both use FP16 KV,
+identical fixed tokens, full-vocabulary logits and **three measured runs after
+one warmup**, with alternating case order. Values are median **tokens/s**.
+
+#### Windows — Ryzen 9 9955HX3D
+
+Eight threads on physical VCache cores (`0x5555`), MSVC Release, AVX-512/VNNI.
+All five candidates were measured together in a fresh sequential series.
 
 | Engine / checkpoint | Prefill 512 | Prefill 4,096 | Decode B=1 | Decode B=16 |
 | --- | ---: | ---: | ---: | ---: |
@@ -34,8 +38,26 @@ one warmup**, alternating case order. Values are median **tokens/s**.
 | llama.cpp Unsloth Q4_K_M | 673.80 | 661.63 | 84.29 | 259.64 |
 | llama.cpp Unsloth IQ4_XS | 853.14 | 827.82 | 88.76 | 259.74 |
 
-Against equal-payload llama.cpp pure Q4_0, this checkpoint delivers **1.94�2.00�
-prefill throughput**, **1.19� single-request decode** and **1.90� batch-16 decode**.
+Against equal-payload llama.cpp pure Q4_0, this checkpoint delivers **1.94–2.00×
+prefill throughput**, **1.19× single-request decode** and **1.90× batch-16 decode**.
+
+#### Linux — Intel Core i7-8750H
+
+Ubuntu 26.04.1 LTS, GCC 15.2 Release, six threads pinned to the six physical
+cores (`0x3f`), AVX2/FMA/F16C. All five candidates were rebuilt and measured
+together in a separate fresh sequential series.
+
+| Engine / checkpoint | Prefill 512 | Prefill 4,096 | Decode B=1 | Decode B=16 |
+| --- | ---: | ---: | ---: | ---: |
+| **This engine, H128 B+C 256** | 404.17 | 319.01 | 62.28 | 179.36 |
+| llama.cpp Q4_0 `--pure` | 230.63 | 185.92 | 47.42 | 91.06 |
+| llama.cpp Unsloth Q4_0 | 213.16 | 172.86 | 42.34 | 79.66 |
+| llama.cpp Unsloth Q4_K_M | 184.74 | 152.73 | 39.89 | 74.73 |
+| llama.cpp Unsloth IQ4_XS | 230.81 | 184.95 | 40.82 | 76.78 |
+
+Against equal-payload llama.cpp pure Q4_0 on this Linux system, the custom
+checkpoint delivers **1.72–1.75× prefill throughput**, **1.31× single-request
+decode** and **1.97× batch-16 decode**.
 
 Prefill columns use one request. Decode uses 512 input / 128 output tokens and
 counts 127 actual decode forwards per request. Batch 16 is aggregate throughput
@@ -48,7 +70,9 @@ medians remained within -0.13% to +0.76% of the previous standard across B1/2/4/
 
 Identical prompts and scoring masks, **8,192 scored tokens from 16 WikiText-2
 test article windows**, common BF16 teacher. This is an English-prose subset,
-not full-corpus WikiText perplexity. Lower PPL and KL are better.
+not full-corpus WikiText perplexity. Lower PPL and KL are better. These
+checkpoint-level scores were not rerun per operating system; ISA-dependent
+floating-point rounding may still produce negligible numerical differences.
 
 | Engine / checkpoint | Tensor payload, MB | Perplexity | Mean KL to BF16, nats |
 | --- | ---: | ---: | ---: |
@@ -84,10 +108,13 @@ The German **`2 + 2` regression returns `4`** in free greedy generation and
 passes the separate expected-token/logit check. This is one regression, not
 broad mathematical validation. No parameter tuning followed the final test.
 
-**[Current comparison details](docs/readme-comparison-2026-09-07.md)** �
-[Speed CSV](docs/results/readme-bc256-2026-09-07/performance.csv) �
-[Quality CSV](docs/results/readme-bc256-2026-09-07/quality.csv) �
-[Compact provenance and checksums](docs/results/readme-bc256-2026-09-07/manifest.json) �
+**[Windows comparison details](docs/readme-comparison-2026-09-07.md)** ·
+[Linux comparison details](docs/readme-comparison-linux-2026-09-07.md) ·
+[Windows speed CSV](docs/results/readme-bc256-2026-09-07/performance.csv) ·
+[Linux speed CSV](docs/results/readme-linux-i7-8750h-2026-09-07/performance.csv) ·
+[Quality CSV](docs/results/readme-bc256-2026-09-07/quality.csv) ·
+[Windows provenance](docs/results/readme-bc256-2026-09-07/manifest.json) ·
+[Linux provenance](docs/results/readme-linux-i7-8750h-2026-09-07/manifest.json) ·
 [Calibration study and independent test](docs/g32-large-calibration-2026-09-07.md).
 
 See [the standard recipe](docs/quantization.md) for fitting and the unchanged

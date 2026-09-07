@@ -1,0 +1,69 @@
+{
+  "system": {
+    "os": "Ubuntu 26.04.1 LTS",
+    "kernel": "Linux 7.0.0-31-generic x86_64",
+    "cpu": "Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz",
+    "physical_cores": 6,
+    "logical_cpus": 12,
+    "threads": 6,
+    "affinity": 63,
+    "affinity_hex": "0x3f",
+    "native_isa": "avx2+fma+f16c",
+    "compiler": "GCC 15.2.0",
+    "cpu_governor": "powersave"
+  },
+  "benchmark": {
+    "started_utc": "2026-09-07T14:45:38.3604558Z",
+    "runs": 3,
+    "warmup_runs": 1,
+    "repository_revision": "d46304c81fa543e0f3f12f41383618790cfbaf4d",
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "runner_sha256": "c25e85c24a892eb3c1671c6b9255530b305d1b52ef725486cc09dc5926b1ca92",
+    "matrix_sha256": "40ab1aacc185c28b10a75506e1da5bf63d0efc7d9bd9199cab3dffe6f8e4168e",
+    "source_token_fixture_sha256": "c4918ac68ea3dc888649fbda93af858932d705a5650d753388961a2b35266495",
+    "raw_metadata_sha256": "8b553f1ca24cfc6df4d74fac4c15cc06ad792610c1a5307b5b7050a5599b8e29",
+    "raw_results_csv_sha256": "2fda52a75338a8af334d5dc8ebef932282d906333bd82e46af39bec19a95e5aa",
+    "local_raw_archive": {
+      "path": "benchmarks/readme-linux-i7-8750h-20260907-raw-results.zip",
+      "sha256": "bbd21525c779069bd726921686528fdd5811fea30b733edac1ab1f8bc12f011a"
+    }
+  },
+  "upstream": {
+    "llama_cpp_revision": "73a43d1f69345aee8bb186ef4b3172cef892f2e5",
+    "custom_model_revision": "f6cb5cf04a9094670f9041578a3f4e44b94a1395",
+    "unsloth_gguf_revision": "6ab461498e2023f6e3c1baea90a8f0fe38ab64d0"
+  },
+  "binaries": {
+    "qwen35_cpu_bench": "a504831e5c91a689104502c5a70b328278039f5907f6f8e58fe8e82ff7e4d1b8",
+    "llama_fixed_cpu_bench": "e5bc0f79d9b20a1330292bce8ffea60bbb2bb479023b23d22e550aac1847da93",
+    "libggml_base_so_0_23_0": "adc40c48a812919467331306d04b26b16457e89cb3d957cbe205dfef8cdff859",
+    "libggml_cpu_so_0_23_0": "47f2f06be2d889887be8fd7be5cb83d823b4f45d74753820fac179a04a6fb98b",
+    "libggml_so_0_23_0": "3c9104781ecab72c1d2c30e1bd727e5b99ed9dc3c18d621ae0b7f3be0b9cd954",
+    "libllama_so_0_4_0": "c4870ec07dc789f241428a76eec81815b03348a97dc97961b470f3385b3b9dad"
+  },
+  "models": {
+    "bc256": {
+      "bytes": 424964864,
+      "sha256": "013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a"
+    },
+    "Q4_0-pure": {
+      "bytes": 435896352,
+      "sha256": "2e41f95fca5f3e3a8dc91c1407c572f3cff5d060cbfdf835cd2d4d9913f95e7d"
+    },
+    "Q4_0": {
+      "bytes": 507154688,
+      "sha256": "444406ddd926550c724ec18d5120a9d40ded44908a063b0e66e9a7e5464c652c"
+    },
+    "Q4_K_M": {
+      "bytes": 532517120,
+      "sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517"
+    },
+    "IQ4_XS": {
+      "bytes": 492605696,
+      "sha256": "619917ae92f61eb6515a7070e944a0a7c2b198a2cf6536386f475485188a36ff"
+    }
+  },
+  "files": {
+    "performance.csv": "0a4d6bdfacb5e7d677414238dcabd826b207d01df972d71ac841c704edd76b9e"
+  }
+}
