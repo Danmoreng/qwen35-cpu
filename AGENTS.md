@@ -8,6 +8,9 @@
   `Q4_0` instead of `Q4_0 --pure`; distinguish the vendor variant as `Unsloth Q4_0`).
 - Keep the Hugging Face model card focused on the current format, calibration,
   usage, performance and quality; synchronize its benchmark tables with README.
+- Sort the combined speed/size/quality table by B1 decode descending; sort the
+  quality table by tensor size descending, then PPL and KL ascending. Identify
+  the scoring backend when a quality value comes from a different engine.
 - Name the standard quantization `H128/Q4-G32-DOT4` in product documentation;
   describe calibration separately rather than using experiment IDs such as `B+C 256`.
 - Scope: CPU inference for Qwen3.5-0.8B with H128/Q4-G32-DOT4 artifacts, native pure Q4_0, and experimental Q4_K_M GGUF execution.

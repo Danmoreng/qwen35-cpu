@@ -67,7 +67,7 @@ error compensation within 128-channel blocks, calibrated on 256 mixed documents
 / 262,144 tokens. See the [quantization recipe](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/quantization.md).
 Speed and quantization quality are measured separately.
 
-### Performance
+### Speed, size and quality
 
 **AMD Ryzen 9 9955HX3D · Arch Linux · eight physical V-Cache cores · GCC 16.2.1
 Release · AVX-512/VNNI.** Values are median **tokens/s** from three measured
@@ -75,19 +75,28 @@ runs after one warmup. All candidates use identical fixed tokens, FP16 KV and
 full-vocabulary logits. Codex is minimized, XFCE compositing disabled, and the
 display runs at 2560×1600 / 240 Hz. IK uses runtime tensor repacking.
 
-| Engine / checkpoint | Prefill 512 | Prefill 4,096 | Decode B=1 | Decode B=16 |
-| --- | ---: | ---: | ---: | ---: |
-| **This engine, H128/Q4-G32-DOT4** | 2,758.49 | 2,464.28 | 122.94 | 642.08 |
-| llama.cpp Q4_0 | 1,105.29 | 994.72 | 108.64 | 488.26 |
-| llama.cpp Unsloth Q4_0 | 953.59 | 843.96 | 93.73 | 372.75 |
-| llama.cpp Unsloth Q4_K_M | 663.21 | 695.11 | 88.41 | 325.93 |
-| llama.cpp Unsloth IQ4_XS | 940.31 | 887.65 | 94.12 | 336.28 |
-| ik_llama.cpp Q4_0 | 2,860.45 | 2,517.56 | 122.22 | 423.79 |
-| ik_llama.cpp Unsloth Q4_0 | 2,730.89 | 2,409.68 | 104.00 | 420.00 |
-| ik_llama.cpp Unsloth Q4_K_M | 1,984.34 | 1,794.75 | 98.63 | 395.87 |
-| ik_llama.cpp Unsloth IQ4_XS | 1,957.50 | 1,774.74 | 107.68 | 408.20 |
-| ik_llama.cpp IQ4_K_R4 | 1,992.59 | 1,802.06 | 117.83 | 433.81 |
-| ik_llama.cpp IQ4_KS_R4 | 2,060.38 | 1,841.85 | 129.21 | 455.14 |
+Sorted by **single-request decode speed**, fastest first. All speed columns are
+tokens/s; bold speed values mark the best result in each column. MB is tensor
+payload (decimal), not RAM usage. **↑ higher is better · ↓ lower is better.**
+
+| Engine / checkpoint | Decode B=1 ↑ | Decode B=16 ↑ | Prefill 512 ↑ | Prefill 4,096 ↑ | MB | PPL ↓ | KL ↓ |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| ik_llama.cpp IQ4_KS_R4 | **129.21** | 455.14 | 2,060.38 | 1,841.85 | 401.4 | 15.90097 | 0.090599 |
+| **This engine, H128/Q4-G32-DOT4** | 122.94 | **642.08** | 2,758.49 | 2,464.28 | 424.9 | 15.80467 | 0.060190 |
+| ik_llama.cpp Q4_0 | 122.22 | 423.79 | **2,860.45** | **2,517.56** | 424.9 | 18.08595 | 0.145799 |
+| ik_llama.cpp IQ4_K_R4 | 117.83 | 433.81 | 1,992.59 | 1,802.06 | 424.9 | 15.78482 | 0.073289 |
+| llama.cpp Q4_0 | 108.64 | 488.26 | 1,105.29 | 994.72 | 424.9 | 18.02588 | 0.144522 |
+| ik_llama.cpp Unsloth IQ4_XS | 107.68 | 408.20 | 1,957.50 | 1,774.74 | 481.6 | 15.16145† | 0.050539† |
+| ik_llama.cpp Unsloth Q4_0 | 104.00 | 420.00 | 2,730.89 | 2,409.68 | 496.2 | 15.58088† | 0.068388† |
+| ik_llama.cpp Unsloth Q4_K_M | 98.63 | 395.87 | 1,984.34 | 1,794.75 | 521.6 | 14.75290† | 0.034693† |
+| llama.cpp Unsloth IQ4_XS | 94.12 | 336.28 | 940.31 | 887.65 | 481.6 | 15.16145 | 0.050539 |
+| llama.cpp Unsloth Q4_0 | 93.73 | 372.75 | 953.59 | 843.96 | 496.2 | 15.58088 | 0.068388 |
+| llama.cpp Unsloth Q4_K_M | 88.41 | 325.93 | 663.21 | 695.11 | 521.6 | 14.75290 | 0.034693 |
+
+PPL and KL use the quality evaluation described below; KL is in nats to the BF16
+teacher. † Quality measured with **llama.cpp on the identical GGUF**, not with
+IK; all other quality values use the named backend. Quality scores are separate
+from the B16 speed measurement.
 
 Prefill uses one request. Decode uses 512 input / 128 output tokens and counts
 127 actual decode forwards per request. B16 is aggregate throughput across
@@ -101,18 +110,20 @@ CPU and workload.
 **8,192 scored tokens from 16 WikiText-2 test article windows**, with identical
 prompts and scoring masks and a common BF16 teacher. This is an English-prose
 subset, not full-corpus WikiText perplexity. **Lower PPL and KL are better.**
-Each row identifies the backend used for scoring.
+Each row identifies the backend used for scoring. Sorted by **tensor size,
+largest first**, then by lower PPL and lower KL for equal sizes. The BF16 teacher
+is the reference; the remaining rows are quantized checkpoints.
 
-| Engine / checkpoint | Tensor payload, MB | Perplexity | Mean KL to BF16, nats |
+| Engine / checkpoint | Tensor MB ↓ | PPL ↓ | KL to BF16 ↓ |
 | --- | ---: | ---: | ---: |
 | BF16 teacher | 1,505.8 | 14.38556 | 0 |
-| **This engine, H128/Q4-G32-DOT4** | **424.9** | **15.80467** | **0.060190** |
-| llama.cpp Q4_0 | 424.9 | 18.02588 | 0.144522 |
-| llama.cpp Unsloth Q4_0 | 496.2 | 15.58088 | 0.068388 |
 | llama.cpp Unsloth Q4_K_M | 521.6 | 14.75290 | 0.034693 |
+| llama.cpp Unsloth Q4_0 | 496.2 | 15.58088 | 0.068388 |
 | llama.cpp Unsloth IQ4_XS | 481.6 | 15.16145 | 0.050539 |
-| ik_llama.cpp Q4_0 | 424.9 | 18.08595 | 0.145799 |
 | ik_llama.cpp IQ4_K_R4 | 424.9 | 15.78482 | 0.073289 |
+| **This engine, H128/Q4-G32-DOT4** | 424.9 | 15.80467 | 0.060190 |
+| llama.cpp Q4_0 | 424.9 | 18.02588 | 0.144522 |
+| ik_llama.cpp Q4_0 | 424.9 | 18.08595 | 0.145799 |
 | ik_llama.cpp IQ4_KS_R4 | 401.4 | 15.90097 | 0.090599 |
 
 H128 and pure Q4_0 / IQ4_K_R4 share a **424,934,656-byte tensor budget**.
