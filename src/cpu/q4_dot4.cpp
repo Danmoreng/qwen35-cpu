@@ -69,7 +69,11 @@ void q4_dot4_matvec(const Q4_0BlockX8 * matrix, const Q8_0BlockX1 * vector, floa
 }
 void q4_dot4_matmul(const Q4_0BlockX8 * matrix, const Q8_0BlockX4 * vectors, float * output, std::size_t rows, std::size_t count, std::size_t blocks, std::size_t stride, Q8_0Backend backend) noexcept {
 #if QWEN35X_Q8_0_HAS_AVX512_VNNI_TU
-  if (q8_0_resolve_backend(backend) == Q8_0Backend::avx512_vnni) return detail::q4_dot4_matmul_evex(matrix, vectors, output, rows, count, blocks, stride);
+  if (q8_0_resolve_backend(backend) == Q8_0Backend::avx512_vnni) {
+    // Keep short batches on the existing decode-oriented kernel.
+    return (count >= 32 ? detail::q4_dot4_matmul_avx512 : detail::q4_dot4_matmul_evex)(
+      matrix, vectors, output, rows, count, blocks, stride);
+  }
 #endif
 #if QWEN35X_Q8_0_HAS_AVX_VNNI_TU
   if (q8_0_backend_uses_avx_vnni(backend)) return detail::q4_dot4_matmul_vex(matrix, vectors, output, rows, count, blocks, stride);

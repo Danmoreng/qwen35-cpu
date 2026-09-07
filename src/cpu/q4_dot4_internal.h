@@ -15,6 +15,7 @@ Q4_0ArgmaxResult q4_dot4_argmax_vex(const Q4_0BlockX8 *, const Q8_0BlockX1 *, co
 #if QWEN35X_Q8_0_HAS_AVX512_VNNI_TU
 void q4_dot4_matvec_evex(const Q4_0BlockX8 *, const Q8_0BlockX1 *, float *, std::size_t, std::size_t) noexcept;
 void q4_dot4_matmul_evex(const Q4_0BlockX8 *, const Q8_0BlockX4 *, float *, std::size_t, std::size_t, std::size_t, std::size_t) noexcept;
+void q4_dot4_matmul_avx512(const Q4_0BlockX8 *, const Q8_0BlockX4 *, float *, std::size_t, std::size_t, std::size_t, std::size_t) noexcept;
 Q4_0ArgmaxResult q4_dot4_argmax_evex(const Q4_0BlockX8 *, const Q8_0BlockX1 *, const int *, float, std::size_t, std::size_t, std::size_t) noexcept;
 #endif
 }

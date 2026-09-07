@@ -1,6 +1,9 @@
 # Contributor instructions
 
 - Keep code, documentation and commit messages in English.
+- Keep README benchmarks focused on the current product: one performance table
+  comparing the native engine, llama.cpp and ik_llama.cpp, followed by quantization
+  quality. Put historical measurements and optimization narratives in docs.
 - Scope: CPU inference for Qwen3.5-0.8B with H128/Q4-G32-DOT4 artifacts, native pure Q4_0, and experimental Q4_K_M GGUF execution.
 - Do not add GPU backends, generic model support, weights or build outputs.
 - Keep ISA-specific instructions in isolated translation units with runtime dispatch.

@@ -29,7 +29,7 @@ int main() {
   const bool exact = reference_backend == Q8_0Backend::avx2;
   std::size_t cases = 0;
   for (std::size_t blocks : {1U, 2U, 4U, 32U, 64U, 112U}) {
-    for (std::size_t rows : {8U, 16U, 32U, 64U}) {
+    for (std::size_t rows : {8U, 16U, 24U, 32U, 64U}) {
       for (int pattern = 0; pattern < 3; ++pattern) {
         std::vector<Q4_0Block> canonical(rows*blocks), unpacked(rows*blocks);
         for (auto & w : canonical) {
@@ -47,38 +47,41 @@ int main() {
         q4_0_packed_dequantize_row(legacy.data(), rows-1, expected_embedding.data(), blocks);
         if (embedding != expected_embedding) return 2;
 
-        constexpr std::size_t tokens = 20; // 16-token tile plus 4-token tail.
-        std::vector<Q8_0BlockX4> batch((tokens/4)*blocks);
-        for (auto & a : batch) for (int t = 0; t < 4; ++t) {
-          a.scales[t] = 0.001F * static_cast<float>(1 + random()%31);
-          a.sums[t] = 0;
-          for (int k = 0; k < 32; ++k) {
-            const auto q = static_cast<std::int8_t>(pattern == 0 ? -128 : pattern == 1 ? 127 : static_cast<int>(random()%256)-128);
-            a.qs[t*32+k] = q;
-            a.sums[t] += q;
+        for (std::size_t tokens : {4U, 16U, 20U, 32U, 36U, 128U}) {
+          std::vector<Q8_0BlockX4> batch((tokens/4)*blocks);
+          for (auto & a : batch) for (int t = 0; t < 4; ++t) {
+            a.scales[t] = 0.001F * static_cast<float>(1 + random()%31);
+            a.sums[t] = 0;
+            for (int k = 0; k < 32; ++k) {
+              const auto q = static_cast<std::int8_t>(pattern == 0 ? -128 : pattern == 1 ? 127 : static_cast<int>(random()%256)-128);
+              a.qs[t*32+k] = q;
+              a.sums[t] += q;
+            }
           }
-        }
-        std::vector<Q8_0BlockX1> vector(blocks);
-        for (std::size_t b = 0; b < blocks; ++b) {
-          vector[b].scales[0] = batch[b].scales[0];
-          vector[b].sums[0] = batch[b].sums[0];
-          std::copy_n(batch[b].qs, 32, vector[b].qs);
-        }
-        std::vector<float> expected(rows*tokens), actual(expected.size());
-        q4_0_packed_matmul_q8_0(legacy.data(), batch.data(), expected.data(), rows, tokens, blocks, rows, reference_backend);
-        std::vector<int> counts(rows+7, 0);
-        for (std::size_t i = 0; i < counts.size(); i += 3) counts[i] = 2;
-        const auto expected_best = q4_0_packed_matvec_prepared_q8_0_argmax(
-          legacy.data(), vector.data(), counts.data(), 1.05F, 7, rows, blocks, reference_backend);
-        for (auto backend : {Q8_0Backend::scalar, Q8_0Backend::avx2, Q8_0Backend::avx_vnni, Q8_0Backend::avx512_vnni}) {
-          if (!q8_0_backend_available(backend)) continue;
-          q4_dot4_matmul(dot4.data(), batch.data(), actual.data(), rows, tokens, blocks, rows, backend);
-          if (!same_outputs(actual.data(), expected.data(), actual.size(), exact)) { std::cerr << "DOT4 prefill mismatch\n"; return 3; }
-          q4_dot4_matvec(dot4.data(), vector.data(), actual.data(), rows, blocks, backend);
-          if (!same_outputs(actual.data(), expected.data(), rows, exact)) return 4;
-          const auto best = q4_dot4_argmax(dot4.data(), vector.data(), counts.data(), 1.05F, 7, rows, blocks, backend);
-          if (!same_outputs(&best.value, &expected_best.value, 1, exact) || best.index != expected_best.index) return 5;
-          ++cases;
+          std::vector<Q8_0BlockX1> vector(blocks);
+          for (std::size_t b = 0; b < blocks; ++b) {
+            vector[b].scales[0] = batch[b].scales[0];
+            vector[b].sums[0] = batch[b].sums[0];
+            std::copy_n(batch[b].qs, 32, vector[b].qs);
+          }
+          const std::size_t stride = rows + 7;
+          std::vector<float> expected(stride*tokens, -123.0F), actual(expected.size(), -123.0F);
+          q4_0_packed_matmul_q8_0(legacy.data(), batch.data(), expected.data(), rows, tokens, blocks, stride, reference_backend);
+          std::vector<int> counts(rows+7, 0);
+          for (std::size_t i = 0; i < counts.size(); i += 3) counts[i] = 2;
+          const auto expected_best = q4_0_packed_matvec_prepared_q8_0_argmax(
+            legacy.data(), vector.data(), counts.data(), 1.05F, 7, rows, blocks, reference_backend);
+          for (auto backend : {Q8_0Backend::scalar, Q8_0Backend::avx2, Q8_0Backend::avx_vnni, Q8_0Backend::avx512_vnni}) {
+            if (!q8_0_backend_available(backend)) continue;
+            std::fill(actual.begin(), actual.end(), -123.0F);
+            q4_dot4_matmul(dot4.data(), batch.data(), actual.data(), rows, tokens, blocks, stride, backend);
+            if (!same_outputs(actual.data(), expected.data(), actual.size(), exact)) { std::cerr << "DOT4 prefill mismatch\n"; return 3; }
+            q4_dot4_matvec(dot4.data(), vector.data(), actual.data(), rows, blocks, backend);
+            if (!same_outputs(actual.data(), expected.data(), rows, exact)) return 4;
+            const auto best = q4_dot4_argmax(dot4.data(), vector.data(), counts.data(), 1.05F, 7, rows, blocks, backend);
+            if (!same_outputs(&best.value, &expected_best.value, 1, exact) || best.index != expected_best.index) return 5;
+            ++cases;
+          }
         }
       }
     }

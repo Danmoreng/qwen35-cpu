@@ -53,7 +53,7 @@ if (QWEN35X_SYSTEM_PROCESSOR_LOWER MATCHES "^(x86_64|amd64|i[3-6]86)$" OR
         src/cpu/activation_avx512.cpp src/cpu/q4_h128_avx512.cpp src/cpu/full_attention_tiled_avx512.cpp
         PROPERTIES COMPILE_OPTIONS "/arch:AVX512")
       set_source_files_properties(
-        src/cpu/q4_g16_evex.cpp src/cpu/q4_0_avx512_vnni.cpp src/cpu/q4_0_evex_vnni.cpp src/cpu/q4_dot4_evex.cpp
+        src/cpu/q4_g16_evex.cpp src/cpu/q4_0_avx512_vnni.cpp src/cpu/q4_0_evex_vnni.cpp src/cpu/q4_dot4_evex.cpp src/cpu/q4_dot4_prefill_avx512.cpp
         PROPERTIES COMPILE_OPTIONS "/arch:AVX512")
     endif ()
   elseif (CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
@@ -79,7 +79,7 @@ if (QWEN35X_SYSTEM_PROCESSOR_LOWER MATCHES "^(x86_64|amd64|i[3-6]86)$" OR
       if (QWEN35X_COMPILER_HAS_MAVX512VNNI AND QWEN35X_COMPILER_HAS_MAVX512VL)
         set(QWEN35X_Q8_0_HAS_AVX512_VNNI_TU ON)
         set_source_files_properties(
-          src/cpu/q4_g16_evex.cpp src/cpu/q4_0_avx512_vnni.cpp src/cpu/q4_0_evex_vnni.cpp src/cpu/q4_dot4_evex.cpp
+          src/cpu/q4_g16_evex.cpp src/cpu/q4_0_avx512_vnni.cpp src/cpu/q4_0_evex_vnni.cpp src/cpu/q4_dot4_evex.cpp src/cpu/q4_dot4_prefill_avx512.cpp
           PROPERTIES COMPILE_OPTIONS "-mavx512f;-mavx512vl;-mavx512vnni;-mfma;-mf16c")
       endif ()
     endif ()
@@ -110,7 +110,7 @@ else ()
 endif ()
 
 if (QWEN35X_Q8_0_HAS_AVX512_VNNI_TU)
-  target_sources(qwen35x_core PRIVATE src/cpu/q4_g16_evex.cpp src/cpu/q4_0_avx512_vnni.cpp src/cpu/q4_0_evex_vnni.cpp src/cpu/q4_dot4_evex.cpp)
+  target_sources(qwen35x_core PRIVATE src/cpu/q4_g16_evex.cpp src/cpu/q4_0_avx512_vnni.cpp src/cpu/q4_0_evex_vnni.cpp src/cpu/q4_dot4_evex.cpp src/cpu/q4_dot4_prefill_avx512.cpp)
   target_compile_definitions(qwen35x_core PRIVATE QWEN35X_Q8_0_HAS_AVX512_VNNI_TU=1)
 else ()
   target_compile_definitions(qwen35x_core PRIVATE QWEN35X_Q8_0_HAS_AVX512_VNNI_TU=0)

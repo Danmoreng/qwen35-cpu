@@ -1,0 +1,5 @@
+candidate,prompt_tokens,total_prefill_ms,q4_prepare_ms,q4_kernel_ms,instrumented,separate_series
+baseline,512,236.255579,8.276196,155.467174,True,True
+baseline,4096,2143.214916,66.669906,1267.990015,True,True
+optimized,512,184.891465,8.31234,105.16144800000001,True,True
+optimized,4096,1636.740412,66.346322,776.211837,True,True

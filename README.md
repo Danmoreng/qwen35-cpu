@@ -13,129 +13,43 @@ SSE streaming are not implemented.
 
 ## CPU benchmarks: speed and quality
 
-The published **H128/Q4-G32-DOT4 B+C 256** checkpoint uses weighted MSE16 plus
-block-128 error compensation, calibrated on 256 documents / 262,144 tokens.
-It achieves **15.80467 perplexity** and **0.060190 mean KL to BF16** on the common
-English test subset, with a **424.9 MB tensor payload**. Quality and speed are
-measured separately; the unchanged custom format needs no GPU at runtime.
+The engine uses the **H128/Q4-G32-DOT4 B+C 256** checkpoint with a **424.9 MB
+tensor payload**. Speed and quantization quality are measured separately.
 
-### Speed
+### Performance
 
-Speed includes three complete platform-specific series and an additional Linux IK comparison. All use FP16 KV,
-identical fixed tokens, full-vocabulary logits and **three measured runs after
-one warmup**, with alternating case order. Values are median **tokens/s**.
-
-#### Windows — Ryzen 9 9955HX3D
-
-Eight threads on physical VCache cores (`0x5555`), MSVC Release, AVX-512/VNNI.
-All five candidates were measured together in a fresh sequential series.
+**AMD Ryzen 9 9955HX3D · Arch Linux · eight physical V-Cache cores · GCC 16.2.1
+Release · AVX-512/VNNI.** Values are median **tokens/s** from three measured
+runs after one warmup. All candidates use identical fixed tokens, FP16 KV and
+full-vocabulary logits. Codex is minimized, XFCE compositing disabled, and the
+display runs at 2560×1600 / 240 Hz. IK uses runtime tensor repacking.
 
 | Engine / checkpoint | Prefill 512 | Prefill 4,096 | Decode B=1 | Decode B=16 |
 | --- | ---: | ---: | ---: | ---: |
-| **This engine, H128 B+C 256** | 2,147.22 | 1,877.68 | 120.05 | 619.16 |
-| llama.cpp Q4_0 `--pure` | 1,073.72 | 970.00 | 101.15 | 326.13 |
-| llama.cpp Unsloth Q4_0 | 892.21 | 860.68 | 88.16 | 290.07 |
-| llama.cpp Unsloth Q4_K_M | 673.80 | 661.63 | 84.29 | 259.64 |
-| llama.cpp Unsloth IQ4_XS | 853.14 | 827.82 | 88.76 | 259.74 |
+| **This engine, H128 B+C 256** | 2,758.49 | 2,464.28 | 122.94 | 615.42 |
+| llama.cpp Q4_0 `--pure` | 1,105.29 | 994.72 | 108.64 | 465.48 |
+| llama.cpp Unsloth Q4_0 | 953.59 | 843.96 | 93.73 | 372.75 |
+| llama.cpp Unsloth Q4_K_M | 663.21 | 695.11 | 88.41 | 325.93 |
+| llama.cpp Unsloth IQ4_XS | 940.31 | 887.65 | 94.12 | 336.28 |
+| ik_llama.cpp Q4_0 `--pure` | 2,860.45 | 2,517.56 | 122.22 | — |
+| ik_llama.cpp Unsloth Q4_0 | 2,730.89 | 2,409.68 | 104.00 | — |
+| ik_llama.cpp Unsloth Q4_K_M | 1,984.34 | 1,794.75 | 98.63 | — |
+| ik_llama.cpp Unsloth IQ4_XS | 1,957.50 | 1,774.74 | 107.68 | — |
+| ik_llama.cpp IQ4_K_R4 `--pure` | 1,992.59 | 1,802.06 | 117.83 | — |
+| ik_llama.cpp IQ4_KS_R4 `--pure` | 2,060.38 | 1,841.85 | 129.21 | — |
 
-Against equal-payload llama.cpp pure Q4_0, this checkpoint delivers **1.94–2.00×
-prefill throughput**, **1.19× single-request decode** and **1.90× batch-16 decode**.
-
-#### Linux — Ryzen 9 9955HX3D
-
-Arch Linux, kernel 7.2.2, GCC 16.2.1 Release, eight threads on physical VCache
-cores (`0xff`), AVX-512/VNNI. All five candidates were measured together in a
-fresh sequential series. Codex was automatically minimized and XFCE compositing
-disabled throughout; the internal display remained at 2560×1600 / 240 Hz.
-
-| Engine / checkpoint | Prefill 512 | Prefill 4,096 | Decode B=1 | Decode B=16 |
-| --- | ---: | ---: | ---: | ---: |
-| **This engine, H128 B+C 256** | 2,167.74 | 1,906.67 | 122.71 | 613.65 |
-| llama.cpp Q4_0 `--pure` | 1,199.47 | 1,007.52 | 108.59 | 469.84 |
-| llama.cpp Unsloth Q4_0 | 966.45 | 878.78 | 94.02 | 383.06 |
-| llama.cpp Unsloth Q4_K_M | 702.52 | 698.66 | 87.30 | 333.67 |
-| llama.cpp Unsloth IQ4_XS | 1,010.87 | 873.31 | 94.21 | 339.49 |
-
-Against equal-payload llama.cpp pure Q4_0 on this Linux system, the custom
-checkpoint delivers **1.81–1.89× prefill throughput**, **1.13×
-single-request decode** and **1.31× batch-16 decode**.
-
-These values replace the earlier native-only decode check; the native engine
-was measured again alongside all comparators. Active desktop rendering reduced
-CPU throughput in the investigation, so keep desktop conditions fixed across
-candidates. See the [Linux/Ryzen comparison details](docs/readme-comparison-linux-ryzen-2026-09-07.md),
-[results](docs/results/readme-linux-ryzen-2026-09-07/performance.csv) and
-[provenance](docs/results/readme-linux-ryzen-2026-09-07/manifest.json).
-
-#### Linux — Intel Core i7-8750H
-
-Ubuntu 26.04.1 LTS, GCC 15.2 Release, six threads pinned to the six physical
-cores (`0x3f`), AVX2/FMA/F16C. All five candidates were rebuilt and measured
-together in a separate fresh sequential series.
-
-| Engine / checkpoint | Prefill 512 | Prefill 4,096 | Decode B=1 | Decode B=16 |
-| --- | ---: | ---: | ---: | ---: |
-| **This engine, H128 B+C 256** | 404.17 | 319.01 | 62.28 | 179.36 |
-| llama.cpp Q4_0 `--pure` | 230.63 | 185.92 | 47.42 | 91.06 |
-| llama.cpp Unsloth Q4_0 | 213.16 | 172.86 | 42.34 | 79.66 |
-| llama.cpp Unsloth Q4_K_M | 184.74 | 152.73 | 39.89 | 74.73 |
-| llama.cpp Unsloth IQ4_XS | 230.81 | 184.95 | 40.82 | 76.78 |
-
-Against equal-payload llama.cpp pure Q4_0 on this Linux system, the custom
-checkpoint delivers **1.72–1.75× prefill throughput**, **1.31× single-request
-decode** and **1.97× batch-16 decode**.
-
-Prefill columns use one request. Decode uses 512 input / 128 output tokens and
-counts 127 actual decode forwards per request. Batch 16 is aggregate throughput
-across 16 private requests, compared only with batch 16. Load, tokenization,
-HTTP and prefix-cache credit are excluded. Three runs describe this CPU/workload,
-not a universal guarantee. In a separate matched G32 comparison, B+C decode
-medians remained within -0.13% to +0.76% of the previous standard across B1/2/4/8/16.
-
-#### Additional Linux/Ryzen comparison: ik_llama.cpp
-
-A fresh eleven-candidate series uses the same desktop, affinity and workload
-conditions above. IK runs the same four GGUF files with runtime repacking enabled,
-plus two IK-specific quantizations made directly from BF16 without calibration.
-All values below belong to this new series; the earlier batch-16 table remains
-separate. Units are tokens/s, medians of three measured runs after one warmup.
-
-| Engine / checkpoint | Prefill 512 | Prefill 4,096 | Decode B=1 |
-| --- | ---: | ---: | ---: |
-| **This engine, H128 B+C 256** | 2,180.04 | 1,910.84 | 122.64 |
-| llama.cpp Q4_0 `--pure` | 1,060.22 | 1,069.80 | 108.53 |
-| ik_llama.cpp Q4_0 `--pure` | 2,894.20 | 2,520.52 | 122.18 |
-| ik_llama.cpp IQ4_K_R4 `--pure` | 1,988.23 | 1,795.99 | 118.16 |
-| ik_llama.cpp IQ4_KS_R4 `--pure` | 2,061.58 | 1,838.91 | 129.37 |
-| llama.cpp Unsloth Q4_0 | 927.35 | 944.17 | 94.27 |
-| ik_llama.cpp Unsloth Q4_0 | 2,733.27 | 2,432.20 | 104.31 |
-| llama.cpp Unsloth Q4_K_M | 666.18 | 657.12 | 88.28 |
-| ik_llama.cpp Unsloth Q4_K_M | 1,977.99 | 1,795.43 | 98.74 |
-| llama.cpp Unsloth IQ4_XS | 926.87 | 835.48 | 94.37 |
-| ik_llama.cpp Unsloth IQ4_XS | 1,946.21 | 1,773.20 | 107.50 |
-
-For identical GGUF files, IK delivers **1.11–1.14× decode** and **2.10–2.97×
-prefill** relative to mainline llama.cpp in this series. The smaller IQ4_KS_R4
-reaches **129.37 tok/s**, 5.5% above native H128, with somewhat worse quality
-on the shared test subset. Equal-payload IQ4_K_R4 reaches 118.16 tok/s and
-trades slightly lower PPL for higher KL than native H128; see the quality table.
-
-**Storage is not RAM usage:** IQ4_K_R4 and IQ4_KS_R4 have 424.93 and 401.44 MB
-of on-disk tensors, but IK reports 567.97 and 540.11 MB of loaded model tensors
-in this configuration, before KV and compute buffers. The stock IK pure-Q4_0
-batch-16 warmup hit a graph-capacity assertion, so no IK B16 result is published.
-See [IK details and reproduction](docs/ik-linux-comparison-2026-09-07.md),
-[speed CSV](docs/results/ik-linux-2026-09-07/performance.csv) and
-[provenance](docs/results/ik-linux-2026-09-07/manifest.json).
+Prefill uses one request. Decode uses 512 input / 128 output tokens and counts
+127 actual decode forwards per request. B16 is aggregate throughput across
+sixteen private requests. Loading, tokenization, HTTP and prefix-cache credit
+are excluded. IK's tested B16 configuration hits a graph-capacity assertion;
+“—” means no validated result. These measurements describe this CPU and workload.
 
 ### Perplexity and KL divergence
 
-Identical prompts and scoring masks, **8,192 scored tokens from 16 WikiText-2
-test article windows**, common BF16 teacher. This is an English-prose subset,
-not full-corpus WikiText perplexity. Lower PPL and KL are better. These
-original checkpoint-level scores were not rerun per operating system. The three
-IK rows were scored separately on Linux against the same cached BF16 teacher;
-backend-dependent numerical differences are visible in the pure-Q4_0 control.
+**8,192 scored tokens from 16 WikiText-2 test article windows**, with identical
+prompts and scoring masks and a common BF16 teacher. This is an English-prose
+subset, not full-corpus WikiText perplexity. **Lower PPL and KL are better.**
+Each row identifies the backend used for scoring.
 
 | Engine / checkpoint | Tensor payload, MB | Perplexity | Mean KL to BF16, nats |
 | --- | ---: | ---: | ---: |
@@ -145,48 +59,25 @@ backend-dependent numerical differences are visible in the pure-Q4_0 control.
 | llama.cpp Unsloth Q4_0 | 496.2 | 15.58088 | 0.068388 |
 | llama.cpp Unsloth Q4_K_M | 521.6 | 14.75290 | 0.034693 |
 | llama.cpp Unsloth IQ4_XS | 481.6 | 15.16145 | 0.050539 |
-| ik_llama.cpp Q4_0 `--pure`, control | 424.9 | 18.08595 | 0.145799 |
+| ik_llama.cpp Q4_0 `--pure` | 424.9 | 18.08595 | 0.145799 |
 | ik_llama.cpp IQ4_K_R4 `--pure` | 424.9 | 15.78482 | 0.073289 |
 | ik_llama.cpp IQ4_KS_R4 `--pure` | 401.4 | 15.90097 | 0.090599 |
 
-At the same **424,934,656-byte tensor budget** as pure Q4_0, B+C H128 has
-**12.3% lower perplexity** and **58.4% lower KL**. Unsloth Q4_0 has lower PPL
-but higher KL; the larger Q4_K_M and IQ4_XS achieve lower PPL and KL. The full
-H128 file is **424,964,864 bytes**. The table makes this storage/quality tradeoff explicit.
+H128 and pure Q4_0 / IQ4_K_R4 share a **424,934,656-byte tensor budget**.
+The smaller IQ4_KS_R4 trades some quality for size and decode speed. Tensor
+payload is not RAM usage: IK's loaded model tensors include additional storage;
+KV and compute buffers also require memory. Quantization labels alone do not
+establish equal quality.
 
-### Independent mixed quality check
+The H128 checkpoint is calibrated on 256 mixed documents / 262,144 tokens.
+An independent mixed-language, code and math test scores 12.71898 PPL and
+0.064178 KL over 1,280 tokens; it is a separate corpus from the table above.
 
-Calibration mixes German, English, Python code, rendered dialogs and mathematics.
-Ten separate documents, reserved before fitting, provide **1,280 scored tokens**:
-
-| Checkpoint | Perplexity | Mean KL to BF16 |
-| --- | ---: | ---: |
-| Previous four-document MSE16 standard | 13.10860 | 0.106256 |
-| **Current B+C 256 standard** | **12.71898** | **0.064178** |
-
-That is **2.97% lower PPL and 39.60% lower KL**, at effectively unchanged measured
-CPU throughput. These scores belong to a different corpus from the table above;
-the Unsloth candidates were not all evaluated on this mixed suite. Math PPL
-increases 0.58% despite improved KL. More data alone did not help MSE16, and
-256 documents do not outperform the 40-document B+C control on every suite.
-
-The German **`2 + 2` regression returns `4`** in free greedy generation and
-passes the separate expected-token/logit check. This is one regression, not
-broad mathematical validation. No parameter tuning followed the final test.
-
-**[Windows comparison details](docs/readme-comparison-2026-09-07.md)** ·
-[Linux comparison details](docs/readme-comparison-linux-2026-09-07.md) ·
-[Windows speed CSV](docs/results/readme-bc256-2026-09-07/performance.csv) ·
-[Linux speed CSV](docs/results/readme-linux-i7-8750h-2026-09-07/performance.csv) ·
-[Quality CSV](docs/results/readme-bc256-2026-09-07/quality.csv) ·
-[Windows provenance](docs/results/readme-bc256-2026-09-07/manifest.json) ·
-[Linux provenance](docs/results/readme-linux-i7-8750h-2026-09-07/manifest.json) ·
-[Calibration study and independent test](docs/g32-large-calibration-2026-09-07.md).
-
-See [the standard recipe](docs/quantization.md) for fitting and the unchanged
-`.q35h` layout, and [GGUF setup](docs/q4km-native.md) for experimental execution
-paths. The [selective Q8](docs/q8-experiments-2026-09-06.md) and
-[Q8 head](docs/q8-head-experiment-2026-09-06.md) experiments remain separate.
+[Measurement details and reproduction](docs/current-cpu-comparison.md) ·
+[Performance CSV](docs/results/current-cpu-2026-09-07/performance.csv) ·
+[Provenance](docs/results/current-cpu-2026-09-07/manifest.json) ·
+[Quantization recipe](docs/quantization.md) ·
+[Independent quality validation](docs/g32-large-calibration-2026-09-07.md).
 
 ## Download and run
 
@@ -322,16 +213,15 @@ are the default. Quality/logit-dump runs are separate from speed measurements.
 
 - CPU-only build and sixteen kernel/unit/evaluation tests: passed locally.
 - Real-model scheduler/prefix/shared-page regression: passed.
-- Extraction versus frozen source executable: exact output-token matches for
-  B=1 and B=4 with shared-prefix pages, sixteen generated tokens per request.
+- AVX-512 prefill: bitwise full-model logit equivalence over 24 prompts, including
+  chunk boundaries and a 4,096-token prompt.
 - Native text CLI and full-vocabulary logit export: smoke-tested.
 - Native HTTP adapter, concurrent request/prefix correctness and packaged Windows
   server with the prepared Hugging Face model: passed locally.
-- Windows/Linux builds, kernel tests and packaging pass in GitHub CI. The public
+- GitHub CI covers Windows/Linux builds, kernel tests and packaging. The public
   Hugging Face model is pinned for real-model tests and tag-triggered releases.
 - Mixed 256-document calibration, error-compensated fitting and independent quality validation: passed.
-- Further context-length/corpus studies, a new llama.cpp quantization sweep and
-  standalone Intel i7-8750H model validation: pending.
+- Broader context-length and corpus validation remains ongoing.
 
 See [validation details](docs/validation.md) and the [bounded release plan](docs/comparison-plan.md).
 
