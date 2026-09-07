@@ -1,0 +1,66 @@
+{
+  "git_revision": "20b76f7e5641620e2f1e9917b2a1a7f88bff6f83",
+  "kernel": "Linux 7.2.2-arch1-1, x86_64",
+  "cpu_affinity": "0-7; set on benchmark child before exec; probe additionally pins each worker",
+  "display_restore": "2560x1600 240 Hz; compositor restored to original true; window activated after each case",
+  "files": {
+    "build-linux/qwen35_cpu_bench": {
+      "bytes": 1005080,
+      "sha256": "fb5f8946e4c4a89c500f59d28f0dc9b2e77367912cee9f225093bb01c6a7a997"
+    },
+    "build-probe/q4_platform_probe": {
+      "bytes": 201904,
+      "sha256": "148445a26055cd8b5db920114bbdd8667962fbd7ae6cd4f928b40109c4fced2c"
+    },
+    "models/qwen3.5-0.8b-linux/model.q35h": {
+      "bytes": 424964864,
+      "sha256": "013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a"
+    },
+    "benchmarks/astra-investigation-20260907/display_case.py": {
+      "bytes": 962,
+      "sha256": "6e119d8a878429d1f015bff1b61aeaca73b32fe0b5de4eb60dca11bf47dea196"
+    },
+    "benchmarks/astra-investigation-20260907/gui_case.py": {
+      "bytes": 1914,
+      "sha256": "19699474f105193b34a81df0de219bde46c9768c47774c2a3659d4fbaf499272"
+    },
+    "benchmarks/astra-investigation-20260907/display-matrix.json": {
+      "bytes": 4014,
+      "sha256": "7e3341391085ee5b5deabea2898d6637625a591292a786b9b7a0a6eea8f4487c"
+    },
+    "benchmarks/astra-investigation-20260907/gui-matrix.json": {
+      "bytes": 8300,
+      "sha256": "cd8e18d7d16071d270e883bf5c8d2687af07f086d4d5b6c7722a146399b9e63c"
+    },
+    "scripts/benchmark-inference-seq.ps1": {
+      "bytes": 7160,
+      "sha256": "c25e85c24a892eb3c1671c6b9255530b305d1b52ef725486cc09dc5926b1ca92"
+    },
+    "local-runtime-tools/usr/bin/xrandr": {
+      "bytes": 67776,
+      "sha256": "12c1f5e55cd526491479b5b1b54e316be0f905fe8fcbb93392fcc69d9ad5c616"
+    },
+    "local-runtime-tools/usr/bin/xdotool": {
+      "bytes": 84944,
+      "sha256": "e5c6b55bb4a9677b7d6639403e0e7e279c95b0522b792f264c32359213c20626"
+    },
+    "local-runtime-tools/usr/lib/libxdo.so.4": {
+      "bytes": 59456,
+      "sha256": "4fc06c48ae2318fcc8f6460c5b1c7aa8ec6062c9a8e3995d3c799e0551748a7f"
+    }
+  },
+  "raw_archive": {
+    "path": "benchmarks/astra-investigation-20260907-raw.zip",
+    "sha256": "6de31c8a915d2535789312e4d5cdfba18576d7a923bbe643abab517f1fe02a4d",
+    "bytes": 119470
+  },
+  "validation": "All recorded source/tool/binary/checkpoint hashes rechecked after the series; all 40 warmup/measured profiles parsed; engine profiles have no operation instrumentation and retain P512/N128 per request, 127 decode forwards per request, FP16 KV, and Q4 DOT4 dispatch.",
+  "checkpoint_revision": "f6cb5cf04a9094670f9041578a3f4e44b94a1395",
+  "checkpoint_repository": "danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4",
+  "runs": 3,
+  "warmup_runs": 1,
+  "published_cases": [
+    "gui-ab/case-2 (B1, 240 Hz, minimized, compositor off)",
+    "gui-ab/case-5 (B16, 240 Hz, minimized, compositor off)"
+  ]
+}

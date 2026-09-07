@@ -21,7 +21,8 @@ measured separately; the unchanged custom format needs no GPU at runtime.
 
 ### Speed
 
-Speed is reported as two complete platform-specific series. Both use FP16 KV,
+Speed includes two complete platform-specific comparison series and a separate
+native-engine Linux/Ryzen decode check. All use FP16 KV,
 identical fixed tokens, full-vocabulary logits and **three measured runs after
 one warmup**, with alternating case order. Values are median **tokens/s**.
 
@@ -40,6 +41,26 @@ All five candidates were measured together in a fresh sequential series.
 
 Against equal-payload llama.cpp pure Q4_0, this checkpoint delivers **1.94–2.00×
 prefill throughput**, **1.19× single-request decode** and **1.90× batch-16 decode**.
+
+#### Linux — Ryzen 9 9955HX3D (native-engine decode check)
+
+Arch Linux, kernel 7.2.2, GCC 16.2.1 Release, AVX-512/VNNI, eight threads on
+physical VCache cores (`0xff`). The unchanged native engine was measured with
+the Codex window minimized and XFCE compositing disabled; the internal display
+remained at 2560×1600 / 240 Hz.
+
+| Engine / checkpoint | Decode B=1 | Decode B=16 |
+| --- | ---: | ---: |
+| **This engine, H128 B+C 256** | **127.48** | **638.53** |
+
+This is a native-engine P512/N128 check, not a new five-candidate comparison.
+The three measured runs span 127.36–127.59 tok/s for B1 and 637.43–639.15 tok/s
+for aggregate B16. Active desktop rendering substantially reduced throughput
+in the initial Linux investigation; minimizing Codex alone, with compositing
+still enabled at 240 Hz, also recovered B1 performance (126.42 tok/s).
+Keep desktop conditions fixed when comparing builds. See the
+[Linux/Ryzen measurement details](docs/linux-desktop-performance-root-cause-2026-09-07.md)
+and [results](docs/results/linux-desktop-2026-09-07/summary.csv).
 
 #### Linux — Intel Core i7-8750H
 
