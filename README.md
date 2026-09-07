@@ -21,8 +21,7 @@ measured separately; the unchanged custom format needs no GPU at runtime.
 
 ### Speed
 
-Speed includes two complete platform-specific comparison series and a separate
-native-engine Linux/Ryzen decode check. All use FP16 KV,
+Speed is reported as three complete platform-specific comparison series. All use FP16 KV,
 identical fixed tokens, full-vocabulary logits and **three measured runs after
 one warmup**, with alternating case order. Values are median **tokens/s**.
 
@@ -42,25 +41,31 @@ All five candidates were measured together in a fresh sequential series.
 Against equal-payload llama.cpp pure Q4_0, this checkpoint delivers **1.94–2.00×
 prefill throughput**, **1.19× single-request decode** and **1.90× batch-16 decode**.
 
-#### Linux — Ryzen 9 9955HX3D (native-engine decode check)
+#### Linux — Ryzen 9 9955HX3D
 
-Arch Linux, kernel 7.2.2, GCC 16.2.1 Release, AVX-512/VNNI, eight threads on
-physical VCache cores (`0xff`). The unchanged native engine was measured with
-the Codex window minimized and XFCE compositing disabled; the internal display
-remained at 2560×1600 / 240 Hz.
+Arch Linux, kernel 7.2.2, GCC 16.2.1 Release, eight threads on physical VCache
+cores (`0xff`), AVX-512/VNNI. All five candidates were measured together in a
+fresh sequential series. Codex was automatically minimized and XFCE compositing
+disabled throughout; the internal display remained at 2560×1600 / 240 Hz.
 
-| Engine / checkpoint | Decode B=1 | Decode B=16 |
-| --- | ---: | ---: |
-| **This engine, H128 B+C 256** | **127.48** | **638.53** |
+| Engine / checkpoint | Prefill 512 | Prefill 4,096 | Decode B=1 | Decode B=16 |
+| --- | ---: | ---: | ---: | ---: |
+| **This engine, H128 B+C 256** | 2,167.74 | 1,906.67 | 122.71 | 613.65 |
+| llama.cpp Q4_0 `--pure` | 1,199.47 | 1,007.52 | 108.59 | 469.84 |
+| llama.cpp Unsloth Q4_0 | 966.45 | 878.78 | 94.02 | 383.06 |
+| llama.cpp Unsloth Q4_K_M | 702.52 | 698.66 | 87.30 | 333.67 |
+| llama.cpp Unsloth IQ4_XS | 1,010.87 | 873.31 | 94.21 | 339.49 |
 
-This is a native-engine P512/N128 check, not a new five-candidate comparison.
-The three measured runs span 127.36–127.59 tok/s for B1 and 637.43–639.15 tok/s
-for aggregate B16. Active desktop rendering substantially reduced throughput
-in the initial Linux investigation; minimizing Codex alone, with compositing
-still enabled at 240 Hz, also recovered B1 performance (126.42 tok/s).
-Keep desktop conditions fixed when comparing builds. See the
-[Linux/Ryzen measurement details](docs/linux-desktop-performance-root-cause-2026-09-07.md)
-and [results](docs/results/linux-desktop-2026-09-07/summary.csv).
+Against equal-payload llama.cpp pure Q4_0 on this Linux system, the custom
+checkpoint delivers **1.81–1.89× prefill throughput**, **1.13×
+single-request decode** and **1.31× batch-16 decode**.
+
+These values replace the earlier native-only decode check; the native engine
+was measured again alongside all comparators. Active desktop rendering reduced
+CPU throughput in the investigation, so keep desktop conditions fixed across
+candidates. See the [Linux/Ryzen comparison details](docs/readme-comparison-linux-ryzen-2026-09-07.md),
+[results](docs/results/readme-linux-ryzen-2026-09-07/performance.csv) and
+[provenance](docs/results/readme-linux-ryzen-2026-09-07/manifest.json).
 
 #### Linux — Intel Core i7-8750H
 

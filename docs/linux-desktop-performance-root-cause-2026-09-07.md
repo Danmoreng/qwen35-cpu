@@ -1,5 +1,10 @@
 # Linux/Ryzen decode check (2026-09-07)
 
+This is the earlier native-only desktop experiment. The README now uses the
+[subsequent complete five-candidate series](readme-comparison-linux-ryzen-2026-09-07.md),
+including a new native measurement under the same desktop policy. The values
+below remain the historical results of this separate experiment.
+
 The unchanged Linux native engine reaches **127.48 tok/s single-request decode**
 and **638.53 tok/s aggregate batch-16 decode** with the Codex window minimized
 and XFCE compositing disabled. The display remains at 2560×1600 / 240 Hz.

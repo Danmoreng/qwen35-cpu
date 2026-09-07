@@ -1,0 +1,126 @@
+{
+  "provenance": {
+    "repository_revision": "92d0e4e6da1b45d4564ddeb96c2b7592f94b6515",
+    "llama_revision": "73a43d1f69345aee8bb186ef4b3172cef892f2e5",
+    "llama_source": "Unmodified git archive of the pinned commit; no upstream worktree changes copied.",
+    "checkpoint_revision": "f6cb5cf04a9094670f9041578a3f4e44b94a1395",
+    "unsloth_revision": "6ab461498e2023f6e3c1baea90a8f0fe38ab64d0",
+    "compiler": "g++ (GCC) 16.2.1 20260810",
+    "build_command": "cmake -S tools/llama-comparison -B build-llama-linux -G Ninja -DCMAKE_BUILD_TYPE=Release -DLLAMA_SOURCE_DIR=$PWD/build-llama-source -DCMAKE_EXPORT_COMPILE_COMMANDS=ON; cmake --build build-llama-linux --target llama-fixed-cpu-bench -j 12",
+    "files": {
+      "build-linux/qwen35_cpu_bench": {
+        "bytes": 1005080,
+        "sha256": "fb5f8946e4c4a89c500f59d28f0dc9b2e77367912cee9f225093bb01c6a7a997"
+      },
+      "build-llama-linux/bin/llama-fixed-cpu-bench": {
+        "bytes": 71840,
+        "sha256": "99c668fb1a50df735d66558f9c25528dd496012e770245d376b75116c30aff05"
+      },
+      "build-llama-linux/bin/libggml-base.so.0": {
+        "bytes": 974480,
+        "sha256": "e01b6c05984543d4ee0ac6ed6dd63ef3da17829e7f6be4bf188fcabe11bc7f52"
+      },
+      "build-llama-linux/bin/libggml-base.so.0.23.0": {
+        "bytes": 974480,
+        "sha256": "e01b6c05984543d4ee0ac6ed6dd63ef3da17829e7f6be4bf188fcabe11bc7f52"
+      },
+      "build-llama-linux/bin/libggml-cpu.so.0": {
+        "bytes": 1429120,
+        "sha256": "b9565d53c2662fdaca95ddda34b648725d80d07709c69b017ef08fbcd4b0d5b4"
+      },
+      "build-llama-linux/bin/libggml-cpu.so.0.23.0": {
+        "bytes": 1429120,
+        "sha256": "b9565d53c2662fdaca95ddda34b648725d80d07709c69b017ef08fbcd4b0d5b4"
+      },
+      "build-llama-linux/bin/libggml.so.0": {
+        "bytes": 59664,
+        "sha256": "81897c5ab08bbc536d9686f5ec382a6466e21360f3024707415bfddd0adb9ca3"
+      },
+      "build-llama-linux/bin/libggml.so.0.23.0": {
+        "bytes": 59664,
+        "sha256": "81897c5ab08bbc536d9686f5ec382a6466e21360f3024707415bfddd0adb9ca3"
+      },
+      "build-llama-linux/bin/libllama.so.0": {
+        "bytes": 4748744,
+        "sha256": "6cc287deb1fa815c5e1fb75fd17ae2906b12319574f9ac1dd1db69dc7acc2831"
+      },
+      "build-llama-linux/bin/libllama.so.0.4.0": {
+        "bytes": 4748744,
+        "sha256": "6cc287deb1fa815c5e1fb75fd17ae2906b12319574f9ac1dd1db69dc7acc2831"
+      },
+      "build-llama-linux/CMakeCache.txt": {
+        "bytes": 32248,
+        "sha256": "16e33dfd4a5299a724f8465eaa333f86a651cb2fd57fb8598da48da9a31043a5"
+      },
+      "build-llama-linux/compile_commands.json": {
+        "bytes": 354980,
+        "sha256": "2c2a1519ff1945f8274c3eac9131c46b488b46f1cca62380ef0a5a44375e99b9"
+      },
+      "benchmarks/linux-ryzen-comparison-20260907/run-minimized.py": {
+        "bytes": 2954,
+        "sha256": "4d30636f04856ad6eb2034f7ac8bebcd2d5af6045d14508487d6f3286faead36"
+      },
+      "benchmarks/linux-ryzen-comparison-20260907/matrix.json": {
+        "bytes": 15377,
+        "sha256": "17add611fd75726ccecccf725c000d7494ed6eb6245a0190c6b2ad101e44ec5e"
+      },
+      "/usr/lib/libstdc++.so.6": {
+        "bytes": 2939928,
+        "sha256": "f5fc7380f2ae46fa4053a64be04e7b98109f1066a4bbfff3c37042488aa0be0e"
+      },
+      "/usr/lib/libm.so.6": {
+        "bytes": 1268336,
+        "sha256": "965106704753eefe8c31ae7da6daba3ead3d18c52b19b5fcc41178bcc4aa999d"
+      },
+      "/usr/lib/libgcc_s.so.1": {
+        "bytes": 182512,
+        "sha256": "e618cb9c90c2eb3a1dad1cfea5b6c1eebcf2e799ad805976f4ae47bdd61c716a"
+      },
+      "/usr/lib/libc.so.6": {
+        "bytes": 2215072,
+        "sha256": "e221b10fee9ee4776d8f0f1701253bc06817f7a4dbe6c5292487277d0bf8ffff"
+      },
+      "/usr/lib64/ld-linux-x86-64.so.2": {
+        "bytes": 263152,
+        "sha256": "d011113b7054c641c8ca064f58bcc23804fd2654a3dff2444dad06ddeda61bfb"
+      },
+      "/usr/lib/libgomp.so.1": {
+        "bytes": 363560,
+        "sha256": "d6c6309ee83dbe9b50bf38342489799a4822ee22451677730ff5542aa74bdefc"
+      }
+    }
+  },
+  "models": {
+    "Qwen3.5-0.8B-Q4_0-pure.gguf": {
+      "sha256": "2e41f95fca5f3e3a8dc91c1407c572f3cff5d060cbfdf835cd2d4d9913f95e7d",
+      "bytes": 435896352
+    },
+    "Qwen3.5-0.8B-Q4_0.gguf": {
+      "sha256": "444406ddd926550c724ec18d5120a9d40ded44908a063b0e66e9a7e5464c652c",
+      "bytes": 507154688
+    },
+    "Qwen3.5-0.8B-Q4_K_M.gguf": {
+      "sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
+      "bytes": 532517120
+    },
+    "Qwen3.5-0.8B-IQ4_XS.gguf": {
+      "sha256": "619917ae92f61eb6515a7070e944a0a7c2b198a2cf6536386f475485188a36ff",
+      "bytes": 492605696
+    }
+  },
+  "runs": 3,
+  "warmup_runs": 1,
+  "affinity": "0xff (CPUs 0-7, physical V-Cache cores)",
+  "desktop": "Codex minimized for the entire series; XFCE compositor disabled; 2560x1600 at 240 Hz; original window/compositor state restored after completion.",
+  "contract": "Identical fixed P512/N128, P4096/N2, and B16/P512/N128 tokens, full vocabulary logits, FP16 KV, context 16384; B16 aggregate; no new quality evaluation.",
+  "runner_sha256": "c25e85c24a892eb3c1671c6b9255530b305d1b52ef725486cc09dc5926b1ca92",
+  "model_q35h_sha256": "013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a",
+  "raw_archive": {
+    "path": "benchmarks/linux-ryzen-comparison-20260907/raw-results.zip",
+    "sha256": "2034ea4a51fab36b14fddf44d375540172dc3f59f4dcd1b9e628ab58042e7567"
+  },
+  "files": {
+    "performance.csv": "2de2482a5a33e7c6d18636e7ecf00d90850e4ef542f9132cc6c06eebf8360670"
+  },
+  "validation": "All 60 profiles validated; fixed workloads match across all candidates; native binary, llama binary/shared libraries, models and inputs rehashed after the run; llama AVX512 VNNI and OpenMP verified in every profile log."
+}
