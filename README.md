@@ -26,23 +26,24 @@ display runs at 2560×1600 / 240 Hz. IK uses runtime tensor repacking.
 
 | Engine / checkpoint | Prefill 512 | Prefill 4,096 | Decode B=1 | Decode B=16 |
 | --- | ---: | ---: | ---: | ---: |
-| **This engine, H128 B+C 256** | 2,758.49 | 2,464.28 | 122.94 | 615.42 |
-| llama.cpp Q4_0 `--pure` | 1,105.29 | 994.72 | 108.64 | 465.48 |
+| **This engine, H128 B+C 256** | 2,758.49 | 2,464.28 | 122.94 | 642.08 |
+| llama.cpp Q4_0 | 1,105.29 | 994.72 | 108.64 | 488.26 |
 | llama.cpp Unsloth Q4_0 | 953.59 | 843.96 | 93.73 | 372.75 |
 | llama.cpp Unsloth Q4_K_M | 663.21 | 695.11 | 88.41 | 325.93 |
 | llama.cpp Unsloth IQ4_XS | 940.31 | 887.65 | 94.12 | 336.28 |
-| ik_llama.cpp Q4_0 `--pure` | 2,860.45 | 2,517.56 | 122.22 | — |
-| ik_llama.cpp Unsloth Q4_0 | 2,730.89 | 2,409.68 | 104.00 | — |
-| ik_llama.cpp Unsloth Q4_K_M | 1,984.34 | 1,794.75 | 98.63 | — |
-| ik_llama.cpp Unsloth IQ4_XS | 1,957.50 | 1,774.74 | 107.68 | — |
-| ik_llama.cpp IQ4_K_R4 `--pure` | 1,992.59 | 1,802.06 | 117.83 | — |
-| ik_llama.cpp IQ4_KS_R4 `--pure` | 2,060.38 | 1,841.85 | 129.21 | — |
+| ik_llama.cpp Q4_0 | 2,860.45 | 2,517.56 | 122.22 | 423.79 |
+| ik_llama.cpp Unsloth Q4_0 | 2,730.89 | 2,409.68 | 104.00 | 420.00 |
+| ik_llama.cpp Unsloth Q4_K_M | 1,984.34 | 1,794.75 | 98.63 | 395.87 |
+| ik_llama.cpp Unsloth IQ4_XS | 1,957.50 | 1,774.74 | 107.68 | 408.20 |
+| ik_llama.cpp IQ4_K_R4 | 1,992.59 | 1,802.06 | 117.83 | 433.81 |
+| ik_llama.cpp IQ4_KS_R4 | 2,060.38 | 1,841.85 | 129.21 | 455.14 |
 
 Prefill uses one request. Decode uses 512 input / 128 output tokens and counts
 127 actual decode forwards per request. B16 is aggregate throughput across
 sixteen private requests. Loading, tokenization, HTTP and prefix-cache credit
-are excluded. IK's tested B16 configuration hits a graph-capacity assertion;
-“—” means no validated result. These measurements describe this CPU and workload.
+are excluded. IK B16 uses a [local graph-capacity correction](docs/ik-batch16.md);
+IK B1, prefill and quality use the stock fork. These measurements describe this
+CPU and workload.
 
 ### Perplexity and KL divergence
 
@@ -55,13 +56,13 @@ Each row identifies the backend used for scoring.
 | --- | ---: | ---: | ---: |
 | BF16 teacher | 1,505.8 | 14.38556 | 0 |
 | **This engine, H128 B+C 256** | **424.9** | **15.80467** | **0.060190** |
-| llama.cpp Q4_0 `--pure` | 424.9 | 18.02588 | 0.144522 |
+| llama.cpp Q4_0 | 424.9 | 18.02588 | 0.144522 |
 | llama.cpp Unsloth Q4_0 | 496.2 | 15.58088 | 0.068388 |
 | llama.cpp Unsloth Q4_K_M | 521.6 | 14.75290 | 0.034693 |
 | llama.cpp Unsloth IQ4_XS | 481.6 | 15.16145 | 0.050539 |
-| ik_llama.cpp Q4_0 `--pure` | 424.9 | 18.08595 | 0.145799 |
-| ik_llama.cpp IQ4_K_R4 `--pure` | 424.9 | 15.78482 | 0.073289 |
-| ik_llama.cpp IQ4_KS_R4 `--pure` | 401.4 | 15.90097 | 0.090599 |
+| ik_llama.cpp Q4_0 | 424.9 | 18.08595 | 0.145799 |
+| ik_llama.cpp IQ4_K_R4 | 424.9 | 15.78482 | 0.073289 |
+| ik_llama.cpp IQ4_KS_R4 | 401.4 | 15.90097 | 0.090599 |
 
 H128 and pure Q4_0 / IQ4_K_R4 share a **424,934,656-byte tensor budget**.
 The smaller IQ4_KS_R4 trades some quality for size and decode speed. Tensor
@@ -75,6 +76,7 @@ An independent mixed-language, code and math test scores 12.71898 PPL and
 
 [Measurement details and reproduction](docs/current-cpu-comparison.md) ·
 [Performance CSV](docs/results/current-cpu-2026-09-07/performance.csv) ·
+[B16 CSV](docs/results/ik-batch16-2026-09-07/performance.csv) ·
 [Provenance](docs/results/current-cpu-2026-09-07/manifest.json) ·
 [Quantization recipe](docs/quantization.md) ·
 [Independent quality validation](docs/g32-large-calibration-2026-09-07.md).

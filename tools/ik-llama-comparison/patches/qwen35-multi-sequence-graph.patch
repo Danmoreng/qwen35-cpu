@@ -1,0 +1,14 @@
+diff --git a/src/llama.cpp b/src/llama.cpp
+index 1fc4638..81bcee4 100644
+--- a/src/llama.cpp
++++ b/src/llama.cpp
+@@ -886,2 +886,9 @@ int llama_context::max_nodes(int n_tokens, int n_kv) const {
+     int max_nodes = model.max_nodes(n_tokens);
++    // Mixed Qwen3.5 batches build the recurrent subgraph once per sequence.
++    // Reserve a single-token graph budget per possible independent sequence;
++    // n_tokens alone does not account for that graph expansion.
++    if (model.arch == LLM_ARCH_QWEN35 && cparams.n_seq_max > 1) {
++        const int n_sequences = std::min<int>(n_tokens, cparams.n_seq_max);
++        max_nodes = std::max(max_nodes, int(model.max_nodes(1)) * n_sequences);
++    }
+     max_nodes += llama_openpangu_chunked_graph_nodes(model, cparams, n_tokens, n_kv);

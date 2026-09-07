@@ -1,9 +1,12 @@
 # Current CPU comparison
 
 The README compares the current H128 B+C 256 engine with four mainline llama.cpp
-GGUFs and six ik_llama.cpp GGUFs in one sequential Linux series. The native build
-includes the AVX-512/VNNI DOT4 prefill kernel. All candidates are measured together;
-no values from the earlier optimization screens are mixed into the table.
+GGUFs and six ik_llama.cpp GGUFs. The native build includes the AVX-512/VNNI
+DOT4 prefill kernel. The main sequential series covers every B1/prefill candidate
+and native/mainline B16. A separate sequential B16 supplement covers all six IK
+quants alongside fresh native and mainline Q4_0 controls under the same conditions.
+The README uses the fresh controls; other scores retain their main-series values.
+No optimization-screen timings are used.
 
 ## Performance contract
 
@@ -16,7 +19,7 @@ no values from the earlier optimization screens are mixed into the table.
   `scripts/benchmark-inference-seq.ps1`. No concurrent inference or compilation.
 - Identical fixed tokens, full-vocabulary logits, FP16 KV, maximum context 16,384.
 - B1/P512/N128 and B1/P4096/N2 for all eleven candidates; B16/P512/N128 for
-  native and the four mainline llama.cpp candidates. B16 counts sixteen private
+  all candidates across the main series and B16 supplement. B16 counts sixteen private
   requests, with 127 decode forwards each. Long-prefill N2 decode is not used as
   the README decode score.
 - CPU-only llama builds, flash attention, `n_batch=2048`, `n_ubatch=512`, no
@@ -26,9 +29,11 @@ no values from the earlier optimization screens are mixed into the table.
   credit are excluded from speed measurements.
 
 Medians and min/max are in the
-[performance CSV](results/current-cpu-2026-09-07/performance.csv). A stock IK
-pure-Q4_0 B16 warmup hit `GGML_ASSERT(cgraph->n_nodes < cgraph->size)`;
-there is no validated IK B16 score. The fork was not patched to produce one.
+[main-series CSV](results/current-cpu-2026-09-07/performance.csv) and
+[B16 supplement](results/ik-batch16-2026-09-07/performance.csv). IK B16 uses a
+local graph-capacity correction to the pinned fork; stock upstream aborts.
+See the [patch, validation and reproduction](ik-batch16.md), including the
+numerical differences between B8 and B16. IK B1/prefill and quality use stock IK.
 
 ## Quality and size
 
@@ -58,11 +63,13 @@ See [implementation validation](prefill-avx512-2026-09-07.md).
 
 Mainline llama.cpp is pinned to `73a43d1f69345aee8bb186ef4b3172cef892f2e5`;
 IK to `fe215a8ccdce6b844d2a3a3bbde08ae76a6284bf`. Both source trees retain
-their unmodified upstream implementation. H128 uses revision
+their unmodified upstream implementation for the main series. IK B16 uses the
+separate patched build described above. H128 uses revision
 `f6cb5cf04a9094670f9041578a3f4e44b94a1395`; Unsloth uses
 `6ab461498e2023f6e3c1baea90a8f0fe38ab64d0`.
 
-The [manifest](results/current-cpu-2026-09-07/manifest.json) preserves commands,
+The [main-series manifest](results/current-cpu-2026-09-07/manifest.json) and
+[B16 manifest](results/ik-batch16-2026-09-07/manifest.json) preserve commands,
 binary/library/checkpoint hashes, build configuration, source identities, CPU
 affinity and desktop snapshots. Raw profiles and the automatic minimization
 wrapper remain under ignored
