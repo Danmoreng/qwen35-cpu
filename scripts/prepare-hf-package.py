@@ -80,7 +80,7 @@ def main():
     if (args.source / 'NOTICE').is_file():
         notice += '\nOriginal NOTICE:\n' + (args.source / 'NOTICE').read_text(encoding='utf-8')
     (args.output / 'NOTICE').write_text(notice, encoding='utf-8')
-    card = Path('docs/model-card-bc256.md').read_text(encoding='utf-8')
+    card = Path('docs/model-card.md').read_text(encoding='utf-8')
     for key, value in {'ENGINE_URL': args.engine_url, 'ENGINE_REVISION': revision,
                        'SHA256': artifact_hash}.items():
         card = card.replace('@' + key + '@', value)
