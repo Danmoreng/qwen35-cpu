@@ -1,6 +1,6 @@
 # Current CPU comparison
 
-The README compares the current H128 B+C 256 engine with four mainline llama.cpp
+The README compares the current calibrated H128/Q4-G32-DOT4 engine with four mainline llama.cpp
 GGUFs and six ik_llama.cpp GGUFs. The native build includes the AVX-512/VNNI
 DOT4 prefill kernel. The main sequential series covers every B1/prefill candidate
 and native/mainline B16. A separate sequential B16 supplement covers all six IK

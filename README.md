@@ -1,7 +1,7 @@
 # Qwen3.5 CPU
 
 A small C++20 inference engine specialized for **Qwen3.5-0.8B text inference on
-CPUs**, using **B+C calibrated H128/Q4-G32-DOT4** weights. No CUDA toolchain, GPU runtime or
+CPUs**, using **calibrated H128/Q4-G32-DOT4** weights. No CUDA toolchain, GPU runtime or
 general-purpose model framework is required.
 
 The project contains a native HTTP server, text-completion CLI, checkpoint packer,
@@ -13,8 +13,11 @@ SSE streaming are not implemented.
 
 ## CPU benchmarks: speed and quality
 
-The engine uses the **H128/Q4-G32-DOT4 B+C 256** checkpoint with a **424.9 MB
-tensor payload**. Speed and quantization quality are measured separately.
+The engine uses the **H128/Q4-G32-DOT4** checkpoint with a **424.9 MB
+tensor payload**. It is generated using activation-weighted MSE16 fitting and
+error compensation within 128-channel blocks, calibrated on 256 mixed documents
+/ 262,144 tokens. See the [quantization recipe](docs/quantization.md).
+Speed and quantization quality are measured separately.
 
 ### Performance
 
@@ -26,7 +29,7 @@ display runs at 2560×1600 / 240 Hz. IK uses runtime tensor repacking.
 
 | Engine / checkpoint | Prefill 512 | Prefill 4,096 | Decode B=1 | Decode B=16 |
 | --- | ---: | ---: | ---: | ---: |
-| **This engine, H128 B+C 256** | 2,758.49 | 2,464.28 | 122.94 | 642.08 |
+| **This engine, H128/Q4-G32-DOT4** | 2,758.49 | 2,464.28 | 122.94 | 642.08 |
 | llama.cpp Q4_0 | 1,105.29 | 994.72 | 108.64 | 488.26 |
 | llama.cpp Unsloth Q4_0 | 953.59 | 843.96 | 93.73 | 372.75 |
 | llama.cpp Unsloth Q4_K_M | 663.21 | 695.11 | 88.41 | 325.93 |
@@ -55,7 +58,7 @@ Each row identifies the backend used for scoring.
 | Engine / checkpoint | Tensor payload, MB | Perplexity | Mean KL to BF16, nats |
 | --- | ---: | ---: | ---: |
 | BF16 teacher | 1,505.8 | 14.38556 | 0 |
-| **This engine, H128 B+C 256** | **424.9** | **15.80467** | **0.060190** |
+| **This engine, H128/Q4-G32-DOT4** | **424.9** | **15.80467** | **0.060190** |
 | llama.cpp Q4_0 | 424.9 | 18.02588 | 0.144522 |
 | llama.cpp Unsloth Q4_0 | 496.2 | 15.58088 | 0.068388 |
 | llama.cpp Unsloth Q4_K_M | 521.6 | 14.75290 | 0.034693 |

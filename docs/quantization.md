@@ -1,16 +1,30 @@
 # Standard quantization recipe
 
 The standard [Hugging Face download](https://huggingface.co/danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4/tree/f6cb5cf04a9094670f9041578a3f4e44b94a1395) is **H128/Q4-G32-DOT4 with 256-document
-calibration, weighted MSE16 and block-128 error compensation (B+C)**. The `.q35h`
+calibration, weighted MSE16 and block-128 error compensation**. The `.q35h`
 format, signed H128 transform, groups of 32 with FP16 scales and CPU DOT4 layout
 are unchanged. No new runtime loader or GPU backend is required.
+
+## Format and calibration names
+
+`H128/Q4-G32-DOT4` names the representation: a signed Hadamard transform over
+128 channels, 4-bit weights in groups of 32 with FP16 scales, and DOT4 packing
+for CPU kernels. The tied embedding/output matrix uses the identity basis.
+The calibration procedure is activation-weighted MSE16 fitting with error
+compensation within 128-channel blocks. MSE16 refers to the sixteen signed
+4-bit levels, not 16-bit weight storage.
+
+Older study reports and artifact IDs use `B+C` for the combination of data and
+sampling work (B) and bounded error compensation (C). The suffix `256` counts
+calibration documents. These are experiment identifiers, not a separate weight
+format; hashes and pinned revisions identify the exact checkpoint.
 
 ## Offline fitting
 
 MSE16 searches both scale signs and all signed codes `[-8,7]`, evaluates stored
 FP16 scales, and weights reconstruction error by real BF16 teacher activations
 in the correct H128 basis (identity for the tied embedding/output matrix).
-B+C additionally uses second moments within 128-channel blocks, damping 0.01,
+The error-compensation step uses second moments within 128-channel blocks, damping 0.01,
 and error propagation across remaining channels in each block. It retains the
 MSE16 candidate if the undamped reconstruction objective does not improve.
 Cross-block covariance is omitted; this is not full-matrix GPTQ or sequential
@@ -26,14 +40,14 @@ suite. The method and the resulting checkpoint were evaluated separately.
 
 ## Defaults and reproduction
 
-- **Download:** B+C 256, SHA256
+- **Download:** H128/Q4-G32-DOT4 with the calibrated recipe above, SHA256
   `013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a`.
 - **Source conversion:** unweighted `mse16` unless explicit fitting directories
   are supplied. The converter never silently discovers calibration files.
 
 ```powershell
 # Published recipe, after preparing its fitting statistics
-build/qwen35_cpu_pack.exe --hf-model-dir models/qwen3.5-0.8b --output models/qwen3.5-0.8b/model-bc256.q35h --importance-dir benchmarks/bc-large-study/full-importance --covariance-dir benchmarks/bc-large-study/full-covariance
+build/qwen35_cpu_pack.exe --hf-model-dir models/qwen3.5-0.8b --output models/qwen3.5-0.8b/model.q35h --importance-dir benchmarks/bc-large-study/full-importance --covariance-dir benchmarks/bc-large-study/full-covariance
 
 # Unweighted conversion without calibration inputs
 build/qwen35_cpu_pack.exe --hf-model-dir models/qwen3.5-0.8b --output models/qwen3.5-0.8b/model-mse16.q35h

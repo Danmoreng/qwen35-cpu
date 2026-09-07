@@ -6,6 +6,8 @@
   quality. Put historical measurements and optimization narratives in docs.
   Use readable quant names rather than CLI flags in table labels (for example,
   `Q4_0` instead of `Q4_0 --pure`; distinguish the vendor variant as `Unsloth Q4_0`).
+- Name the standard quantization `H128/Q4-G32-DOT4` in product documentation;
+  describe calibration separately rather than using experiment IDs such as `B+C 256`.
 - Scope: CPU inference for Qwen3.5-0.8B with H128/Q4-G32-DOT4 artifacts, native pure Q4_0, and experimental Q4_K_M GGUF execution.
 - Do not add GPU backends, generic model support, weights or build outputs.
 - Keep ISA-specific instructions in isolated translation units with runtime dispatch.
