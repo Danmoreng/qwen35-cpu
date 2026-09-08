@@ -57,6 +57,42 @@ are excluded. IK B16 uses a [local graph-capacity correction](docs/ik-batch16.md
 IK B1, prefill and quality use the stock fork. These measurements describe this
 CPU and workload.
 
+### Speed on a second CPU
+
+**Intel Core i7-8750H · Ubuntu Linux · six physical cores · GCC 15.2.0
+Release · AVX2.** Values are median **tokens/s** from three measured runs after
+one warmup, pinned to physical cores 0–5 (`0x3f`). The fixed tokens, FP16 KV,
+full-vocabulary logits and timing boundaries match the table above. IK uses
+runtime tensor repacking; its B16 rows use the same documented graph-capacity
+correction. The laptop used the `powersave` governor with Intel P-state, so
+these results describe the measured system state rather than a fixed CPU clock.
+
+Sorted by **single-request decode speed**, fastest first. MB remains tensor
+payload rather than file size or RAM usage. Bold values mark the best speed in
+each column.
+
+| Engine / checkpoint | Decode B=1 ↑ | Decode B=16 ↑ | Prefill 512 ↑ | Prefill 4,096 ↑ | MB |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| **This engine, H128/Q4-G32-DOT4** | **62.43** | **179.22** | **400.62** | **316.36** | 424.9 |
+| ik_llama.cpp Q4_0 | 60.22 | 78.31 | 354.25 | 281.05 | 424.9 |
+| ik_llama.cpp IQ4_KS_R4 | 56.88 | 70.69 | 278.71 | 226.17 | 401.4 |
+| ik_llama.cpp IQ4_K_R4 | 55.10 | 72.38 | 284.66 | 231.44 | 424.9 |
+| ik_llama.cpp Unsloth Q4_0 | 52.76 | 77.54 | 357.27 | 280.87 | 496.2 |
+| ik_llama.cpp Unsloth IQ4_XS | 51.06 | 73.83 | 321.56 | 257.78 | 481.6 |
+| ik_llama.cpp Unsloth Q4_K_M | 49.48 | 74.39 | 369.84 | 292.09 | 521.6 |
+
+The IQ4_K_R4 and IQ4_KS_R4 files were regenerated locally from the pinned
+Unsloth BF16 GGUF with the documented `--pure` recipe and ik_llama.cpp revision
+`fe215a8c`. Their tensor payloads match the Ryzen artifacts, but their hashes do
+not; no Ryzen quality score is attributed to these local files. Speed and
+quality therefore remain separate measurements. Absolute throughput between
+the two CPU tables should not be read as architecture-only scaling because the
+machines also differ in core count, ISA, compiler, power policy and desktop
+conditions.
+
+[Laptop performance CSV](docs/results/linux-i7-8750h-2026-09-08/performance.csv) ·
+[Laptop benchmark provenance](docs/results/linux-i7-8750h-2026-09-08/manifest.json)
+
 ### Perplexity and KL divergence
 
 **8,192 scored tokens from 16 WikiText-2 test article windows**, with identical
