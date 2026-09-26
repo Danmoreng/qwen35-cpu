@@ -57,7 +57,7 @@ float scalar_row(const Q4_0BlockX8 * matrix, const Block * vector, std::size_t l
 }
 void q4_dot4_matvec(const Q4_0BlockX8 * matrix, const Q8_0BlockX1 * vector, float * output, std::size_t rows, std::size_t blocks, Q8_0Backend backend) noexcept {
 #if QWEN35X_Q8_0_HAS_AVX512_VNNI_TU
-  if (q8_0_resolve_backend(backend) == Q8_0Backend::avx512_vnni) return detail::q4_dot4_matvec_evex(matrix, vector, output, rows, blocks);
+  if (q8_0_resolve_backend(backend) == Q8_0Backend::avx512_vnni) return detail::q4_dot4_matvec_avx512(matrix, vector, output, rows, blocks);
 #endif
 #if QWEN35X_Q8_0_HAS_AVX_VNNI_TU
   if (q8_0_backend_uses_avx_vnni(backend)) return detail::q4_dot4_matvec_vex(matrix, vector, output, rows, blocks);
@@ -70,8 +70,8 @@ void q4_dot4_matvec(const Q4_0BlockX8 * matrix, const Q8_0BlockX1 * vector, floa
 void q4_dot4_matmul(const Q4_0BlockX8 * matrix, const Q8_0BlockX4 * vectors, float * output, std::size_t rows, std::size_t count, std::size_t blocks, std::size_t stride, Q8_0Backend backend) noexcept {
 #if QWEN35X_Q8_0_HAS_AVX512_VNNI_TU
   if (q8_0_resolve_backend(backend) == Q8_0Backend::avx512_vnni) {
-    // Keep short batches on the existing decode-oriented kernel.
-    return (count >= 32 ? detail::q4_dot4_matmul_avx512 : detail::q4_dot4_matmul_evex)(
+    // Use the wide kernel whenever a complete eight-token tile is available.
+    return (count >= 8 ? detail::q4_dot4_matmul_avx512 : detail::q4_dot4_matmul_evex)(
       matrix, vectors, output, rows, count, blocks, stride);
   }
 #endif
@@ -86,7 +86,7 @@ void q4_dot4_matmul(const Q4_0BlockX8 * matrix, const Q8_0BlockX4 * vectors, flo
 }
 Q4_0ArgmaxResult q4_dot4_argmax(const Q4_0BlockX8 * matrix, const Q8_0BlockX1 * vector, const int * counts, float penalty, std::size_t offset, std::size_t rows, std::size_t blocks, Q8_0Backend backend) noexcept {
 #if QWEN35X_Q8_0_HAS_AVX512_VNNI_TU
-  if (q8_0_resolve_backend(backend) == Q8_0Backend::avx512_vnni) return detail::q4_dot4_argmax_evex(matrix, vector, counts, penalty, offset, rows, blocks);
+  if (q8_0_resolve_backend(backend) == Q8_0Backend::avx512_vnni) return detail::q4_dot4_argmax_avx512(matrix, vector, counts, penalty, offset, rows, blocks);
 #endif
 #if QWEN35X_Q8_0_HAS_AVX_VNNI_TU
   if (q8_0_backend_uses_avx_vnni(backend)) return detail::q4_dot4_argmax_vex(matrix, vector, counts, penalty, offset, rows, blocks);
