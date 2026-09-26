@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <cstring>
 #include <iostream>
 #include <string_view>
 #include <vector>
@@ -68,13 +69,11 @@ bool test_backend(const Q8_0Backend backend) {
   return ok;
 }
 
-bool test_batch_backend(const Q8_0Backend backend) {
-  constexpr std::size_t batch = 5;
+bool test_batch_backend(const Q8_0Backend backend, const std::size_t batch = 5,
+                        const std::size_t key_dim = 19, const std::size_t value_dim = 11) {
   constexpr std::size_t heads = 3;
-  constexpr std::size_t key_dim = 19;
-  constexpr std::size_t value_dim = 11;
-  constexpr std::size_t q_stride = heads * key_dim;
-  constexpr std::size_t v_stride = heads * value_dim;
+  const std::size_t q_stride = heads * key_dim;
+  const std::size_t v_stride = heads * value_dim;
   std::vector<float> expected_state = values(heads * value_dim * key_dim, 0.9F);
   std::vector<float> actual_state = expected_state;
   const std::vector<float> q = values(batch * q_stride, 1.7F);
@@ -138,6 +137,12 @@ bool test_batch_backend(const Q8_0Backend backend) {
     actual_output.data(), batch, heads, key_dim, value_dim, 1, heads, backend);
 
   bool ok = true;
+  if (key_dim == 128 && qwen35x::cpu::q8_0_backend_uses_avx2(backend)) {
+    ok = expect(std::memcmp(expected_state.data(), actual_state.data(),
+                            expected_state.size() * sizeof(float)) == 0, "128-column state bit mismatch") && ok;
+    ok = expect(std::memcmp(expected_output.data(), actual_output.data(),
+                            expected_output.size() * sizeof(float)) == 0, "128-column output bit mismatch") && ok;
+  }
   for (std::size_t index = 0; index < expected_state.size(); ++index) {
     ok = expect(near(expected_state[index], actual_state[index]), "batched state mismatch") && ok;
   }
@@ -166,6 +171,12 @@ int main() {
   if (qwen35x::cpu::q8_0_backend_available(Q8_0Backend::avx512_vnni)) {
     ok = test_backend(Q8_0Backend::avx512_vnni) &&
       test_batch_backend(Q8_0Backend::avx512_vnni) && ok;
+  }
+  for (auto backend : {Q8_0Backend::avx2, Q8_0Backend::avx512, Q8_0Backend::avx512_vnni}) {
+    if (!qwen35x::cpu::q8_0_backend_available(backend)) continue;
+    for (std::size_t batch : {1U, 7U, 128U})
+      for (std::size_t width : {11U, 128U})
+        ok = test_batch_backend(backend, batch, 128, width) && ok;
   }
   if (!ok) {
     return 1;

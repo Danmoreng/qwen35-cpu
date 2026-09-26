@@ -23,7 +23,7 @@ tokens/s. Loading, tokenization and HTTP are excluded.
 | Workload | Baseline | Optimized | Change |
 | --- | ---: | ---: | ---: |
 | Decode B1, full logits, P512/N128 | 112.88 | 117.03 | +3.7% |
-| Decode B1, fused greedy, P512/N128 | 112.74 | 117.29 | +4.0% |
+| Decode B1, full logits (duplicate control), P512/N128 | 112.74 | 117.29 | +4.0% |
 | Decode B8, full logits, P512/N128 | 369.76 | 451.68 | +22.2% |
 | Decode B16, full logits, P512/N128 | 562.29 | 575.60 | +2.4% |
 | Prefill B1, 512 tokens, full logits | 1,515.98 | 1,577.45 | +4.1% |
@@ -31,8 +31,10 @@ tokens/s. Loading, tokenization and HTTP are excluded.
 
 Decode counts 127 actual forwards per request. B8 and B16 are aggregate
 throughput across private requests, compared only with the same batch size.
-The greedy row also uses fixed output tokens for timing, so its selected tokens
-are validated separately. P4096/N2 supplies the long-prefill measurement; its
+Correction (September 27): the case originally labeled fused greedy supplied
+forced output tokens, which disable fused greedy in the engine. It is a second
+full-logit control, not a fused-greedy timing. Unforced greedy correctness is
+validated separately. P4096/N2 supplies the long-prefill measurement; its
 single decode forward is excluded from decode speed claims. All raw values,
 including that short decode sample, remain in the CSV and local profiles.
 

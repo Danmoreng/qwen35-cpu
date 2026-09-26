@@ -335,5 +335,6 @@
       "greedy-equivalence.json": "a896c9e9ba545c38909447e957a21c0af4ecba4ec5d3d6cceaf9801899261e13",
       "final/source.patch": "92d939e5f3237c8609645be16755f89903e1ee5ef6d9da86e3ce0322173b4f02"
     }
-  }
+  },
+  "timing_label_correction": "Cases named greedy used forced output tokens, which disable fused greedy. Their timing measures a duplicate full-logit workload. Original case IDs and raw data are preserved; unforced greedy correctness checks are separate."
 }

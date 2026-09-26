@@ -1,0 +1,6 @@
+B=4: full-vocabulary logits match bitwise
+B=8: full-vocabulary logits match bitwise
+B=12: full-vocabulary logits match bitwise
+B=16: full-vocabulary logits match bitwise
+B=20: full-vocabulary logits match bitwise
+B=32: full-vocabulary logits match bitwise

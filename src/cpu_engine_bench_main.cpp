@@ -64,6 +64,8 @@ int main(int argc, char **argv) try {
   std::string profile_path;
   std::string operation_profile_path;
   std::vector<CpuDecodeStage> operation_profile;
+  bool profile_prefill = false;
+  std::vector<CpuPrefillStage> prefill_profile;
   bool serial = false, strict = false;
   bool serving = false;
   std::size_t residents = 16;
@@ -72,6 +74,7 @@ int main(int argc, char **argv) try {
     const std::string arg = argv[i];
     if (arg == "--infer-reference")
       continue;
+    if (arg == "--profile-prefill") { profile_prefill = true; continue; }
     if (arg == "--cpu-serving") { serving = true; continue; }
     if (arg == "--cpu-shared-kv-pages") { config.shared_kv_pages = true; continue; }
     if (arg == "--cpu-identical-prompts") {
@@ -130,6 +133,8 @@ int main(int argc, char **argv) try {
       spec.register_prefix_tokens = positive();
     else if (arg == "--max-context")
       config.max_context = positive();
+    else if (arg == "--cpu-prefill-chunk")
+      config.prefill_chunk_size = positive();
     else if (arg == "--max-new-tokens")
       spec.max_new_tokens = positive();
     else if (arg == "--cpu-threads")
@@ -181,10 +186,17 @@ int main(int argc, char **argv) try {
         "Require explicit prompt tokens, profile JSON, B=1..100");
   if (strict && !cpu::q8_0_backend_available(options.cpu_q8_backend))
     throw std::runtime_error("Requested CPU ISA unavailable");
+  if (profile_prefill && operation_profile_path.empty())
+    operation_profile_path = profile_path + ".operations.csv";
   if (!operation_profile_path.empty()) {
     if (batch_size != 1 || serving)
       throw std::runtime_error("Operation profiling requires a single non-serving request");
     config.operation_profile = &operation_profile;
+  }
+  if (profile_prefill) {
+    if (batch_size != 1 || serving || prefix_tokens || spec.register_prefix_tokens)
+      throw std::runtime_error("Prefill profiling requires a single cold non-serving request");
+    config.prefill_profile = &prefill_profile;
   }
   std::string error;
   auto check = [&](bool ok) {
@@ -289,6 +301,8 @@ int main(int argc, char **argv) try {
     throw std::runtime_error("Cannot write benchmark profile");
   out << std::setprecision(12) << "{\n"
       << "\"operation_instrumentation\":" << (config.operation_profile ? "true" : "false") << ","
+      << "\"prefill_instrumentation\":" << (config.prefill_profile ? "true" : "false") << ","
+      << "\"prefill_chunk_size\":" << (config.prefill_chunk_size ? config.prefill_chunk_size : (spec.prompt_tokens.size() <= 128 ? 64 : 128)) << ","
       << "\"weight_format\":\"" << model->weight_format() << "\",\"prefill_only\":false,\"cpu_batch\":" << batch_size
       << ",\"head_weight_format\":\"" << model->head_weight_format() << "\""
       << ",\"head_kernel\":\"" << (std::string(model->head_weight_format()).find("g16")!=std::string::npos
@@ -351,6 +365,19 @@ int main(int argc, char **argv) try {
              << event.prepare_ms << ',' << event.wall_ms << ',' << event.dispatch_ms << ','
              << event.caller_ms << ',' << event.wait_ms << ',' << event.participants << '\n';
     if (!stages) throw std::runtime_error("Failed writing operation profile");
+  }
+  if (profile_prefill) {
+    std::ofstream stages(profile_path + ".prefill.csv");
+    stages << std::setprecision(12)
+           << "kind,kernel,position,tokens,participants,query_tile,kv_tile,shared_gqa,query_key_pairs,projection_ms,prepare_ms,attention_wall_ms,output_ms,pack_worker_ms,qk_worker_ms,softmax_worker_ms,pv_worker_ms\n";
+    for (const auto &event : prefill_profile)
+      stages << event.kind << ',' << event.kernel << ',' << event.position << ',' << event.tokens << ','
+             << event.participants << ',' << event.query_tile << ',' << event.kv_tile << ','
+             << event.shared_gqa << ',' << event.query_key_pairs << ',' << event.projection_ms << ','
+             << event.prepare_ms << ',' << event.attention_wall_ms << ',' << event.output_ms << ','
+             << event.pack_worker_ms << ',' << event.qk_worker_ms << ',' << event.softmax_worker_ms << ','
+             << event.pv_worker_ms << '\n';
+    if (!stages) throw std::runtime_error("Failed writing prefill profile");
   }
   std::cout << "B=" << batch_size << " aggregate_decode=" << throughput
             << " token/s tick_p50=" << percentile(.50) << " ms\n";
