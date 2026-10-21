@@ -17,11 +17,120 @@ v128_t dot_four_rows(v128_t w, v128_t a) noexcept {
 v128_t broadcast_four(const std::int8_t *p) noexcept {
   std::int32_t bytes; std::memcpy(&bytes, p, sizeof(bytes)); return wasm_i32x4_splat(bytes);
 }
+v128_t high_nibbles(v128_t packed) noexcept {
+#if QWEN35X_WASM_Q4_WORD_SHIFT
+  return wasm_v128_and(wasm_u16x8_shr(packed, 4), wasm_i8x16_splat(15));
+#else
+  return wasm_u8x16_shr(packed, 4);
+#endif
+}
+// The eight-token experiment visits each output's blocks in the original
+// order, but completes four rows before starting the other four rows.
+template <int Tokens, int Half, typename Block>
+__attribute__((always_inline)) inline void half_tile(
+    const Q4_0BlockX8 *weights, const Block *vectors, std::size_t blocks,
+    std::size_t first_lane, float *output, std::size_t stride) noexcept {
+  v128_t acc[Tokens];
+  for (auto &v : acc) v = wasm_f32x4_splat(0);
+  for (std::size_t b=0; b<blocks; ++b) {
+    const auto &w=weights[b];
+    v128_t dots[Tokens];
+    for(auto &v:dots)v=wasm_i32x4_splat(0);
+    for(int group=0;group<4;++group) {
+      const auto packed=wasm_v128_load(w.qs+32*group+16*Half);
+      auto low=wasm_v128_and(packed,wasm_i8x16_splat(15));
+      auto high=high_nibbles(packed);
+#if !QWEN35X_HAS_WASM_RELAXED_DOT
+      low=wasm_i8x16_sub(low,wasm_i8x16_splat(8));
+      high=wasm_i8x16_sub(high,wasm_i8x16_splat(8));
+#endif
+      for(int t=0;t<Tokens;++t) {
+        const auto &a=vectors[b+(first_lane+t)/4*blocks];
+        const auto *q=a.qs+((first_lane+t)%4)*32+group*8;
+#if QWEN35X_HAS_WASM_RELAXED_DOT
+        auto dot=wasm_i32x4_relaxed_dot_i8x16_i7x16_add(broadcast_four(q),low,dots[t]);
+        dots[t]=wasm_i32x4_relaxed_dot_i8x16_i7x16_add(broadcast_four(q+4),high,dot);
+#else
+        dots[t]=wasm_i32x4_add(dots[t],wasm_i32x4_add(
+          dot_four_rows(low,broadcast_four(q)),dot_four_rows(high,broadcast_four(q+4))));
+#endif
+      }
+    }
+    const auto halves=wasm_v128_load64_zero(w.d+Half*4);
+    const auto ws=wasm_half4_to_float(wasm_u32x4_extend_low_u16x8(halves));
+    for(int t=0;t<Tokens;++t) {
+      const auto &a=vectors[b+(first_lane+t)/4*blocks];
+      const auto lane=(first_lane+t)%4;
+#if QWEN35X_HAS_WASM_RELAXED_DOT
+      dots[t]=wasm_i32x4_sub(dots[t],wasm_i32x4_splat(8*a.sums[lane]));
+#endif
+      const auto scale=wasm_f32x4_mul(ws,wasm_f32x4_splat(a.scales[lane]));
+      acc[t]=wasm_fma_f32x4(wasm_f32x4_convert_i32x4(dots[t]),scale,acc[t]);
+    }
+  }
+  for(int t=0;t<Tokens;++t)wasm_v128_store(output+t*stride+Half*4,acc[t]);
+}
+template <int Tokens, int Half, typename Block>
+__attribute__((always_inline)) inline void half_dot_block(
+    const Q4_0BlockX8 &w, const Block *vectors, std::size_t b,
+    std::size_t blocks, std::size_t first_lane, v128_t (&acc)[Tokens][2]) noexcept {
+  v128_t dots[Tokens];
+  for(auto &v:dots)v=wasm_i32x4_splat(0);
+  for(int group=0;group<4;++group) {
+    const auto packed=wasm_v128_load(w.qs+32*group+16*Half);
+    auto low=wasm_v128_and(packed,wasm_i8x16_splat(15));
+    auto high=high_nibbles(packed);
+#if !QWEN35X_HAS_WASM_RELAXED_DOT
+    low=wasm_i8x16_sub(low,wasm_i8x16_splat(8));
+    high=wasm_i8x16_sub(high,wasm_i8x16_splat(8));
+#endif
+    for(int t=0;t<Tokens;++t) {
+      const auto &a=vectors[b+(first_lane+t)/4*blocks];
+      const auto *q=a.qs+((first_lane+t)%4)*32+group*8;
+#if QWEN35X_HAS_WASM_RELAXED_DOT
+      auto dot=wasm_i32x4_relaxed_dot_i8x16_i7x16_add(broadcast_four(q),low,dots[t]);
+      dots[t]=wasm_i32x4_relaxed_dot_i8x16_i7x16_add(broadcast_four(q+4),high,dot);
+#else
+      dots[t]=wasm_i32x4_add(dots[t],wasm_i32x4_add(
+        dot_four_rows(low,broadcast_four(q)),dot_four_rows(high,broadcast_four(q+4))));
+#endif
+    }
+  }
+  const auto halves=wasm_v128_load64_zero(w.d+Half*4);
+  const auto ws=wasm_half4_to_float(wasm_u32x4_extend_low_u16x8(halves));
+  for(int t=0;t<Tokens;++t) {
+    const auto &a=vectors[b+(first_lane+t)/4*blocks];
+    const auto lane=(first_lane+t)%4;
+#if QWEN35X_HAS_WASM_RELAXED_DOT
+    dots[t]=wasm_i32x4_sub(dots[t],wasm_i32x4_splat(8*a.sums[lane]));
+#endif
+    const auto scale=wasm_f32x4_mul(ws,wasm_f32x4_splat(a.scales[lane]));
+    acc[t][Half]=wasm_fma_f32x4(wasm_f32x4_convert_i32x4(dots[t]),scale,acc[t][Half]);
+  }
+}
 template <int Tokens, typename Block>
 void tile(const Q4_0BlockX8 *weights, const Block *vectors, std::size_t blocks,
           std::size_t first_lane, float *output, std::size_t stride) noexcept {
+#if QWEN35X_WASM_Q4_HALF_ROWS
+  if constexpr (Tokens==8) {
+    half_tile<Tokens,0>(weights,vectors,blocks,first_lane,output,stride);
+    half_tile<Tokens,1>(weights,vectors,blocks,first_lane,output,stride);
+    return;
+  }
+#endif
   v128_t acc[Tokens][2];
   for (auto &a : acc) for (auto &v : a) v = wasm_f32x4_splat(0);
+#if QWEN35X_WASM_Q4_HALF_DOTS
+  if constexpr(Tokens==8) {
+    for(std::size_t b=0;b<blocks;++b) {
+      half_dot_block<Tokens,0>(weights[b],vectors,b,blocks,first_lane,acc);
+      half_dot_block<Tokens,1>(weights[b],vectors,b,blocks,first_lane,acc);
+    }
+    for(int t=0;t<Tokens;++t)for(int half=0;half<2;++half)
+      wasm_v128_store(output+t*stride+half*4,acc[t][half]);
+    return;
+  }
+#endif
   for (std::size_t b = 0; b < blocks; ++b) {
     const auto &w = weights[b];
     v128_t dots[Tokens][2];
@@ -29,7 +138,7 @@ void tile(const Q4_0BlockX8 *weights, const Block *vectors, std::size_t blocks,
     for (int group = 0; group < 4; ++group) for (int half = 0; half < 2; ++half) {
       const auto packed = wasm_v128_load(w.qs + 32 * group + 16 * half);
       auto low = wasm_v128_and(packed, wasm_i8x16_splat(15));
-      auto high = wasm_u8x16_shr(packed, 4);
+      auto high = high_nibbles(packed);
 #if !QWEN35X_HAS_WASM_RELAXED_DOT
       low = wasm_i8x16_sub(low, wasm_i8x16_splat(8));
       high = wasm_i8x16_sub(high, wasm_i8x16_splat(8));

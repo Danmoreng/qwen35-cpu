@@ -171,13 +171,13 @@ parallel. This diagnostic is not used instead of the uninstrumented three-run
 performance series. Compact counters: `results/qev-pro-review-2026-10-21/
 C-diagnostic.json`; raw `C-diagnostic`.
 
-This implementation pass covers the review's three recommended starting
+The initial implementation pass covered the review's three recommended starting
 patches, the executor-spin experiment, and the additional user-requested KV
 precision comparison. No speed claim is made for the remaining proposed Q4
 instruction/tile changes (P4), weighted attention partitions (P5), a new GQA
 attention kernel (P7), selected-option head projection (P8), native unforced
-greedy batch dispatch (P9), or merged tail jobs (P10). Those are unimplemented
-and unmeasured candidates. In particular, no assertion about physical register
+greedy batch dispatch (P9), or merged tail jobs (P10). Those were unimplemented
+and unmeasured at that checkpoint; subsequent experiments are recorded below. In particular, no assertion about physical register
 spills is inferred from WASM locals; optimized V8 disassembly for a new Q4 tile
 experiment has not been captured in this pass.
 
@@ -245,3 +245,47 @@ useful consistent end-to-end gain. Both remain experimental and disabled.
 No per-worker wall-time benefit is claimed from the mathematical work bounds.
 Compact results: `results/qev-pro-review-2026-10-21/P5-P10.json`; raw
 `P5-P10-quality` and `P5-P10-performance`.
+
+## P4: actual optimized code and Q4 instruction/tile experiments
+
+Chromium's code-print flag reports TurboFan headers and sizes in this build,
+but no instruction listing. A diagnostic run with `--perf-prof`, an explicit
+`--perf-prof-path` and `--no-liftoff` captures actual optimized bytes in Linux
+jitdump records. `scripts/inspect-wasm-jit.py` extracts the exact
+`wasm-function[index]-index-turbofan` record and uses objdump offline. The
+format follows the [Linux jitdump specification](https://raw.githubusercontent.com/torvalds/linux/master/tools/perf/Documentation/jitdump-specification.txt).
+No browser or model memory is read through a live debugger. The extractor
+records skipped truncated files; the selected renderer record is complete.
+
+The control WASM function map identifies defined function 312 / absolute
+function index 390, with 26 relaxed FMA sites. Captured x86 code contains VEX
+`vpdpbusd` and `vfmadd*ps`. In the eight-token block loop (offsets
+0x6740 through the backedge at 0x7178), there are 67 static vector stack-store
+sites and 74 stack-load sites, 32 VNNI sites and 16 FMA sites. These are static
+sites in real machine code, not dynamic counts or measured cycle costs.
+The source-local count alone was not used as evidence of physical spills.
+Raw bytes, assembly, code hash and tier are retained in `P4-jit-dump`; counters
+are in `results/qev-pro-review-2026-10-21/P4-jit-control.json`.
+
+Three compile-time experiments preserve each output's block order and float
+operations: byte shift versus masked word shift; eight tokens with one
+four-row half completed across all blocks before the other; and four-row
+integer dots completed separately inside each shared weight block. The latter
+two are mutually exclusive. All build commands/options and binary hashes are
+retained under the `P4-build-*` evidence directories.
+
+The first three-run/one-warmup series gives control 131.35/131.19/1065.89 ms,
+word shift 130.29/130.39/1056.67 ms, and separate row halves
+138.42/139.44/1129.80 ms. Word shift is an unproven sub-1% difference; row
+halves regress about 6%. The second direct A/B gives control
+130.92/131.38/1065.80 ms and half-sized integer dots
+139.85/139.83/1134.18 ms, another regression. Kernel tests and every candidate's
+complete 24-question bit gate pass. Speed runs use the ordinary browser,
+without diagnostic JIT flags.
+
+Keep all three compile-time experiment defaults OFF and retain the existing
+eight-by-eight tile. After two plausible narrowing variants failed, no wider
+blind tile search is performed. Reduced register pressure is not by itself a
+measured performance improvement. Compact results: `results/
+qev-pro-review-2026-10-21/P4.json`; raw `P4-quality`, `P4-performance`,
+`P4-halfdots-quality` and `P4-halfdots-performance`.

@@ -24,6 +24,8 @@ case "$mode" in
 esac
 emcmake cmake -S . -B "build-wasm-$mode" -DCMAKE_BUILD_TYPE=Release \
   -DQWEN35_BUILD_WASM=ON -DQWEN35_WASM_SIMD="$simd" -DQWEN35_WASM_THREADS="$threads" \
+  -DQWEN35_WASM_Q4_WORD_SHIFT="${WASM_Q4_WORD_SHIFT:-OFF}" -DQWEN35_WASM_Q4_HALF_ROWS="${WASM_Q4_HALF_ROWS:-OFF}" \
+  -DQWEN35_WASM_Q4_HALF_DOTS="${WASM_Q4_HALF_DOTS:-OFF}" \
   -DQWEN35_WASM_Q8_SIMD="${WASM_Q8_SIMD:-ON}" -DQWEN35_WASM_RELAXED_DOT="$relaxed" -DQWEN35_WASM_RELAXED_FMA="$fma"
 cmake --build "build-wasm-$mode" --parallel "${BUILD_JOBS:-4}"
 node "build-wasm-$mode/wasm_kernel_test.js"
