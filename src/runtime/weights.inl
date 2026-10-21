@@ -42,7 +42,7 @@ struct CpuExecutionContext {
   cpu::Q8_0Backend attention_backend = cpu::Q8_0Backend::auto_select;
   int query_tile = 8, kv_tile = 64;
   std::size_t linear_prepare_min_tokens = 128;
-  std::size_t mlp_prepare_min_tokens = 0;
+  std::size_t mlp_prepare_min_tokens = 8;
   CpuDecodeWorkspace decode;
   CpuPrefillWorkspace prefill;
   std::unique_ptr<cpu::CpuExecutor> executor;

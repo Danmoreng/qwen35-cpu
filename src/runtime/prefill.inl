@@ -638,7 +638,8 @@ bool run_forward_cpu_q8_batch(CpuExecutionContext *cpu_context,
       }
       return false;
     }
-    const bool fused_mlp_prepare = cpu_context && cpu_context->mlp_prepare_min_tokens &&
+    const bool fused_mlp_prepare = cpu_context && cpu_context->executor &&
+      cpu_context->executor->thread_count() > 1 && cpu_context->mlp_prepare_min_tokens &&
       batch_size >= cpu_context->mlp_prepare_min_tokens && batch_size >= 4 &&
       layer.mlp_down.uses_q4_h128_transform && layer.mlp_down.is_q4_0() &&
       layer.mlp_down.q4_dot4 && !layer.mlp_down.packed_q4_0_blocks.empty() &&

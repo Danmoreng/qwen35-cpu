@@ -66,7 +66,7 @@ const char *failure(const std::exception &e) {
 }
 void apply_tuning(CpuEngineConfig &config) {
   config.linear_prepare_min_tokens = tuning.value("linear_prepare_min_tokens", std::size_t{128});
-  config.mlp_prepare_min_tokens = tuning.value("mlp_prepare_min_tokens", std::size_t{0});
+  config.mlp_prepare_min_tokens = tuning.value("mlp_prepare_min_tokens", std::size_t{8});
   config.kv_cache_bits = tuning.value("kv_cache_bits", std::size_t{0});
   config.executor_spin_count = tuning.value("executor_spin_count", std::size_t{1024U * 128U * 50U});
 }

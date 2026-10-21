@@ -31,6 +31,18 @@
     "baseline_bit_mismatches": [],
     "max_reference_probability_delta": 0.0040000000000000036
   },
-  "decision": "Promising; default remains disabled pending fresh-browser confirmation.",
-  "raw_root": "benchmarks/qev-pro-review-2026-10-21"
+  "decision": "Fresh-browser confirmation supports an eight-token threshold for multithreaded WASM; native and one-thread paths remain serial.",
+  "raw_root": "benchmarks/qev-pro-review-2026-10-21",
+  "fresh": {
+    "serial": [
+      141.82502399999998,
+      142.715136,
+      1163.855104
+    ],
+    "fused_min_8": [
+      133.250048,
+      131.425536,
+      1075.625728
+    ]
+  }
 }

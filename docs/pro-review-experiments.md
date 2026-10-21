@@ -134,7 +134,28 @@ control. Exact timing medians and heap observations: `results/
 qev-pro-review-2026-10-21/kv-fp16.json`; raw `kv-fp16-quality` and `kv-performance`.
 
 Reproduce the storage A/B with the browser driver
-`scripts/benchmark-browser-decision.mjs --tuning '{"kv_cache_bits":32}'` and
-`--tuning '{"kv_cache_bits":16}'`, using the sequential runner, frozen browser
+`scripts/benchmark-browser-decision.mjs --tuning '{"kv_cache_bits":32,"mlp_prepare_min_tokens":0}'` and
+`--tuning '{"kv_cache_bits":16,"mlp_prepare_min_tokens":0}'`, using the sequential runner, frozen browser
 inputs and the other arguments in the raw metadata. Omit the bitwise FP32 gate
 for this intentional precision experiment; retain probability/choice reporting.
+
+### C fresh-browser confirmation
+
+A separate alternating A/B series (three measured processes plus one warmup,
+all shapes warmed, no experimental Chromium flags) compares serial SiLU with
+an eight-token producer threshold. Compute medians are recorded under `fresh`
+in `C-mlp.json`; all request outputs pass the strict baseline bit gate. This
+confirms the gain independently of the larger resident tuning grid. Enable
+fusion for eligible multithreaded WASM H128/DOT4 preparation at eight tokens;
+retain the serial path for native, one-thread execution and smaller tails.
+
+## P6: executor spin budgets
+
+With SIMD Q8 and the eight-token MLP producer held fixed, an alternating grid
+compared 6,553,600/131,072/16,384/1,024/0 polls with eight threads and chunk 32.
+Each candidate warmed every shape, followed by three measured processes and
+one process warmup. Reduced budgets are slower; retain 6,553,600. Every
+candidate passes the strict option-logit/answer baseline gate. This measures
+latency, not power or idle CPU consumption. It does not establish the best
+budget for other browsers, processors, thread counts or interactive gaps.
+Medians: `results/qev-pro-review-2026-10-21/spin.json`; raw `spin-performance`.

@@ -48,9 +48,10 @@ struct CpuEngineConfig {
   std::size_t max_resident_requests = 32;
   std::size_t max_context = 8192;
   std::size_t prefill_chunk_size = 0;
-  // Explicit tuning controls; defaults preserve the established execution path.
+  // Independently tunable preparation thresholds. The MLP producer is used
+  // only by eligible multithreaded WASM H128/DOT4 execution.
   std::size_t linear_prepare_min_tokens = 128;
-  std::size_t mlp_prepare_min_tokens = 0;
+  std::size_t mlp_prepare_min_tokens = 8;
   // Zero keeps backend selection; explicit 16/32 override contiguous KV storage.
   std::size_t kv_cache_bits = 0;
   std::size_t executor_spin_count = 1024U * 128U * 50U;
