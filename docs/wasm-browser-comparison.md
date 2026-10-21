@@ -88,6 +88,11 @@ The sequential runner supplies `--profile-json`.
 
 ## CPU results, 2026-10-21
 
+This table records the original custom engine before direct-FMA optimization.
+See [WASM FMA optimization](wasm-fma-optimization.md) for the newer implementation
+and a fresh comparison against the same llama.cpp builds.
+
+
 AMD Ryzen 9 9955HX3D, Chromium 156.0.8078.4, Emscripten 6.0.13,
 llama.cpp revision `9b56ccf00d755b0bf780140f6352a67db1ac0378`.
 Each row uses eight threads and affinity 0–7. Values are medians of three

@@ -24,7 +24,7 @@ try {
   page.on('console', event => { if (event.type() === 'error') errors.push(event.text()); });
   page.on('pageerror', error => errors.push(error.message));
   await page.goto(args.url || 'http://127.0.0.1:8765');
-  const collected = await page.evaluate(async ({mode, threads, context, requests, checks, protocolInputs, protocolOutputs, sessionWarmup}) => {
+  const collected = await page.evaluate(async ({mode, threads, context, chunk, requests, checks, protocolInputs, protocolOutputs, sessionWarmup}) => {
     const worker = new Worker('./worker.js');
     const events = [];
     let pending;
@@ -43,7 +43,7 @@ try {
       worker.postMessage(data);
     });
     try {
-      const loaded = await rpc({type: 'load', mode, threads, context, cache: false});
+      const loaded = await rpc({type: 'load', mode, threads, context, chunk, cache: false});
       const outputs = [];
       // One untimed in-session warmup, separate from the runner's process warmup.
       if (sessionWarmup) await rpc({type: 'decide', id: 'warmup', request: requests[0]});
@@ -76,7 +76,7 @@ try {
       }
       return {loaded, outputs, wall_ms: wall, checks: checksPassed, events};
     } finally { worker.terminate(); }
-  }, {mode: args.mode, threads: Number(args.threads || 1), context: Number(args.context || 2048), requests, checks: args.checks === 'true', protocolInputs, protocolOutputs, sessionWarmup: args['session-warmup'] !== 'false'});
+  }, {mode: args.mode, threads: Number(args.threads || 1), context: Number(args.context || 2048), chunk: Number(args.chunk || 32), requests, checks: args.checks === 'true', protocolInputs, protocolOutputs, sessionWarmup: args['session-warmup'] !== 'false'});
   let maxLogit = 0, maxProbability = 0, questions = 0;
   const choiceChanges = [];
   const probabilities = answer => answer.type === 'noul' ? {true: answer.noul} : answer.probabilities;
@@ -106,7 +106,7 @@ try {
   const times = collected.outputs.map(x => x.worker_ms);
   const totalTokens = collected.outputs.reduce((n, x) => n + x.result.metrics.evaluated_tokens, 0);
   const sha = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
-  const profile = {engine: `wasm-${args.mode}`, threads: Number(args.threads || 1), requests: requests.length, questions,
+  const profile = {engine: `wasm-${args.mode}`, threads: Number(args.threads || 1), chunk: Number(args.chunk || 32), requests: requests.length, questions,
     decisions_per_second: questions / (collected.wall_ms / 1000), mean_request_ms: times.reduce((a, b) => a + b) / times.length,
     total_wall_ms: collected.wall_ms, prefill_tokens_per_second: totalTokens / (collected.wall_ms / 1000),
     wasm_heap_bytes: Math.max(...collected.outputs.map(x => x.result.metrics.wasm_heap_bytes)),

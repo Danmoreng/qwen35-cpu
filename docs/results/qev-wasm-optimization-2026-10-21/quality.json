@@ -1,0 +1,92 @@
+{
+  "reference": "native H128/Q4-G32-DOT4; original strict-emulation WASM for optimization parity",
+  "requests": 18,
+  "questions": 24,
+  "evaluated_tokens": 2549,
+  "bit_identical_to_strict_wasm": true,
+  "max_native_probability_delta": 0.0040000000000000036,
+  "max_native_logit_delta": 0.054369449615478516,
+  "choice_changes": [],
+  "checks": [
+    "malformed request",
+    "invalid encoding",
+    "context overflow",
+    "cancel",
+    "fresh state after cancel",
+    "2 raw JSON protocol fixtures"
+  ],
+  "model_sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69",
+  "wasm_heap_bytes": 575209472,
+  "fma_kernel_random_lanes": 40000,
+  "native_ctests_passed": 17,
+  "wasm_bundles_tested": 7,
+  "fma_guard": {
+    "fused_fma_available": true,
+    "unfused_rejected": true,
+    "unsupported_rejected": true
+  },
+  "ui": {
+    "checks": [
+      "default runtime: fma-threads",
+      "ticket",
+      "snake",
+      "responsive layout",
+      "cancel in UI",
+      "ticket",
+      "model cache reused after unload",
+      "malformed editor JSON",
+      "all resources from localhost",
+      "strict FMA fallback when probe fails"
+    ],
+    "results": [
+      {
+        "dept": {
+          "type": "choice",
+          "confidence": 0.9521,
+          "x_p_max": 0.9641,
+          "certainty": 0.8603,
+          "probabilities": {
+            "account": 0.015,
+            "billing": 0.9641,
+            "sales": 0.0109,
+            "tech": 0.0101
+          },
+          "choice": "billing"
+        }
+      },
+      {
+        "move": {
+          "type": "choice",
+          "confidence": 0.4912,
+          "x_p_max": 0.6608,
+          "certainty": 0.2378,
+          "probabilities": {
+            "up": 0.0906,
+            "left": 0.6608,
+            "right": 0.2486
+          },
+          "choice": "left"
+        }
+      },
+      {
+        "dept": {
+          "type": "choice",
+          "confidence": 0.9521,
+          "x_p_max": 0.9641,
+          "certainty": 0.8603,
+          "probabilities": {
+            "account": 0.015,
+            "billing": 0.9641,
+            "sales": 0.0109,
+            "tech": 0.0101
+          },
+          "choice": "billing"
+        }
+      }
+    ],
+    "errors": [],
+    "browser": "156.0.8078.4"
+  },
+  "raw_profile": "benchmarks/qev-wasm-optimization-2026-10-21/quality-c32/case-0-run-0.json",
+  "original_strict_profile": "benchmarks/qev-wasm-local/check-final-8/case-0-run-0.json"
+}

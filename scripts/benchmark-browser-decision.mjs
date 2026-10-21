@@ -22,6 +22,7 @@ const profile = {engine, provider: args.provider, dtype: args.dtype,
   headless: args.headless !== 'false', input_sha256: sha(args['inputs-file']), outputs: [],
   ort_build: args['ort-build'] || 'asyncify',
   flash_attn: args['flash-attn'] || 'auto',
+  custom_mode: args.mode || 'relaxed-threads', chunk: Number(args.chunk || 32), profile_ops: args['profile-ops'] === 'true',
   session_warmup: args['session-warmup'] !== 'false',
   runtime_version: JSON.parse(fs.readFileSync('.cache/wasm-browser/node_modules/@huggingface/transformers/package.json')).version,
   ort_version: JSON.parse(fs.readFileSync('.cache/wasm-browser/node_modules/onnxruntime-web/package.json')).version};
@@ -31,7 +32,7 @@ try {
   page.on('console', e => logs.push({type: e.type(), message: e.text()}));
   page.on('pageerror', e => errors.push(e.message));
   await page.goto(args.url || `http://127.0.0.1:8765/${engine === 'llama.cpp' ? 'llama-bench/' : 'onnx-bench/'}`);
-  const result = await page.evaluate(async ({provider, dtype, threads, inputs, warmup, ortBuild, engine, weights, ubatch, flashAttn}) => {
+  const result = await page.evaluate(async ({provider, dtype, threads, inputs, warmup, ortBuild, engine, weights, ubatch, flashAttn, mode, chunk, profileOps}) => {
     const worker = new Worker(engine === 'custom' ? '../worker.js' : './worker.js',
       engine === 'transformers.js' ? {type: 'module'} : {});
     const events = [];
@@ -49,7 +50,7 @@ try {
     });
     try {
       const ready = await rpc({type: 'load', provider, dtype, threads, ortBuild, weights, ubatch, flashAttn,
-        mode: 'relaxed-threads', context: 2048, cache: false});
+        mode, chunk, profile: profileOps, context: 2048, cache: false});
       const decide = input => rpc(engine === 'custom'
         ? {type: 'decide', request: input.request, debug: true} : {type: 'decide', ...input});
       if (warmup) for (const input of inputs) await decide(input);
@@ -60,7 +61,8 @@ try {
   }, {provider: args.provider, dtype: args.dtype, threads: profile.threads, inputs,
     warmup: profile.session_warmup, ortBuild: profile.ort_build, engine,
     weights: args.weights ? path.basename(args.weights) : null, ubatch: Number(args.ubatch || 512),
-    flashAttn: {auto: -1, off: 0, on: 1}[profile.flash_attn]});
+    flashAttn: {auto: -1, off: 0, on: 1}[profile.flash_attn],
+    mode: profile.custom_mode, chunk: profile.chunk, profileOps: profile.profile_ops});
   Object.assign(profile, result);
   result.outputs.forEach((o, i) => { profile[`request_${i}_ms`] = o.worker_ms; });
   const cdp = await browser.newBrowserCDPSession();
@@ -81,8 +83,10 @@ try {
     'dist/qev-onnx/export.json',
   ] : engine === 'llama.cpp' ? ['scripts/llama-browser-worker.js',
     'dist/wasm/llama-bench/runtime/llama_browser.js', 'dist/wasm/llama-bench/runtime/llama_browser.wasm',
-    'dist/wasm/llama-bench/runtime/upstream.txt'] : ['web/worker.js',
-    'dist/wasm/relaxed-threads/qev_wasm.js', 'dist/wasm/relaxed-threads/qev_wasm.wasm'];
+    'dist/wasm/llama-bench/runtime/upstream.txt'] : ['web/worker.js', 'web/capabilities.js',
+    'src/cpu/wasm_fma.h', 'src/cpu/q4_dot4_wasm.cpp', 'src/cpu/delta_net_wasm.cpp',
+    'src/wasm/decision.cpp', 'cmake/Wasm.cmake',
+    `dist/wasm/${profile.custom_mode}/qev_wasm.js`, `dist/wasm/${profile.custom_mode}/qev_wasm.wasm`];
   artifacts.push('scripts/benchmark-browser-decision.mjs');
   if (args.weights) artifacts.push(args.weights);
   profile.artifact_sha256 = Object.fromEntries(artifacts.map(file => [file, sha(file)]));

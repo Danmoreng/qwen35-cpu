@@ -1,4 +1,4 @@
-import {simdAvailable, relaxedDotAvailable} from './capabilities.js';
+import {simdAvailable, relaxedDotAvailable, fusedFmaAvailable} from './capabilities.js';
 const $ = id => document.getElementById(id);
 export const examples = {
   snake: {state: {game: 'snake', up: 'The snake hits the wall and dies.', left: 'The snake reaches the food safely.', right: 'The snake enters a dead end and will be trapped.'}, questions: {move: {type: 'choice', instructions: 'Which move should the snake choose?', criteria: {up: null, left: null, right: null}}}, encoding: 'per_question'},
@@ -76,7 +76,8 @@ $('request').value = JSON.stringify(examples.ticket, null, 2);
 for (const option of $('mode').options) {
   option.disabled = (option.value.endsWith('threads') && !crossOriginIsolated) ||
     (option.value !== 'scalar' && !simdAvailable()) ||
-    (option.value.startsWith('relaxed') && !relaxedDotAvailable());
+    ((option.value.startsWith('relaxed') || option.value.startsWith('fma')) && !relaxedDotAvailable()) ||
+    (option.value.startsWith('fma') && !fusedFmaAvailable());
 }
 $('mode').value = [...$('mode').options].find(x => !x.disabled).value;
 const cores = navigator.hardwareConcurrency || 1;

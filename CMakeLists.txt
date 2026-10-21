@@ -136,6 +136,7 @@ option(QWEN35_BUILD_WASM "Build the local browser decision engine" ${EMSCRIPTEN}
 option(QWEN35_WASM_SIMD "Use WebAssembly SIMD kernels" ON)
 option(QWEN35_WASM_THREADS "Use WebAssembly pthread workers" OFF)
 option(QWEN35_WASM_RELAXED_DOT "Use bounded integer relaxed SIMD dot products" OFF)
+option(QWEN35_WASM_RELAXED_FMA "Use runtime-guarded relaxed SIMD FMA" OFF)
 if (QWEN35_BUILD_WASM)
   include(cmake/Wasm.cmake)
   if (EMSCRIPTEN)

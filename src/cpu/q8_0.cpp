@@ -401,7 +401,11 @@ const char * q8_0_backend_name(const Q8_0Backend backend) noexcept {
     case Q8_0Backend::scalar:
       return "scalar";
     case Q8_0Backend::wasm_simd:
-#if QWEN35X_HAS_WASM_RELAXED_DOT
+#if QWEN35X_HAS_WASM_RELAXED_FMA && QWEN35X_HAS_WASM_RELAXED_DOT
+      return "wasm-simd128-dot4-bounded-relaxed+fma";
+#elif QWEN35X_HAS_WASM_RELAXED_FMA
+      return "wasm-simd128-dot4+fma";
+#elif QWEN35X_HAS_WASM_RELAXED_DOT
       return "wasm-simd128-dot4-bounded-relaxed";
 #else
       return "wasm-simd128-dot4";

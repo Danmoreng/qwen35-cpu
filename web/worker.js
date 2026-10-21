@@ -86,8 +86,10 @@ onmessage = async ({data}) => {
       if (loading || running || module) throw new Error('Reload the worker before loading another engine.');
       loading = true;
       const mode = data.mode;
-      if (!['scalar', 'simd', 'threads', 'relaxed', 'relaxed-threads'].includes(mode)) throw new Error('Unknown engine mode');
+      if (!['scalar', 'simd', 'threads', 'relaxed', 'relaxed-threads', 'fma', 'fma-threads'].includes(mode)) throw new Error('Unknown engine mode');
       if (mode.endsWith('threads') && !crossOriginIsolated) throw new Error('Threads require cross-origin isolation.');
+      if (mode.startsWith('fma') && !(await import('./capabilities.js')).fusedFmaAvailable())
+        throw new Error('This browser does not provide the required fused FMA semantics. Select optimized DOT4 instead.');
       importScripts(`./${mode}/qev_wasm.js`);
       module = await createQevModule({mainScriptUrlOrBlob: new URL(`./${mode}/qev_wasm.js`, location.href).href,
         locateFile: path => new URL(`./${mode}/${path}`, location.href).href,
@@ -121,6 +123,8 @@ onmessage = async ({data}) => {
       module.FS.mount(module.WORKERFS, {blobs}, '/model'); mounted = true;
       send('progress', {phase: 'Validating tensors and loading the CPU engine', loaded: total, total});
       const start = performance.now();
+      if (data.chunk !== undefined || data.profile)
+        call('qev_options', ['number', 'number'], [data.chunk ?? 32, data.profile ? 1 : 0]);
       const result = call('qev_load', ['string', 'number', 'number'], ['/model', data.threads, data.context]);
       // All weights/configuration are owned by C++; release Blob/file references.
       module.FS.unmount('/model'); mounted = false; blobs.length = 0;

@@ -1,0 +1,42 @@
+{
+  "scope": "Single-run diagnostics; not final three-run performance statistics",
+  "chosen_chunk": 32,
+  "candidates": [
+    {
+      "chunk": 64,
+      "compute_ms": [
+        229.11027199999998,
+        226.919936,
+        1791.02464
+      ],
+      "wasm_heap_bytes": 575209472,
+      "raw_profile": "benchmarks/qev-wasm-optimization-2026-10-21/chunk-candidates/case-0-run-0.json"
+    },
+    {
+      "chunk": 128,
+      "compute_ms": [
+        225.72032,
+        231.250176,
+        1734.359808
+      ],
+      "wasm_heap_bytes": 575209472,
+      "raw_profile": "benchmarks/qev-wasm-optimization-2026-10-21/chunk-candidates/case-1-run-0.json"
+    },
+    {
+      "chunk": 256,
+      "compute_ms": [
+        223.684864,
+        235.154688,
+        1760.339968
+      ],
+      "wasm_heap_bytes": 678756352,
+      "raw_profile": "benchmarks/qev-wasm-optimization-2026-10-21/chunk-candidates/case-2-run-0.json"
+    }
+  ],
+  "profile_source": "benchmarks/qev-wasm-optimization-2026-10-21/profile-c32/case-0-run-0.json",
+  "profile_summary": {
+    "q4_matrix_fraction_approx": 0.6,
+    "deltanet_attention_fraction_approx": 0.22,
+    "warning": "Operation and stage measurements overlap; do not sum them as independent costs"
+  }
+}

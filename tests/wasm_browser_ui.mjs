@@ -15,7 +15,10 @@ try {
   page.on('pageerror', error => errors.push(error.message));
   page.on('console', event => { if (event.text().includes('Cache')) console.log(event.text()); });
   await page.goto(args.url || 'http://127.0.0.1:8765');
-  assert.equal(await page.locator('#mode').inputValue(), 'relaxed-threads');
+  const expectedMode = await page.evaluate(async () =>
+    (await import('./capabilities.js')).fusedFmaAvailable() ? 'fma-threads' : 'relaxed-threads');
+  assert.equal(await page.locator('#mode').inputValue(), expectedMode);
+  checks.push(`default runtime: ${expectedMode}`);
   assert.equal(await page.locator('#cache').isChecked(), true);
   await page.locator('#load').click();
   await page.waitForFunction(() => document.getElementById('status').textContent === 'Ready', null, {timeout: 180000});
@@ -48,6 +51,15 @@ try {
   await page.locator('#request').fill('{'); await page.locator('#run').click();
   assert.ok((await page.locator('#error').textContent()).length > 0); checks.push('malformed editor JSON');
   assert.ok(requests.every(url => new URL(url).hostname === '127.0.0.1')); checks.push('all resources from localhost');
+  const fallback = await browser.newPage();
+  await fallback.addInitScript(() => {
+    WebAssembly.Instance = class { constructor() { throw new Error('FMA unavailable'); } };
+  });
+  await fallback.goto(args.url || 'http://127.0.0.1:8765');
+  assert.equal(await fallback.locator('#mode').inputValue(), 'relaxed-threads');
+  assert.equal(await fallback.locator('option[value="fma-threads"]').evaluate(option => option.disabled), true);
+  assert.equal(await fallback.locator('option[value="fma"]').evaluate(option => option.disabled), true);
+  await fallback.close(); checks.push('strict FMA fallback when probe fails');
   assert.deepEqual(errors, []);
   fs.writeFileSync(`${out}/checks.json`, JSON.stringify({checks, results, errors, browser: browser.version()}, null, 2) + '\n');
   console.log(JSON.stringify({checks, errors}));

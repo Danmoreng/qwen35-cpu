@@ -21,6 +21,8 @@ struct Session {
   std::size_t context = 2048, question = 0, steps = 0, evaluated = 0, decode = 0;
   double prefill_ms = 0;
   std::vector<float> logits;
+  std::vector<CpuDecodeStage> operations;
+  std::vector<CpuPrefillStage> stages;
   Json debug = Json::object();
   Clock::time_point started;
   static bool capture(void *opaque, std::size_t, std::int32_t,
@@ -50,6 +52,8 @@ struct Session {
   }
 };
 std::unique_ptr<Session> session;
+int chunk_size = 32;
+bool profiling = false;
 std::string output;
 const char *reply(const Json &j) { output = j.dump(); return output.c_str(); }
 const char *failure(const std::exception &e) {
@@ -58,6 +62,12 @@ const char *failure(const std::exception &e) {
 }
 }
 extern "C" {
+const char *qev_options(int chunk, int profile) try {
+  systemone::require(!session, "Unload the engine before configuring it");
+  systemone::require(chunk >= 4 && chunk <= 1024 && chunk % 4 == 0, "chunk must be a multiple of 4 in 4..1024");
+  chunk_size = chunk; profiling = profile != 0;
+  return reply({{"chunk", chunk_size}, {"profiling", profiling}});
+} catch (const std::exception &e) { return failure(e); }
 const char *qev_unload() {
   session.reset(); return reply({{"status", "unloaded"}});
 }
@@ -79,12 +89,14 @@ const char *qev_load(const char *directory, int threads, int context) try {
   auto model = CpuModel::load(*profile, load, error); systemone::require(bool(model), error);
   systemone::require(std::string(model->weight_format()) == "h128-q4-dot4", "Expected H128/Q4-G32-DOT4 weights");
   CpuEngineConfig config; config.threads = threads; config.max_context = context;
-  config.max_resident_requests = 1; config.prefill_chunk_size = 32;
+  config.max_resident_requests = 1; config.prefill_chunk_size = chunk_size;
+  if (profiling) { config.operation_profile = &s->operations; config.prefill_profile = &s->stages; }
   config.max_prefix_bytes = 0;
   s->engine = CpuEngine::create(model, config, error); systemone::require(bool(s->engine), error);
   session = std::move(s);
   Json info = {{"status", "ready"}, {"threads", threads}, {"max_context", context},
-                {"format", "H128/Q4-G32-DOT4"}, {"backend", cpu::q8_0_backend_name(cpu::q8_0_resolve_backend(cpu::Q8_0Backend::auto_select))}};
+                {"format", "H128/Q4-G32-DOT4"}, {"chunk", chunk_size}, {"profiling", profiling},
+                {"backend", cpu::q8_0_backend_name(cpu::q8_0_resolve_backend(cpu::Q8_0Backend::auto_select))}};
 #ifdef __EMSCRIPTEN__
   info["wasm_heap_bytes"] = emscripten_get_heap_size();
 #endif
@@ -98,6 +110,7 @@ const char *qev_begin(const char *body) try {
   systemone::prepare(request, s.tokenizer, s.protocol, s.context);
   s.request = std::move(request); s.question = s.steps = s.evaluated = s.decode = 0;
   s.prefill_ms = 0; s.debug = {{"prompt_tokens", s.request->rows}, {"option_logits", Json::array()}};
+  s.operations.clear(); s.stages.clear();
   s.started = started; s.submit();
   return reply({{"status", "running"}, {"questions", s.request->questions.size()}, {"input_tokens", s.request->input_tokens}});
 } catch (const std::exception &e) { return failure(e); }
@@ -129,5 +142,20 @@ const char *qev_step() try {
 const char *qev_cancel() {
   if (session) session->cancel(); return reply({{"status", "cancelled"}});
 }
-const char *qev_debug() { return reply(session ? session->debug : Json::object()); }
+const char *qev_debug() {
+  if (!session) return reply(Json::object());
+  auto diagnostic = session->debug;
+  if (profiling) {
+    diagnostic["operations"] = Json::array(); diagnostic["stages"] = Json::array();
+    for (const auto &x : session->operations)
+      diagnostic["operations"].push_back({{"kind", x.kind}, {"rows", x.rows}, {"columns", x.columns},
+        {"vectors", x.vectors}, {"prepare_ms", x.prepare_ms}, {"wall_ms", x.wall_ms},
+        {"dispatch_ms", x.dispatch_ms}, {"caller_ms", x.caller_ms}, {"wait_ms", x.wait_ms}});
+    for (const auto &x : session->stages)
+      diagnostic["stages"].push_back({{"kind", x.kind}, {"tokens", x.tokens}, {"kernel", x.kernel},
+        {"projection_ms", x.projection_ms}, {"prepare_ms", x.prepare_ms},
+        {"attention_wall_ms", x.attention_wall_ms}, {"output_ms", x.output_ms}});
+  }
+  return reply(diagnostic);
+}
 }

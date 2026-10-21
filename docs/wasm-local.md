@@ -47,7 +47,7 @@ source .cache/emsdk/emsdk_env.sh
 bash scripts/build-wasm.sh
 ```
 
-This builds and tests five runtime bundles under ignored `dist/wasm`:
+This builds and tests seven runtime bundles under ignored `dist/wasm`:
 
 | Build argument | CPU execution | Requirements |
 | --- | --- | --- |
@@ -56,10 +56,17 @@ This builds and tests five runtime bundles under ignored `dist/wasm`:
 | `threads` | Same standard SIMD kernels, 1–8 engine threads | SIMD128 and shared memory |
 | `relaxed` | Optimized bounded integer DOT4, one thread | SIMD128 and relaxed integer dot products |
 | `relaxed-threads` | Optimized bounded integer DOT4, 1–8 engine threads | Relaxed integer dot products and shared memory |
+| `fma` | Bounded integer DOT4 and direct FP32 FMA, one thread | Relaxed dot support and a passing fused-FMA probe |
+| `fma-threads` | Same direct-FMA kernels, 1–8 engine threads | Fused-FMA probe and shared memory |
 
 Pass a build argument to rebuild only that variant. Build all variants before
 using the default demo, which chooses the first supported runtime. The page
 uses small `WebAssembly.validate` probes to detect SIMD and relaxed dot support.
+It executes an additional arithmetic probe before selecting direct FMA. The
+first supported runtime is now `fma-threads`, with the strict-FMA-emulation
+bundles retained as fallbacks. The build tests the direct-FMA bundles against
+`std::fma` on the build host; these bundles require a fused implementation
+there as well.
 Thread variants require `crossOriginIsolated`; the local server sets COOP/COEP.
 Single-thread variants have separate binaries and do not require shared memory.
 
@@ -84,6 +91,8 @@ the browser does not allocate an additional 425 MB ArrayBuffer to hash it.
 `src/wasm/decision.cpp` exposes the single-owner C ABI declared in
 `include/qwen35x/runtime/browser_decision.h`:
 
+- `qev_options(chunk, profile)` optionally sets a multiple-of-four chunk size
+  in 4–1024 and diagnostic profiling before loading (defaults: 32, disabled).
 - `qev_load(directory, threads, context)` and `qev_unload()` manage one model.
 - `qev_begin(json)` validates and prepares a System One decision.
 - `qev_step()` executes one bounded prefill chunk, or finishes a question.
@@ -114,10 +123,13 @@ correction restores the signed Q4 values. Consequently this instruction has
 an exact integer result for our inputs; its implementation-dependent cases
 are excluded. See the [WebAssembly relaxed SIMD specification](https://github.com/WebAssembly/relaxed-simd/blob/main/proposals/relaxed-simd/Overview.md).
 
-Floating-point relaxed multiply/add is deliberately unused. FP32 FMA is
-implemented through SIMD FP64 products/sums, with standard-library fallback
-for double-rounding ties and subnormal results. DOT4 and DeltaNet use this
-path to reduce drift from the native engine's fused arithmetic. H128 preserves
+The `fma` bundles use direct relaxed SIMD multiply/add only after a browser
+probe confirms fused arithmetic, including cancellation, overflow, subnormal
+results and signed zero. The worker repeats this guard before loading the
+bundle. Other bundles implement FP32 FMA through SIMD FP64 products/sums,
+with standard-library fallback for double-rounding ties and subnormal results.
+This portable path reduces drift from the native engine's fused arithmetic
+but is substantially slower. No global fast-math option is enabled. H128 preserves
 the portable butterfly order and produces bit-identical packed activations
 in the kernel tests. Native and browser engines still have different reduction
 and math-library implementations; compare probabilities as well as top choices.
@@ -135,7 +147,7 @@ build-linux/systemone_protocol_test dist/qev-h128-public-final < configs/qev-was
 
 `scripts/benchmark-wasm.mjs` drives a real Chromium browser through Playwright.
 It accepts `--playwright-module PATH`, optional `--browser PATH`, `--mode`,
-`--threads`, `--requests-file`, and the runner-supplied `--profile-json`.
+`--threads`, optional `--chunk`, `--requests-file`, and the runner-supplied `--profile-json`.
 Use `--references-file` to compare prompt IDs, raw logits, answer probabilities,
 usage and selected options. `--checks true` exercises malformed input, context
 overflow, cancellation and fresh state after cancellation. Add `--protocol-file`
@@ -168,7 +180,12 @@ performance/compatibility measurements before publication. WASM heap size is
 not total browser RAM; browser processes, cached Files/Blobs and runtime metadata
 consume additional memory. The module currently caps linear memory at 2 GiB.
 
-## Local results, 2026-10-21
+## Initial local results, 2026-10-21
+
+These measurements describe the original strict-FMA-emulation port. See
+[WASM FMA optimization](wasm-fma-optimization.md) for the current fast bundle,
+quality checks and updated comparison.
+
 
 Measured on an AMD Ryzen 9 9955HX3D in Chromium 156.0.8078.4 with
 Emscripten 6.0.13. All cases used CPU affinity 0–7 (mask 255), the same
@@ -185,12 +202,12 @@ The three input lengths were 74, 77 and 579 evaluated tokens respectively.
 | WASM bounded integer dot | 1 | 2,680.58 ms | 2,767.13 ms | 20,840.74 ms |
 | WASM standard SIMD128 | 1 | 3,947.46 ms | 4,073.98 ms | 31,032.96 ms |
 
-The current eight-thread browser port takes **11.14×, 12.00× and 13.18×**
+The initial eight-thread browser port took **11.14×, 12.00× and 13.18×**
 the native time on these inputs. Equivalently, serial request throughput is
 91.0–92.4% lower. This measures this implementation against the native
 AVX-512/VNNI engine on this CPU; it is not a universal WASM overhead factor.
-The browser port uses SIMD128 and software FP32 FMA emulation. Their individual
-contributions to the gap have not been isolated by profiling.
+The browser port uses SIMD128 and software FP32 FMA emulation. Subsequent profiling and direct-FMA optimization are recorded in the linked
+optimization report.
 
 The bounded integer-dot kernel reduces single-thread latency by about 32–33%
 versus standard SIMD128. Going from four to eight threads reduces latency by
