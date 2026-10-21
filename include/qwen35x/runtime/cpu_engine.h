@@ -43,6 +43,7 @@ struct CpuEngineConfig {
   // Optional serial diagnostic sink. Caller owns it for the engine lifetime.
   // Timed release comparisons must leave this null.
   std::vector<CpuDecodeStage> *operation_profile = nullptr;
+  std::vector<CpuPrefillStage> *prefill_profile = nullptr;
   int threads = 8;
   std::size_t max_resident_requests = 32;
   std::size_t max_context = 8192;

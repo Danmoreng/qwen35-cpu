@@ -3,6 +3,7 @@
 
 #include <immintrin.h>
 #include <cstring>
+#include <limits>
 #include <utility>
 
 namespace qwen35x::cpu::detail {
@@ -45,8 +46,8 @@ PREFILL_INLINE __m512i broadcast4(const std::int8_t * values) noexcept {
   return _mm512_set1_epi32(bytes);
 }
 
-template <std::size_t Token>
-PREFILL_INLINE void accumulate(const Weights16 & w, const Q8_0BlockX4 * vectors,
+template <std::size_t Token, typename Block>
+PREFILL_INLINE void accumulate(const Weights16 & w, const Block * vectors,
                                std::size_t blocks, std::size_t block,
                                __m512 & accumulator) noexcept {
   const auto & a = vectors[(Token / 4) * blocks + block];
@@ -63,8 +64,8 @@ PREFILL_INLINE void accumulate(const Weights16 & w, const Q8_0BlockX4 * vectors,
   accumulator = _mm512_fmadd_ps(_mm512_cvtepi32_ps(dot), scale, accumulator);
 }
 
-template <std::size_t... Token>
-PREFILL_INLINE void tile(const Q4_0BlockX8 * matrix, const Q8_0BlockX4 * vectors,
+template <typename Block, std::size_t... Token>
+PREFILL_INLINE void tile(const Q4_0BlockX8 * matrix, const Block * vectors,
                          float * output, std::size_t blocks, std::size_t stride,
                          std::index_sequence<Token...>) noexcept {
   __m512 accumulators[sizeof...(Token)] = {((void)Token, _mm512_setzero_ps())...};
@@ -77,23 +78,61 @@ PREFILL_INLINE void tile(const Q4_0BlockX8 * matrix, const Q8_0BlockX4 * vectors
 #undef PREFILL_INLINE
 } // namespace
 
+void q4_dot4_matvec_avx512(const Q4_0BlockX8 * matrix, const Q8_0BlockX1 * vector,
+                          float * output, std::size_t rows, std::size_t blocks) noexcept {
+  std::size_t row = 0;
+  for (; row + 16 <= rows; row += 16)
+    tile(matrix + (row / 8) * blocks, vector, output + row,
+         blocks, 16, std::make_index_sequence<1>{});
+  if (row < rows)
+    q4_dot4_matvec_evex(matrix + (row / 8) * blocks, vector, output + row,
+                       rows - row, blocks);
+}
+
+Q4_0ArgmaxResult q4_dot4_argmax_avx512(const Q4_0BlockX8 * matrix,
+    const Q8_0BlockX1 * vector, const int * counts, float penalty,
+    std::size_t offset, std::size_t rows, std::size_t blocks) noexcept {
+  Q4_0ArgmaxResult best{-std::numeric_limits<float>::infinity(), offset};
+  alignas(64) float values[16];
+  std::size_t row = 0;
+  for (; row + 16 <= rows; row += 16) {
+    tile(matrix + (row / 8) * blocks, vector, values,
+         blocks, 16, std::make_index_sequence<1>{});
+    for (std::size_t lane = 0; lane < 16; ++lane) {
+      const std::size_t index = offset + row + lane;
+      float value = values[lane];
+      if (counts != nullptr && counts[index] > 0 && penalty > 1.0F)
+        value = value > 0.0F ? value / penalty : value * penalty;
+      if (value > best.value) best = {value, index};
+    }
+  }
+  if (row < rows) {
+    const auto tail = q4_dot4_argmax_evex(matrix + (row / 8) * blocks, vector,
+      counts, penalty, offset + row, rows - row, blocks);
+    if (tail.value > best.value) best = tail;
+  }
+  return best;
+}
+
 void q4_dot4_matmul_avx512(const Q4_0BlockX8 * matrix, const Q8_0BlockX4 * vectors,
                           float * output, std::size_t rows, std::size_t count,
                           std::size_t blocks, std::size_t stride) noexcept {
   // Pair two existing eight-row blocks in ZMM lanes without changing storage.
   // Eight tokens reuse the unpacked weights while limiting register pressure.
-  std::size_t token = 0;
-  for (; token + 8 <= count; token += 8) {
-    std::size_t row = 0;
-    for (; row + 16 <= rows; row += 16)
+  // Finish all token tiles for a row pair while its weights remain cache-hot.
+  // Each output keeps the same block traversal and FMA order.
+  std::size_t row = 0;
+  for (; row + 16 <= rows; row += 16) {
+    std::size_t token = 0;
+    for (; token + 8 <= count; token += 8)
       tile(matrix + (row / 8) * blocks, vectors + (token / 4) * blocks,
            output + token * stride + row, blocks, stride, std::make_index_sequence<8>{});
-    if (row < rows)
+    if (token < count)
       q4_dot4_matmul_evex(matrix + (row / 8) * blocks, vectors + (token / 4) * blocks,
-                         output + token * stride + row, rows - row, 8, blocks, stride);
+                         output + token * stride + row, 16, count - token, blocks, stride);
   }
-  if (token < count)
-    q4_dot4_matmul_evex(matrix, vectors + (token / 4) * blocks,
-                       output + token * stride, rows, count - token, blocks, stride);
+  if (row < rows)
+    q4_dot4_matmul_evex(matrix + (row / 8) * blocks, vectors,
+                       output + row, rows - row, count, blocks, stride);
 }
 } // namespace qwen35x::cpu::detail

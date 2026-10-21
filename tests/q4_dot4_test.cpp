@@ -28,8 +28,8 @@ int main() {
     ? Q8_0Backend::avx2 : Q8_0Backend::scalar;
   const bool exact = reference_backend == Q8_0Backend::avx2;
   std::size_t cases = 0;
-  for (std::size_t blocks : {1U, 2U, 4U, 32U, 64U, 112U}) {
-    for (std::size_t rows : {8U, 16U, 24U, 32U, 64U}) {
+  for (std::size_t blocks : {1U, 2U, 3U, 4U, 32U, 64U, 112U}) {
+    for (std::size_t rows : {8U, 16U, 24U, 32U, 40U, 48U, 56U, 64U}) {
       for (int pattern = 0; pattern < 3; ++pattern) {
         std::vector<Q4_0Block> canonical(rows*blocks), unpacked(rows*blocks);
         for (auto & w : canonical) {
@@ -47,7 +47,7 @@ int main() {
         q4_0_packed_dequantize_row(legacy.data(), rows-1, expected_embedding.data(), blocks);
         if (embedding != expected_embedding) return 2;
 
-        for (std::size_t tokens : {4U, 16U, 20U, 32U, 36U, 128U}) {
+        for (std::size_t tokens : {4U, 8U, 12U, 16U, 20U, 24U, 28U, 32U, 36U, 128U}) {
           std::vector<Q8_0BlockX4> batch((tokens/4)*blocks);
           for (auto & a : batch) for (int t = 0; t < 4; ++t) {
             a.scales[t] = 0.001F * static_cast<float>(1 + random()%31);
@@ -76,8 +76,11 @@ int main() {
             std::fill(actual.begin(), actual.end(), -123.0F);
             q4_dot4_matmul(dot4.data(), batch.data(), actual.data(), rows, tokens, blocks, stride, backend);
             if (!same_outputs(actual.data(), expected.data(), actual.size(), exact)) { std::cerr << "DOT4 prefill mismatch\n"; return 3; }
+            std::fill(actual.begin(), actual.end(), -123.0F);
             q4_dot4_matvec(dot4.data(), vector.data(), actual.data(), rows, blocks, backend);
             if (!same_outputs(actual.data(), expected.data(), rows, exact)) return 4;
+            if (!std::all_of(actual.begin() + rows, actual.end(),
+                            [](float value) { return value == -123.0F; })) return 6;
             const auto best = q4_dot4_argmax(dot4.data(), vector.data(), counts.data(), 1.05F, 7, rows, blocks, backend);
             if (!same_outputs(&best.value, &expected_best.value, 1, exact) || best.index != expected_best.index) return 5;
             ++cases;

@@ -1,0 +1,413 @@
+{
+  "baseline_revision": "9a4497076ec594283975a8dc5c679c02e738d844",
+  "date": "2026-09-26",
+  "cpu": "AMD Ryzen 5 7600",
+  "compiler": "c++ (GCC) 16.2.1 20260810",
+  "affinity": "0x3f; CPUs 0-5; six physical cores",
+  "governor": "powersave",
+  "checkpoint_format": "H128/Q4-G32-DOT4",
+  "batch": 1,
+  "prompt_tokens": 512,
+  "output_tokens": 128,
+  "decode_forwards": 127,
+  "kv": "FP16",
+  "max_context": 16384,
+  "prefill_chunk": 128,
+  "decision": "Keep the existing intrinsics16 default. No consistent material decode gain from either assembly variant.",
+  "variants": {
+    "baseline": {
+      "cmake_option": "off",
+      "description": "Committed 16-row intrinsic decode kernel"
+    },
+    "intrinsics32": {
+      "cmake_option": "intrinsics32",
+      "description": "32-row intrinsic tile, two independent FP32 accumulators"
+    },
+    "asm32": {
+      "cmake_option": "asm32",
+      "description": "Handwritten SysV AVX-512/VNNI 32-row tile with shared activation broadcasts"
+    },
+    "scheduled": {
+      "cmake_option": "asm32-scheduled",
+      "description": "Same assembly arithmetic; move scale loads/conversions and correction preparation before integer products"
+    }
+  },
+  "build_commands": {
+    "configure": "cmake -S . -B BUILD_DIR -G Ninja -DCMAKE_BUILD_TYPE=Release -DQWEN35_BUILD_SERVER=OFF -DQWEN35_DOT4_DECODE_EXPERIMENT=VARIANT",
+    "build": "cmake --build BUILD_DIR -j 6"
+  },
+  "runner": "scripts/benchmark-inference-seq.ps1; portable PowerShell 7.6.6",
+  "raw_root": "benchmarks/asm-decode-20260926",
+  "series": {
+    "comparison": {
+      "warmups": 1,
+      "measured_runs": 3,
+      "raw_sha256": {
+        "metadata.json": "2099c5027de2c81aed386130607f43e4af17a39cc6df2c693ab0ea12becd373a",
+        "results.csv": "884f5e4b3ae886dc2c6c0bcb14bd026dd8b6304adf834bf2589d7878b76b29fd"
+      },
+      "matrix": [
+        {
+          "name": "baseline-b1-full",
+          "executable": "benchmarks/asm-decode-20260926/baseline/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-batch-full-logits",
+            "--prompt-tokens-file",
+            "benchmarks/ryzen5-7600-20260919/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "intrinsics32-b1-full",
+          "executable": "benchmarks/asm-decode-20260926/intrinsics32/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-batch-full-logits",
+            "--prompt-tokens-file",
+            "benchmarks/ryzen5-7600-20260919/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "asm32-b1-full",
+          "executable": "benchmarks/asm-decode-20260926/asm32/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-batch-full-logits",
+            "--prompt-tokens-file",
+            "benchmarks/ryzen5-7600-20260919/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "baseline-b1-greedy",
+          "executable": "benchmarks/asm-decode-20260926/baseline/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-batch-greedy",
+            "--prompt-tokens-file",
+            "benchmarks/ryzen5-7600-20260919/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "intrinsics32-b1-greedy",
+          "executable": "benchmarks/asm-decode-20260926/intrinsics32/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-batch-greedy",
+            "--prompt-tokens-file",
+            "benchmarks/ryzen5-7600-20260919/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "asm32-b1-greedy",
+          "executable": "benchmarks/asm-decode-20260926/asm32/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-batch-greedy",
+            "--prompt-tokens-file",
+            "benchmarks/ryzen5-7600-20260919/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        }
+      ]
+    },
+    "followup": {
+      "warmups": 1,
+      "measured_runs": 6,
+      "raw_sha256": {
+        "metadata.json": "82c1b7c55366f5d6ca8f1aa7b03bc5561694c88f559a749d3a587665379f89bb",
+        "results.csv": "20ca4cb79902899c69f73636f7c56a5be3006e1375b38473dbad53615e859f96"
+      },
+      "matrix": [
+        {
+          "name": "baseline-b1-full",
+          "executable": "benchmarks/asm-decode-20260926/baseline/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-batch-full-logits",
+            "--prompt-tokens-file",
+            "benchmarks/ryzen5-7600-20260919/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "asm32-b1-full",
+          "executable": "benchmarks/asm-decode-20260926/asm32/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-batch-full-logits",
+            "--prompt-tokens-file",
+            "benchmarks/ryzen5-7600-20260919/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "scheduled-b1-full",
+          "executable": "benchmarks/asm-decode-20260926/scheduled/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-batch-full-logits",
+            "--prompt-tokens-file",
+            "benchmarks/ryzen5-7600-20260919/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "baseline-b1-greedy",
+          "executable": "benchmarks/asm-decode-20260926/baseline/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-batch-greedy",
+            "--prompt-tokens-file",
+            "benchmarks/ryzen5-7600-20260919/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "asm32-b1-greedy",
+          "executable": "benchmarks/asm-decode-20260926/asm32/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-batch-greedy",
+            "--prompt-tokens-file",
+            "benchmarks/ryzen5-7600-20260919/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "scheduled-b1-greedy",
+          "executable": "benchmarks/asm-decode-20260926/scheduled/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-batch-greedy",
+            "--prompt-tokens-file",
+            "benchmarks/ryzen5-7600-20260919/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        }
+      ]
+    }
+  },
+  "inputs": {
+    "/home/sebastian/Development/qwen35-cpu/benchmarks/ryzen5-7600-20260919/prompt-512.csv": {
+      "bytes": 2311,
+      "sha256": "6BAA0783F9AD2ADEA59013C948CD15A0A465E870837BF9A60E57EB73EF39BD81"
+    },
+    "/home/sebastian/Development/qwen35-cpu/models/qwen3.5-0.8b/tokenizer_config.json": {
+      "bytes": 16709,
+      "sha256": "49E2B6E395F959F077F1E992B338919C0D4A9732FC6E613995E06557F843500C"
+    },
+    "/home/sebastian/Development/qwen35-cpu/models/qwen3.5-0.8b/model.q35h": {
+      "bytes": 424964864,
+      "sha256": "013FBFAA03760E759181301DDAF964BB5C200C50C50617AFE72557FD65BCBF0A"
+    },
+    "/home/sebastian/Development/qwen35-cpu/models/qwen3.5-0.8b/tokenizer.json": {
+      "bytes": 12807982,
+      "sha256": "5F9E4D4901A92B997E463C1F46055088B6CCA5CA61A6522D1B9F64C4BB81CB42"
+    },
+    "/home/sebastian/Development/qwen35-cpu/models/qwen3.5-0.8b/config.json": {
+      "bytes": 2907,
+      "sha256": "B90B86F35C8E6925EF74EE04D0E758F0A845C83A42089AD82BBAA948DE9B4204"
+    }
+  },
+  "binaries": {
+    "/home/sebastian/Development/qwen35-cpu/benchmarks/asm-decode-20260926/intrinsics32/qwen35_cpu_bench": "140298F382AE5AA07E69C579E5469C51D38F572415CD66F2273F990280CA69E8",
+    "/home/sebastian/Development/qwen35-cpu/benchmarks/asm-decode-20260926/asm32/qwen35_cpu_bench": "579A22442B538142D525432AF7C8F2975BDA6FA14E6F6087287C460BA2BA5B25",
+    "/home/sebastian/Development/qwen35-cpu/benchmarks/asm-decode-20260926/baseline/qwen35_cpu_bench": "5ED9288A9BAF10E437C2042E7559E49E27D1F2E1FE45D600386ECA56DDB97021",
+    "/home/sebastian/Development/qwen35-cpu/benchmarks/asm-decode-20260926/scheduled/qwen35_cpu_bench": "9CD1603DB2691399C06A6B12DDCF9134F2DE67101883566B3A6A2921C0A6A51F"
+  },
+  "conditions": "Normal desktop; no concurrent compilation or correctness checks during timing. Alternating case order. No power/display changes.",
+  "limitations": [
+    "One Ryzen 5 7600 only; assembly requires Linux x86-64 SysV.",
+    "All speed cases are B1 P512/N128; no long-context, batched-speed or other-platform claim.",
+    "Overlapping ranges and inconsistent signs across the two series do not establish a repeatable gain."
+  ],
+  "source_sha256": {
+    "CMakeLists.txt": "7d643d2808b6564ceec3ed73189c754123808fb40fe8ee58cf383a594245759d",
+    "src/cpu/q4_dot4_prefill_avx512.cpp": "2a14a1dc017d6f626995bacee2fe06eb0dd81b7900d702ae650b7d6f8e7947d1",
+    "src/cpu/q4_dot4_decode_asm.S": "a902b5d5ff348861781bbebc19c5731da4c6e9b38f67a4f24a2f0b4205c7e628",
+    "tests/q4_dot4_test.cpp": "fb880033adc21355c7609734fa86bae24b1dfb751268190cf6d81ef8fdcaa187"
+  },
+  "validation": {
+    "ctest_asm32": "14/14 pass; two optional NumPy tests not configured",
+    "dot4_cases": 5040,
+    "prompt_lengths": [
+      7,
+      8,
+      12,
+      31,
+      32,
+      127,
+      128,
+      129,
+      511,
+      512,
+      513,
+      4096
+    ],
+    "logit_positions_per_variant": 96,
+    "logits_per_variant": 23838720,
+    "greedy_prompts_per_assembly_variant": 4,
+    "rebuild": "Both CLI and benchmark binaries for off/asm32/asm32-scheduled match their frozen measured versions byte for byte",
+    "raw_files": {
+      "ctest-asm32.log": "cd8a613f44519b5e672bc388cf11b6ada0810602ea01c40dc861cb7ded66c378",
+      "test-intrinsics32.log": "c1c3c3656425baedb1f8e4e795aca03249528d19754f091a522cbf9939f3399a",
+      "test-scheduled.log": "c1c3c3656425baedb1f8e4e795aca03249528d19754f091a522cbf9939f3399a",
+      "test-default.log": "c1c3c3656425baedb1f8e4e795aca03249528d19754f091a522cbf9939f3399a",
+      "equivalence.json": "5329fcf28f6a0fd2b3831ab8ce22afa54c2ea565796b4cf22c8a6c301136419a",
+      "scheduled-equivalence.json": "c8ecc17f3a3cda84bd312ba09731bbc69516e8a0a21dbffe8ea283a9c4689fec",
+      "greedy-equivalence.json": "4ede72467a26593f69b6735c81b5b6a9c25c1125b12df87a37425e4875bbab5c",
+      "rebuild-check.json": "d4c46a75b859425442fb80874f1fcee073dcbf70d25b020488d94b5c264d9697"
+    }
+  },
+  "source_status": "Experimental build options and kernels removed from production after measurement; local final-source snapshots and final-source.patch retained.",
+  "timing_label_correction": "Cases named greedy used forced output tokens, which disable fused greedy. Their timing measures a duplicate full-logit workload. Original case IDs and raw data are preserved; unforced greedy correctness checks are separate."
+}

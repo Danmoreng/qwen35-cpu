@@ -1,0 +1,75 @@
+{
+  "experiment": "Ubuntu Intel Core i7-8750H CPU comparison, 2026-09-08",
+  "repository_revision": "2282b462644ad8590e6fc6dcbdaad25208ae8d29",
+  "repository_diff_sha256_during_measurement": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "ik_repository": "https://github.com/ikawrakow/ik_llama.cpp",
+  "ik_revision": "fe215a8ccdce6b844d2a3a3bbde08ae76a6284bf",
+  "ik_b16_patch": {
+    "path": "tools/ik-llama-comparison/patches/qwen35-multi-sequence-graph.patch",
+    "sha256": "d588d71da1f6460854350093291763df79d8db0344aefd691b1b4857359d1560"
+  },
+  "system": {
+    "cpu": "Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz",
+    "physical_cores_used": [0, 1, 2, 3, 4, 5],
+    "logical_cpus": 12,
+    "affinity_mask": 63,
+    "isa": "AVX2",
+    "os": "Ubuntu Linux 7.0.0-31-generic x86_64",
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "governor": "powersave",
+    "scaling_driver": "intel_pstate"
+  },
+  "measurement": {
+    "runner": "scripts/benchmark-inference-seq.ps1",
+    "warmup_runs": 1,
+    "measured_runs": 3,
+    "threads": 6,
+    "fixed_tokens": true,
+    "full_vocabulary_logits": true,
+    "kv": "FP16",
+    "ik_runtime_repack": true,
+    "b16_patch_applied": true
+  },
+  "binaries": {
+    "build/qwen35_cpu_bench": "48eed91920161658b9cb270bf7bc0a55f7c9f8cce085e6c737e9d1be2a4d112f",
+    "build-ik-linux/bin/ik-fixed-cpu-bench": "0c4f189b20b899546c9ccd02b392579739285082318043a52ba5997724898294",
+    "build-ik-b16-linux/bin/ik-fixed-cpu-bench": "a7ce387e14fbd6a405fae6334710c12e07225aa7ed37a5e01520596a21863856"
+  },
+  "models": {
+    "H128/Q4-G32-DOT4": "013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a",
+    "Q4_0-pure": "2e41f95fca5f3e3a8dc91c1407c572f3cff5d060cbfdf835cd2d4d9913f95e7d",
+    "IQ4_K_R4-pure-local": "0a24f03c8655e8fbe7a61e0c6fb2c6da3a10bab6ddb98d6ed7ab6d857b10bd20",
+    "IQ4_KS_R4-pure-local": "fb5c7ff52e5f348510c3374c54ec7d68c1bf06f3737e93ce5bc8fa63d6544d3c",
+    "Unsloth-Q4_0": "444406ddd926550c724ec18d5120a9d40ded44908a063b0e66e9a7e5464c652c",
+    "Unsloth-Q4_K_M": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
+    "Unsloth-IQ4_XS": "619917ae92f61eb6515a7070e944a0a7c2b198a2cf6536386f475485188a36ff",
+    "BF16-quantization-source": "cedf89af31c9041b601fa58303285bc46d99c51baee1b13f5e919626ca526ee5"
+  },
+  "local_raw_runs": [
+    {
+      "path": "benchmarks/local-i7-8750h-ik-comparison-20260908-161346-rev2282b46",
+      "metadata_sha256": "9472df41277176bcbd10bdd53f9565b5ac63c97586e87c1f37e5b60fac8710f3",
+      "results_sha256": "374d55e0dd85b04674dd573982875bf875eb9856dbe8f69f9eb2fcb6576d499d"
+    },
+    {
+      "path": "benchmarks/local-i7-8750h-ik-b16-comparison-20260908-162635-rev2282b46",
+      "metadata_sha256": "44b22ace55f1ead9032875d68282b65fc2d86759a9c88b07eea96442bae5b82c",
+      "results_sha256": "8c275467f536bf43fd6f7f06701b046ec96ba671a8cf4b2c40183c5bb10af988"
+    },
+    {
+      "path": "benchmarks/local-i7-8750h-ik-r4-comparison-20260908-170234-rev2282b46",
+      "metadata_sha256": "d17d6f4a8a2c2948d0b64da13297a3e84ff6a6462e1ae10823d78f0e9548fbf7",
+      "results_sha256": "f7bbad32247e0e859d4555928836bf152ed58c39bff45c82d89237b38472ac47"
+    },
+    {
+      "path": "benchmarks/local-i7-8750h-ik-r4-b16-comparison-20260908-170705-rev2282b46",
+      "metadata_sha256": "4a158d0e4781e771af0b48a247a4612f3c182bc62fea483e602218739fb751f8",
+      "results_sha256": "13d30f5c668c817fe5fb631e54a0e32c22b99f13359ff1d050f8171c7881c287"
+    }
+  ],
+  "notes": [
+    "All raw profiles, exact commands, input hashes and completed CSV files remain in the listed local raw-run directories.",
+    "The local IQ4_K_R4 and IQ4_KS_R4 files match the documented recipe and tensor sizes but not the earlier Ryzen artifact hashes; no earlier quality score is attributed to them.",
+    "Speed and quantization quality are reported separately."
+  ]
+}

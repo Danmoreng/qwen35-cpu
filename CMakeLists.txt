@@ -207,6 +207,8 @@ add_executable(cpu_prefix_model_test tests/cpu_prefix_model_test.cpp)
 target_link_libraries(cpu_prefix_model_test PRIVATE qwen35x_core)
 add_executable(cpu_scheduler_model_test tests/cpu_scheduler_model_test.cpp)
 target_link_libraries(cpu_scheduler_model_test PRIVATE qwen35x_core)
+add_executable(cpu_batch_model_test tests/cpu_batch_model_test.cpp)
+target_link_libraries(cpu_batch_model_test PRIVATE qwen35x_core)
 
 add_executable(k_quant_test tests/k_quant_test.cpp)
 target_link_libraries(k_quant_test PRIVATE qwen35x_core)

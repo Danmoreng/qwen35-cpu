@@ -13,6 +13,9 @@ void rms_norm_qwen3next_batch(
     eps, 1.0F);
 }
 
+struct LinearPrefillPrepareJob;
+void run_linear_prefill_prepare(void *, std::size_t, std::size_t) noexcept;
+
 struct GatedDeltaNetBatchCpuJob {
   float * state = nullptr;
   const float * q = nullptr;
@@ -26,6 +29,7 @@ struct GatedDeltaNetBatchCpuJob {
   std::size_t key_dim = 0;
   std::size_t value_dim = 0;
   cpu::Q8_0Backend backend = cpu::Q8_0Backend::auto_select;
+  LinearPrefillPrepareJob *prepare = nullptr;
 };
 
 struct CausalConvBatchCpuJob {
@@ -57,6 +61,7 @@ void run_gated_delta_net_batch_cpu_rows(
   const std::size_t row_begin,
   const std::size_t row_end) noexcept {
   auto & job = *static_cast<GatedDeltaNetBatchCpuJob *>(opaque_context);
+  if (job.prepare) run_linear_prefill_prepare(job.prepare, row_begin, row_end);
   cpu::gated_delta_net_update_batch_rows(
     job.state,
     job.q,
@@ -72,6 +77,65 @@ void run_gated_delta_net_batch_cpu_rows(
     row_begin,
     row_end,
     job.backend);
+}
+
+struct LinearPrefillPrepareJob {
+  CpuPrefillWorkspace::Linear &scratch;
+  const LayerWeights &layer;
+  const RuntimeDims &dims;
+  std::size_t batch_size, projection_width, conv_channels, q_width, value_width;
+  std::size_t head_count, key_dim, value_dim;
+  float q_scale;
+};
+void run_linear_prefill_prepare(void *opaque, std::size_t begin, std::size_t end) noexcept {
+  auto &job = *static_cast<LinearPrefillPrepareJob *>(opaque);
+  auto &[scratch, layer, dims, batch_size, projection_width, conv_channels,
+         q_width, value_width, head_count, key_dim, value_dim, q_scale] = job;
+  auto &projected = scratch.projected;
+  auto &conv_batch = scratch.conv_batch;
+  auto &q_batch = scratch.q_batch;
+  auto &k_batch = scratch.k_batch;
+  auto &v_batch = scratch.v_batch;
+  auto &alpha_batch = scratch.alpha_batch;
+  auto &beta_batch = scratch.beta_batch;
+  // Convolution has completed. Each worker owns disjoint heads in every
+  // token, including contiguous head-major inputs for its recurrent scan.
+  for (std::size_t token = 0; token < batch_size; ++token) {
+    const float * projection = projected.data() + token * projection_width;
+    const float * mixed_qkv = projection;
+    const float * z = mixed_qkv + conv_channels;
+    const float * b = z + value_width;
+    const float * a = b + head_count;
+
+    for (std::size_t head = begin; head < end; ++head) {
+      beta_batch[head * batch_size + token] = sigmoidf_stable(b[head]);
+      const float pre_gate = softplusf_stable(a[head] + layer.linear.dt_bias.data[head]);
+      alpha_batch[head * batch_size + token] = std::exp(pre_gate * layer.linear.ssm_a[head]);
+    }
+
+    float * conv_out = conv_batch.data() + token * conv_channels;
+    std::span<float> q(conv_out + begin * key_dim, (end - begin) * key_dim);
+    std::span<float> k(conv_out + q_width + begin * key_dim, (end - begin) * key_dim);
+    const float * v = conv_out + 2 * q_width;
+    l2_norm_per_head(
+      q, static_cast<int>(end - begin), dims.linear_head_k_dim, 1.0e-6F, q_scale);
+    l2_norm_per_head(k, static_cast<int>(end - begin), dims.linear_head_k_dim);
+    for (std::size_t head = begin; head < end; ++head) {
+      const std::size_t head_token = head * batch_size + token;
+      std::memcpy(
+        q_batch.data() + head_token * key_dim,
+        q.data() + (head - begin) * key_dim,
+        key_dim * sizeof(float));
+      std::memcpy(
+        k_batch.data() + head_token * key_dim,
+        k.data() + (head - begin) * key_dim,
+        key_dim * sizeof(float));
+      std::memcpy(
+        v_batch.data() + head_token * value_dim,
+        v + head * value_dim,
+        value_dim * sizeof(float));
+    }
+  }
 }
 
 bool run_linear_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
@@ -170,44 +234,15 @@ bool run_linear_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
       (state.conv_ring_index + batch_size % conv_history) % conv_history;
   }
 
-  for (std::size_t token = 0; token < batch_size; ++token) {
-    const float * projection = projected.data() + token * projection_width;
-    const float * mixed_qkv = projection;
-    const float * z = mixed_qkv + conv_channels;
-    const float * b = z + value_width;
-    const float * a = b + head_count;
+  LinearPrefillPrepareJob prepare_job{scratch, layer, dims, batch_size,
+    projection_width, conv_channels, q_width, value_width, head_count,
+    key_dim, value_dim, q_scale};
+  // Prepare each worker's heads immediately before its recurrent scan, using
+  // the existing dispatch. Short chunks preserve the serial preparation path.
+  const bool fused_prepare = runtime && runtime->executor && batch_size >= 128;
+  if (!fused_prepare) run_linear_prefill_prepare(&prepare_job, 0, head_count);
 
-    for (std::size_t head = 0; head < head_count; ++head) {
-      beta_batch[head * batch_size + token] = sigmoidf_stable(b[head]);
-      const float pre_gate = softplusf_stable(a[head] + layer.linear.dt_bias.data[head]);
-      alpha_batch[head * batch_size + token] = std::exp(pre_gate * layer.linear.ssm_a[head]);
-    }
-
-    float * conv_out = conv_batch.data() + token * conv_channels;
-    std::span<float> q(conv_out, q_width);
-    std::span<float> k(conv_out + q_width, q_width);
-    const float * v = conv_out + 2 * q_width;
-    l2_norm_per_head(
-      q, dims.linear_num_k_heads, dims.linear_head_k_dim, 1.0e-6F, q_scale);
-    l2_norm_per_head(k, dims.linear_num_k_heads, dims.linear_head_k_dim);
-    for (std::size_t head = 0; head < head_count; ++head) {
-      const std::size_t head_token = head * batch_size + token;
-      std::memcpy(
-        q_batch.data() + head_token * key_dim,
-        q.data() + head * key_dim,
-        key_dim * sizeof(float));
-      std::memcpy(
-        k_batch.data() + head_token * key_dim,
-        k.data() + head * key_dim,
-        key_dim * sizeof(float));
-      std::memcpy(
-        v_batch.data() + head_token * value_dim,
-        v + head * value_dim,
-        value_dim * sizeof(float));
-    }
-  }
-
-  if(fine) {stage.prepare_ms=elapsed_ms(mark);mark=std::chrono::steady_clock::now();stage.kernel="deltanet";stage.participants=runtime->executor ? std::min(head_count,runtime->executor->thread_count()) : 1;}
+  if(fine) {stage.prepare_ms=elapsed_ms(mark);mark=std::chrono::steady_clock::now();stage.kernel=fused_prepare ? "deltanet+prepare" : "deltanet";stage.participants=runtime->executor ? std::min(head_count,runtime->executor->thread_count()) : 1;}
   if (runtime != nullptr && runtime->executor != nullptr) {
     GatedDeltaNetBatchCpuJob job{
       state.recurrent_state.data(),
@@ -222,6 +257,7 @@ bool run_linear_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
       key_dim,
       value_dim,
       layer.linear.out_proj.q8_0_backend,
+      fused_prepare ? &prepare_job : nullptr,
     };
     const cpu::CpuExecutorStatus status = runtime->executor->parallel_for_rows(
       head_count, run_gated_delta_net_batch_cpu_rows, &job);

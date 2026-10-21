@@ -1,0 +1,33 @@
+Test project /home/sebastian/Development/qwen35-cpu/build-perf-audit
+      Start  1: full_attention_tiled
+ 1/14 Test  #1: full_attention_tiled .............   Passed   24.35 sec
+      Start  2: q4_dot4
+ 2/14 Test  #2: q4_dot4 ..........................   Passed    1.82 sec
+      Start  3: q4_0
+ 3/14 Test  #3: q4_0 .............................   Passed    0.00 sec
+      Start  4: q4_h128
+ 4/14 Test  #4: q4_h128 ..........................   Passed    0.01 sec
+      Start  5: q8_0
+ 5/14 Test  #5: q8_0 .............................   Passed    0.06 sec
+      Start  6: q4_h128_artifact
+ 6/14 Test  #6: q4_h128_artifact .................   Passed    0.00 sec
+      Start  7: delta_net
+ 7/14 Test  #7: delta_net ........................   Passed    0.02 sec
+      Start  8: kv_pages
+ 8/14 Test  #8: kv_pages .........................   Passed    0.04 sec
+      Start  9: k_quant
+ 9/14 Test  #9: k_quant ..........................   Passed    0.00 sec
+      Start 10: gguf_reader
+10/14 Test #10: gguf_reader ......................   Passed    0.00 sec
+      Start 11: q4_quantizer
+11/14 Test #11: q4_quantizer .....................   Passed    0.12 sec
+      Start 12: gguf_profile
+12/14 Test #12: gguf_profile .....................   Passed    0.02 sec
+      Start 13: mixed_q8_runtime
+13/14 Test #13: mixed_q8_runtime .................   Passed    0.00 sec
+      Start 14: head_runtime
+14/14 Test #14: head_runtime .....................   Passed    0.47 sec
+
+100% tests passed out of 14
+
+Total Test time (real) =  26.93 sec
