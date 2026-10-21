@@ -1,0 +1,13 @@
+{
+  "archived": [
+    36.117836,
+    36.110973,
+    239.606507
+  ],
+  "current": [
+    36.490896,
+    36.438086,
+    239.73904700000003
+  ],
+  "raw_root": "benchmarks/qev-pro-review-2026-10-21/native-control"
+}

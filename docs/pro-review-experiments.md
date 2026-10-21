@@ -159,3 +159,61 @@ candidate passes the strict option-logit/answer baseline gate. This measures
 latency, not power or idle CPU consumption. It does not establish the best
 budget for other browsers, processors, thread counts or interactive gaps.
 Medians: `results/qev-pro-review-2026-10-21/spin.json`; raw `spin-performance`.
+
+## Diagnostic accounting and remaining candidates
+
+A separate single instrumented C comparison attributes 109.94 ms of the long
+serial request to MLP activation. Fusion moves that work into the existing
+prepare jobs: serial activation falls to 0.76 ms while Q4 prepare rises from
+34.87 to 49.78 ms. The instrumented total falls from 1166.99 to 1086.79 ms.
+The fused work has not disappeared; the timing category changes as it becomes
+parallel. This diagnostic is not used instead of the uninstrumented three-run
+performance series. Compact counters: `results/qev-pro-review-2026-10-21/
+C-diagnostic.json`; raw `C-diagnostic`.
+
+This implementation pass covers the review's three recommended starting
+patches, the executor-spin experiment, and the additional user-requested KV
+precision comparison. No speed claim is made for the remaining proposed Q4
+instruction/tile changes (P4), weighted attention partitions (P5), a new GQA
+attention kernel (P7), selected-option head projection (P8), native unforced
+greedy batch dispatch (P9), or merged tail jobs (P10). Those are unimplemented
+and unmeasured candidates. In particular, no assertion about physical register
+spills is inferred from WASM locals; optimized V8 disassembly for a new Q4 tile
+experiment has not been captured in this pass.
+
+## First-pass consolidated comparison
+
+The accepted configuration at source commit `93981b2` enables exact SIMD Q8
+and multithreaded MLP preparation from eight tokens. DeltaNet threshold 128,
+spin count 6,553,600 and automatic WASM FP32 KV remain. A new alternating
+three-run/one-warmup series compares this combination with the archived
+27898c3 runtime. Compute medians in milliseconds:
+
+| Request | Original WASM | Accepted WASM | Lower latency |
+|---|---:|---:|---:|
+| Short (74 tokens) | 156.70 | 134.37 | 14.2% |
+| Snake (77 tokens) | 157.55 | 133.45 | 15.3% |
+| Long (579 tokens) | 1248.80 | 1122.76 | 10.1% |
+
+The final request series varies more than the separate A and C controls,
+especially on the later native runs. Its native median is 45.44/45.69/297.08 ms,
+while a subsequent direct archived/current native control gives
+36.12/36.11/239.61 versus 36.49/36.44/239.74 ms. The slowdown does not recur
+against the archived native binary; its environmental cause was not identified.
+Both series are retained rather than replacing the noisy one. No stronger
+claim about a native speed change is made. Native option logits and answers
+match the archived native outputs exactly on all three frozen prompts.
+
+All seven WASM builds pass their DOT4, DeltaNet and quantization tests.
+Chromium quantization tests pass. The final 18-request/24-question suites at
+one and eight threads preserve exact option-logit bits and full answers; the
+existing maximum probability difference to native remains 0.004. Invalid KV
+widths/types and unknown tuning keys, malformed requests, context overflow,
+protocol fixtures, cancellation and fresh-state recovery pass. All 17 native
+CTest checks pass. This is numerical/regression coverage on a small panel, not
+a new full task-accuracy benchmark.
+
+Compact samples/hashes: `results/qev-pro-review-2026-10-21/final.json` and
+`native-control.json`. Raw evidence, commands, affinity, binary/checkpoint hashes
+and environment metadata remain in `benchmarks/qev-pro-review-2026-10-21/`.
+All changes and artifacts stay local; no repository/model/Space was published.

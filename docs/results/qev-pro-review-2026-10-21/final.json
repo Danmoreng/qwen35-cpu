@@ -1,0 +1,187 @@
+{
+  "tokens": [
+    74,
+    77,
+    579
+  ],
+  "runs": 3,
+  "process_warmups": 1,
+  "threads": 8,
+  "affinity_mask": 255,
+  "chunk": 32,
+  "resident_B1": true,
+  "decode_forwards": 0,
+  "source_commit": "93981b2",
+  "original_wasm_27898c3": {
+    "compute_ms": [
+      156.699904,
+      157.55494399999998,
+      1248.795392
+    ],
+    "worker_ms": [
+      157.90000000223517,
+      158.72499999776483,
+      1253.315000001341
+    ],
+    "compute_samples_ms": [
+      [
+        156.699904,
+        156.460032,
+        157.129728
+      ],
+      [
+        157.55494399999998,
+        156.145408,
+        164.12032000000002
+      ],
+      [
+        1248.795392,
+        1237.7894400000002,
+        1264.27008
+      ]
+    ],
+    "baseline_bit_mismatches": [],
+    "artifact_sha256": {
+      "web/worker.js": "6662a7a0f9d73d818a3e2ea6bc6b52a4e24f4d7c8e10f9b5454195a6bb845d4f",
+      "web/capabilities.js": "b41e45fa3941b1c47f7cebca3f12dc4d97fe13247351e1aaaf709716ec62fb25",
+      "src/cpu/wasm_fma.h": "38eefa210439029f1a09b7a0b6b31b9d453c61cf7b465138b718c6bf93aaefb3",
+      "src/cpu/wasm_half.h": "c545ee7eae08aea26231f4eea8c754d27a2fd42bb5ce70b788a7263b12d73252",
+      "src/cpu/q4_dot4_wasm.cpp": "afb65f59d489570aa25fa1bcba57ada2744ed2da2272a9c91e19218afcc4fbbf",
+      "src/cpu/delta_net_wasm.cpp": "ebd9a99dc42f145c6728902594cf3bc180e7c6a987e192eb85fc7d0f63374919",
+      "src/wasm/decision.cpp": "29e726e1d288789f23ee0a50f04fd20f332c3c32633e642dabe82d0fd757e1d1",
+      "cmake/Wasm.cmake": "b98dc5382b2c652a19f7770fec29cac2039bb66e87157502bb2f017db107860a",
+      "src/cpu/q8_packed_wasm.cpp": "32a44f7f5e5f206d85aeef4c5cd388545230df48384aa4c6a2194975185febc5",
+      "src/cpu/q4_h128.cpp": "caa0f0b66cdc14060e34b903e69beff4ed49bcb9e31501daf171f368a9980a2b",
+      "src/runtime/weights.inl": "cdf3e4f22656b30a00085225d0dae4b5f77bf05fd3d708fac5167c4ec91f8063",
+      "src/runtime/prefill.inl": "2cfd38006ce8b3172f8155f07af1666be80930737d74996e02fa2795a6274e61",
+      "src/runtime/cpu_engine.inl": "a33596db793cc049a8db0c8e35489c1f3b358ace1c9d977bc292979b5bcc2430",
+      "include/qwen35x/runtime/cpu_engine.h": "dae77b056d4de8bbf39f40a2b7ca387ad31b407ad4c245408c64aac526a0c330",
+      "dist/wasm/review/baseline/fma-threads/qev_wasm.js": "408623e1e5040d9647de9fe9a1dac68d11b4596a43582b460c651a97391f045e",
+      "dist/wasm/review/baseline/fma-threads/qev_wasm.wasm": "ba8936e27f8f1853729bdc6433f422342c529ef4761f9d3bce9cf52720927196",
+      "scripts/benchmark-browser-decision.mjs": "deefee882b613d88f939ecfea2aade063247d620728323f3eefc5054db3d38dd",
+      "dist/qev-h128-public-final/model.q35h": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69"
+    }
+  },
+  "optimized_wasm": {
+    "compute_ms": [
+      134.374912,
+      133.44512,
+      1122.75584
+    ],
+    "worker_ms": [
+      135.98499999940395,
+      134.97500000149012,
+      1130.664999999106
+    ],
+    "compute_samples_ms": [
+      [
+        129.679872,
+        134.374912,
+        149.900032
+      ],
+      [
+        130.575104,
+        133.44512,
+        139.054848
+      ],
+      [
+        1063.863808,
+        1139.588864,
+        1122.75584
+      ]
+    ],
+    "baseline_bit_mismatches": [],
+    "artifact_sha256": {
+      "web/worker.js": "6662a7a0f9d73d818a3e2ea6bc6b52a4e24f4d7c8e10f9b5454195a6bb845d4f",
+      "web/capabilities.js": "b41e45fa3941b1c47f7cebca3f12dc4d97fe13247351e1aaaf709716ec62fb25",
+      "src/cpu/wasm_fma.h": "38eefa210439029f1a09b7a0b6b31b9d453c61cf7b465138b718c6bf93aaefb3",
+      "src/cpu/wasm_half.h": "c545ee7eae08aea26231f4eea8c754d27a2fd42bb5ce70b788a7263b12d73252",
+      "src/cpu/q4_dot4_wasm.cpp": "afb65f59d489570aa25fa1bcba57ada2744ed2da2272a9c91e19218afcc4fbbf",
+      "src/cpu/delta_net_wasm.cpp": "ebd9a99dc42f145c6728902594cf3bc180e7c6a987e192eb85fc7d0f63374919",
+      "src/wasm/decision.cpp": "29e726e1d288789f23ee0a50f04fd20f332c3c32633e642dabe82d0fd757e1d1",
+      "cmake/Wasm.cmake": "b98dc5382b2c652a19f7770fec29cac2039bb66e87157502bb2f017db107860a",
+      "src/cpu/q8_packed_wasm.cpp": "32a44f7f5e5f206d85aeef4c5cd388545230df48384aa4c6a2194975185febc5",
+      "src/cpu/q4_h128.cpp": "caa0f0b66cdc14060e34b903e69beff4ed49bcb9e31501daf171f368a9980a2b",
+      "src/runtime/weights.inl": "cdf3e4f22656b30a00085225d0dae4b5f77bf05fd3d708fac5167c4ec91f8063",
+      "src/runtime/prefill.inl": "2cfd38006ce8b3172f8155f07af1666be80930737d74996e02fa2795a6274e61",
+      "src/runtime/cpu_engine.inl": "a33596db793cc049a8db0c8e35489c1f3b358ace1c9d977bc292979b5bcc2430",
+      "include/qwen35x/runtime/cpu_engine.h": "dae77b056d4de8bbf39f40a2b7ca387ad31b407ad4c245408c64aac526a0c330",
+      "dist/wasm/fma-threads/qev_wasm.js": "b10eab7749a6950d4464fb3094e54a0983c47d057ccb0b1b4a94340f54198bab",
+      "dist/wasm/fma-threads/qev_wasm.wasm": "4f379daa83a9de8a45de3170a37788174e83cd1ec5f5f01e94099f4d92dca050",
+      "scripts/benchmark-browser-decision.mjs": "deefee882b613d88f939ecfea2aade063247d620728323f3eefc5054db3d38dd",
+      "dist/qev-h128-public-final/model.q35h": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69"
+    }
+  },
+  "native": {
+    "compute_ms": [
+      45.43841,
+      45.687587,
+      297.07917
+    ],
+    "worker_ms": [
+      46.415041,
+      46.62258,
+      298.396271
+    ],
+    "compute_samples_ms": [
+      [
+        36.501846,
+        45.43841,
+        45.785019999999996
+      ],
+      [
+        36.51468,
+        46.102967,
+        45.687587
+      ],
+      [
+        242.15169299999997,
+        297.07917,
+        322.12309
+      ]
+    ]
+  },
+  "latency_reduction_percent": [
+    14.246972352963283,
+    15.302486477352295,
+    10.092890541351384
+  ],
+  "quality": {
+    "eight_threads": {
+      "questions": 24,
+      "requests": 18,
+      "baseline_bit_mismatches": [],
+      "max_reference_probability_delta": 0.0040000000000000036,
+      "choice_changes": [],
+      "checks": [
+        "malformed request",
+        "invalid encoding",
+        "context overflow",
+        "invalid KV widths/types and unknown tuning rejected",
+        "cancel",
+        "fresh state after cancel",
+        "2 raw JSON protocol fixtures"
+      ]
+    },
+    "one_thread": {
+      "questions": 24,
+      "requests": 18,
+      "baseline_bit_mismatches": [],
+      "max_reference_probability_delta": 0.0040000000000000036,
+      "choice_changes": [],
+      "checks": [
+        "malformed request",
+        "invalid encoding",
+        "context overflow",
+        "invalid KV widths/types and unknown tuning rejected",
+        "cancel",
+        "fresh state after cancel",
+        "2 raw JSON protocol fixtures"
+      ]
+    }
+  },
+  "native_tests": "17/17 CTest passed",
+  "wasm_tests": "All seven build modes passed DOT4, DeltaNet and quantization tests; Chromium quantization tests passed.",
+  "checkpoint_sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69",
+  "raw_root": "benchmarks/qev-pro-review-2026-10-21"
+}
