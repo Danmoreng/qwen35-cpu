@@ -115,8 +115,8 @@ full activation-input manifests remain local, outside the engine repository.
 
 The calibrated 425 MB qev artifact is public at
 [`danmoreng/qev-0.8b-H128-Q4-G32-DOT4`](https://huggingface.co/danmoreng/qev-0.8b-H128-Q4-G32-DOT4),
-immutable model revision `fbd20c702cb9994310c1ecdbb85eff423424ff7e`. The model card pins
-engine source `29568961894321318aea2172b125a9a2e1f44757`; the server change is
+immutable model revision `fc805be27e1409630b14b233ad7aac1a6dbb213f`. The model card pins
+engine source `be5b9fa510b050c99faef4af83e58585093dc3aa`; the server change is
 available in [PR #1](https://github.com/Danmoreng/qwen35-cpu/pull/1).
 The anonymous public download passed every SHA256SUMS entry. Its artifact hash
 is `e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69`.
