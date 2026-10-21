@@ -5,11 +5,11 @@
   "affinity": "0-7 (mask 255)",
   "threads": 8,
   "llama_revision": "9b56ccf00d755b0bf780140f6352a67db1ac0378",
-  "raw_root": "benchmarks/qev-api-2026-10-21/http-final",
+  "raw_root": "benchmarks/qev-api-2026-10-21/http-integrated",
   "files": {
     "build-linux/qwen35_cpu_server": {
-      "bytes": 4009896,
-      "sha256": "5c1b14cd25d5a90592fd819f572090753e16ba7a876774c54aef422a3f7fab18"
+      "bytes": 4010056,
+      "sha256": "0acdf291a56177765a796637ede7a4896ccd01097110ec391b821bf26db61114"
     },
     "build-qev-server-current/bin/llama-server": {
       "bytes": 15976,
@@ -64,12 +64,12 @@
       "sha256": "4ca3b87db60030f064d8093dbeb928c2c94519123d2a5cb21dd6d631c997689e"
     },
     "docs/results/qev-api-2026-10-21/http-performance.csv": {
-      "bytes": 888,
-      "sha256": "58cd82c67379fff7acbfcb77bc8abdc2d78f04f7646fbd6d04cb42881db07741"
+      "bytes": 883,
+      "sha256": "99ace63be3cc893d45ed11d51e31b8705b594c572d08b0e6016442464e388f8f"
     },
     "docs/results/qev-api-2026-10-21/concurrency.csv": {
-      "bytes": 1167,
-      "sha256": "ead67bcc115e704e9c0003d11d57197d1412318c5237159058c3f51c44f2d2bc"
+      "bytes": 1160,
+      "sha256": "ee2c300479dab726d6c0311d53c1cace10cc1277487c6b5818ffab42dfdb2cdd"
     },
     "docs/results/qev-api-2026-10-21/http-matrix.json": {
       "bytes": 7419,
@@ -78,7 +78,29 @@
     "docs/results/qev-api-2026-10-21/full-tokenizer-parity.json": {
       "bytes": 91,
       "sha256": "13aaf91360ed3b0d7f6d3bfc3d93364651ed7defba534697534b0442d5bdc77b"
+    },
+    "src/runtime/prefill.inl": {
+      "bytes": 28563,
+      "sha256": "540dfdc16559d032543cdb23e2b13eabcc47efc3ddc72b66573a20e78c9b1a8e"
+    },
+    "src/runtime/cpu_engine.inl": {
+      "bytes": 28874,
+      "sha256": "83a7a8feb1a3404ae33606e665d96d6aa009b81403e5b11cf71f6dec84f14437"
+    },
+    "src/cpu/q4_dot4_prefill_avx512.cpp": {
+      "bytes": 5910,
+      "sha256": "aa09def7800745e99e6403743bacdcbbcf6c88167522d629bf532c6d147db8fa"
+    },
+    "src/cpu/q4_dot4.cpp": {
+      "bytes": 5386,
+      "sha256": "56b35f79e8679aa7e770042687952038ee26980c8d48270a7778a80d1faa47c7"
+    },
+    "CMakeLists.txt": {
+      "bytes": 13175,
+      "sha256": "6e361cf69db90dee519f3407d643786df12d6a044828f7451c6cb896d7a0b021"
     }
   },
-  "concurrency_protocol": "native only, distinct single-letter state prefixes; 1/4/8/16 concurrent requests; 8 inference threads; no cross-request prefill batching"
+  "concurrency_protocol": "native only, distinct single-letter state prefixes; 1/4/8/16 concurrent requests; 8 inference threads; no cross-request prefill batching",
+  "engine_revision": "1f5a6e42ba2b37eb930c06b7f3315e1701c193ed",
+  "inherited_upstream_revision": "560847d021cd10a70a08d2a55ef7ca32af888415"
 }

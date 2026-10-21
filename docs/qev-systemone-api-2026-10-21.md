@@ -103,9 +103,9 @@ throughput is compared with the B1 baselines of another engine.
 
 | Server / checkpoint | 74 tokens, median ms [min, max] | 579 tokens, median ms [min, max] |
 | --- | ---: | ---: |
-| Native H128/Q4-G32-DOT4, calibrated | 60.99 [50.66, 62.25] | 249.23 [221.57, 250.46] |
-| llama.cpp CPU BF16 | 88.21 [79.48, 88.84] | 549.55 [483.58, 578.41] |
-| llama.cpp CPU Q8_0 | 100.24 [93.74, 107.36] | 756.60 [693.91, 771.09] |
+| Native H128/Q4-G32-DOT4, calibrated | 49.37 [46.86, 52.72] | 211.11 [209.85, 211.45] |
+| llama.cpp CPU BF16 | 77.22 [76.18, 78.85] | 496.02 [483.28, 577.15] |
+| llama.cpp CPU Q8_0 | 93.84 [93.41, 97.10] | 784.47 [730.64, 839.93] |
 
 ## Native Q4 concurrency
 
@@ -116,20 +116,27 @@ three measured groups (latency uses each group's mean).
 
 | Concurrent requests | 76-token decisions/s | Mean request latency ms | 581-token decisions/s | Mean request latency ms |
 | ---: | ---: | ---: | ---: | ---: |
-| 1 | 19.11 | 52.33 | 4.41 | 226.95 |
-| 4 | 20.61 | 169.31 | 4.63 | 809.98 |
-| 8 | 21.95 | 315.40 | 4.60 | 1622.96 |
-| 16 | 24.19 | 559.36 | 4.59 | 3238.25 |
+| 1 | 20.87 | 47.93 | 4.76 | 209.90 |
+| 4 | 24.75 | 143.49 | 5.01 | 749.66 |
+| 8 | 26.16 | 263.01 | 5.11 | 1454.89 |
+| 16 | 27.15 | 502.14 | 5.04 | 2940.84 |
 
-For the short fixture, concurrency 16 increases observed throughput by 26.6%,
-while mean request latency rises from 52 ms to 559 ms. For the longer fixture,
-throughput changes by only 4.2% (4.41 to 4.59 decisions/s), while mean latency
-rises from 227 ms to 3,238 ms. With only three groups, the small long-prompt
-throughput difference should not be treated as a robust improvement. These
-measurements support bounded queueing and latency-aware admission; the current
-server does not get a decode-batching speedup on decision requests. The cause
-of the modest throughput changes is not isolated by this experiment.
+For the short fixture, concurrency 16 increases observed throughput by 30.1%,
+while mean request latency rises from 48 ms to 502 ms. For the longer fixture,
+throughput changes by 5.8% (4.76 to 5.04 decisions/s), while mean latency
+rises from 210 ms to 2,941 ms. With only three groups, the modest long-prompt
+throughput difference is not a broad scaling claim. These measurements support
+bounded queueing and latency-aware admission; the current server does not get
+a decode-batching speedup on decision requests. The cause of the throughput
+changes is not isolated by this experiment.
 
+The final measurements integrate upstream CPU optimizations at
+`560847d021cd10a70a08d2a55ef7ca32af888415`; measured engine source is
+`1f5a6e4` (full revision in provenance). Earlier runs remain local, and are not
+pooled with this run. Model weights and tokenization are unchanged. The
+post-integration HTTP smoke check still has zero rounded probability delta
+to the original quality study; the full quality panel was not reselected or
+refitted after integration.
 
 ## Reproduction and evidence
 
@@ -148,7 +155,7 @@ ctest --test-dir build-linux --output-on-failure
   --study-logits benchmarks/qev-calibration-2026-10-21/smoke-1024-block128.tsv
 .cache/powershell/pwsh -NoProfile -File scripts/benchmark-inference-seq.ps1 \
   -Matrix benchmarks/qev-api-2026-10-21/http-final-matrix.json \
-  -OutputDir benchmarks/qev-api-2026-10-21/http-final -Runs 3 -WarmupRuns 1 -Affinity 255
+  -OutputDir benchmarks/qev-api-2026-10-21/http-integrated -Runs 3 -WarmupRuns 1 -Affinity 255
 ```
 
 Use fresh output paths when reproducing. The optional native study target is

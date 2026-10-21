@@ -91,7 +91,9 @@ questions / 9,133 requests**, per-question encoding, unchanged temperatures.
 Macro accuracy is the upstream scorer's average across scored skills; this is
 not the model card's Benchmark Heaven score. BF16/Q8 scoring uses **llama.cpp
 CUDA** at revision `9b56ccf00d755b0bf780140f6352a67db1ac0378`; our Q4 uses
-the **native CPU engine**. A separate 225-question CPU/CUDA reference check is
+the **native CPU engine** in the frozen study snapshot. The serving revision
+includes subsequent upstream CPU optimizations; its 19 smoke questions still
+match the original rounded probabilities exactly. A separate 225-question CPU/CUDA reference check is
 included in the study. Sizes below are tensor payload, decimal MB.
 
 | Representation / scoring backend | Tensor MB | Macro accuracy | Mean option KL to BF16 |
@@ -126,14 +128,14 @@ from the quality scoring above.
 
 | Server / checkpoint | 74 input tokens | 579 input tokens |
 | --- | ---: | ---: |
-| **Native / calibrated H128/Q4-G32-DOT4** | **60.99 ms** | **249.23 ms** |
-| llama.cpp CPU / BF16 | 88.21 ms | 549.55 ms |
-| llama.cpp CPU / Q8_0 | 100.24 ms | 756.60 ms |
+| **Native / calibrated H128/Q4-G32-DOT4** | **49.37 ms** | **211.11 ms** |
+| llama.cpp CPU / BF16 | 77.22 ms | 496.02 ms |
+| llama.cpp CPU / Q8_0 | 93.84 ms | 784.47 ms |
 
-The short Q4 request corresponds to **16.40 serial decisions/s**; the longer
-request to 4.01/s. These are B1 observations, not concurrent serving throughput. The separate
-concurrency workload reaches 24.19 decisions/s with 16 short requests, but mean
-request latency rises to 559 ms; longer requests show little throughput gain.
+The short Q4 request corresponds to **20.25 serial decisions/s**; the longer
+request to 4.74/s. These are B1 observations, not concurrent serving throughput. The separate
+concurrency workload reaches 27.15 decisions/s with 16 short requests, but mean
+request latency rises to 502 ms; longer requests show little throughput gain.
 CPU results depend on prompt length, hardware and kernels; the BF16/Q8 ordering
 above is measured rather than inferred from bit width.
 
