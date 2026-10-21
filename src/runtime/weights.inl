@@ -42,6 +42,7 @@ struct CpuExecutionContext {
   cpu::Q8_0Backend attention_backend = cpu::Q8_0Backend::auto_select;
   int query_tile = 8, kv_tile = 64;
   std::size_t linear_prepare_min_tokens = 128;
+  std::size_t mlp_prepare_min_tokens = 0;
   CpuDecodeWorkspace decode;
   CpuPrefillWorkspace prefill;
   std::unique_ptr<cpu::CpuExecutor> executor;
@@ -188,6 +189,11 @@ struct Q4H128TransformJob {
   cpu::Q8_0Backend backend = cpu::Q8_0Backend::auto_select;
 };
 
+struct MlpPrepareProducer {
+  const float * gate_up = nullptr;
+  float * hidden = nullptr;
+};
+
 struct Q4H128PreparePackedJob {
   const float * input = nullptr;
   cpu::Q8_0BlockX4 * output = nullptr;
@@ -196,6 +202,7 @@ struct Q4H128PreparePackedJob {
   std::uint64_t sign_seed = 0;
   cpu::Q8_0Backend backend = cpu::Q8_0Backend::auto_select;
   const cpu::Q4H128SignBlock * signs = nullptr;
+  const MlpPrepareProducer * producer = nullptr;
 };
 
 void run_q4_h128_transform_rows(
@@ -217,6 +224,15 @@ void run_q4_h128_prepare_packed_tiles(
   const std::size_t tile_begin,
   const std::size_t tile_end) noexcept {
   auto & job = *static_cast<Q4H128PreparePackedJob *>(opaque_context);
+  if (job.producer) {
+    static_cast<void>(cpu::q4_h128_prepare_silu_activations_4(
+      job.producer->gate_up + tile_begin * 8 * job.columns,
+      job.producer->hidden + tile_begin * 4 * job.columns,
+      job.output + tile_begin * job.blocks_per_vector,
+      (tile_end - tile_begin) * 4, job.columns, job.sign_seed,
+      job.backend, job.signs));
+    return;
+  }
   static_cast<void>(cpu::q4_h128_prepare_activations_4(
     job.input + tile_begin * cpu::q8_0_packed_vectors * job.columns,
     job.output + tile_begin * job.blocks_per_vector,
@@ -1180,7 +1196,8 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
   const std::vector<float> & inputs,
   const std::size_t batch_size,
   std::vector<float> & out,
-  std::string & error_message) {
+  std::string & error_message,
+  const MlpPrepareProducer * producer = nullptr) {
   if (!w.is_cpu_quantized() || w.shape.size() != 2 || cpu_context == nullptr) {
     error_message = "CPU batched matmul requires a 2D Q4_0/Q8_0 tensor with a runtime.";
     return false;
@@ -1272,7 +1289,7 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
         if (cpu_context->executor != nullptr && vector_tiles > 1) {
           Q4H128PreparePackedJob prepare_job{
             inputs.data(), packed.data(), cols, blocks_per_row,
-            w.q4_h128_sign_seed, w.q8_0_backend, w.q4_h128_signs.data(),
+            w.q4_h128_sign_seed, w.q8_0_backend, w.q4_h128_signs.data(), producer,
           };
           const cpu::CpuExecutorStatus status =
             cpu_context->executor->parallel_for_rows(
@@ -1283,6 +1300,11 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
               cpu::cpu_executor_status_name(status) + ".";
             return false;
           }
+        } else if (producer) {
+          Q4H128PreparePackedJob job{inputs.data(), packed.data(), cols,
+            blocks_per_row, w.q4_h128_sign_seed, w.q8_0_backend,
+            w.q4_h128_signs.data(), producer};
+          run_q4_h128_prepare_packed_tiles(&job, 0, vector_tiles);
         } else if (!cpu::q4_h128_prepare_activations_4(
                      inputs.data(), packed.data(), packed_vector_count, cols,
                      w.q4_h128_sign_seed, w.q8_0_backend, w.q4_h128_signs.data())) {
@@ -1321,6 +1343,12 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
       auto & prepared = cpu_context->prepared_q4_input;
       prepared.resize(tail_vector_count * blocks_per_row);
       for (std::size_t token = 0; token < tail_vector_count; ++token) {
+        if (producer) {
+          const auto row = packed_vector_count + token;
+          cpu::silu_mul_f32(producer->gate_up + row * 2 * cols,
+            producer->gate_up + row * 2 * cols + cols,
+            producer->hidden + row * cols, cols, w.q8_0_backend);
+        }
         if (!prepare_q4_decode_activation(w,
               inputs.data() + (packed_vector_count + token) * cols,
               cols, prepared.data() + token * blocks_per_row, error_message)) {

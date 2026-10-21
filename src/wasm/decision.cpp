@@ -66,6 +66,7 @@ const char *failure(const std::exception &e) {
 }
 void apply_tuning(CpuEngineConfig &config) {
   config.linear_prepare_min_tokens = tuning.value("linear_prepare_min_tokens", std::size_t{128});
+  config.mlp_prepare_min_tokens = tuning.value("mlp_prepare_min_tokens", std::size_t{0});
   config.executor_spin_count = tuning.value("executor_spin_count", std::size_t{1024U * 128U * 50U});
 }
 }
@@ -75,7 +76,7 @@ const char *qev_tune(const char *body) try {
   auto options = Json::parse(body);
   systemone::require(options.is_object(), "Tuning must be an object");
   for (const auto &[key, value] : options.items()) {
-    systemone::require(key == "linear_prepare_min_tokens" || key == "executor_spin_count", "Unknown tuning option: " + key);
+    systemone::require(key == "linear_prepare_min_tokens" || key == "executor_spin_count" || key == "mlp_prepare_min_tokens", "Unknown tuning option: " + key);
     systemone::require(value.is_number_unsigned() && value.get<std::size_t>() <= 67108864, "Invalid tuning value");
   }
   tuning = std::move(options);

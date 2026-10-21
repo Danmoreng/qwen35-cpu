@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 #include "qwen35x/cpu/q4_0.h"
 #include "qwen35x/cpu/q4_h128.h"
+#include "qwen35x/cpu/activation.h"
 #include "../src/cpu/q4_0_internal.h"
 #include <bit>
 #include <cmath>
@@ -57,5 +58,19 @@ int main() {
          !q4_h128_prepare_activations_4(input.data(),reference.data(),4,width,seed,Q8_0Backend::scalar))return 3;
       for(std::size_t b=0;b<actual.size();++b)if(!equal_fields(actual[b],reference[b],4))return 4;
   }
-  std::cout<<"WASM Q8 exact scalar parity: rounding neighbours, exceptional inputs, X1/X4, H128 widths/seeds passed\n";
+  for (std::size_t width : {128U, 1024U, 3584U})
+    for (std::size_t count : {4U, 8U, 12U, 32U}) {
+      std::vector<float> gate_up(width*count*2), hidden(width*count), reference(hidden.size());
+      for(auto &x:gate_up)x=(static_cast<int>(rng()%20001)-10000)*.001f;
+      std::vector<Q8_0BlockX4> actual(width/32*count/4), expected(actual.size());
+      for(std::size_t t=0;t<count;++t)
+        silu_mul_f32(gate_up.data()+t*2*width,gate_up.data()+t*2*width+width,
+                     reference.data()+t*width,width);
+      if(!q4_h128_prepare_activations_4(reference.data(),expected.data(),count,width) ||
+         !q4_h128_prepare_silu_activations_4(gate_up.data(),hidden.data(),actual.data(),
+           count,width,q4_h128_default_sign_seed,Q8_0Backend::auto_select)) return 5;
+      if(std::memcmp(hidden.data(),reference.data(),hidden.size()*sizeof(float)))return 6;
+      for(std::size_t b=0;b<actual.size();++b)if(!equal_fields(actual[b],expected[b],4))return 7;
+    }
+  std::cout<<"WASM Q8 exact scalar parity: rounding neighbours, exceptional inputs, X1/X4, H128 widths/seeds and fused SiLU fields passed\n";
 }

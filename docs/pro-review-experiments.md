@@ -83,3 +83,22 @@ settings and ordinary Chromium flags. Compute medians were
 builds and native dispatch remain unchanged. Raw profiles contain binary hashes
 and the original baseline archive is retained. Compact results: `results/
 qev-pro-review-2026-10-21/A-packed-q8.json`.
+
+## C: MLP SiLU production inside H128 prepare workers
+
+The optional producer runs the existing SiLU function for each four-token tile
+immediately before H128/Q8 preparation in the same worker job. Disjoint hidden
+rows remain caller-owned. Single-tile and 1--3-token tail paths produce their
+rows explicitly. Native execution is unchanged; eligibility is limited to the
+WASM H128/DOT4 path. The threshold is independently controlled by
+`mlp_prepare_min_tokens` (zero disables it).
+
+Node and actual Chromium tests compare hidden FP32 bits and packed fields
+against the serial pipeline across widths and tile counts. The complete model
+suite preserves the 24 questions' FP32 option-logit bits. Thresholds 0/4/8/16/32
+were measured in an alternating resident-model grid, three runs plus warmup.
+The grid is promising but variable; retain zero until fresh-process confirmation.
+The fused activation work belongs to prepare time; a near-zero serial activation
+subtimer must not be interpreted as eliminating all SiLU cost. Raw evidence:
+`C-quality` and `C-performance`; medians in `results/qev-pro-review-2026-10-21/
+C-mlp.json`.

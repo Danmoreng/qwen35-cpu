@@ -110,4 +110,12 @@ void q4_h128_quantize_transformed(
   Q8_0Backend backend = Q8_0Backend::auto_select,
   const Q4H128SignBlock * signs = nullptr) noexcept;
 
+// MLP gate/up rows have stride 2*column_count. Produce the same SiLU hidden
+// rows before preparing each four-token tile; hidden remains caller-owned.
+[[nodiscard]] bool q4_h128_prepare_silu_activations_4(
+  const float * gate_up, float * hidden, Q8_0BlockX4 * output,
+  std::size_t vector_count, std::size_t column_count,
+  std::uint64_t sign_seed, Q8_0Backend backend,
+  const Q4H128SignBlock * signs = nullptr) noexcept;
+
 } // namespace qwen35x::cpu

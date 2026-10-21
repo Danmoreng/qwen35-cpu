@@ -638,9 +638,16 @@ bool run_forward_cpu_q8_batch(CpuExecutionContext *cpu_context,
       }
       return false;
     }
+    const bool fused_mlp_prepare = cpu_context && cpu_context->mlp_prepare_min_tokens &&
+      batch_size >= cpu_context->mlp_prepare_min_tokens && batch_size >= 4 &&
+      layer.mlp_down.uses_q4_h128_transform && layer.mlp_down.is_q4_0() &&
+      layer.mlp_down.q4_dot4 && !layer.mlp_down.packed_q4_0_blocks.empty() &&
+      layer.mlp_down.g16_tiles.empty() && layer.mlp_down.gguf_parts.empty() &&
+      layer.mlp_down.q8_0_backend == cpu::Q8_0Backend::wasm_simd;
+    MlpPrepareProducer producer{gate_up.data(), mlp_hidden.data()};
     std::chrono::steady_clock::time_point activation_start;
     if (cpu_context && cpu_context->stages) activation_start=std::chrono::steady_clock::now();
-    for (std::size_t token = 0; token < batch_size; ++token) {
+    for (std::size_t token = 0; !fused_mlp_prepare && token < batch_size; ++token) {
       const float * gate = gate_up.data() + token * 2 * intermediate;
       cpu::silu_mul_f32(
         gate,
@@ -654,7 +661,8 @@ bool run_forward_cpu_q8_batch(CpuExecutionContext *cpu_context,
       stage.activation_ms=elapsed_ms(activation_start); cpu_context->stages->push_back(stage);
     }
     if (!matmul_2d_quantized_batch(cpu_context,
-          layer.mlp_down, mlp_hidden, batch_size, mlp_output, error_message)) {
+          layer.mlp_down, mlp_hidden, batch_size, mlp_output, error_message,
+          fused_mlp_prepare ? &producer : nullptr)) {
       return false;
     }
     cpu::add_f32(

@@ -1,4 +1,5 @@
 #include "qwen35x/cpu/q4_h128.h"
+#include "qwen35x/cpu/activation.h"
 
 #include "q4_h128_internal.h"
 #include "q4_0_internal.h"
@@ -395,6 +396,24 @@ bool q4_h128_prepare_activations_4(
         }
       }
     }
+  }
+  return true;
+}
+
+bool q4_h128_prepare_silu_activations_4(
+  const float * gate_up, float * hidden, Q8_0BlockX4 * output,
+  std::size_t vector_count, std::size_t columns, std::uint64_t seed,
+  Q8_0Backend backend, const Q4H128SignBlock * signs) noexcept {
+  if (!gate_up || !hidden || !output || !vector_count || vector_count % 4 ||
+      !columns || columns % 128) return false;
+  for (std::size_t tile = 0; tile < vector_count; tile += 4) {
+    for (std::size_t token = tile; token < tile + 4; ++token)
+      silu_mul_f32(gate_up + token * 2 * columns,
+                   gate_up + token * 2 * columns + columns,
+                   hidden + token * columns, columns, backend);
+    if (!q4_h128_prepare_activations_4(hidden + tile * columns,
+          output + tile / 4 * (columns / 32), 4, columns, seed, backend, signs))
+      return false;
   }
   return true;
 }

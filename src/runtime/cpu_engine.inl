@@ -473,6 +473,7 @@ CpuEngine::create(std::shared_ptr<const CpuModel> model,
   rt.decode_stages = config.operation_profile;
   rt.stages = config.prefill_profile;
   rt.linear_prepare_min_tokens = config.linear_prepare_min_tokens;
+  rt.mlp_prepare_min_tokens = config.mlp_prepare_min_tokens;
   rt.automatic_attention = true;
   rt.attention_gqa = true;
   rt.attention_backend = impl->model->impl_->backend;

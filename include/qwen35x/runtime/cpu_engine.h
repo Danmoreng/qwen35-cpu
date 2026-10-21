@@ -50,6 +50,7 @@ struct CpuEngineConfig {
   std::size_t prefill_chunk_size = 0;
   // Explicit tuning controls; defaults preserve the established execution path.
   std::size_t linear_prepare_min_tokens = 128;
+  std::size_t mlp_prepare_min_tokens = 0;
   std::size_t executor_spin_count = 1024U * 128U * 50U;
   // Shared vocabulary-tile reduction for all-greedy batches. False preserves
   // the full-logits reference. General sampling/callbacks always use logits.
