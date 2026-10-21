@@ -247,3 +247,8 @@ Machine-readable results are in
 Raw profiles, outputs, commands, hashes and screenshots remain locally in
 ignored `benchmarks/qev-wasm-local/`; neither the implementation nor these
 WASM artifacts have been published.
+
+For the direct CPU/WASM comparison against llama.cpp Q8_0, Q4_0 and Q4_K_M,
+plus Transformers.js / ONNX Runtime, see
+[browser engine comparison](wasm-browser-comparison.md). Those measurements
+use per-shape warmups and retain both compute and worker timing scopes.

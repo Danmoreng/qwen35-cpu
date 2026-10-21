@@ -1,0 +1,475 @@
+{
+  "scope": "Three fixed choice questions, not a full accuracy benchmark. Native llama.cpp CPU BF16 reference. Differences include weight quantization and backend numerics.",
+  "rows": [
+    {
+      "engine": "llama.cpp bf16",
+      "request": "Short routing",
+      "scoring_backend": "native llama.cpp CPU /v1/systemone",
+      "model_file_bytes": 1516746912,
+      "tensor_payload_bytes": 1505783040,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0,
+      "probabilities": {
+        "account": 0.012702995427517393,
+        "billing": 0.9726264283501783,
+        "sales": 0.00735974132305061,
+        "tech": 0.00731083489925369
+      }
+    },
+    {
+      "engine": "llama.cpp bf16",
+      "request": "Snake",
+      "scoring_backend": "native llama.cpp CPU /v1/systemone",
+      "model_file_bytes": 1516746912,
+      "tensor_payload_bytes": 1505783040,
+      "choice": "left",
+      "reference_choice": "left",
+      "max_abs_probability_delta_vs_bf16": 0,
+      "probabilities": {
+        "up": 0.08701144609271404,
+        "left": 0.7064976773396272,
+        "right": 0.2064908765676586
+      }
+    },
+    {
+      "engine": "llama.cpp bf16",
+      "request": "Long routing",
+      "scoring_backend": "native llama.cpp CPU /v1/systemone",
+      "model_file_bytes": 1516746912,
+      "tensor_payload_bytes": 1505783040,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0,
+      "probabilities": {
+        "account": 0.018030209297936434,
+        "billing": 0.9629126204652677,
+        "sales": 0.0077865020403070995,
+        "tech": 0.011270668196488764
+      }
+    },
+    {
+      "engine": "Transformers.js q8",
+      "request": "Short routing",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 1165946356,
+      "tensor_payload_bytes": 1165371392,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.00010652738582095367,
+      "probabilities": {
+        "account": 0.012744852452538591,
+        "billing": 0.9725199009643574,
+        "sales": 0.007403204057849912,
+        "tech": 0.007332042525253979
+      }
+    },
+    {
+      "engine": "Transformers.js q8",
+      "request": "Snake",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 1165946356,
+      "tensor_payload_bytes": 1165371392,
+      "choice": "left",
+      "reference_choice": "left",
+      "max_abs_probability_delta_vs_bf16": 0.0014030535412913325,
+      "probabilities": {
+        "up": 0.08655418210475488,
+        "left": 0.7079007308809185,
+        "right": 0.20554508701432667
+      }
+    },
+    {
+      "engine": "Transformers.js q8",
+      "request": "Long routing",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 1165946356,
+      "tensor_payload_bytes": 1165371392,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.0001843677179062357,
+      "probabilities": {
+        "account": 0.018020498009557313,
+        "billing": 0.9630475783912986,
+        "sales": 0.007845623120561385,
+        "tech": 0.011086300478582528
+      }
+    },
+    {
+      "engine": "llama.cpp Q8_0",
+      "request": "Short routing",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 811845792,
+      "tensor_payload_bytes": 800881920,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.00027706967098850566,
+      "probabilities": {
+        "account": 0.012876191061852813,
+        "billing": 0.9723493586791898,
+        "sales": 0.007406757365523969,
+        "tech": 0.007367692893433384
+      }
+    },
+    {
+      "engine": "llama.cpp Q8_0 native",
+      "request": "Short routing",
+      "scoring_backend": "native llama.cpp CPU /v1/systemone",
+      "model_file_bytes": 811845792,
+      "tensor_payload_bytes": 800881920,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 4.118537046726711e-05,
+      "probabilities": {
+        "account": 0.012671995971239046,
+        "billing": 0.9726627723637572,
+        "sales": 0.007318555952583343,
+        "tech": 0.007346675712420262
+      }
+    },
+    {
+      "engine": "llama.cpp Q8_0",
+      "request": "Snake",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 811845792,
+      "tensor_payload_bytes": 800881920,
+      "choice": "left",
+      "reference_choice": "left",
+      "max_abs_probability_delta_vs_bf16": 0.028523996170124466,
+      "probabilities": {
+        "up": 0.08080923160082046,
+        "left": 0.7350216735097517,
+        "right": 0.18416909488942787
+      }
+    },
+    {
+      "engine": "llama.cpp Q8_0 native",
+      "request": "Snake",
+      "scoring_backend": "native llama.cpp CPU /v1/systemone",
+      "model_file_bytes": 811845792,
+      "tensor_payload_bytes": 800881920,
+      "choice": "left",
+      "reference_choice": "left",
+      "max_abs_probability_delta_vs_bf16": 0.005785183126136184,
+      "probabilities": {
+        "up": 0.0839398536500208,
+        "left": 0.7037840866561844,
+        "right": 0.2122760596937948
+      }
+    },
+    {
+      "engine": "llama.cpp Q8_0",
+      "request": "Long routing",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 811845792,
+      "tensor_payload_bytes": 800881920,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.0021213168266791538,
+      "probabilities": {
+        "account": 0.01865764629198831,
+        "billing": 0.9607913036385886,
+        "sales": 0.0082418955619901,
+        "tech": 0.012309154507433091
+      }
+    },
+    {
+      "engine": "llama.cpp Q8_0 native",
+      "request": "Long routing",
+      "scoring_backend": "native llama.cpp CPU /v1/systemone",
+      "model_file_bytes": 811845792,
+      "tensor_payload_bytes": 800881920,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.0003372974392578769,
+      "probabilities": {
+        "account": 0.017692911858678557,
+        "billing": 0.9632420782568766,
+        "sales": 0.0078964378194368,
+        "tech": 0.01116857206500805
+      }
+    },
+    {
+      "engine": "Transformers.js q4",
+      "request": "Short routing",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 647133030,
+      "tensor_payload_bytes": 646562816,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.008490841129321636,
+      "probabilities": {
+        "account": 0.01972341904584529,
+        "billing": 0.9641355872208567,
+        "sales": 0.009067272823530738,
+        "tech": 0.007073720909767403
+      }
+    },
+    {
+      "engine": "Transformers.js q4",
+      "request": "Snake",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 647133030,
+      "tensor_payload_bytes": 646562816,
+      "choice": "left",
+      "reference_choice": "left",
+      "max_abs_probability_delta_vs_bf16": 0.13133904537484084,
+      "probabilities": {
+        "up": 0.07248556253756866,
+        "left": 0.5896845155199318,
+        "right": 0.33782992194249944
+      }
+    },
+    {
+      "engine": "Transformers.js q4",
+      "request": "Long routing",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 647133030,
+      "tensor_payload_bytes": 646562816,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.031875273608386934,
+      "probabilities": {
+        "account": 0.037680896863812596,
+        "billing": 0.9310373468568808,
+        "sales": 0.013411325987680177,
+        "tech": 0.01787043029162634
+      }
+    },
+    {
+      "engine": "llama.cpp Q4_K_M",
+      "request": "Short routing",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 529299616,
+      "tensor_payload_bytes": 518335744,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.01989768667270342,
+      "probabilities": {
+        "account": 0.02890376686880845,
+        "billing": 0.9527287416774749,
+        "sales": 0.00938246119570112,
+        "tech": 0.008985030258015574
+      }
+    },
+    {
+      "engine": "llama.cpp Q4_K_M native",
+      "request": "Short routing",
+      "scoring_backend": "native llama.cpp CPU /v1/systemone",
+      "model_file_bytes": 529299616,
+      "tensor_payload_bytes": 518335744,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.018572355880416502,
+      "probabilities": {
+        "account": 0.028527492261429217,
+        "billing": 0.9540540724697618,
+        "sales": 0.009075471037833838,
+        "tech": 0.008342964230975365
+      }
+    },
+    {
+      "engine": "llama.cpp Q4_K_M",
+      "request": "Snake",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 529299616,
+      "tensor_payload_bytes": 518335744,
+      "choice": "left",
+      "reference_choice": "left",
+      "max_abs_probability_delta_vs_bf16": 0.03799316788204821,
+      "probabilities": {
+        "up": 0.08962016880304172,
+        "left": 0.668504509457579,
+        "right": 0.24187532173937923
+      }
+    },
+    {
+      "engine": "llama.cpp Q4_K_M native",
+      "request": "Snake",
+      "scoring_backend": "native llama.cpp CPU /v1/systemone",
+      "model_file_bytes": 529299616,
+      "tensor_payload_bytes": 518335744,
+      "choice": "left",
+      "reference_choice": "left",
+      "max_abs_probability_delta_vs_bf16": 0.07594323309751172,
+      "probabilities": {
+        "up": 0.0959569599660757,
+        "left": 0.6305544442421155,
+        "right": 0.27348859579180895
+      }
+    },
+    {
+      "engine": "llama.cpp Q4_K_M",
+      "request": "Long routing",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 529299616,
+      "tensor_payload_bytes": 518335744,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.002589069651437313,
+      "probabilities": {
+        "account": 0.020061862665152884,
+        "billing": 0.9639366549229872,
+        "sales": 0.007319883866808417,
+        "tech": 0.00868159854505145
+      }
+    },
+    {
+      "engine": "llama.cpp Q4_K_M native",
+      "request": "Long routing",
+      "scoring_backend": "native llama.cpp CPU /v1/systemone",
+      "model_file_bytes": 529299616,
+      "tensor_payload_bytes": 518335744,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.0037693163362677003,
+      "probabilities": {
+        "account": 0.021026807179970786,
+        "billing": 0.9646685533448457,
+        "sales": 0.006803287614962414,
+        "tech": 0.0075013518602210635
+      }
+    },
+    {
+      "engine": "Custom H128/Q4-G32-DOT4",
+      "request": "Short routing",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 424964864,
+      "tensor_payload_bytes": 424934656,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.008526428350178361,
+      "probabilities": {
+        "account": 0.015,
+        "billing": 0.9641,
+        "sales": 0.0109,
+        "tech": 0.0101
+      }
+    },
+    {
+      "engine": "llama.cpp Q4_0",
+      "request": "Short routing",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 435898528,
+      "tensor_payload_bytes": 424934656,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.006554394616901882,
+      "probabilities": {
+        "account": 0.016209565143948237,
+        "billing": 0.9660720337332764,
+        "sales": 0.009679438962044207,
+        "tech": 0.008038962160730984
+      }
+    },
+    {
+      "engine": "llama.cpp Q4_0 native",
+      "request": "Short routing",
+      "scoring_backend": "native llama.cpp CPU /v1/systemone",
+      "model_file_bytes": 435898528,
+      "tensor_payload_bytes": 424934656,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.008020829919775485,
+      "probabilities": {
+        "account": 0.01614661467548097,
+        "billing": 0.9646055984304028,
+        "sales": 0.010436731873667282,
+        "tech": 0.008811055020449059
+      }
+    },
+    {
+      "engine": "Custom H128/Q4-G32-DOT4",
+      "request": "Snake",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 424964864,
+      "tensor_payload_bytes": 424934656,
+      "choice": "left",
+      "reference_choice": "left",
+      "max_abs_probability_delta_vs_bf16": 0.04569767733962715,
+      "probabilities": {
+        "up": 0.0906,
+        "left": 0.6608,
+        "right": 0.2486
+      }
+    },
+    {
+      "engine": "llama.cpp Q4_0",
+      "request": "Snake",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 435898528,
+      "tensor_payload_bytes": 424934656,
+      "choice": "left",
+      "reference_choice": "left",
+      "max_abs_probability_delta_vs_bf16": 0.08909944509235446,
+      "probabilities": {
+        "up": 0.06558105465008342,
+        "left": 0.7955971224319817,
+        "right": 0.1388218229179348
+      }
+    },
+    {
+      "engine": "llama.cpp Q4_0 native",
+      "request": "Snake",
+      "scoring_backend": "native llama.cpp CPU /v1/systemone",
+      "model_file_bytes": 435898528,
+      "tensor_payload_bytes": 424934656,
+      "choice": "left",
+      "reference_choice": "left",
+      "max_abs_probability_delta_vs_bf16": 0.08929558297974804,
+      "probabilities": {
+        "up": 0.07055667563583685,
+        "left": 0.7957932603193753,
+        "right": 0.13365006404478794
+      }
+    },
+    {
+      "engine": "Custom H128/Q4-G32-DOT4",
+      "request": "Long routing",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 424964864,
+      "tensor_payload_bytes": 424934656,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.016012620465267746,
+      "probabilities": {
+        "account": 0.029,
+        "billing": 0.9469,
+        "sales": 0.0106,
+        "tech": 0.0135
+      }
+    },
+    {
+      "engine": "llama.cpp Q4_0",
+      "request": "Long routing",
+      "scoring_backend": "browser CPU/WASM",
+      "model_file_bytes": 435898528,
+      "tensor_payload_bytes": 424934656,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.003053447548141207,
+      "probabilities": {
+        "account": 0.02108365684607764,
+        "billing": 0.960054401162861,
+        "sales": 0.008482594325858446,
+        "tech": 0.010379347665202942
+      }
+    },
+    {
+      "engine": "llama.cpp Q4_0 native",
+      "request": "Long routing",
+      "scoring_backend": "native llama.cpp CPU /v1/systemone",
+      "model_file_bytes": 435898528,
+      "tensor_payload_bytes": 424934656,
+      "choice": "billing",
+      "reference_choice": "billing",
+      "max_abs_probability_delta_vs_bf16": 0.002964595520212443,
+      "probabilities": {
+        "account": 0.020762211584978398,
+        "billing": 0.9599480249450553,
+        "sales": 0.008794736514457627,
+        "tech": 0.010495026955508704
+      }
+    }
+  ]
+}

@@ -1,0 +1,885 @@
+{
+  "date": "2026-10-21",
+  "base_git_revision": "ca044e37ec59a80ce4f11d2800182af4fc15331b",
+  "branch": "codex/qev-wasm-local",
+  "source_state": "Local benchmark implementation; source hashes in sequential-runner metadata and browser profiles",
+  "cpu": "AMD Ryzen 9 9955HX3D 16-Core Processor",
+  "logical_cpus": 32,
+  "threads": 8,
+  "affinity_mask": 255,
+  "verified_browser_cpu_allowed_list": "0-7",
+  "browser": "156.0.8078.4",
+  "node": "v26.11.1",
+  "transformers_js": "4.3.1",
+  "onnxruntime_web": "1.31.0-dev.20260914-8d85527a0",
+  "onnxruntime_python": "1.31.0",
+  "onnx_python": "1.23.2",
+  "emscripten": "emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 6.0.13 (e13ee988ce3d87a738dd8f3661d02223308c412a)\nCopyright (C) 2026 the Emscripten authors (see AUTHORS.txt)\nThis is free and open source software under the MIT license.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "emsdk_revision": "d7b4130688bfa348392b921ab04015aa15c4f154",
+  "llama_revision": "9b56ccf00d755b0bf780140f6352a67db1ac0378",
+  "qev_source": {
+    "revision": "cdc35ee1825c3188ff72f34de10da6580d8f2693",
+    "weights": {
+      "rfilename": "model.safetensors",
+      "blobId": "2f2b59908ff343c0e7f1a5bf0f8dcecaf7f86557",
+      "size": 1706035272,
+      "lfs": {
+        "sha256": "d33a719c0eedc34a530879e3840ddf0a0769b5060a987aed24e84e1170b8beb5",
+        "size": 1706035272,
+        "pointerSize": 135
+      }
+    },
+    "local_sha256": "d33a719c0eedc34a530879e3840ddf0a0769b5060a987aed24e84e1170b8beb5"
+  },
+  "onnx_template": "onnx-community/Qwen3.5-0.8B-ONNX-OPT",
+  "onnx_template_revision": "9a4c21d8f724176b0a7edaaed36303044451886e",
+  "assets": {
+    "Custom H128/Q4-G32-DOT4": {
+      "file_bytes": 424964864,
+      "tensor_payload_bytes": 424934656,
+      "paths": [
+        "dist/qev-h128-public-final/model.q35h"
+      ]
+    },
+    "llama.cpp Q8_0": {
+      "file_bytes": 811845792,
+      "tensor_payload_bytes": 800881920,
+      "paths": [
+        "models/qev-0.8b/qev-0.8b-Q8_0.gguf"
+      ]
+    },
+    "llama.cpp Q4_0": {
+      "file_bytes": 435898528,
+      "tensor_payload_bytes": 424934656,
+      "paths": [
+        "models/qev-0.8b/qev-0.8b-Q4_0.gguf"
+      ]
+    },
+    "llama.cpp Q4_K_M": {
+      "file_bytes": 529299616,
+      "tensor_payload_bytes": 518335744,
+      "paths": [
+        "models/qev-0.8b/qev-0.8b-Q4_K_M.gguf"
+      ]
+    },
+    "llama.cpp bf16": {
+      "file_bytes": 1516746912,
+      "tensor_payload_bytes": 1505783040,
+      "paths": [
+        "models/qev-0.8b/qev-0.8b-bf16.gguf"
+      ]
+    },
+    "Transformers.js q8": {
+      "file_bytes": 1165946356,
+      "tensor_payload_bytes": 1165371392,
+      "paths": [
+        "dist/qev-onnx/onnx/embed_tokens_quantized.onnx",
+        "dist/qev-onnx/onnx/embed_tokens_quantized.onnx_data",
+        "dist/qev-onnx/onnx/decoder_model_merged_quantized.onnx",
+        "dist/qev-onnx/onnx/decoder_model_merged_quantized.onnx_data"
+      ]
+    },
+    "Transformers.js q4": {
+      "file_bytes": 647133030,
+      "tensor_payload_bytes": 646562816,
+      "paths": [
+        "dist/qev-onnx/onnx/embed_tokens_q4.onnx",
+        "dist/qev-onnx/onnx/embed_tokens_q4.onnx_data",
+        "dist/qev-onnx/onnx/decoder_model_merged_q4.onnx",
+        "dist/qev-onnx/onnx/decoder_model_merged_q4.onnx_data"
+      ]
+    }
+  },
+  "measurements": {
+    "measured_process_runs": 3,
+    "process_warmup_runs": 1,
+    "within_process_warmup": "Each of the three prompt shapes once; fresh model state per request",
+    "compute_timing": "Custom and llama.cpp: prefill+output projection, excludes tokenization and state preparation; ONNX: pretokenized forward and readout, includes fresh tensor/state allocation",
+    "worker_timing": "Custom additionally includes raw request parse/tokenization; external engines start with frozen prompt IDs",
+    "execution": "Sequential matrices, no overlapping measurements",
+    "gpu_in_primary_comparison": false
+  },
+  "matrices": {
+    "performance": [
+      {
+        "name": "custom-q4-wasm",
+        "executable": "/usr/bin/node",
+        "args": [
+          "scripts/benchmark-browser-decision.mjs",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--inputs-file",
+          "configs/qev-browser-bench.json",
+          "--provider",
+          "wasm",
+          "--threads",
+          "8",
+          "--engine",
+          "custom",
+          "--dtype",
+          "H128/Q4-G32-DOT4",
+          "--weights",
+          "dist/qev-h128-public-final/model.q35h"
+        ]
+      },
+      {
+        "name": "llama-wasm-Q8_0",
+        "executable": "/usr/bin/node",
+        "args": [
+          "scripts/benchmark-browser-decision.mjs",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--inputs-file",
+          "configs/qev-browser-bench.json",
+          "--provider",
+          "wasm",
+          "--threads",
+          "8",
+          "--engine",
+          "llama.cpp",
+          "--dtype",
+          "Q8_0",
+          "--weights",
+          "models/qev-0.8b/qev-0.8b-Q8_0.gguf",
+          "--ubatch",
+          "1024"
+        ]
+      },
+      {
+        "name": "llama-wasm-Q4_0",
+        "executable": "/usr/bin/node",
+        "args": [
+          "scripts/benchmark-browser-decision.mjs",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--inputs-file",
+          "configs/qev-browser-bench.json",
+          "--provider",
+          "wasm",
+          "--threads",
+          "8",
+          "--engine",
+          "llama.cpp",
+          "--dtype",
+          "Q4_0",
+          "--weights",
+          "models/qev-0.8b/qev-0.8b-Q4_0.gguf",
+          "--ubatch",
+          "1024"
+        ]
+      },
+      {
+        "name": "llama-wasm-Q4_K_M",
+        "executable": "/usr/bin/node",
+        "args": [
+          "scripts/benchmark-browser-decision.mjs",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--inputs-file",
+          "configs/qev-browser-bench.json",
+          "--provider",
+          "wasm",
+          "--threads",
+          "8",
+          "--engine",
+          "llama.cpp",
+          "--dtype",
+          "Q4_K_M",
+          "--weights",
+          "models/qev-0.8b/qev-0.8b-Q4_K_M.gguf",
+          "--ubatch",
+          "1024"
+        ]
+      },
+      {
+        "name": "ort-wasm-q8",
+        "executable": "/usr/bin/node",
+        "args": [
+          "scripts/benchmark-browser-decision.mjs",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--inputs-file",
+          "configs/qev-browser-bench.json",
+          "--provider",
+          "wasm",
+          "--threads",
+          "8",
+          "--dtype",
+          "q8",
+          "--ort-build",
+          "plain"
+        ]
+      },
+      {
+        "name": "ort-wasm-q4",
+        "executable": "/usr/bin/node",
+        "args": [
+          "scripts/benchmark-browser-decision.mjs",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--inputs-file",
+          "configs/qev-browser-bench.json",
+          "--provider",
+          "wasm",
+          "--threads",
+          "8",
+          "--dtype",
+          "q4",
+          "--ort-build",
+          "plain"
+        ]
+      }
+    ],
+    "supported-candidates": [
+      {
+        "name": "llama-wasm-Q8_0-fa-auto-u512",
+        "executable": "/usr/bin/node",
+        "args": [
+          "scripts/benchmark-browser-decision.mjs",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--inputs-file",
+          "configs/qev-browser-bench.json",
+          "--provider",
+          "wasm",
+          "--threads",
+          "8",
+          "--engine",
+          "llama.cpp",
+          "--dtype",
+          "Q8_0",
+          "--weights",
+          "models/qev-0.8b/qev-0.8b-Q8_0.gguf",
+          "--ubatch",
+          "512"
+        ]
+      },
+      {
+        "name": "llama-wasm-Q4_0-fa-auto-u512",
+        "executable": "/usr/bin/node",
+        "args": [
+          "scripts/benchmark-browser-decision.mjs",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--inputs-file",
+          "configs/qev-browser-bench.json",
+          "--provider",
+          "wasm",
+          "--threads",
+          "8",
+          "--engine",
+          "llama.cpp",
+          "--dtype",
+          "Q4_0",
+          "--weights",
+          "models/qev-0.8b/qev-0.8b-Q4_0.gguf",
+          "--ubatch",
+          "512"
+        ]
+      },
+      {
+        "name": "llama-wasm-Q4_K_M-fa-auto-u512",
+        "executable": "/usr/bin/node",
+        "args": [
+          "scripts/benchmark-browser-decision.mjs",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--inputs-file",
+          "configs/qev-browser-bench.json",
+          "--provider",
+          "wasm",
+          "--threads",
+          "8",
+          "--engine",
+          "llama.cpp",
+          "--dtype",
+          "Q4_K_M",
+          "--weights",
+          "models/qev-0.8b/qev-0.8b-Q4_K_M.gguf",
+          "--ubatch",
+          "512"
+        ]
+      },
+      {
+        "name": "ort-wasm-q8-jsep",
+        "executable": "/usr/bin/node",
+        "args": [
+          "scripts/benchmark-browser-decision.mjs",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--inputs-file",
+          "configs/qev-browser-bench.json",
+          "--provider",
+          "wasm",
+          "--threads",
+          "8",
+          "--dtype",
+          "q8",
+          "--ort-build",
+          "jsep"
+        ]
+      },
+      {
+        "name": "ort-wasm-q4-jsep",
+        "executable": "/usr/bin/node",
+        "args": [
+          "scripts/benchmark-browser-decision.mjs",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--inputs-file",
+          "configs/qev-browser-bench.json",
+          "--provider",
+          "wasm",
+          "--threads",
+          "8",
+          "--dtype",
+          "q4",
+          "--ort-build",
+          "jsep"
+        ]
+      }
+    ],
+    "native-quant-reference": [
+      {
+        "name": "Q8_0-reference-0",
+        "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+        "args": [
+          "scripts/benchmark-systemone-http.py",
+          "--backend",
+          "llama",
+          "--server",
+          "build-qev-server-current/bin/llama-server",
+          "--model-dir",
+          "models/qev-0.8b",
+          "--weights",
+          "models/qev-0.8b/qev-0.8b-Q8_0.gguf",
+          "--threads",
+          "8",
+          "--request",
+          ".cache/qev-onnx-bf16-request-0.json"
+        ]
+      },
+      {
+        "name": "Q8_0-reference-1",
+        "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+        "args": [
+          "scripts/benchmark-systemone-http.py",
+          "--backend",
+          "llama",
+          "--server",
+          "build-qev-server-current/bin/llama-server",
+          "--model-dir",
+          "models/qev-0.8b",
+          "--weights",
+          "models/qev-0.8b/qev-0.8b-Q8_0.gguf",
+          "--threads",
+          "8",
+          "--request",
+          ".cache/qev-onnx-bf16-request-1.json"
+        ]
+      },
+      {
+        "name": "Q8_0-reference-2",
+        "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+        "args": [
+          "scripts/benchmark-systemone-http.py",
+          "--backend",
+          "llama",
+          "--server",
+          "build-qev-server-current/bin/llama-server",
+          "--model-dir",
+          "models/qev-0.8b",
+          "--weights",
+          "models/qev-0.8b/qev-0.8b-Q8_0.gguf",
+          "--threads",
+          "8",
+          "--request",
+          ".cache/qev-onnx-bf16-request-2.json"
+        ]
+      },
+      {
+        "name": "Q4_0-reference-0",
+        "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+        "args": [
+          "scripts/benchmark-systemone-http.py",
+          "--backend",
+          "llama",
+          "--server",
+          "build-qev-server-current/bin/llama-server",
+          "--model-dir",
+          "models/qev-0.8b",
+          "--weights",
+          "models/qev-0.8b/qev-0.8b-Q4_0.gguf",
+          "--threads",
+          "8",
+          "--request",
+          ".cache/qev-onnx-bf16-request-0.json"
+        ]
+      },
+      {
+        "name": "Q4_0-reference-1",
+        "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+        "args": [
+          "scripts/benchmark-systemone-http.py",
+          "--backend",
+          "llama",
+          "--server",
+          "build-qev-server-current/bin/llama-server",
+          "--model-dir",
+          "models/qev-0.8b",
+          "--weights",
+          "models/qev-0.8b/qev-0.8b-Q4_0.gguf",
+          "--threads",
+          "8",
+          "--request",
+          ".cache/qev-onnx-bf16-request-1.json"
+        ]
+      },
+      {
+        "name": "Q4_0-reference-2",
+        "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+        "args": [
+          "scripts/benchmark-systemone-http.py",
+          "--backend",
+          "llama",
+          "--server",
+          "build-qev-server-current/bin/llama-server",
+          "--model-dir",
+          "models/qev-0.8b",
+          "--weights",
+          "models/qev-0.8b/qev-0.8b-Q4_0.gguf",
+          "--threads",
+          "8",
+          "--request",
+          ".cache/qev-onnx-bf16-request-2.json"
+        ]
+      },
+      {
+        "name": "Q4_K_M-reference-0",
+        "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+        "args": [
+          "scripts/benchmark-systemone-http.py",
+          "--backend",
+          "llama",
+          "--server",
+          "build-qev-server-current/bin/llama-server",
+          "--model-dir",
+          "models/qev-0.8b",
+          "--weights",
+          "models/qev-0.8b/qev-0.8b-Q4_K_M.gguf",
+          "--threads",
+          "8",
+          "--request",
+          ".cache/qev-onnx-bf16-request-0.json"
+        ]
+      },
+      {
+        "name": "Q4_K_M-reference-1",
+        "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+        "args": [
+          "scripts/benchmark-systemone-http.py",
+          "--backend",
+          "llama",
+          "--server",
+          "build-qev-server-current/bin/llama-server",
+          "--model-dir",
+          "models/qev-0.8b",
+          "--weights",
+          "models/qev-0.8b/qev-0.8b-Q4_K_M.gguf",
+          "--threads",
+          "8",
+          "--request",
+          ".cache/qev-onnx-bf16-request-1.json"
+        ]
+      },
+      {
+        "name": "Q4_K_M-reference-2",
+        "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+        "args": [
+          "scripts/benchmark-systemone-http.py",
+          "--backend",
+          "llama",
+          "--server",
+          "build-qev-server-current/bin/llama-server",
+          "--model-dir",
+          "models/qev-0.8b",
+          "--weights",
+          "models/qev-0.8b/qev-0.8b-Q4_K_M.gguf",
+          "--threads",
+          "8",
+          "--request",
+          ".cache/qev-onnx-bf16-request-2.json"
+        ]
+      }
+    ]
+  },
+  "runner_metadata": {
+    "performance": {
+      "utc": "2026-10-21T19:35:32.1963973Z",
+      "affinity": 255,
+      "runs": 3,
+      "warmup_runs": 1,
+      "git_revision": "ca044e37ec59a80ce4f11d2800182af4fc15331b",
+      "git_diff_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "binaries": {
+        "/usr/bin/node": "63887E4F3F18B4809C06A253352C5C8C3BBE9DF6C6AE902B831DB7AB80F0401C"
+      },
+      "inputs": {
+        "/home/sebastian/Development/qwen35-cpu/models/qev-0.8b/qev-0.8b-Q8_0.gguf": {
+          "bytes": 811845792,
+          "sha256": "07856DD5D6C7D1E19A9579EF324E5377649890A6438F7735EA5AC8935F2B2140"
+        },
+        "/home/sebastian/Development/qwen35-cpu/models/qev-0.8b/qev-0.8b-Q4_0.gguf": {
+          "bytes": 435898528,
+          "sha256": "A444401106A7FCAADFC573B5ED56B9E3532E7F4FAC027DD8966725E13EF9C3B3"
+        },
+        "/home/sebastian/Development/qwen35-cpu/models/qev-0.8b/qev-0.8b-Q4_K_M.gguf": {
+          "bytes": 529299616,
+          "sha256": "B8D290EBBB7C59A876ADE633F225826D5E1DB61D166A003DEFA63E4FB227995E"
+        },
+        "/home/sebastian/Development/qwen35-cpu/dist/qev-h128-public-final/model.q35h": {
+          "bytes": 424964864,
+          "sha256": "E7D61E7B191DE6C2AFB8663E8A1F8C5F4D52315E9492DB7A690708D744F8DC69"
+        }
+      }
+    },
+    "supported-candidates": {
+      "utc": "2026-10-21T19:43:36.1111782Z",
+      "affinity": 255,
+      "runs": 3,
+      "warmup_runs": 1,
+      "git_revision": "ca044e37ec59a80ce4f11d2800182af4fc15331b",
+      "git_diff_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "binaries": {
+        "/usr/bin/node": "63887E4F3F18B4809C06A253352C5C8C3BBE9DF6C6AE902B831DB7AB80F0401C"
+      },
+      "inputs": {
+        "/home/sebastian/Development/qwen35-cpu/models/qev-0.8b/qev-0.8b-Q4_K_M.gguf": {
+          "sha256": "B8D290EBBB7C59A876ADE633F225826D5E1DB61D166A003DEFA63E4FB227995E",
+          "bytes": 529299616
+        },
+        "/home/sebastian/Development/qwen35-cpu/models/qev-0.8b/qev-0.8b-Q4_0.gguf": {
+          "sha256": "A444401106A7FCAADFC573B5ED56B9E3532E7F4FAC027DD8966725E13EF9C3B3",
+          "bytes": 435898528
+        },
+        "/home/sebastian/Development/qwen35-cpu/models/qev-0.8b/qev-0.8b-Q8_0.gguf": {
+          "sha256": "07856DD5D6C7D1E19A9579EF324E5377649890A6438F7735EA5AC8935F2B2140",
+          "bytes": 811845792
+        }
+      }
+    },
+    "native-quant-reference": {
+      "utc": "2026-10-21T19:47:24.8041673Z",
+      "affinity": 255,
+      "runs": 1,
+      "warmup_runs": 0,
+      "git_revision": "ca044e37ec59a80ce4f11d2800182af4fc15331b",
+      "git_diff_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "binaries": {
+        "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12": "5EBCD7993F0E40CB4B16E15D2C4C3C343ECAD419966299B8E8F6F9E6A36BF779"
+      },
+      "inputs": {
+        "/home/sebastian/Development/qwen35-cpu/models/qev-0.8b/config.json": {
+          "sha256": "D9AB6F1698A46BBF04895D171FA0666816745E0D7209B9493D44D3DF0CAA1B5F",
+          "bytes": 2485
+        },
+        "/home/sebastian/Development/qwen35-cpu/models/qev-0.8b/tokenizer.json": {
+          "sha256": "466F27FEFA1F44A7BB82CB1B42163C761E01DC6F7F51FC4F3D0A499A5A9B4249",
+          "bytes": 12807181
+        },
+        "/home/sebastian/Development/qwen35-cpu/models/qev-0.8b/qev-0.8b-Q4_K_M.gguf": {
+          "sha256": "B8D290EBBB7C59A876ADE633F225826D5E1DB61D166A003DEFA63E4FB227995E",
+          "bytes": 529299616
+        },
+        "/home/sebastian/Development/qwen35-cpu/models/qev-0.8b/qev-0.8b-Q4_0.gguf": {
+          "sha256": "A444401106A7FCAADFC573B5ED56B9E3532E7F4FAC027DD8966725E13EF9C3B3",
+          "bytes": 435898528
+        },
+        "/home/sebastian/Development/qwen35-cpu/models/qev-0.8b/tokenizer_config.json": {
+          "sha256": "E611FBCCC7C29EF3B1CAFB1CB7EA548D189968632901D678FD62BE68C47885DE",
+          "bytes": 16712
+        },
+        "/home/sebastian/Development/qwen35-cpu/models/qev-0.8b/qev-0.8b-Q8_0.gguf": {
+          "sha256": "07856DD5D6C7D1E19A9579EF324E5377649890A6438F7735EA5AC8935F2B2140",
+          "bytes": 811845792
+        }
+      }
+    }
+  },
+  "raw_artifact_sha256": {
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-3-run-3.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-3-run-1.json": "e54dadeb6263139ab6c9fb2b6922fc43c10905ce18c1c3c02f999457cf3e3e99",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-1-run-0.json": "95d0f92695d4527e317e16b5284280da9063558b9294a0b2e8352b57381112c9",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-2-run-0.stdout.txt": "404b432a21cf9902e5d64862a61f0b2fec4c2c7706df190ee6c0e6c89b530450",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-1-run-3.stdout.txt": "6011bdb42f844287b12cd6311943207343aeda5ebd436974c2b7024f4b52fbda",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-3-run-3.stdout.txt": "15ef03277065d71679e845fef9c1daaaa9500e631be182f7355443d441834d84",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-1-run-2.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-5-run-1.json": "01256dcb17d67ee494a230c3875f46db380e98978afaf6bb6f5f88a17583b074",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-4-run-1.stdout.txt": "f1e3f1a9338eb615e6ee510200260d25aec5e38c29804c86b7ea53fff3e7fe6c",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-4-run-2.stdout.txt": "60ccf947d8b58d140e00da46e83ce35128d4fee1e6ba1bbf787a2c2480c82b1c",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-2-run-1.stdout.txt": "fbbe0f640fb11d93e35cd2b57d3e197ef83d71913274a9f3bf290a378920ff83",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-5-run-2.json": "26a3bc62a415649496784cb6ada364b27dc4e7a5668f6c998b2d0e8176e39b81",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-2-run-2.json": "c1dfa27729aa99f89d47866883c9d7aa1e64786bb5cedbfeee4b348c1bd63ff3",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-3-run-2.stdout.txt": "cfa0b15f16352533b79ba08b67ac722341c31b8a8a271d914bb7415035b2a33c",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-3-run-3.json": "9632ed665d44eda0580b22f791cde5eedd58f628c5d9f3229759843e9755bc3b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-0-run-2.stdout.txt": "a346da0bb968fb9dcb3ea025dcf62b2c160b900974e19b0bae045123a12c0d2a",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-3-run-0.json": "07ea840db5dfca050deb235130c759077c8a364697a64d9cb3778576b2f25762",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-1-run-1.stdout.txt": "09f08177025d8726224e302748ebae8e7b49585e7945041e9a83cc129db2ee5b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-2-run-3.stdout.txt": "763f5a3e1a9206d6abdcd575e9d0f37b8993841d29fe97a962f5bc640db9c2ac",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-4-run-3.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-4-run-0.json": "b83ddc3cac10ca3decedd3b1af6b1cdeb32d7a4b5b1d01ee4a76d9f1ed303b4e",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-3-run-1.stdout.txt": "f28dcf29d08f053013dc2b04228e7a2c71fda29cc8d156feaaaec79297327dbd",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-2-run-2.stdout.txt": "f58bd142207df28182bca7ff5772fd8bc06b1c71d1caafc6655451b4578df32a",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/metadata.json": "f98ca6746caa1b40cf40d1986210922c4b26c6544625ecf7c045ad7e74bc6486",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-4-run-2.json": "43901ec3ac4a809191c59ba28b72be014675d2eba8c9ad2c96c5d8d5d3b031b4",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-0-run-0.stdout.txt": "4c80a415dbd0308887d4205f786bebf51bd2104f93b96957df2d45194ce6c391",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-4-run-2.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-1-run-2.stdout.txt": "8428d64e90c8e398e76318036a9c862700f892f4b65295abcb363aa84c3ef3a7",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-3-run-2.json": "27385a1dc8d4294d05896f07b503e82d54965354a205f1849cc9eff192aaced1",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-5-run-0.stdout.txt": "66ad598fa6446259b42e50a55874b7f15ad743f2e546e697103c51c73ad3dc16",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-0-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-5-run-0.json": "4377cb84a3fb31ea63a8baf69e3b7cee1fb7feadc56a10db300b998d8ef99069",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-0-run-3.stdout.txt": "78f78a0dbca3f3a15b229eff6d28a6b27cbae610989fe1a68b0f46d8b14490f6",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-0-run-1.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-0-run-1.json": "5301a030fb81dc98964475dd1efb1ca3b380df03eedbc7ce63d9b4bd83ea9b51",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-2-run-3.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-5-run-3.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-3-run-1.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-1-run-2.json": "e73a2cae78a30f38aa71d4dd913abf89bd830c8fb62d168fe8157712004b01f7",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-1-run-3.json": "8137f3be5e80da40b4eeee9b9752360a1ad0824db7a4aea37f3fcc28622359cc",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-1-run-1.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-4-run-1.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-2-run-1.json": "af8e11f74fa1b46d5aa06f0980a646d30a2a8bff2dc954b52e844be88c89d869",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-4-run-3.stdout.txt": "eb850587423eb80652a5514ed20480145a86b5ce443f454f24672cf40159d85a",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-4-run-1.json": "d1726f6e12e2c8f396873b16bfa8e04cc4a67bcd2cf2dab227d1ea1af36dfb7c",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-2-run-3.json": "585f3a85928cfece83af0240ab1ea54fa60ece3166ff6ae63e41a2fa0445f42a",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-1-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-5-run-3.json": "caf99743d58ddf11d9d61622bb21eefa4ac4d7bd6d2686bc2ff2d474742d03c1",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-2-run-2.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-1-run-1.json": "895d319289d54fcc8e709573722f5902d0ad0874ca417e6cc51e5100b24c3f23",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-2-run-0.json": "ae40e224f26d95620f648252b6d0bbd03eaf8fdd11e19e712f6e3e67905a53ec",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-4-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-1-run-0.stdout.txt": "c779644f143ac275e5ca957e8879874a90be563128319316fb715d492a5ef84c",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-1-run-3.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-5-run-3.stdout.txt": "30b7f28b45c0e30a29617c0fa6d17d612c13112743cd382f0d7b0b55c445cb2d",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-5-run-1.stdout.txt": "d04544a1f7b8d7eb01ecb8b62c313d7eb481c3da155e5c55d9ca19474f83f997",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-3-run-0.stdout.txt": "0396a0bf6a6eef921712eb593d78a2f385dae1f340852d4c5cc9d323bc582180",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-0-run-1.stdout.txt": "a6d151db61f0aab555b7033d76e1549e9ef8db0cb6ab956971d40a84190ed48f",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-5-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-3-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-5-run-2.stdout.txt": "bc1cadd328f96bf4ae9987504bf09629f750d55066002c1202675dd8fb6f8007",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-4-run-3.json": "2efddbf9f0abb3d35a775661682031a272bdb0dabba06d4c0c0d690dcec1a3c4",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-5-run-2.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-0-run-3.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-4-run-0.stdout.txt": "d6609c2dc85f171285dad52b9ebe885c2a9992130892a04174e0ac67faf74ac0",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-2-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-5-run-1.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-0-run-2.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-0-run-3.json": "0f3ac04761353e70a4b3a72bf0704398dbf0a485b3ac5456106ea20f02000ead",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-3-run-2.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/results.csv": "95eb7045b02ccde26d912b21f5a405a4b1472d7cd22284adcbe458da07430594",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-2-run-1.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-0-run-0.json": "ad10bd15a2118d6167c956d827c8c1908464ed850d1728112c2449a0a72b1927",
+    "benchmarks/qev-browser-cpu-2026-10-21/performance/case-0-run-2.json": "0cc11822f578339e9906b8ee8037a4272bc1bfdecd1ec41a09fea29f9a39b2d4",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-3-run-3.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-3-run-1.json": "7fbed34cbc087c2afe04b67962f661851c7c4baeb20b2753143b8a8c8e21650e",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-1-run-0.json": "ffb874f5331da19e4e2a7b9222e496736c4d6c3fc3fa9a37716102e4b04e99f7",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-2-run-0.stdout.txt": "7456fc62d7fbc5d55e5935c7d1b821717fab508a99a76818c67acae21c8df5e3",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-1-run-3.stdout.txt": "bb842fd2b8e4b398fb1871c344ac464a197bc595655eaf0eba67bdbf29131fc5",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-3-run-3.stdout.txt": "2eb9081c7785da23bc5db379cba2bff087ec999ce870b48661d646ce08fc7469",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-1-run-2.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-4-run-1.stdout.txt": "feaa2f470686bb39c8a16050654c80397fc47359df80f80ae84875577f305d9b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-4-run-2.stdout.txt": "8ddf73e8e85868b389ead85818ba64330b73b5be99e302854689f20bb7d9d63a",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-2-run-1.stdout.txt": "a4714b87aaa10d3be4b499d811389b73ffe84d45befcee0c082166efd44b5c79",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-2-run-2.json": "6e513b4bcc599447fc9617e4e2cc225d906a74ec8718028fec1a423c7b7cc885",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-3-run-2.stdout.txt": "a9b5b904a70ebedcda1cd7c72f047ee9afbcf6afd3633c8823c5b79de9ab6eba",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-3-run-3.json": "b596122af216ca5f1229daf8add5b76a6f91e3e5f4458211ed4ca6805eda1691",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-0-run-2.stdout.txt": "7ddb8c30127061c48910986a9573fd5341b3424b71cd3aaa0967272a1088ec50",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-3-run-0.json": "6337d7b428b3f0c49f29aaec8029a64f61193b1209243dc6adf29b7be201442c",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-1-run-1.stdout.txt": "79797e2346ad1b332a2ae5e42ae36700288b303f3c62f84db00c2a0d24dd415f",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-2-run-3.stdout.txt": "233eaaba423d2e791dbde97c4bb751b675bee22345bd37fdf7be3ef5225ec9f2",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-4-run-3.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-4-run-0.json": "349788c2eba5df5a189bb691b5c740cc6b778e61144d8c2f0abdab78bfe39baa",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-3-run-1.stdout.txt": "91253f12f5729fbb73b43cb24075d0eb03c9c05b75a5e71331120734d16e347e",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-2-run-2.stdout.txt": "0907624437310fba234d544226979dfc7d56e06ee5b20c8d0da75fd752043fb9",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/metadata.json": "f360dc439a0447e12bb3dce046484725f0071c840acef5d80426ee73c14ee59a",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-4-run-2.json": "2f0041b24c6030a341a4ba1b41a8cbfc418f92b56ab7cff5ba3e9cbeed2c4003",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-0-run-0.stdout.txt": "41bf625cf9b33ec714e4bcb5a45bca537a44e11406cade3250c8e8ebcf912a5b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-4-run-2.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-1-run-2.stdout.txt": "0ba0d1dc64d75b18ae8f755a47356888da3317645f05d67fe7ac9dfe7b0fa322",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-3-run-2.json": "c33066c0ce71ee6cf02ed6f4c118ed50d3af200033f0486ddafcde3374eb48a4",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-0-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-0-run-3.stdout.txt": "180dd72be1a8b0f859dca76ff9a4fd54ebe8fd016da3040697466ad717f68a5d",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-0-run-1.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-0-run-1.json": "b5d6a44d0952427820b513ca40b0be8dce4ea00ed7808a7dc0479ab3e3e61756",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-2-run-3.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-3-run-1.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-1-run-2.json": "627fc36c303e764d4cf842884d1debcad3cb567820ee6a7f68e623a01686244e",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-1-run-3.json": "e0494fd2fa6861b2c33949b64c5fb594597c8a9cf10e8e9944f1e92ae2302aa3",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-1-run-1.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-4-run-1.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-2-run-1.json": "42417286be6a6209ff5e2acfa894aa62e1d5f3eb972fd672cce63e9715722382",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-4-run-3.stdout.txt": "07771cff9f7a89b90f6db86817afd6c01c0c93a0a5483e4a7128d0db09b38f24",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-4-run-1.json": "16534f80be374f25ead628240623262e7db0f95f05705536fd0c17cbfce8bd38",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-2-run-3.json": "d4653d50bd6719cba72e3b4bd9d6fe64b7f739e0df3b4003ba060f2731c8c3b4",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-1-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-2-run-2.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-1-run-1.json": "4191258fcbeb57eb016389e7dcdb2bd73f558250cd9194cf72063855db76b3e4",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-2-run-0.json": "f9175de01c9ea4b0b55ff4f33c348adae0dd2313e276319cbcff1eb38fc4f575",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-4-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-1-run-0.stdout.txt": "c07f372c972dc9a1d16f403153b558ab376df62ea23441a2702d62dcc0e39c73",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-1-run-3.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-3-run-0.stdout.txt": "8c6e512cf9e570347ba8dd1ef216c0e3d8da23cdd3acaba0b790306ef051c8fd",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-0-run-1.stdout.txt": "a29909333ea188768175ec7768915336b138e54ffd870fe171efbf7fa3c59333",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-3-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-4-run-3.json": "ab88db904533789bdba64a6f1f82ff2cab7fe78153eee8f3a5eacf299fe38069",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-0-run-3.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-4-run-0.stdout.txt": "d91dff57c82a88d6c32d1c6608af9b4a24e9877f83637b7ecf77fa53bb31fffe",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-2-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-0-run-2.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-0-run-3.json": "b64afd651f5657cb6966c9fc961770e5208c95d57b8f3ae5b01156604a727a8f",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-3-run-2.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/results.csv": "5f7185537847e91876700e8070ea78e0c37d840dadc48dfadfe546a16dd0a336",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-2-run-1.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-0-run-0.json": "1f9b262fa2bfb408de1a37f54b4bdbff2909415bfd87c6620a7d4f0d2b646dbf",
+    "benchmarks/qev-browser-cpu-2026-10-21/supported-candidates/case-0-run-2.json": "ab5dea4ed95662cb95148e9c49e0e1920f15b4fca654961e1141a339a0bd47a8",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-1-run-0.json": "a0a58535c997752261b896ecd384fb0a42efc3bca514d384dd9d0383ac18ca79",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-2-run-0.stdout.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-8-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-6-run-0.json": "33d6bf058741ac334d198eb2b2c15754521fadfd083316c20fd5efe7c0c8551e",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-5-run-0.server.log": "06490af2fb85ab1ae9b2c177ced0a5c2ee8ba7b26c896e1f3e05f0482843a3f9",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-8-run-0.server.log": "ab924a6e2f920e2814d00aec38a9e328dbec8cf39ab10b759e171155667b7e3a",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-2-run-0.server.log": "3101236c450c12b085fc14702b285f98f8f008d35a85e6ebf8ea7d5a472f3696",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-1-run-0.server.log": "b98e90834c9e31a8803dd4ec1652b72b700def28f65d9e0a6c7285ed8ab48f13",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-3-run-0.json": "a326b84558d6f22e28ed627e19ff967410506ca3c8e08bd3c2a84775ebd19078",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-4-run-0.json": "85d92686e0125a94b1cd5ddca6bbe4ee876f53d2e6c40e4911d3a5de8e6a3043",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/metadata.json": "ac87d7b1b60662bba7f9f42458f246179fc2cfa60c3d90ec476673db5f87aa73",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-0-run-0.stdout.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-6-run-0.stdout.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-7-run-0.server.log": "8e138dd98938128483dee32ce26d57f34a689bafc6772e368e611e76d5538d78",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-5-run-0.stdout.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-0-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-5-run-0.json": "c37bd1b66ac5a7f5b6ebf6357d39366a23dfa570e09f987a5d8c13fbcf9195a6",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-4-run-0.server.log": "79ee8c1df17152b7b5ffb21937b65afa7b6bd1095c922f063456285d326b1c84",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-7-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-3-run-0.server.log": "3b714310f1b13961da8a0cd0d71b21dbc7c6167e224b8f115e6e158e0dbe189c",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-6-run-0.server.log": "fa00d6628090c273b568a353200245dfc08b904d974353b5d0b4c456e1300791",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-1-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-6-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-2-run-0.json": "c73d3969a08a48a059f86d2cef3e579b04c020196bbf691f081997d862dbefc1",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-4-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-1-run-0.stdout.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-3-run-0.stdout.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-7-run-0.stdout.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-5-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-3-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-0-run-0.server.log": "ec1ebfb3265ecbb0db3d86519dafb520bb857667daf19c382f3fa829cc60e688",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-4-run-0.stdout.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-2-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-8-run-0.json": "db357c9a9c0dd0fca0f70456c90e565ece16b86c48ace80263903fb2b78fd55e",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-7-run-0.json": "cddf7f4fcb256ac745480102f94c462166c6c08c69babd9468dcede0d2904d54",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/results.csv": "174e957aa4d1d5c3d57ef08be577ac468bf54173aa5ba42371e7363a23f157b7",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-0-run-0.json": "9e8fcf6425d57b2b029ffee051b73210b14f824273b954cd356875bcb0dd8d76",
+    "benchmarks/qev-browser-cpu-2026-10-21/native-quant-reference/case-8-run-0.stdout.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/final-candidates/case-1-run-0.json": "5b8ae4d239375528c5461a777ec8251007eb7a4df67457219e2dac936a81d586",
+    "benchmarks/qev-browser-cpu-2026-10-21/final-candidates/case-2-run-0.stdout.txt": "e5f4d95f0faa9d0037d451b8d3e4289f437e283a51f0565bd5f7fa5316f5cfa2",
+    "benchmarks/qev-browser-cpu-2026-10-21/final-candidates/case-3-run-0.json": "3f212692a69e14d0898f59cceef9297d4aa27505c7f7a17d17b021bee3a0242d",
+    "benchmarks/qev-browser-cpu-2026-10-21/final-candidates/case-4-run-0.json": "8adfe393e16e38fd7f5caf85587c1dde272cb33e46180d8237a42c715541c5cd",
+    "benchmarks/qev-browser-cpu-2026-10-21/final-candidates/metadata.json": "96414dd03de3aa9b6aece1cdef7018dd933da521067869fd683cbf4173c0133f",
+    "benchmarks/qev-browser-cpu-2026-10-21/final-candidates/case-0-run-0.stdout.txt": "a93d8fdcd7477b7666f12156c30523a4e4c1d226318cdcee0b7ae1d9a9b2edfb",
+    "benchmarks/qev-browser-cpu-2026-10-21/final-candidates/case-0-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/final-candidates/case-1-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/final-candidates/case-2-run-0.json": "f45eea71620d558df0154f9536cc29dc164f279b3c2a7fbfb65ea9ffab573a4f",
+    "benchmarks/qev-browser-cpu-2026-10-21/final-candidates/case-4-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/final-candidates/case-1-run-0.stdout.txt": "b7ed7911b42a89e5d8340ea4e35898ca928a7078725f7b94255f8046a9c5f120",
+    "benchmarks/qev-browser-cpu-2026-10-21/final-candidates/case-3-run-0.stdout.txt": "629767aada87c6f02baa0ee56320593c3bde8a4e942f2d51d14d35cfea5ebbbc",
+    "benchmarks/qev-browser-cpu-2026-10-21/final-candidates/case-3-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/final-candidates/case-4-run-0.stdout.txt": "15291b2d58a6b420ca5bef317d655e0e413bbf365533eeedab1eecfc64f170d0",
+    "benchmarks/qev-browser-cpu-2026-10-21/final-candidates/case-2-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/final-candidates/case-0-run-0.json": "e19e34c187138b9c50089f8f513e7f3992331778ceb79f9e44321367626cea09",
+    "benchmarks/qev-browser-cpu-2026-10-21/fa-off-runtime/llama_browser.wasm": "7ed6dfeb733089714e69edc3ca2ed7ac0d84b3deccd8c20ff16fc75c0af6720b",
+    "benchmarks/qev-browser-cpu-2026-10-21/fa-off-runtime/llama_browser.js": "24bdb1cc62c86ca4bd62848b35ff496ff8c5c7c159660a4ac8a3253d9354ebcf",
+    "benchmarks/qev-browser-cpu-2026-10-21/fa-off-runtime/llama-browser-worker.js": "474f1c21fbaed19a8b3f7ff9f93535048be042a361b3681eb693e2ce457fc660",
+    "benchmarks/qev-browser-cpu-2026-10-21/fa-off-runtime/main.cpp": "461e78f79d8771f2a8db491c6badd397e847e3e04c0ae3cbe1660cc39e29aa96",
+    "benchmarks/qev-browser-cpu-2026-10-21/fa-off-runtime/benchmark-browser-decision.mjs": "79096afcbaa8ef59d8e64ad08eb01589045da6361830b64a4f9d09cb3146e99c",
+    "benchmarks/qev-onnx-local/bf16-reference/case-1-run-0.json": "c2e2deb696305f55c0b05d335f7337fab4b47c71639fd0a71ba5f8c838d6005a",
+    "benchmarks/qev-onnx-local/bf16-reference/case-2-run-0.stdout.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-onnx-local/bf16-reference/case-2-run-0.server.log": "4e01d4e01c5fbe0ece2aa88f98bd8b168458ac4c1123608c3687f43adbf48f7a",
+    "benchmarks/qev-onnx-local/bf16-reference/case-1-run-0.server.log": "70f651f2988148640fbb7a0439800eefaf4897c071d5b43a195acbbe2bd507cf",
+    "benchmarks/qev-onnx-local/bf16-reference/metadata.json": "047ae9fc54544e57337a089d4d3d51b4365fab99884091d5e8357b13dee82b91",
+    "benchmarks/qev-onnx-local/bf16-reference/case-0-run-0.stdout.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-onnx-local/bf16-reference/case-0-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-onnx-local/bf16-reference/case-1-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-onnx-local/bf16-reference/case-2-run-0.json": "ac0a18ba9a9986fc078b9c97c7d01518dd983cc647d1fcce088460b3916538a8",
+    "benchmarks/qev-onnx-local/bf16-reference/case-1-run-0.stdout.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-onnx-local/bf16-reference/case-0-run-0.server.log": "63a69c86b54bf277f52ae9aa3cf7521c63c9e386ec55c8ce8dabe8e651de9298",
+    "benchmarks/qev-onnx-local/bf16-reference/case-2-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-onnx-local/bf16-reference/results.csv": "1c2d21c94a7b10158273ba1b8a6f02fe887d9af7ba4f64a255e5bb57cc9cba36",
+    "benchmarks/qev-onnx-local/bf16-reference/case-0-run-0.json": "928bc8ac8981ccc087e6497bda43ba9a2ecb8dbc3b313f15995ad0e44ce28311",
+    "benchmarks/qev-onnx-local/check-webgpu/case-1-run-0.json": "ca0f2eda6959c071e43daae4576ae05785f6f044ae6be1b42697458fb4661728",
+    "benchmarks/qev-onnx-local/check-webgpu/metadata.json": "2f9b5880d4dd8509041995f81794898d78218695055d67c1d0eddc0b65d3aa32",
+    "benchmarks/qev-onnx-local/check-webgpu/case-0-run-0.stdout.txt": "fe19596884c497b81c76cf645a1465d8eef415baae9cfe2dff1e8709919ab712",
+    "benchmarks/qev-onnx-local/check-webgpu/case-0-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-onnx-local/check-webgpu/case-1-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-onnx-local/check-webgpu/case-1-run-0.stdout.txt": "2a9f46f7f3076e3b0038c124cb322edf63a435a9e221f0593495cbb4807ffea4",
+    "benchmarks/qev-onnx-local/check-webgpu/results.csv": "690d00655cdc6ca282d677c8d8df472137eb86683283809e98883ce510004616",
+    "benchmarks/qev-onnx-local/check-webgpu/case-0-run-0.json": "9d0c56e0235d2c77c3ce109cbd8e145020207c2c4cc2f144ee1c15891345f2c0",
+    ".cache/qev-onnx-export.log": "5cb41cf5d4f838c7abafcc3129327b40e9d89a75ac43630c48450ecfb10235c5",
+    ".cache/qev-llama-wasm-build-v2.log": "ba113954e807f1099ec529831acb91a55ed74dd9eb61a8149d9fe55462f24fb0",
+    ".cache/qev-llama-wasm-build-final.log": "d55af53c5f59083f6cc16a8fe7b495e96298e7976c432c8dea7e1af6ff823593",
+    ".cache/qev-gguf-q4.log": "220d8787d5bb696d5c79d2f7b20f2573866e0a64559bfde6b92ca7925df15956",
+    ".cache/qev-gguf-q4km.log": "2505d21cc3b2de96d8bb8d9da6c427c270f3ca57c1218968bd9daea366dfa323",
+    "dist/qev-onnx/export.json": "9859dfac6f712013133a304b7c36ccb0b2b7d202f6ce51fc6514a8d92fe0c560",
+    "dist/wasm/llama-bench/runtime/llama_browser.js": "24bdb1cc62c86ca4bd62848b35ff496ff8c5c7c159660a4ac8a3253d9354ebcf",
+    "dist/wasm/llama-bench/runtime/llama_browser.wasm": "8d5d0edd6a0ba1ffdb4dca00ab8f4c64267a2cf541a23e67c3c8eb2a53d2f46d",
+    "build-qev-server-current/bin/llama-server": "0f26dd02b0b4bdf9a0d73fd14b658dbc8696920f09b28713d3a25ca032335fa0",
+    "build-qev-server-current/bin/llama-quantize": "a8778b8cd71f5f34804008fa48837d73e2a29ef762ec9557a2c372198329af4c",
+    "benchmarks/qev-browser-cpu-2026-10-21/staging-check/case-1-run-0.json": "1b6f3918a6434f33cd0be161ae3f2466d735f6971df6e2169cda8e3c0ca242a3",
+    "benchmarks/qev-browser-cpu-2026-10-21/staging-check/metadata.json": "ef9d29008a0b7a400cfdd22d57930400547ae41286670439d7083c597c0321a5",
+    "benchmarks/qev-browser-cpu-2026-10-21/staging-check/case-0-run-0.stdout.txt": "6b1624c9520d2ab0a0522789cac332a9f3b6a6f1c0124997415a469b2f9d4c09",
+    "benchmarks/qev-browser-cpu-2026-10-21/staging-check/case-0-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/staging-check/case-1-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-browser-cpu-2026-10-21/staging-check/case-1-run-0.stdout.txt": "00d6b1978131a5ac53d68be8128d27bbc6cbc471ddf0160c94911d19ee817473",
+    "benchmarks/qev-browser-cpu-2026-10-21/staging-check/results.csv": "57947e5926f0b6a3b0e6f64b3d3a4aacf35295bfbfaa11eccbb61f1cd133a943",
+    "benchmarks/qev-browser-cpu-2026-10-21/staging-check/case-0-run-0.json": "7776ffa1aea7b54e0c30a7e7aef8e231ec4861fbb22ce2d2e08faa353949857d",
+    ".cache/qev-llama-wasm-build-staging.log": "f4a40c38c6adeccf481891054527431b2f410d828ae3025e647860ca94af12ee"
+  },
+  "model_hashes": {
+    "dist/qev-h128-public-final/model.q35h": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69",
+    "models/qev-0.8b/qev-0.8b-Q8_0.gguf": "07856dd5d6c7d1e19a9579ef324e5377649890a6438f7735ea5ac8935f2b2140",
+    "models/qev-0.8b/qev-0.8b-Q4_0.gguf": "a444401106a7fcaadfc573b5ed56b9e3532e7f4fac027dd8966725e13ef9c3b3",
+    "models/qev-0.8b/qev-0.8b-Q4_K_M.gguf": "b8d290ebbb7c59a876ade633f225826d5e1db61d166a003defa63e4fb227995e",
+    "models/qev-0.8b/qev-0.8b-bf16.gguf": "47a3e93109187add85f7905d507024ade0fc4c957a503183f3cc6106c68a9980",
+    "dist/qev-onnx/onnx/embed_tokens_quantized.onnx": "f3d0dcc3908da15dc8eff81c5b5a07e2c3e9c63e5c6d6fd67857f9ad9b5072a4",
+    "dist/qev-onnx/onnx/embed_tokens_quantized.onnx_data": "0aa36f614e27e222f1ffc28be5f05d8bfa78fb19dd4f5096c4bd74afae4ed64f",
+    "dist/qev-onnx/onnx/decoder_model_merged_quantized.onnx": "63babd2a951faa5e012669d67f33074249f670582cfdfcaa22c9e4c4b396ad19",
+    "dist/qev-onnx/onnx/decoder_model_merged_quantized.onnx_data": "99dba1ff621102431ceecf8a697ef112f91e83d8e05fcf3a8e35f086ad97e7cf",
+    "dist/qev-onnx/onnx/embed_tokens_q4.onnx": "1d064db71612deb0fcfe7dc37468841f3839a7274c2b5e18625fb35fcabbe0b5",
+    "dist/qev-onnx/onnx/embed_tokens_q4.onnx_data": "fac98f60de121863a9962d517c3223d5c7f3cb70170a3293c1900148dce948b0",
+    "dist/qev-onnx/onnx/decoder_model_merged_q4.onnx": "2b5c186b1dd035dd786491fee5d67b036bed541a5be7d8946616528090b96704",
+    "dist/qev-onnx/onnx/decoder_model_merged_q4.onnx_data": "9bb170b5d2e870aa3c32b635dd7a8b1acdcf349dc81d98e0a220c1bc5dc662ea"
+  },
+  "staging_rebuild_verified_identical_to_measured_binaries": true
+}

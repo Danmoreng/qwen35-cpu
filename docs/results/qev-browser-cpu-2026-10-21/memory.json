@@ -1,0 +1,25 @@
+{
+  "scope": "Maximum WASM linear memory in the measured configurations, not total browser RAM; chunk sizes differ. ONNX heap not captured.",
+  "rows": [
+    {
+      "engine": "Custom H128/Q4-G32-DOT4",
+      "max_wasm_linear_memory_bytes": 575209472,
+      "prefill_chunk_tokens": 32
+    },
+    {
+      "engine": "llama.cpp Q8_0",
+      "max_wasm_linear_memory_bytes": 1857486848,
+      "prefill_chunk_tokens": 512
+    },
+    {
+      "engine": "llama.cpp Q4_0",
+      "max_wasm_linear_memory_bytes": 1481506816,
+      "prefill_chunk_tokens": 512
+    },
+    {
+      "engine": "llama.cpp Q4_K_M",
+      "max_wasm_linear_memory_bytes": 1574895616,
+      "prefill_chunk_tokens": 512
+    }
+  ]
+}
