@@ -84,7 +84,7 @@ try {
   ] : engine === 'llama.cpp' ? ['scripts/llama-browser-worker.js',
     'dist/wasm/llama-bench/runtime/llama_browser.js', 'dist/wasm/llama-bench/runtime/llama_browser.wasm',
     'dist/wasm/llama-bench/runtime/upstream.txt'] : ['web/worker.js', 'web/capabilities.js',
-    'src/cpu/wasm_fma.h', 'src/cpu/q4_dot4_wasm.cpp', 'src/cpu/delta_net_wasm.cpp',
+    'src/cpu/wasm_fma.h', 'src/cpu/wasm_half.h', 'src/cpu/q4_dot4_wasm.cpp', 'src/cpu/delta_net_wasm.cpp',
     'src/wasm/decision.cpp', 'cmake/Wasm.cmake',
     `dist/wasm/${profile.custom_mode}/qev_wasm.js`, `dist/wasm/${profile.custom_mode}/qev_wasm.wasm`];
   artifacts.push('scripts/benchmark-browser-decision.mjs');

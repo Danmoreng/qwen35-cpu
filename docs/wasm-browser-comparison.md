@@ -90,7 +90,9 @@ The sequential runner supplies `--profile-json`.
 
 This table records the original custom engine before direct-FMA optimization.
 See [WASM FMA optimization](wasm-fma-optimization.md) for the newer implementation
-and a fresh comparison against the same llama.cpp builds.
+and a fresh comparison against the same llama.cpp builds. A further
+[Q4 kernel optimization](wasm-kernel-optimization.md) records the current
+browser timings and a new comparison with native execution.
 
 
 AMD Ryzen 9 9955HX3D, Chromium 156.0.8078.4, Emscripten 6.0.13,

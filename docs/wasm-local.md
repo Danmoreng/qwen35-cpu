@@ -18,6 +18,10 @@ the System One request JSON. The server binds to loopback and serves static
 files and a fixed model-file allowlist. All model inference happens in a
 browser worker. Stop the server with Ctrl+C.
 
+The latest local timing and parity results are in
+[WASM kernel optimization](wasm-kernel-optimization.md); earlier measurements
+below record the initial port.
+
 The default model directory is `dist/qev-h128-public-final`. Override it with
 `--model-dir PATH`; it must contain the existing published checkpoint named
 `model.q35h` and its configuration/tokenizer files. The server verifies the

@@ -1,0 +1,41 @@
+[
+  {
+    "name": "optimized-wasm-t8-simd-half",
+    "executable": "/usr/bin/node",
+    "args": [
+      "scripts/benchmark-browser-decision.mjs",
+      "--playwright-module",
+      ".cache/wasm-browser/node_modules/playwright/index.mjs",
+      "--browser",
+      "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+      "--inputs-file",
+      "configs/qev-browser-bench.json",
+      "--provider",
+      "wasm",
+      "--threads",
+      "8",
+      "--engine",
+      "custom",
+      "--dtype",
+      "H128/Q4-G32-DOT4",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--mode",
+      "fma-threads"
+    ]
+  },
+  {
+    "name": "native-same-chunk-and-inputs",
+    "executable": "/home/sebastian/Development/qwen35-cpu/build-linux/qev_browser_reference",
+    "args": [
+      "dist/qev-h128-public-final",
+      "configs/qev-wasm-bench.jsonl",
+      "--threads",
+      "8",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--session-warmup",
+      "all"
+    ]
+  }
+]

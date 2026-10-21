@@ -1,0 +1,80 @@
+{
+  "scope": "Single-run diagnostics, not final performance statistics",
+  "candidates": [
+    {
+      "name": "half-probe",
+      "compute_ms": [
+        176.435712,
+        176.79513599999999,
+        1363.74528
+      ],
+      "raw_profile": "benchmarks/qev-wasm-kernels-2026-10-21/half-probe/case-0-run-0.json",
+      "bit_identical_logits_on_three_inputs": true
+    },
+    {
+      "name": "cache-probe",
+      "compute_ms": [
+        172.639744,
+        172.87449600000002,
+        1377.0099199999997
+      ],
+      "raw_profile": "benchmarks/qev-wasm-kernels-2026-10-21/cache-probe/case-0-run-0.json",
+      "bit_identical_logits_on_three_inputs": true
+    },
+    {
+      "name": "fast-half-probe",
+      "compute_ms": [
+        160.795136,
+        160.240384,
+        1252.4203520000003
+      ],
+      "raw_profile": "benchmarks/qev-wasm-kernels-2026-10-21/fast-half-probe/case-0-run-0.json",
+      "bit_identical_logits_on_three_inputs": true
+    },
+    {
+      "name": "t2-probe",
+      "compute_ms": [
+        178.705152,
+        180.33484799999997,
+        1410.76608
+      ],
+      "raw_profile": "benchmarks/qev-wasm-kernels-2026-10-21/t2-probe/case-0-run-0.json",
+      "bit_identical_logits_on_three_inputs": true
+    },
+    {
+      "name": "attention-probe",
+      "compute_ms": [
+        162.309888,
+        162.389504,
+        1251.63136
+      ],
+      "raw_profile": "benchmarks/qev-wasm-kernels-2026-10-21/attention-probe/case-0-run-0.json",
+      "bit_identical_logits_on_three_inputs": true
+    },
+    {
+      "name": "t8-probe",
+      "compute_ms": [
+        156.510208,
+        157.69472,
+        1228.564992
+      ],
+      "raw_profile": "benchmarks/qev-wasm-kernels-2026-10-21/t8-probe/case-0-run-0.json",
+      "bit_identical_logits_on_three_inputs": true
+    },
+    {
+      "name": "scales-probe",
+      "compute_ms": [
+        159.145216,
+        158.975232,
+        1244.91008
+      ],
+      "raw_profile": "benchmarks/qev-wasm-kernels-2026-10-21/scales-probe/case-0-run-0.json",
+      "bit_identical_logits_on_three_inputs": true
+    }
+  ],
+  "notes": [
+    "t8-probe also included the later-discarded scalar-order SIMD attention prototype",
+    "scales-probe used temporary per-worker scale storage and omitted the attention prototype; final code has no scale cache",
+    "Final implementation uses direct SIMD FP16 conversion with normal fast path, row-first traversal, and eight-token tiles only with guarded FMA and bounded DOT4"
+  ]
+}

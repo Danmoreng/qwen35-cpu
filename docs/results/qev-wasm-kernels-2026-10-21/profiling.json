@@ -1,0 +1,73 @@
+{
+  "scope": "Single-run instrumented diagnostics; not final speed measurements. Operation and stage timing can overlap.",
+  "before": {
+    "raw_profile": "benchmarks/qev-wasm-kernels-2026-10-21/profile-before/case-0-run-0.json",
+    "rows": [
+      {
+        "evaluated_tokens": 74,
+        "profiled_prefill_ms": 228.890112,
+        "q4_kernel_ms": 140.4352,
+        "q4_kernel_fraction": 0.6135485660472744,
+        "q4_prepare_ms": 18.963456,
+        "q4_wait_ms": 3.400448,
+        "linear_attention_ms": 9.624064,
+        "full_attention_ms": 3.185408
+      },
+      {
+        "evaluated_tokens": 77,
+        "profiled_prefill_ms": 224.484864,
+        "q4_kernel_ms": 141.194752,
+        "q4_kernel_fraction": 0.6289722589047251,
+        "q4_prepare_ms": 18.78528,
+        "q4_wait_ms": 3.619072,
+        "linear_attention_ms": 9.65504,
+        "full_attention_ms": 3.364864
+      },
+      {
+        "evaluated_tokens": 579,
+        "profiled_prefill_ms": 1728.97024,
+        "q4_kernel_ms": 1064.443648,
+        "q4_kernel_fraction": 0.6156518043942734,
+        "q4_prepare_ms": 113.407744,
+        "q4_wait_ms": 16.985344,
+        "linear_attention_ms": 73.92460799999999,
+        "full_attention_ms": 135.819776
+      }
+    ]
+  },
+  "after": {
+    "raw_profile": "benchmarks/qev-wasm-kernels-2026-10-21/profile-after/case-0-run-0.json",
+    "rows": [
+      {
+        "evaluated_tokens": 74,
+        "profiled_prefill_ms": 156.81484799999998,
+        "q4_kernel_ms": 73.843456,
+        "q4_kernel_fraction": 0.47089581721241097,
+        "q4_prepare_ms": 18.701312,
+        "q4_wait_ms": 7.430144,
+        "linear_attention_ms": 9.32096,
+        "full_attention_ms": 3.134976
+      },
+      {
+        "evaluated_tokens": 77,
+        "profiled_prefill_ms": 158.484992,
+        "q4_kernel_ms": 77.364736,
+        "q4_kernel_fraction": 0.4881518118762942,
+        "q4_prepare_ms": 18.678784,
+        "q4_wait_ms": 8.073728,
+        "linear_attention_ms": 9.615104,
+        "full_attention_ms": 3.339264
+      },
+      {
+        "evaluated_tokens": 579,
+        "profiled_prefill_ms": 1246.8743680000002,
+        "q4_kernel_ms": 585.873664,
+        "q4_kernel_fraction": 0.4698738534017245,
+        "q4_prepare_ms": 114.928128,
+        "q4_wait_ms": 66.107136,
+        "linear_attention_ms": 74.810368,
+        "full_attention_ms": 134.548736
+      }
+    ]
+  }
+}

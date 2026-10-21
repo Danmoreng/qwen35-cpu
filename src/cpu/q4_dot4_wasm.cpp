@@ -2,6 +2,7 @@
 // SIMD128 fallback plus an optional bounded integer relaxed-dot specialization.
 #include "q4_dot4_internal.h"
 #include "wasm_fma.h"
+#include "wasm_half.h"
 #include <wasm_simd128.h>
 #include <cstring>
 
@@ -22,7 +23,7 @@ void tile(const Q4_0BlockX8 *weights, const Block *vectors, std::size_t blocks,
   v128_t acc[Tokens][2];
   for (auto &a : acc) for (auto &v : a) v = wasm_f32x4_splat(0);
   for (std::size_t b = 0; b < blocks; ++b) {
-    const auto &w = weights[b]; const auto &a = vectors[b];
+    const auto &w = weights[b];
     v128_t dots[Tokens][2];
     for (auto &d : dots) for (auto &v : d) v = wasm_i32x4_splat(0);
     for (int group = 0; group < 4; ++group) for (int half = 0; half < 2; ++half) {
@@ -34,7 +35,8 @@ void tile(const Q4_0BlockX8 *weights, const Block *vectors, std::size_t blocks,
       high = wasm_i8x16_sub(high, wasm_i8x16_splat(8));
 #endif
       for (int t = 0; t < Tokens; ++t) {
-        const auto *q = a.qs + (first_lane + t) * 32 + group * 8;
+        const auto &a = vectors[b + (first_lane + t) / 4 * blocks];
+        const auto *q = a.qs + ((first_lane + t) % 4) * 32 + group * 8;
 #if QWEN35X_HAS_WASM_RELAXED_DOT
         // Second operand is unsigned 0..15, below the 7-bit limit. Products
         // of adjacent elements sum to at most 3840, so saturation is impossible.
@@ -47,14 +49,18 @@ void tile(const Q4_0BlockX8 *weights, const Block *vectors, std::size_t blocks,
 #endif
       }
     }
-    float scales[8]; for (int r = 0; r < 8; ++r) scales[r] = half_to_float(w.d[r]);
+    const auto halves = wasm_v128_load(w.d);
+    const v128_t scales[2] = {wasm_half4_to_float(wasm_u32x4_extend_low_u16x8(halves)),
+                             wasm_half4_to_float(wasm_u32x4_extend_high_u16x8(halves))};
     for (int half = 0; half < 2; ++half) {
-      const auto ws = wasm_v128_load(scales + half * 4);
+      const auto ws = scales[half];
       for (int t = 0; t < Tokens; ++t) {
+        const auto &a = vectors[b + (first_lane + t) / 4 * blocks];
+        const auto lane = (first_lane + t) % 4;
 #if QWEN35X_HAS_WASM_RELAXED_DOT
-        dots[t][half] = wasm_i32x4_sub(dots[t][half], wasm_i32x4_splat(8 * a.sums[first_lane + t]));
+        dots[t][half] = wasm_i32x4_sub(dots[t][half], wasm_i32x4_splat(8 * a.sums[lane]));
 #endif
-        const auto scale = wasm_f32x4_mul(ws, wasm_f32x4_splat(a.scales[first_lane + t]));
+        const auto scale = wasm_f32x4_mul(ws, wasm_f32x4_splat(a.scales[lane]));
         acc[t][half] = wasm_fma_f32x4(wasm_f32x4_convert_i32x4(dots[t][half]), scale, acc[t][half]);
       }
     }
@@ -69,10 +75,18 @@ void q4_dot4_matvec_wasm(const Q4_0BlockX8 *w, const Q8_0BlockX1 *a, float *out,
 }
 void q4_dot4_matmul_wasm(const Q4_0BlockX8 *w, const Q8_0BlockX4 *a, float *out,
                          std::size_t rows, std::size_t tokens, std::size_t blocks, std::size_t stride) noexcept {
-  std::size_t t = 0;
-  for (; t + 4 <= tokens; t += 4) for (std::size_t row = 0; row < rows; row += 8)
-    tile<4>(w + row / 8 * blocks, a + t / 4 * blocks, blocks, 0, out + t * stride + row, stride);
-  for (; t < tokens; ++t) for (std::size_t row = 0; row < rows; row += 8)
-    tile<1>(w + row / 8 * blocks, a + t / 4 * blocks, blocks, t % 4, out + t * stride + row, stride);
+  // Reuse a row tile while its packed weights remain in the small CPU caches.
+  // Every output retains the same block traversal and accumulation order.
+  for (std::size_t row = 0; row < rows; row += 8) {
+    std::size_t t = 0;
+#if QWEN35X_HAS_WASM_RELAXED_FMA && QWEN35X_HAS_WASM_RELAXED_DOT
+    for (; t + 8 <= tokens; t += 8)
+      tile<8>(w + row / 8 * blocks, a + t / 4 * blocks, blocks, 0, out + t * stride + row, stride);
+#endif
+    for (; t + 4 <= tokens; t += 4)
+      tile<4>(w + row / 8 * blocks, a + t / 4 * blocks, blocks, 0, out + t * stride + row, stride);
+    for (; t < tokens; ++t)
+      tile<1>(w + row / 8 * blocks, a + t / 4 * blocks, blocks, t % 4, out + t * stride + row, stride);
+  }
 }
 }

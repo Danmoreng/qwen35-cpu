@@ -137,7 +137,7 @@ try {
     `dist/wasm/${args.mode}/qev_wasm.js`, `dist/wasm/${args.mode}/qev_wasm.wasm`,
     'web/worker.js', 'web/app.js', 'web/capabilities.js', 'src/wasm/decision.cpp',
     'src/cpu/q4_dot4_wasm.cpp', 'src/cpu/delta_net_wasm.cpp', 'cmake/Wasm.cmake',
-    'src/cpu/q4_h128_wasm.cpp', 'src/cpu/wasm_fma.h'
+    'src/cpu/q4_h128_wasm.cpp', 'src/cpu/wasm_fma.h', 'src/cpu/wasm_half.h'
   ].map(file => [file, sha(file)]));
   assert.deepEqual(errors, []);
   fs.writeFileSync(args['profile-json'], JSON.stringify(profile, null, 2) + '\n');

@@ -10,6 +10,8 @@
 #include <bit>
 #ifdef __wasm_simd128__
 #include "../src/cpu/wasm_fma.h"
+#include "../src/cpu/wasm_half.h"
+#include "../src/cpu/q8_0_internal.h"
 #endif
 using namespace qwen35x::cpu;
 int main() {
@@ -30,6 +32,17 @@ int main() {
     if (std::memcmp(four.data(), four_ref.data(), four.size() * sizeof(four[0]))) return 5;
   }
 #ifdef __wasm_simd128__
+  for (std::uint32_t first = 0; first < 65536; ++first) {
+    float actual[4];
+    const std::uint16_t patterns[4] = {static_cast<std::uint16_t>(first),
+      static_cast<std::uint16_t>(first + 0x400), static_cast<std::uint16_t>(first + 0x7c00),
+      static_cast<std::uint16_t>(first + 0x8000)};
+    const auto bits = wasm_i32x4_make(patterns[0], patterns[1], patterns[2], patterns[3]);
+    wasm_v128_store(actual, detail::wasm_half4_to_float(bits));
+    for (int i = 0; i < 4; ++i)
+      if (std::bit_cast<std::uint32_t>(actual[i]) != std::bit_cast<std::uint32_t>(
+          detail::half_to_float(patterns[i]))) return 6;
+  }
   for (int n = 0; n < 10000; ++n) {
     float a[4], b[4], c[4], actual[4];
     for (int i = 0; i < 4; ++i) {
@@ -47,7 +60,7 @@ int main() {
 #endif
   for (int pattern = 0; pattern < 3; ++pattern)
   for (std::size_t blocks : {1U, 7U, 32U}) for (std::size_t rows : {8U, 24U})
-    for (std::size_t tokens : {1U, 3U, 4U, 7U, 8U, 32U}) {
+    for (std::size_t tokens : {1U, 3U, 4U, 7U, 8U, 9U, 12U, 15U, 16U, 31U, 32U}) {
       std::vector<Q4_0BlockX8> w(rows / 8 * blocks);
       for (auto &b : w) { for (auto &d : b.d) d = pattern == 2 ? 0xbc00 : 0x2810; for (auto &q : b.qs) q = pattern == 0 ? rng() : pattern == 1 ? 255 : 0; }
       std::vector<Q8_0BlockX4> a(((tokens + 3) / 4) * blocks);

@@ -1,5 +1,8 @@
 # Local WASM FMA optimization
 
+For the subsequent Q4 scale-conversion and token-tiling changes, including a
+fresh native/browser comparison, see [WASM kernel optimization](wasm-kernel-optimization.md).
+
 The initial browser port spent substantial time reproducing native FP32 fused
 multiply/add through FP64 SIMD and exceptional-case fallbacks. This report
 records a local optimization of the same calibrated H128/Q4-G32-DOT4 model.

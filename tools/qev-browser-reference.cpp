@@ -8,13 +8,19 @@
 #include <nlohmann/json.hpp>
 #include "qwen35x/runtime/browser_decision.h"
 int main(int argc, char **argv) {
-  if (argc < 3) { std::cerr << "Usage: qev_browser_reference MODEL_DIR REQUESTS_JSONL [--threads N] [--weights PATH] [--profile-json PATH]\n"; return 2; }
+  if (argc < 3) { std::cerr << "Usage: qev_browser_reference MODEL_DIR REQUESTS_JSONL [--threads N] [--weights PATH] [--session-warmup first|all] [--profile-json PATH]\n"; return 2; }
   int threads = 1; std::string profile;
+  bool warm_all = false;
   for (int i = 3; i < argc; i += 2) {
     if (i + 1 == argc) return 2;
     const std::string option = argv[i];
     if (option == "--threads") threads = std::stoi(argv[i + 1]);
     else if (option == "--profile-json") profile = argv[i + 1];
+    else if (option == "--session-warmup") {
+      const std::string mode = argv[i + 1];
+      if (mode != "first" && mode != "all") return 2;
+      warm_all = mode == "all";
+    }
     else if (option == "--weights") {
       if (!std::filesystem::equivalent(std::filesystem::path(argv[1]) / "model.q35h", argv[i + 1])) return 2;
     } else return 2;
@@ -33,7 +39,10 @@ int main(int argc, char **argv) {
     record["worker_ms"] = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - start).count();
     return record;
   };
-  if (!profile.empty() && !requests.empty()) run(requests.front());
+  if (!profile.empty() && !requests.empty()) {
+    if (warm_all) for (const auto &line : requests) run(line);
+    else run(requests.front());
+  }
   Json outputs = Json::array();
   for (const auto &line : requests) {
     auto record = run(line);
@@ -43,7 +52,8 @@ int main(int argc, char **argv) {
   }
   if (!profile.empty()) {
     Json report = {{"engine", "native-cpu-c-abi"}, {"threads", threads}, {"requests", requests.size()},
-      {"session_warmup", true}, {"ready", Json::parse(loaded)}, {"outputs", outputs}};
+      {"session_warmup", true}, {"session_warmup_shapes", warm_all ? "all" : "first"},
+      {"ready", Json::parse(loaded)}, {"outputs", outputs}};
     for (std::size_t i = 0; i < outputs.size(); ++i) report["request_" + std::to_string(i) + "_ms"] = outputs[i]["worker_ms"];
     std::ofstream file(profile); if (!file) return 2;
     file << report.dump(2) << '\n';
