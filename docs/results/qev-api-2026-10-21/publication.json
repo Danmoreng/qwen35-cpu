@@ -1,0 +1,10 @@
+{
+  "repository": "danmoreng/qev-0.8b-H128-Q4-G32-DOT4",
+  "revision": "fbd20c702cb9994310c1ecdbb85eff423424ff7e",
+  "engine_revision": "29568961894321318aea2172b125a9a2e1f44757",
+  "artifact_sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69",
+  "anonymous_download": true,
+  "all_checksums_verified": true,
+  "server_checks": "17 CTest cases, 40 protocol fixtures, 15154 HF prompt IDs, original and joint CPU/HTTP probability parity; standalone prepared package verified",
+  "pull_request": "https://github.com/Danmoreng/qwen35-cpu/pull/1"
+}
