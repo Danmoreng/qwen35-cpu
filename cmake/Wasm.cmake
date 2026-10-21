@@ -54,7 +54,7 @@ if (EMSCRIPTEN)
     -sINITIAL_MEMORY=67108864 -sMAXIMUM_MEMORY=2147483648
     -sSTACK_SIZE=2097152 -sFORCE_FILESYSTEM=1 -lworkerfs.js
     "-sINCOMING_MODULE_JS_API=['locateFile','printErr','mainScriptUrlOrBlob']"
-    "-sEXPORTED_FUNCTIONS=['_qev_options','_qev_load','_qev_begin','_qev_step','_qev_cancel','_qev_debug','_qev_unload']"
+    "-sEXPORTED_FUNCTIONS=['_qev_tune','_qev_options','_qev_load','_qev_begin','_qev_step','_qev_cancel','_qev_debug','_qev_unload']"
     "-sEXPORTED_RUNTIME_METHODS=['ccall','FS','WORKERFS']")
   if (QWEN35_WASM_THREADS)
     target_link_options(qev_wasm PRIVATE -pthread -sPTHREAD_POOL_SIZE=7 -sPTHREAD_POOL_SIZE_STRICT=2)

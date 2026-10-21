@@ -4,6 +4,7 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
+import {baselineMismatches} from './wasm-logit-parity.mjs';
 const args = Object.fromEntries(process.argv.slice(2).reduce((out, x, i, all) => {
   if (i % 2 === 0) out.push([x.replace(/^--/, ''), all[i + 1]]); return out;
 }, []));
@@ -17,6 +18,7 @@ const protocolOutputs = args['protocol-reference'] ? fs.readFileSync(args['proto
 assert.equal(protocolInputs.length, protocolOutputs.length);
 const references = args['references-file'] ? fs.readFileSync(args['references-file'], 'utf8').trim().split('\n').map(JSON.parse) : null;
 if (references) assert.equal(references.length, requests.length);
+const baseline = args['baseline-profile'] ? JSON.parse(fs.readFileSync(args['baseline-profile'], 'utf8')) : null;
 const browser = await chromium.launch({headless: true, ...(args.browser ? {executablePath: args.browser} : {})});
 const logs = [], errors = [];
 try {
@@ -24,7 +26,7 @@ try {
   page.on('console', event => { if (event.type() === 'error') errors.push(event.text()); });
   page.on('pageerror', error => errors.push(error.message));
   await page.goto(args.url || 'http://127.0.0.1:8765');
-  const collected = await page.evaluate(async ({mode, threads, context, chunk, requests, checks, protocolInputs, protocolOutputs, sessionWarmup}) => {
+  const collected = await page.evaluate(async ({mode, threads, context, chunk, requests, checks, protocolInputs, protocolOutputs, sessionWarmup, tuning, runtimePath}) => {
     const worker = new Worker('./worker.js');
     const events = [];
     let pending;
@@ -43,7 +45,7 @@ try {
       worker.postMessage(data);
     });
     try {
-      const loaded = await rpc({type: 'load', mode, threads, context, chunk, cache: false});
+      const loaded = await rpc({type: 'load', mode, threads, context, chunk, tuning, runtimePath, cache: false});
       const outputs = [];
       // One untimed in-session warmup, separate from the runner's process warmup.
       if (sessionWarmup) await rpc({type: 'decide', id: 'warmup', request: requests[0]});
@@ -76,7 +78,7 @@ try {
       }
       return {loaded, outputs, wall_ms: wall, checks: checksPassed, events};
     } finally { worker.terminate(); }
-  }, {mode: args.mode, threads: Number(args.threads || 1), context: Number(args.context || 2048), chunk: Number(args.chunk || 32), requests, checks: args.checks === 'true', protocolInputs, protocolOutputs, sessionWarmup: args['session-warmup'] !== 'false'});
+  }, {mode: args.mode, threads: Number(args.threads || 1), context: Number(args.context || 2048), chunk: Number(args.chunk || 32), requests, checks: args.checks === 'true', protocolInputs, protocolOutputs, sessionWarmup: args['session-warmup'] !== 'false', tuning: args.tuning ? JSON.parse(args.tuning) : undefined, runtimePath: args['runtime-path']});
   let maxLogit = 0, maxProbability = 0, questions = 0;
   const choiceChanges = [];
   const probabilities = answer => answer.type === 'noul' ? {true: answer.noul} : answer.probabilities;
@@ -113,6 +115,8 @@ try {
     reference_checked: !!references,
     max_reference_logit_delta: references ? maxLogit : null, max_reference_probability_delta: references ? maxProbability : null,
     choice_changes: choiceChanges,
+    baseline_bit_mismatches: baseline ? baselineMismatches(collected.outputs, baseline.outputs) : null,
+    baseline_profile_sha256: baseline ? sha(args['baseline-profile']) : null,
     browser: browser.version(), request_sha256: sha(args['requests-file']),
     session_warmup: args['session-warmup'] !== 'false',
     reference_sha256: args['references-file'] ? sha(args['references-file']) : null,
@@ -134,7 +138,7 @@ try {
     await cdp.detach();
   } catch { /* Process introspection is diagnostic, not required for execution. */ }
   profile.artifacts = Object.fromEntries([
-    `dist/wasm/${args.mode}/qev_wasm.js`, `dist/wasm/${args.mode}/qev_wasm.wasm`,
+    `dist/wasm/${args['runtime-path'] || args.mode}/qev_wasm.js`, `dist/wasm/${args['runtime-path'] || args.mode}/qev_wasm.wasm`,
     'web/worker.js', 'web/app.js', 'web/capabilities.js', 'src/wasm/decision.cpp',
     'src/cpu/q4_dot4_wasm.cpp', 'src/cpu/delta_net_wasm.cpp', 'cmake/Wasm.cmake',
     'src/cpu/q4_h128_wasm.cpp', 'src/cpu/wasm_fma.h', 'src/cpu/wasm_half.h'
@@ -145,5 +149,6 @@ try {
   // Compare probabilities: a common offset in raw logits cancels in softmax.
   // Persist diagnostic evidence before reporting a failed numerical gate.
   if (references) assert.ok(maxProbability <= .005, `Probability drift ${maxProbability}`);
+  if (baseline) assert.deepEqual(profile.baseline_bit_mismatches, [], 'WASM baseline changed');
   assert.deepEqual(choiceChanges, [], 'A selected option changed');
 } finally { await browser.close(); }

@@ -9,6 +9,8 @@ extern "C" {
 const char *qev_load(const char *directory, int threads, int context);
 // Optional tuning before loading; defaults remain chunk=32 and profile=0.
 const char *qev_options(int chunk, int profile);
+// Optional explicit controls before loading or while idle. Retains weights.
+const char *qev_tune(const char *options_json);
 const char *qev_unload(void);
 const char *qev_begin(const char *request_json);
 const char *qev_step(void);

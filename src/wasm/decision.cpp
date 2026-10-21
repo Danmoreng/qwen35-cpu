@@ -4,6 +4,7 @@
 #include "qwen35x/runtime/browser_decision.h"
 #include "systemone.h"
 #include <chrono>
+#include <bit>
 #ifdef __EMSCRIPTEN__
 #include <emscripten/heap.h>
 #endif
@@ -15,6 +16,8 @@ using Clock = std::chrono::steady_clock;
 struct Session {
   QwenTokenizer tokenizer;
   systemone::Config protocol;
+  std::shared_ptr<const CpuModel> model;
+  CpuEngineConfig config;
   std::unique_ptr<CpuEngine> engine;
   std::optional<systemone::Request> request;
   CpuRequestId active = 0;
@@ -54,14 +57,38 @@ struct Session {
 std::unique_ptr<Session> session;
 int chunk_size = 32;
 bool profiling = false;
+Json tuning = Json::object();
 std::string output;
 const char *reply(const Json &j) { output = j.dump(); return output.c_str(); }
 const char *failure(const std::exception &e) {
   if (session) session->cancel();
   return reply({{"error", e.what()}});
 }
+void apply_tuning(CpuEngineConfig &config) {
+  config.linear_prepare_min_tokens = tuning.value("linear_prepare_min_tokens", std::size_t{128});
+  config.executor_spin_count = tuning.value("executor_spin_count", std::size_t{1024U * 128U * 50U});
+}
 }
 extern "C" {
+const char *qev_tune(const char *body) try {
+  systemone::require(!session || !session->request, "Finish the request before configuring it");
+  auto options = Json::parse(body);
+  systemone::require(options.is_object(), "Tuning must be an object");
+  for (const auto &[key, value] : options.items()) {
+    systemone::require(key == "linear_prepare_min_tokens" || key == "executor_spin_count", "Unknown tuning option: " + key);
+    systemone::require(value.is_number_unsigned() && value.get<std::size_t>() <= 67108864, "Invalid tuning value");
+  }
+  tuning = std::move(options);
+  if (session) {
+    // Recreate only the idle executor/workspaces, retaining immutable weights.
+    // Destroy the old pool first so the fixed WASM pthread pool can be reused.
+    session->engine.reset(); apply_tuning(session->config);
+    std::string error;
+    session->engine = CpuEngine::create(session->model, session->config, error);
+    systemone::require(bool(session->engine), error);
+  }
+  return reply(tuning);
+} catch (const std::exception &e) { return failure(e); }
 const char *qev_options(int chunk, int profile) try {
   systemone::require(!session, "Unload the engine before configuring it");
   systemone::require(chunk >= 4 && chunk <= 1024 && chunk % 4 == 0, "chunk must be a multiple of 4 in 4..1024");
@@ -90,12 +117,15 @@ const char *qev_load(const char *directory, int threads, int context) try {
   systemone::require(std::string(model->weight_format()) == "h128-q4-dot4", "Expected H128/Q4-G32-DOT4 weights");
   CpuEngineConfig config; config.threads = threads; config.max_context = context;
   config.max_resident_requests = 1; config.prefill_chunk_size = chunk_size;
+  apply_tuning(config);
   if (profiling) { config.operation_profile = &s->operations; config.prefill_profile = &s->stages; }
   config.max_prefix_bytes = 0;
+  s->model = model; s->config = config;
   s->engine = CpuEngine::create(model, config, error); systemone::require(bool(s->engine), error);
   session = std::move(s);
   Json info = {{"status", "ready"}, {"threads", threads}, {"max_context", context},
                 {"format", "H128/Q4-G32-DOT4"}, {"chunk", chunk_size}, {"profiling", profiling},
+                {"tuning", tuning}, {"kv_type", cpu::q8_0_backend_uses_avx2(cpu::Q8_0Backend::auto_select) ? "f16" : "f32"},
                 {"backend", cpu::q8_0_backend_name(cpu::q8_0_resolve_backend(cpu::Q8_0Backend::auto_select))}};
 #ifdef __EMSCRIPTEN__
   info["wasm_heap_bytes"] = emscripten_get_heap_size();
@@ -109,7 +139,7 @@ const char *qev_begin(const char *body) try {
   auto request = systemone::parse(body, "per_question");
   systemone::prepare(request, s.tokenizer, s.protocol, s.context);
   s.request = std::move(request); s.question = s.steps = s.evaluated = s.decode = 0;
-  s.prefill_ms = 0; s.debug = {{"prompt_tokens", s.request->rows}, {"option_logits", Json::array()}};
+  s.prefill_ms = 0; s.debug = {{"prompt_tokens", s.request->rows}, {"option_logits", Json::array()}, {"option_logit_bits", Json::array()}};
   s.operations.clear(); s.stages.clear();
   s.started = started; s.submit();
   return reply({{"status", "running"}, {"questions", s.request->questions.size()}, {"input_tokens", s.request->input_tokens}});
@@ -124,6 +154,9 @@ const char *qev_step() try {
   const auto &q = s.request->questions[s.question];
   s.request->answers[q.id] = systemone::answer(q, s.logits, s.protocol);
   s.debug["option_logits"].push_back(s.logits);
+  std::vector<std::uint32_t> bits;
+  for (float value : s.logits) bits.push_back(std::bit_cast<std::uint32_t>(value));
+  s.debug["option_logit_bits"].push_back(bits);
   s.evaluated += result.prefill_tokens; s.prefill_ms += result.prefill_ms; s.decode += result.decode_forwards;
   s.engine->release(s.active); s.active = 0;
   if (++s.question < s.request->questions.size()) {
@@ -149,12 +182,19 @@ const char *qev_debug() {
     diagnostic["operations"] = Json::array(); diagnostic["stages"] = Json::array();
     for (const auto &x : session->operations)
       diagnostic["operations"].push_back({{"kind", x.kind}, {"rows", x.rows}, {"columns", x.columns},
-        {"vectors", x.vectors}, {"prepare_ms", x.prepare_ms}, {"wall_ms", x.wall_ms},
+        {"vectors", x.vectors}, {"participants", x.participants}, {"prepare_ms", x.prepare_ms}, {"wall_ms", x.wall_ms},
         {"dispatch_ms", x.dispatch_ms}, {"caller_ms", x.caller_ms}, {"wait_ms", x.wait_ms}});
     for (const auto &x : session->stages)
       diagnostic["stages"].push_back({{"kind", x.kind}, {"tokens", x.tokens}, {"kernel", x.kernel},
+        {"participants", x.participants}, {"position", x.position}, {"query_key_pairs", x.query_key_pairs},
+        {"query_tile", x.query_tile}, {"kv_tile", x.kv_tile}, {"shared_gqa", x.shared_gqa},
         {"projection_ms", x.projection_ms}, {"prepare_ms", x.prepare_ms},
         {"attention_wall_ms", x.attention_wall_ms}, {"output_ms", x.output_ms}});
+    for (std::size_t i=0; i<session->stages.size(); ++i) {
+      const auto &x=session->stages[i]; auto &j=diagnostic["stages"][i];
+      j["conv_ms"]=x.conv_ms; j["head_prepare_ms"]=x.head_prepare_ms;
+      j["activation_ms"]=x.activation_ms; j["post_ms"]=x.post_ms;
+    }
   }
   return reply(diagnostic);
 }

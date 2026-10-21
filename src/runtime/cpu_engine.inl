@@ -466,12 +466,13 @@ CpuEngine::create(std::shared_ptr<const CpuModel> model,
   auto impl = std::make_unique<Impl>();
   impl->model = std::move(model);
   impl->config = config;
-  impl->context = make_cpu_execution_context(config.threads, error);
+  impl->context = make_cpu_execution_context(config.threads, error, config.executor_spin_count);
   if (!impl->context)
     return nullptr;
   auto &rt = *impl->context;
   rt.decode_stages = config.operation_profile;
   rt.stages = config.prefill_profile;
+  rt.linear_prepare_min_tokens = config.linear_prepare_min_tokens;
   rt.automatic_attention = true;
   rt.attention_gqa = true;
   rt.attention_backend = impl->model->impl_->backend;

@@ -31,6 +31,7 @@ struct CpuPrefillStage {
   std::size_t position{}, tokens{}, participants{};
   std::uint64_t query_key_pairs{};
   double projection_ms{}, prepare_ms{}, attention_wall_ms{}, output_ms{};
+  double conv_ms{}, head_prepare_ms{}, activation_ms{}, post_ms{};
   // Summed elapsed worker intervals, not wall time or OS CPU accounting.
   double pack_worker_ms{}, qk_worker_ms{}, softmax_worker_ms{}, pv_worker_ms{};
 };

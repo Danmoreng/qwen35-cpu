@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {pathToFileURL} from 'node:url';
+import {baselineMismatches} from './wasm-logit-parity.mjs';
 const args = Object.fromEntries(process.argv.slice(2).reduce((out, x, i, all) => {
   if (i % 2 === 0) out.push([x.replace(/^--/, ''), all[i + 1]]); return out;
 }, []));
@@ -23,6 +24,9 @@ const profile = {engine, provider: args.provider, dtype: args.dtype,
   ort_build: args['ort-build'] || 'asyncify',
   flash_attn: args['flash-attn'] || 'auto',
   custom_mode: args.mode || 'relaxed-threads', chunk: Number(args.chunk || 32), profile_ops: args['profile-ops'] === 'true',
+  runtime_path: args['runtime-path'] || args.mode || 'relaxed-threads',
+  tuning: args.tuning ? JSON.parse(args.tuning) : null,
+  tuning_grid: args['tuning-grid'] ? JSON.parse(args['tuning-grid']) : null,
   session_warmup: args['session-warmup'] !== 'false',
   runtime_version: JSON.parse(fs.readFileSync('.cache/wasm-browser/node_modules/@huggingface/transformers/package.json')).version,
   ort_version: JSON.parse(fs.readFileSync('.cache/wasm-browser/node_modules/onnxruntime-web/package.json')).version};
@@ -32,7 +36,7 @@ try {
   page.on('console', e => logs.push({type: e.type(), message: e.text()}));
   page.on('pageerror', e => errors.push(e.message));
   await page.goto(args.url || `http://127.0.0.1:8765/${engine === 'llama.cpp' ? 'llama-bench/' : 'onnx-bench/'}`);
-  const result = await page.evaluate(async ({provider, dtype, threads, inputs, warmup, ortBuild, engine, weights, ubatch, flashAttn, mode, chunk, profileOps}) => {
+  const result = await page.evaluate(async ({provider, dtype, threads, inputs, warmup, ortBuild, engine, weights, ubatch, flashAttn, mode, chunk, profileOps, tuning, runtimePath, tuningGrid, reverseTrials}) => {
     const worker = new Worker(engine === 'custom' ? '../worker.js' : './worker.js',
       engine === 'transformers.js' ? {type: 'module'} : {});
     const events = [];
@@ -49,20 +53,43 @@ try {
       worker.postMessage(data);
     });
     try {
+      const loadStart = performance.now();
       const ready = await rpc({type: 'load', provider, dtype, threads, ortBuild, weights, ubatch, flashAttn,
-        mode, chunk, profile: profileOps, context: 2048, cache: false});
+        mode, chunk, profile: profileOps, tuning, runtimePath, context: 2048, cache: false});
+      const loadWorkerMs = performance.now() - loadStart;
       const decide = input => rpc(engine === 'custom'
         ? {type: 'decide', request: input.request, debug: true} : {type: 'decide', ...input});
-      if (warmup) for (const input of inputs) await decide(input);
-      const outputs = [];
-      for (const input of inputs) outputs.push(await decide(input));
-      return {ready, outputs, events};
+      if (tuningGrid) {
+        if (engine !== 'custom') throw new Error('Tuning grids require the custom engine');
+        const trials = [];
+        for (const trial of reverseTrials ? [...tuningGrid].reverse() : tuningGrid) {
+          const start = performance.now();
+          await rpc({type: 'tune', tuning: trial.tuning});
+          const retuneMs = performance.now() - start;
+          const warmupOutputs = [];
+          if (warmup) for (const input of inputs) warmupOutputs.push(await decide(input));
+          const outputs = [], pageRoundtripMs = [];
+          for (const input of inputs) {
+            const begin = performance.now(); outputs.push(await decide(input)); pageRoundtripMs.push(performance.now() - begin);
+          }
+          trials.push({...trial, retune_ms: retuneMs, warmup_outputs: warmupOutputs, outputs, page_roundtrip_ms: pageRoundtripMs});
+        }
+        return {ready, outputs: trials[0].outputs, trials, events, load_worker_ms: loadWorkerMs};
+      }
+      const warmupOutputs = [];
+      if (warmup) for (const input of inputs) warmupOutputs.push(await decide(input));
+      const outputs = [], pageRoundtripMs = [];
+      for (const input of inputs) {
+        const start = performance.now(); outputs.push(await decide(input)); pageRoundtripMs.push(performance.now() - start);
+      }
+      return {ready, outputs, events, warmup_outputs: warmupOutputs, page_roundtrip_ms: pageRoundtripMs, load_worker_ms: loadWorkerMs};
     } finally { worker.terminate(); }
   }, {provider: args.provider, dtype: args.dtype, threads: profile.threads, inputs,
     warmup: profile.session_warmup, ortBuild: profile.ort_build, engine,
     weights: args.weights ? path.basename(args.weights) : null, ubatch: Number(args.ubatch || 512),
     flashAttn: {auto: -1, off: 0, on: 1}[profile.flash_attn],
-    mode: profile.custom_mode, chunk: profile.chunk, profileOps: profile.profile_ops});
+    mode: profile.custom_mode, chunk: profile.chunk, profileOps: profile.profile_ops, tuning: profile.tuning, runtimePath: profile.runtime_path,
+    tuningGrid: profile.tuning_grid, reverseTrials: Number(args['profile-json'].match(/run-(\d+)/)?.[1] || 0) % 2 === 1});
   Object.assign(profile, result);
   result.outputs.forEach((o, i) => { profile[`request_${i}_ms`] = o.worker_ms; });
   const cdp = await browser.newBrowserCDPSession();
@@ -86,10 +113,16 @@ try {
     'dist/wasm/llama-bench/runtime/upstream.txt'] : ['web/worker.js', 'web/capabilities.js',
     'src/cpu/wasm_fma.h', 'src/cpu/wasm_half.h', 'src/cpu/q4_dot4_wasm.cpp', 'src/cpu/delta_net_wasm.cpp',
     'src/wasm/decision.cpp', 'cmake/Wasm.cmake',
-    `dist/wasm/${profile.custom_mode}/qev_wasm.js`, `dist/wasm/${profile.custom_mode}/qev_wasm.wasm`];
+    `dist/wasm/${profile.runtime_path}/qev_wasm.js`, `dist/wasm/${profile.runtime_path}/qev_wasm.wasm`];
   artifacts.push('scripts/benchmark-browser-decision.mjs');
   if (args.weights) artifacts.push(args.weights);
   profile.artifact_sha256 = Object.fromEntries(artifacts.map(file => [file, sha(file)]));
+  if (args['baseline-profile']) {
+    const expected = JSON.parse(fs.readFileSync(args['baseline-profile'], 'utf8')).outputs;
+    profile.baseline_bit_mismatches = (profile.trials || [{outputs: profile.outputs}]).flatMap(trial =>
+      baselineMismatches(trial.outputs, expected).map(mismatch => ({trial: trial.name, ...mismatch})));
+    if (profile.baseline_bit_mismatches.length) throw new Error('WASM baseline bit gate failed');
+  }
 } catch (error) {
   profile.failure = error.stack || String(error);
   process.exitCode = 1;

@@ -10,11 +10,17 @@
 int main(int argc, char **argv) {
   if (argc < 3) { std::cerr << "Usage: qev_browser_reference MODEL_DIR REQUESTS_JSONL [--threads N] [--weights PATH] [--session-warmup first|all] [--profile-json PATH]\n"; return 2; }
   int threads = 1; std::string profile;
+  int chunk = 32, context = 2048, profile_ops = 0;
+  std::string tuning;
   bool warm_all = false;
   for (int i = 3; i < argc; i += 2) {
     if (i + 1 == argc) return 2;
     const std::string option = argv[i];
     if (option == "--threads") threads = std::stoi(argv[i + 1]);
+    else if (option == "--chunk") chunk = std::stoi(argv[i + 1]);
+    else if (option == "--context") context = std::stoi(argv[i + 1]);
+    else if (option == "--profile-ops") profile_ops = std::string(argv[i + 1]) == "true";
+    else if (option == "--tuning") tuning = argv[i + 1];
     else if (option == "--profile-json") profile = argv[i + 1];
     else if (option == "--session-warmup") {
       const std::string mode = argv[i + 1];
@@ -25,7 +31,13 @@ int main(int argc, char **argv) {
       if (!std::filesystem::equivalent(std::filesystem::path(argv[1]) / "model.q35h", argv[i + 1])) return 2;
     } else return 2;
   }
-  const std::string loaded = qev_load(argv[1], threads, 2048);
+  const std::string configured = qev_options(chunk, profile_ops);
+  if (configured.find("\"error\"") != std::string::npos) { std::cerr << configured << '\n'; return 2; }
+  if (!tuning.empty()) {
+    const std::string configured_tuning = qev_tune(tuning.c_str());
+    if (configured_tuning.find("\"error\"") != std::string::npos) { std::cerr << configured_tuning << '\n'; return 2; }
+  }
+  const std::string loaded = qev_load(argv[1], threads, context);
   if (loaded.find("\"error\"") != std::string::npos) { std::cerr << loaded << '\n'; return 1; }
   std::ifstream input(argv[2]); if (!input) return 2;
   std::vector<std::string> requests;

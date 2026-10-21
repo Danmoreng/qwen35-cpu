@@ -237,12 +237,13 @@ bool run_linear_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
   LinearPrefillPrepareJob prepare_job{scratch, layer, dims, batch_size,
     projection_width, conv_channels, q_width, value_width, head_count,
     key_dim, value_dim, q_scale};
+  if(fine) {stage.conv_ms=elapsed_ms(mark);mark=std::chrono::steady_clock::now();}
   // Prepare each worker's heads immediately before its recurrent scan, using
   // the existing dispatch. Short chunks preserve the serial preparation path.
   const bool fused_prepare = runtime && runtime->executor && batch_size >= 128;
   if (!fused_prepare) run_linear_prefill_prepare(&prepare_job, 0, head_count);
 
-  if(fine) {stage.prepare_ms=elapsed_ms(mark);mark=std::chrono::steady_clock::now();stage.kernel=fused_prepare ? "deltanet+prepare" : "deltanet";stage.participants=runtime->executor ? std::min(head_count,runtime->executor->thread_count()) : 1;}
+  if(fine) {stage.head_prepare_ms=elapsed_ms(mark);stage.prepare_ms=stage.conv_ms+stage.head_prepare_ms;mark=std::chrono::steady_clock::now();stage.kernel=fused_prepare ? "deltanet+prepare" : "deltanet";stage.participants=runtime->executor ? std::min(head_count,runtime->executor->thread_count()) : 1;}
   if (runtime != nullptr && runtime->executor != nullptr) {
     GatedDeltaNetBatchCpuJob job{
       state.recurrent_state.data(),
@@ -299,6 +300,7 @@ bool run_linear_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
       layer.linear.out_proj.q8_0_backend);
   }
 
+  if(fine) stage.post_ms=elapsed_ms(mark);
   const bool ok = matmul_2d_quantized_batch(cpu_context,
     layer.linear.out_proj, gated, batch_size, output, error_message);
   if(fine) {stage.output_ms=elapsed_ms(mark);runtime->stages->push_back(stage);}
@@ -635,6 +637,8 @@ bool run_forward_cpu_q8_batch(CpuExecutionContext *cpu_context,
       }
       return false;
     }
+    std::chrono::steady_clock::time_point activation_start;
+    if (cpu_context && cpu_context->stages) activation_start=std::chrono::steady_clock::now();
     for (std::size_t token = 0; token < batch_size; ++token) {
       const float * gate = gate_up.data() + token * 2 * intermediate;
       cpu::silu_mul_f32(
@@ -643,6 +647,10 @@ bool run_forward_cpu_q8_batch(CpuExecutionContext *cpu_context,
         mlp_hidden.data() + token * intermediate,
         intermediate,
         layer.mlp_down.q8_0_backend);
+    }
+    if (cpu_context && cpu_context->stages) {
+      CpuPrefillStage stage; stage.kind="mlp-activation"; stage.tokens=batch_size;
+      stage.activation_ms=elapsed_ms(activation_start); cpu_context->stages->push_back(stage);
     }
     if (!matmul_2d_quantized_batch(cpu_context,
           layer.mlp_down, mlp_hidden, batch_size, mlp_output, error_message)) {

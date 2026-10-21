@@ -86,13 +86,15 @@ onmessage = async ({data}) => {
       if (loading || running || module) throw new Error('Reload the worker before loading another engine.');
       loading = true;
       const mode = data.mode;
+      const runtimePath = data.runtimePath || mode;
+      if (!/^[a-z0-9/-]+$/.test(runtimePath) || runtimePath.includes('..')) throw new Error('Invalid runtime path');
       if (!['scalar', 'simd', 'threads', 'relaxed', 'relaxed-threads', 'fma', 'fma-threads'].includes(mode)) throw new Error('Unknown engine mode');
       if (mode.endsWith('threads') && !crossOriginIsolated) throw new Error('Threads require cross-origin isolation.');
       if (mode.startsWith('fma') && !(await import('./capabilities.js')).fusedFmaAvailable())
         throw new Error('This browser does not provide the required fused FMA semantics. Select optimized DOT4 instead.');
-      importScripts(`./${mode}/qev_wasm.js`);
-      module = await createQevModule({mainScriptUrlOrBlob: new URL(`./${mode}/qev_wasm.js`, location.href).href,
-        locateFile: path => new URL(`./${mode}/${path}`, location.href).href,
+      importScripts(`./${runtimePath}/qev_wasm.js`);
+      module = await createQevModule({mainScriptUrlOrBlob: new URL(`./${runtimePath}/qev_wasm.js`, location.href).href,
+        locateFile: path => new URL(`./${runtimePath}/${path}`, location.href).href,
         printErr: text => send('log', {text})});
       const response = await fetch('/model/manifest.json');
       if (!response.ok) throw new Error('Local model manifest is unavailable');
@@ -125,6 +127,7 @@ onmessage = async ({data}) => {
       const start = performance.now();
       if (data.chunk !== undefined || data.profile)
         call('qev_options', ['number', 'number'], [data.chunk ?? 32, data.profile ? 1 : 0]);
+      if (data.tuning) call('qev_tune', ['string'], [JSON.stringify(data.tuning)]);
       const result = call('qev_load', ['string', 'number', 'number'], ['/model', data.threads, data.context]);
       // All weights/configuration are owned by C++; release Blob/file references.
       module.FS.unmount('/model'); mounted = false; blobs.length = 0;
@@ -154,6 +157,11 @@ onmessage = async ({data}) => {
       const debug = data.debug ? call('qev_debug') : undefined;
       running = false;
       send('result', {id: data.id, result, debug, worker_ms: performance.now() - started}); return;
+    }
+    if (data.type === 'tune') {
+      if (!module || loading || running) throw new Error('Wait for an idle loaded engine');
+      const tuning = call('qev_tune', ['string'], [JSON.stringify(data.tuning)]);
+      send('ready', {tuning}); return;
     }
     throw new Error('Unknown worker operation');
   } catch (error) {

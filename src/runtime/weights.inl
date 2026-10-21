@@ -41,6 +41,7 @@ struct CpuExecutionContext {
   std::string *attention_kernel_result = nullptr;
   cpu::Q8_0Backend attention_backend = cpu::Q8_0Backend::auto_select;
   int query_tile = 8, kv_tile = 64;
+  std::size_t linear_prepare_min_tokens = 128;
   CpuDecodeWorkspace decode;
   CpuPrefillWorkspace prefill;
   std::unique_ptr<cpu::CpuExecutor> executor;
@@ -56,10 +57,12 @@ struct CpuExecutionContext {
 };
 
 // A null sink avoids clock reads and allocations in production runs.
-std::unique_ptr<CpuExecutionContext> make_cpu_execution_context(int threads, std::string &error) {
+std::unique_ptr<CpuExecutionContext> make_cpu_execution_context(int threads, std::string &error,
+    std::size_t spin_count = 1024U * 128U * 50U) {
   auto context=std::make_unique<CpuExecutionContext>();
   cpu::CpuExecutorConfig config;
   config.thread_count=static_cast<std::size_t>(threads); config.min_parallel_rows=1;
+  config.spin_count=spin_count;
   std::error_code ec;
   context->executor=cpu::CpuExecutor::create(config,ec);
   if(!context->executor) { error="Could not create CPU executor: "+ec.message(); return nullptr; }
@@ -80,6 +83,10 @@ struct CpuDecodeProbe {
     if (sink) { kernel_start=Clock::now(); event.prepare_ms=std::chrono::duration<double,std::milli>(kernel_start-start).count(); }
   }
   cpu::CpuExecutorTiming *executor_timing() { return sink ? &timing : nullptr; }
+  void accumulate_timing(const cpu::CpuExecutorTiming &part) {
+    timing.participants=std::max(timing.participants,part.participants);
+    timing.dispatch_ms+=part.dispatch_ms; timing.caller_ms+=part.caller_ms; timing.wait_ms+=part.wait_ms;
+  }
   ~CpuDecodeProbe() {
     if (sink) {
       event.wall_ms=std::chrono::duration<double,std::milli>(Clock::now()-kernel_start).count();
@@ -1331,11 +1338,13 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
             w.packed_q4_0_blocks.data(), tail_vector, token_output,
             blocks_per_row, w.q8_0_backend, w.q4_dot4,
           };
+          cpu::CpuExecutorTiming token_timing;
           const cpu::CpuExecutorStatus status =
             cpu_context->executor->parallel_for_rows(
               rows / cpu::q4_0_packed_rows,
               run_packed_q4_matvec_tiles,
-              &job, probe.executor_timing());
+              &job, probe.sink ? &token_timing : nullptr);
+          if (probe.sink) probe.accumulate_timing(token_timing);
           if (status != cpu::CpuExecutorStatus::ok) {
             error_message = std::string("Packed Q4_0 CPU batch tail executor failed: ") +
               cpu::cpu_executor_status_name(status) + ".";
