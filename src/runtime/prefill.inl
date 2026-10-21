@@ -240,7 +240,8 @@ bool run_linear_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
   if(fine) {stage.conv_ms=elapsed_ms(mark);mark=std::chrono::steady_clock::now();}
   // Prepare each worker's heads immediately before its recurrent scan, using
   // the existing dispatch. Short chunks preserve the serial preparation path.
-  const bool fused_prepare = runtime && runtime->executor && batch_size >= 128;
+  const bool fused_prepare = runtime && runtime->executor && runtime->executor->thread_count() > 1 &&
+    batch_size >= runtime->linear_prepare_min_tokens;
   if (!fused_prepare) run_linear_prefill_prepare(&prepare_job, 0, head_count);
 
   if(fine) {stage.head_prepare_ms=elapsed_ms(mark);stage.prepare_ms=stage.conv_ms+stage.head_prepare_ms;mark=std::chrono::steady_clock::now();stage.kernel=fused_prepare ? "deltanet+prepare" : "deltanet";stage.participants=runtime->executor ? std::min(head_count,runtime->executor->thread_count()) : 1;}

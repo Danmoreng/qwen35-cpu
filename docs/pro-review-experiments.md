@@ -47,3 +47,16 @@ its binary hashes. No experimental browser flags are used in final speed runs.
 
 Experiments and decisions are recorded below as they complete. A diagnostic
 single run is not a published speed claim.
+
+## B: parallel DeltaNet preparation threshold
+
+Thresholds 128/32/16/8/1 were measured separately in an alternating grid with
+three process samples and one warmup. Threshold 32 was effectively neutral.
+An apparent advantage for threshold 1 correlated with first-trial position, so
+a separate fresh-browser A/B series was run. Fresh medians for 128 were
+157.40/157.62/1248.02 ms versus 155.93/156.00/1226.43 ms for 1 (see exact JSON).
+This small difference does not establish the anticipated larger gain; retain
+128 as the product default. The explicit tuning control remains available.
+The 24-question candidate suite passed exact WASM bits and native probability
+gates. DeltaNet tests now require exact WASM state/output equality and cover
+1/3/7/8/16/31/32/33/128-token batches and split head ranges.
