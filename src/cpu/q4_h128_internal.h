@@ -12,6 +12,9 @@
 #endif
 
 namespace qwen35x::cpu::detail {
+#if QWEN35X_HAS_WASM_SIMD_TU
+void q4_h128_transform_block_wasm_signed(const float *, float *, const std::uint64_t *) noexcept;
+#endif
 
 [[nodiscard]] std::uint64_t q4_h128_sign_word(
   std::size_t transform_block_index,

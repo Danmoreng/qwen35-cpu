@@ -268,6 +268,18 @@ bool q4_h128_prepare_activation_1(
   alignas(32) float transformed[q4_h128_transform_size];
   for (std::size_t block = 0; block < column_count / q4_h128_transform_size; ++block) {
     auto * destination = output + block * q4_h128_q4_blocks_per_transform;
+#if QWEN35X_HAS_WASM_SIMD_TU
+    if (q8_0_resolve_backend(backend) == Q8_0Backend::wasm_simd) {
+      const std::uint64_t words[2] = {
+        signs ? signs[block].words[0] : detail::q4_h128_sign_word(block, 0, sign_seed),
+        signs ? signs[block].words[1] : detail::q4_h128_sign_word(block, 1, sign_seed)};
+      detail::q4_h128_transform_block_wasm_signed(input + block * q4_h128_transform_size, transformed, words);
+      detail::q8_0_quantize_vector_1_scalar(transformed, destination, q4_h128_q4_blocks_per_transform);
+      for (std::size_t group = 0; group < q4_h128_q4_blocks_per_transform; ++group)
+        destination[group].scales[0] *= q4_h128_inverse_sqrt_size;
+      continue;
+    }
+#endif
 #if QWEN35X_Q8_0_HAS_AVX2_TU
     if (avx2) {
 #if QWEN35X_Q8_0_HAS_AVX512_TU
@@ -338,6 +350,13 @@ bool q4_h128_prepare_activations_4(
       }
       for (std::size_t token = 0; token < q8_0_packed_vectors; ++token) {
         const std::size_t vector = vector_tile * q8_0_packed_vectors + token;
+#if QWEN35X_HAS_WASM_SIMD_TU
+        if (q8_0_resolve_backend(backend) == Q8_0Backend::wasm_simd) {
+          detail::q4_h128_transform_block_wasm_signed(input + vector * column_count +
+            transform_block * q4_h128_transform_size, transformed + token * q4_h128_transform_size,
+            block_signs->words); continue;
+        }
+#endif
 #if QWEN35X_Q8_0_HAS_AVX2_TU
         if (avx2) {
           detail::q4_h128_transform_block_avx2_signed(

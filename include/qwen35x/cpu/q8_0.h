@@ -27,6 +27,7 @@ enum class Q8_0Backend : std::uint8_t {
   avx_vnni = 3,
   avx512 = 4,
   avx512_vnni = 5,
+  wasm_simd = 6,
 };
 
 // Explicit ISA requests remain safe on unsupported CPUs and resolve to the
@@ -40,6 +41,7 @@ struct CpuCapabilities {
   bool avx_vnni = false;
   bool avx512 = false;
   bool avx512_vnni = false;
+  bool wasm_simd = false;
 };
 [[nodiscard]] CpuCapabilities cpu_capabilities() noexcept;
 [[nodiscard]] Q8_0Backend q8_0_resolve_backend_for_capabilities(

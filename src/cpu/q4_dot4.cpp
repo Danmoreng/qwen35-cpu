@@ -56,6 +56,9 @@ float scalar_row(const Q4_0BlockX8 * matrix, const Block * vector, std::size_t l
 }
 }
 void q4_dot4_matvec(const Q4_0BlockX8 * matrix, const Q8_0BlockX1 * vector, float * output, std::size_t rows, std::size_t blocks, Q8_0Backend backend) noexcept {
+#if QWEN35X_HAS_WASM_SIMD_TU
+  if (q8_0_resolve_backend(backend) == Q8_0Backend::wasm_simd) return detail::q4_dot4_matvec_wasm(matrix, vector, output, rows, blocks);
+#endif
 #if QWEN35X_Q8_0_HAS_AVX512_VNNI_TU
   if (q8_0_resolve_backend(backend) == Q8_0Backend::avx512_vnni) return detail::q4_dot4_matvec_avx512(matrix, vector, output, rows, blocks);
 #endif
@@ -68,6 +71,9 @@ void q4_dot4_matvec(const Q4_0BlockX8 * matrix, const Q8_0BlockX1 * vector, floa
   for (std::size_t r = 0; r < rows; ++r) output[r] = scalar_row(matrix, vector, 0, r, blocks);
 }
 void q4_dot4_matmul(const Q4_0BlockX8 * matrix, const Q8_0BlockX4 * vectors, float * output, std::size_t rows, std::size_t count, std::size_t blocks, std::size_t stride, Q8_0Backend backend) noexcept {
+#if QWEN35X_HAS_WASM_SIMD_TU
+  if (q8_0_resolve_backend(backend) == Q8_0Backend::wasm_simd) return detail::q4_dot4_matmul_wasm(matrix, vectors, output, rows, count, blocks, stride);
+#endif
 #if QWEN35X_Q8_0_HAS_AVX512_VNNI_TU
   if (q8_0_resolve_backend(backend) == Q8_0Backend::avx512_vnni) {
     // Use the wide kernel whenever a complete eight-token tile is available.

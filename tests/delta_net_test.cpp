@@ -172,7 +172,7 @@ int main() {
     ok = test_backend(Q8_0Backend::avx512_vnni) &&
       test_batch_backend(Q8_0Backend::avx512_vnni) && ok;
   }
-  for (auto backend : {Q8_0Backend::avx2, Q8_0Backend::avx512, Q8_0Backend::avx512_vnni}) {
+  for (auto backend : {Q8_0Backend::avx2, Q8_0Backend::avx512, Q8_0Backend::avx512_vnni, Q8_0Backend::wasm_simd}) {
     if (!qwen35x::cpu::q8_0_backend_available(backend)) continue;
     for (std::size_t batch : {1U, 7U, 128U})
       for (std::size_t width : {11U, 128U})

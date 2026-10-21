@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>qev / local decision lab</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+<header><a class="wordmark" href="/">qev<span> / decision lab</span></a><span class="badge">LOCAL PREVIEW · CPU / WASM</span></header>
+<main>
+  <section class="intro"><p class="eyebrow">H128/Q4-G32-DOT4</p><h1>Small model.<br>Decisions, on your device.</h1><p>Explore calibrated decision probabilities with our custom CPU engine. Model execution happens in your browser.</p></section>
+  <section class="panel setup"><div class="section-title"><span class="number">01</span><h2>Engine</h2><span id="status" role="status">Not loaded</span></div>
+    <div class="settings"><label>Runtime<select id="mode"><option value="relaxed-threads">Optimized DOT4 · multiple threads</option><option value="relaxed">Optimized DOT4 · one thread</option><option value="threads">Standard WASM SIMD · multiple threads</option><option value="simd">Standard WASM SIMD · one thread</option><option value="scalar">Portable baseline · very slow</option></select></label><label>CPU threads<select id="threads"><option>1</option><option>2</option><option selected>4</option><option>8</option></select></label><label>Context limit<select id="context"><option>1024</option><option selected>2048</option><option>4096</option></select></label></div>
+    <div class="load-row"><button id="load">Load local model</button><label class="check"><input id="cache" type="checkbox" checked> Cache model in this browser</label><button id="reset" class="quiet" disabled>Unload engine</button><button id="clear" class="quiet">Clear cache</button></div>
+    <progress id="progress" max="1" value="0"></progress><p id="loading" class="muted">~425 MB model download from localhost. Additional memory is needed for inference.</p><p id="engine-info" class="mono"></p>
+  </section>
+  <div class="workspace"><section class="panel request"><div class="section-title"><span class="number">02</span><h2>Decision request</h2></div><div class="examples"><button data-example="ticket" class="quiet">Support routing</button><button data-example="snake" class="quiet">Snake</button><button data-example="logic" class="quiet">Logic & scoring</button><button data-example="grid" class="quiet">Grid movement</button></div><label for="request" class="sr-only">System One request JSON</label><textarea id="request" spellcheck="false"></textarea><div class="run-row"><button id="run" disabled>Run decision <span>↗</span></button><button id="cancel" class="quiet" disabled>Cancel</button></div><p class="muted">Edit the state, question and options. The same System One protocol is used by the native engine.</p></section>
+  <section class="panel results"><div class="section-title"><span class="number">03</span><h2>Probabilities</h2></div><div id="answers"><p class="empty">Load the engine and run a decision.<br>Your results will appear here.</p></div><div id="metrics"></div><details><summary>Response JSON</summary><pre id="raw">{}</pre></details></section></div>
+  <p id="error" role="alert"></p><footer>Local development build · No remote inference · Nothing is published</footer>
+</main><script type="module" src="app.js"></script>
+</html>

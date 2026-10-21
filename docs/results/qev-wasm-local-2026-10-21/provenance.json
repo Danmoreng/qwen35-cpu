@@ -1,0 +1,876 @@
+{
+  "measured_date": "2026-10-21",
+  "base_git_revision": "8ed918a0591b45aec4487914c4a3dbd5bb776a34",
+  "branch": "codex/qev-wasm-local",
+  "source_state": "Local uncommitted WASM implementation during measurements; measured source hashes are retained in raw profiles and runner metadata",
+  "cpu": {
+    "lscpu": [
+      {
+        "field": "Architecture:",
+        "data": "x86_64"
+      },
+      {
+        "field": "CPU op-mode(s):",
+        "data": "32-bit, 64-bit"
+      },
+      {
+        "field": "Address sizes:",
+        "data": "48 bits physical, 48 bits virtual"
+      },
+      {
+        "field": "Byte Order:",
+        "data": "Little Endian"
+      },
+      {
+        "field": "CPU(s):",
+        "data": "32"
+      },
+      {
+        "field": "On-line CPU(s) list:",
+        "data": "0-31"
+      },
+      {
+        "field": "Vendor ID:",
+        "data": "AuthenticAMD"
+      },
+      {
+        "field": "Model name:",
+        "data": "AMD Ryzen 9 9955HX3D 16-Core Processor"
+      },
+      {
+        "field": "CPU family:",
+        "data": "26"
+      },
+      {
+        "field": "Model:",
+        "data": "68"
+      },
+      {
+        "field": "Thread(s) per core:",
+        "data": "2"
+      },
+      {
+        "field": "Core(s) per socket:",
+        "data": "16"
+      },
+      {
+        "field": "Socket(s):",
+        "data": "1"
+      },
+      {
+        "field": "Stepping:",
+        "data": "0"
+      },
+      {
+        "field": "Microcode version:",
+        "data": "0xb404035"
+      },
+      {
+        "field": "Frequency boost:",
+        "data": "enabled"
+      },
+      {
+        "field": "CPU(s) scaling MHz:",
+        "data": "39%"
+      },
+      {
+        "field": "CPU max MHz:",
+        "data": "5460.5269"
+      },
+      {
+        "field": "CPU min MHz:",
+        "data": "1217.1060"
+      },
+      {
+        "field": "BogoMIPS:",
+        "data": "4990.34"
+      },
+      {
+        "field": "Flags:",
+        "data": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpuid_fault cpb cat_l3 cdp_l3 hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk avx_vnni avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold v_vmsave_vmload vgif x2avic v_spec_ctrl vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid bus_lock_detect movdiri movdir64b overflow_recov succor smca fsrm avx512_vp2intersect flush_l1d amd_lbr_pmc_freeze"
+      },
+      {
+        "field": "Virtualization:",
+        "data": "AMD-V"
+      },
+      {
+        "field": "L1d cache:",
+        "data": "768 KiB (16 instances)"
+      },
+      {
+        "field": "L1i cache:",
+        "data": "512 KiB (16 instances)"
+      },
+      {
+        "field": "L2 cache:",
+        "data": "16 MiB (16 instances)"
+      },
+      {
+        "field": "L3 cache:",
+        "data": "128 MiB (2 instances)"
+      },
+      {
+        "field": "NUMA node(s):",
+        "data": "1"
+      },
+      {
+        "field": "NUMA node0 CPU(s):",
+        "data": "0-31"
+      },
+      {
+        "field": "Vulnerability Gather data sampling:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Ghostwrite:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Indirect target selection:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Itlb multihit:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability L1tf:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Mds:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Meltdown:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Mmio stale data:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Old microcode:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Reg file data sampling:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Retbleed:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Spec rstack overflow:",
+        "data": "Mitigation; IBPB on VMEXIT only"
+      },
+      {
+        "field": "Vulnerability Spec store bypass:",
+        "data": "Mitigation; Speculative Store Bypass disabled via prctl"
+      },
+      {
+        "field": "Vulnerability Spectre v1:",
+        "data": "Mitigation; usercopy/swapgs barriers and __user pointer sanitization"
+      },
+      {
+        "field": "Vulnerability Spectre v2:",
+        "data": "Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected"
+      },
+      {
+        "field": "Vulnerability Srbds:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Tsa:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Tsx async abort:",
+        "data": "Not affected"
+      },
+      {
+        "field": "Vulnerability Vmscape:",
+        "data": "Mitigation; IBPB on VMEXIT"
+      }
+    ]
+  },
+  "affinity_mask": 255,
+  "affinity_cpus": "0-7",
+  "wasm_process_affinities": [
+    "0-7"
+  ],
+  "native_backend": "avx512-vnni-q4+avx512-fp32",
+  "emsdk_git_revision": "d7b4130688bfa348392b921ab04015aa15c4f154",
+  "sdk_toolchain_revision": "eb132757325583b787fe9414b09afea9442b72ad",
+  "emcc": "emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 6.0.13 (e13ee988ce3d87a738dd8f3661d02223308c412a)\nCopyright (C) 2026 the Emscripten authors (see AUTHORS.txt)\nThis is free and open source software under the MIT license.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "node": "v26.11.1",
+  "native_compiler": "c++ (GCC) 16.2.1 20260810",
+  "playwright": "1.64.1",
+  "chromium": "156.0.8078.4",
+  "upstream_dependencies": {
+    "utf8proc": "v2.10.0 / SHA256 6f4f1b639daa6dca9f80bc5db1233e9cbaa31a67790887106160b33ef743f136",
+    "nlohmann_json": "v3.12.0 / SHA256 4b92eb0c06d10683f7447ce9406cb97cd4b453be18d7279320f7b2f025c10187"
+  },
+  "model_sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69",
+  "model_bytes": 424964864,
+  "model_hf_revision": "fc805be27e1409630b14b233ad7aac1a6dbb213f",
+  "measured_runs": 3,
+  "process_warmup_runs": 1,
+  "in_session_warmup": "First short request once per fresh engine; fresh model state per measured request",
+  "timing_scope": "Resident model; B1 serial decisions, 32-token prefill chunks, input preparation through parsed result/debug; excludes model loading and main-thread IPC return",
+  "execution_order": "WASM matrix completed before native matrix; neither ran concurrently with another inference measurement",
+  "commands": {
+    "performance-native": [
+      {
+        "executable": "/home/sebastian/Development/qwen35-cpu/build-linux/qev_browser_reference",
+        "args": [
+          "dist/qev-h128-public-final",
+          "configs/qev-wasm-bench.jsonl",
+          "--threads",
+          "8",
+          "--weights",
+          "dist/qev-h128-public-final/model.q35h",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-native/case-0-run-0.json"
+        ],
+        "case": "native-8",
+        "run": 0
+      },
+      {
+        "executable": "/home/sebastian/Development/qwen35-cpu/build-linux/qev_browser_reference",
+        "args": [
+          "dist/qev-h128-public-final",
+          "configs/qev-wasm-bench.jsonl",
+          "--threads",
+          "8",
+          "--weights",
+          "dist/qev-h128-public-final/model.q35h",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-native/case-0-run-1.json"
+        ],
+        "case": "native-8",
+        "run": 1
+      },
+      {
+        "executable": "/home/sebastian/Development/qwen35-cpu/build-linux/qev_browser_reference",
+        "args": [
+          "dist/qev-h128-public-final",
+          "configs/qev-wasm-bench.jsonl",
+          "--threads",
+          "8",
+          "--weights",
+          "dist/qev-h128-public-final/model.q35h",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-native/case-0-run-2.json"
+        ],
+        "case": "native-8",
+        "run": 2
+      },
+      {
+        "executable": "/home/sebastian/Development/qwen35-cpu/build-linux/qev_browser_reference",
+        "args": [
+          "dist/qev-h128-public-final",
+          "configs/qev-wasm-bench.jsonl",
+          "--threads",
+          "8",
+          "--weights",
+          "dist/qev-h128-public-final/model.q35h",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-native/case-0-run-3.json"
+        ],
+        "case": "native-8",
+        "run": 3
+      }
+    ],
+    "performance-simd": [
+      {
+        "executable": "/usr/bin/node",
+        "run": 0,
+        "case": "simd-1",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-bench.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "simd",
+          "--threads",
+          "1",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-simd/case-0-run-0.json"
+        ]
+      },
+      {
+        "executable": "/usr/bin/node",
+        "run": 0,
+        "case": "relaxed-1",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-bench.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "relaxed",
+          "--threads",
+          "1",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-simd/case-1-run-0.json"
+        ]
+      },
+      {
+        "executable": "/usr/bin/node",
+        "run": 0,
+        "case": "relaxed-threads-4",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-bench.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "relaxed-threads",
+          "--threads",
+          "4",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-simd/case-2-run-0.json"
+        ]
+      },
+      {
+        "executable": "/usr/bin/node",
+        "run": 0,
+        "case": "relaxed-threads-8",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-bench.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "relaxed-threads",
+          "--threads",
+          "8",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-simd/case-3-run-0.json"
+        ]
+      },
+      {
+        "executable": "/usr/bin/node",
+        "run": 1,
+        "case": "relaxed-threads-8",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-bench.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "relaxed-threads",
+          "--threads",
+          "8",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-simd/case-3-run-1.json"
+        ]
+      },
+      {
+        "executable": "/usr/bin/node",
+        "run": 1,
+        "case": "relaxed-threads-4",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-bench.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "relaxed-threads",
+          "--threads",
+          "4",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-simd/case-2-run-1.json"
+        ]
+      },
+      {
+        "executable": "/usr/bin/node",
+        "run": 1,
+        "case": "relaxed-1",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-bench.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "relaxed",
+          "--threads",
+          "1",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-simd/case-1-run-1.json"
+        ]
+      },
+      {
+        "executable": "/usr/bin/node",
+        "run": 1,
+        "case": "simd-1",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-bench.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "simd",
+          "--threads",
+          "1",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-simd/case-0-run-1.json"
+        ]
+      },
+      {
+        "executable": "/usr/bin/node",
+        "run": 2,
+        "case": "simd-1",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-bench.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "simd",
+          "--threads",
+          "1",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-simd/case-0-run-2.json"
+        ]
+      },
+      {
+        "executable": "/usr/bin/node",
+        "run": 2,
+        "case": "relaxed-1",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-bench.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "relaxed",
+          "--threads",
+          "1",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-simd/case-1-run-2.json"
+        ]
+      },
+      {
+        "executable": "/usr/bin/node",
+        "run": 2,
+        "case": "relaxed-threads-4",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-bench.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "relaxed-threads",
+          "--threads",
+          "4",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-simd/case-2-run-2.json"
+        ]
+      },
+      {
+        "executable": "/usr/bin/node",
+        "run": 2,
+        "case": "relaxed-threads-8",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-bench.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "relaxed-threads",
+          "--threads",
+          "8",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-simd/case-3-run-2.json"
+        ]
+      },
+      {
+        "executable": "/usr/bin/node",
+        "run": 3,
+        "case": "relaxed-threads-8",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-bench.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "relaxed-threads",
+          "--threads",
+          "8",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-simd/case-3-run-3.json"
+        ]
+      },
+      {
+        "executable": "/usr/bin/node",
+        "run": 3,
+        "case": "relaxed-threads-4",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-bench.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "relaxed-threads",
+          "--threads",
+          "4",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-simd/case-2-run-3.json"
+        ]
+      },
+      {
+        "executable": "/usr/bin/node",
+        "run": 3,
+        "case": "relaxed-1",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-bench.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "relaxed",
+          "--threads",
+          "1",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-simd/case-1-run-3.json"
+        ]
+      },
+      {
+        "executable": "/usr/bin/node",
+        "run": 3,
+        "case": "simd-1",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-bench.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "simd",
+          "--threads",
+          "1",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/performance-simd/case-0-run-3.json"
+        ]
+      }
+    ],
+    "check-final-8": [
+      {
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-check.jsonl",
+          "--references-file",
+          ".cache/qev-wasm-reference-final.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--checks",
+          "true",
+          "--mode",
+          "relaxed-threads",
+          "--threads",
+          "8",
+          "--protocol-file",
+          "configs/qev-wasm-protocol.jsonl",
+          "--protocol-reference",
+          ".cache/qev-wasm-protocol-reference.jsonl",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/check-final-8/case-0-run-0.json"
+        ],
+        "executable": "/usr/bin/node",
+        "case": "relaxed-threads-8-quality",
+        "run": 0
+      }
+    ],
+    "portable-check": [
+      {
+        "executable": "/usr/bin/node",
+        "case": "scalar-1",
+        "args": [
+          "scripts/benchmark-wasm.mjs",
+          "--url",
+          "http://127.0.0.1:8765",
+          "--requests-file",
+          "configs/qev-wasm-portable-check.jsonl",
+          "--playwright-module",
+          ".cache/wasm-browser/node_modules/playwright/index.mjs",
+          "--browser",
+          "/home/sebastian/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+          "--mode",
+          "scalar",
+          "--threads",
+          "1",
+          "--references-file",
+          ".cache/qev-wasm-portable-reference.jsonl",
+          "--session-warmup",
+          "false",
+          "--profile-json",
+          "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-wasm-local/portable-check/case-0-run-0.json"
+        ],
+        "run": 0
+      }
+    ]
+  },
+  "raw_metadata": {
+    "performance-native": {
+      "utc": "2026-10-21T19:11:48.5339584Z",
+      "affinity": 255,
+      "runs": 3,
+      "warmup_runs": 1,
+      "git_revision": "8ed918a0591b45aec4487914c4a3dbd5bb776a34",
+      "git_diff_sha256": "B62EB4BF7958CB905470B6A961E3165CD30D3BFC782ACDA5F8D8E243D7C68662",
+      "binaries": {
+        "/home/sebastian/Development/qwen35-cpu/build-linux/qev_browser_reference": "76B1C9414A075AB22FAAD5D4373C0031652D472D80E241885FA9CF577863F5F4"
+      },
+      "inputs": {
+        "/home/sebastian/Development/qwen35-cpu/dist/qev-h128-public-final/model.q35h": {
+          "bytes": 424964864,
+          "sha256": "E7D61E7B191DE6C2AFB8663E8A1F8C5F4D52315E9492DB7A690708D744F8DC69"
+        }
+      }
+    },
+    "performance-simd": {
+      "utc": "2026-10-21T18:57:45.9017167Z",
+      "affinity": 255,
+      "runs": 3,
+      "warmup_runs": 1,
+      "git_revision": "8ed918a0591b45aec4487914c4a3dbd5bb776a34",
+      "git_diff_sha256": "B62EB4BF7958CB905470B6A961E3165CD30D3BFC782ACDA5F8D8E243D7C68662",
+      "binaries": {
+        "/usr/bin/node": "63887E4F3F18B4809C06A253352C5C8C3BBE9DF6C6AE902B831DB7AB80F0401C"
+      },
+      "inputs": {}
+    },
+    "check-final-8": {
+      "utc": "2026-10-21T19:12:33.7321226Z",
+      "affinity": 255,
+      "runs": 1,
+      "warmup_runs": 0,
+      "git_revision": "8ed918a0591b45aec4487914c4a3dbd5bb776a34",
+      "git_diff_sha256": "B62EB4BF7958CB905470B6A961E3165CD30D3BFC782ACDA5F8D8E243D7C68662",
+      "binaries": {
+        "/usr/bin/node": "63887E4F3F18B4809C06A253352C5C8C3BBE9DF6C6AE902B831DB7AB80F0401C"
+      },
+      "inputs": {}
+    },
+    "portable-check": {
+      "utc": "2026-10-21T18:57:13.8199717Z",
+      "affinity": 255,
+      "runs": 1,
+      "warmup_runs": 0,
+      "git_revision": "8ed918a0591b45aec4487914c4a3dbd5bb776a34",
+      "git_diff_sha256": "B62EB4BF7958CB905470B6A961E3165CD30D3BFC782ACDA5F8D8E243D7C68662",
+      "binaries": {
+        "/usr/bin/node": "63887E4F3F18B4809C06A253352C5C8C3BBE9DF6C6AE902B831DB7AB80F0401C"
+      },
+      "inputs": {}
+    }
+  },
+  "artifact_sha256": {
+    "benchmarks/qev-wasm-local/performance-native/case-0-run-2.stdout.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-native/metadata.json": "148c221637cdc3f4e0814746710e14ff981de0cc4c380f24d3df106c645ea6a9",
+    "benchmarks/qev-wasm-local/performance-native/case-0-run-0.stdout.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-native/case-0-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-native/case-0-run-3.stdout.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-native/case-0-run-1.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-native/case-0-run-1.json": "e149b4a03ed2da5b5888e0ad1d54657ba1cd2196183da510bf9631f19d250143",
+    "benchmarks/qev-wasm-local/performance-native/case-0-run-1.stdout.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-native/case-0-run-3.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-native/case-0-run-2.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-native/case-0-run-3.json": "467233fa1d705a9c739fed072592b1a1d73c34abe54a8be1027736f12dea1ff4",
+    "benchmarks/qev-wasm-local/performance-native/results.csv": "5710a0d9fbce652d2b58dc4798f17ad1a8e944453b9fda05d9ed3ae59c8b25d1",
+    "benchmarks/qev-wasm-local/performance-native/case-0-run-0.json": "f4400c88ce582c469b4346d0f9a49a572e7f1d6ab92ee09f1830783d182b90d7",
+    "benchmarks/qev-wasm-local/performance-native/case-0-run-2.json": "eaadc2d433f5567a497701f09a732a0ff3fa69c4ce15d4f96ffd55722c2f7910",
+    "benchmarks/qev-wasm-local/performance-simd/case-3-run-3.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-simd/case-3-run-1.json": "819098a4a4bb95b6e0e0b7094e9debdea66658f01d4215460a5f760be17b808d",
+    "benchmarks/qev-wasm-local/performance-simd/case-1-run-0.json": "d48f63e122c314dd932691fb05e370fd295c4b015b28f0ae599b7fbbb827477a",
+    "benchmarks/qev-wasm-local/performance-simd/case-2-run-0.stdout.txt": "07a52089cdf04022dc1ce77a6b7806171596b376e108dd9b67536266f0f9f324",
+    "benchmarks/qev-wasm-local/performance-simd/case-1-run-3.stdout.txt": "24795a26fe4387feda0c0192b7a2ba403f3a656b296cd0be3f542c9d6b9ff8ba",
+    "benchmarks/qev-wasm-local/performance-simd/case-3-run-3.stdout.txt": "5ee0cffb125386fb2b065284b7510cf0992bd9047c986bbd636da8d245ea817c",
+    "benchmarks/qev-wasm-local/performance-simd/case-1-run-2.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-simd/case-2-run-1.stdout.txt": "bab269426712f3f9823bbab081df2d8350f4d83f473ffb5717b6b161ebc501f1",
+    "benchmarks/qev-wasm-local/performance-simd/case-2-run-2.json": "e1a19bdef337b02c8e9fb2b5f48bf9fecd9d568d0cd88d4ea0f4b07d19f9b8c2",
+    "benchmarks/qev-wasm-local/performance-simd/case-3-run-2.stdout.txt": "2046ca057e07f8ae4fe6b8a6af6b2abd11859ff19f53e8d3da8630d5447c4d42",
+    "benchmarks/qev-wasm-local/performance-simd/case-3-run-3.json": "d3cfb97b299c7db8575bb0fa92a1949949eae2d6324ae30707f95b7851971922",
+    "benchmarks/qev-wasm-local/performance-simd/case-0-run-2.stdout.txt": "975e1e78be9936f38f7df66ef13598b36484886a05cfa82e3accabff021d8bc7",
+    "benchmarks/qev-wasm-local/performance-simd/case-3-run-0.json": "e99a230e6a2cf88cd77a4970c7207074d524c25674a6b43c3897c58452a269bd",
+    "benchmarks/qev-wasm-local/performance-simd/case-1-run-1.stdout.txt": "9d56f31e3dbca1eb28d453b8a8954a39b9eeda3a790af42575c339b1ecb979ce",
+    "benchmarks/qev-wasm-local/performance-simd/case-2-run-3.stdout.txt": "3d7ec9de61b427dcdda6b293408039c7efdede69a5b6b11b694b73074305c7c1",
+    "benchmarks/qev-wasm-local/performance-simd/case-3-run-1.stdout.txt": "a32b24c10a80f5579cc1d6dafc989e7fc4d61c57b82d2675a1b30e9bf4010839",
+    "benchmarks/qev-wasm-local/performance-simd/case-2-run-2.stdout.txt": "f1e922dd52148044bb00b297c6dd7ec7514f9f67f15120617ba2dd15f01d3a82",
+    "benchmarks/qev-wasm-local/performance-simd/metadata.json": "d56df40d6e12cffadde37e04e9cc361b50abe478491fdf02a9ceeac696031c32",
+    "benchmarks/qev-wasm-local/performance-simd/case-0-run-0.stdout.txt": "6e4909ae97b1f54afec3b44d19c273e9fb1a43e42ba87368a58eb878216d36d1",
+    "benchmarks/qev-wasm-local/performance-simd/case-1-run-2.stdout.txt": "aaca1630144a4120bd841aef7ea1f5116288e6a6025461b3465b99d8933deaa7",
+    "benchmarks/qev-wasm-local/performance-simd/case-3-run-2.json": "d57fc7023103ea0a7e817fd0debbb99b2be5ccdae2abc9dabe61dd6d2424d706",
+    "benchmarks/qev-wasm-local/performance-simd/case-0-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-simd/case-0-run-3.stdout.txt": "b314fcbcbe9475eba0c5f8e35b9dedaf61fa3f8de76b690c01810ba554446c83",
+    "benchmarks/qev-wasm-local/performance-simd/case-0-run-1.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-simd/case-0-run-1.json": "2861e7dbf20ff3a139ff79105789c603e2797e87e64b7d962cda8ed1ed551dee",
+    "benchmarks/qev-wasm-local/performance-simd/case-2-run-3.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-simd/case-3-run-1.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-simd/case-1-run-2.json": "bf8ea9bcbbfa363cfd0ea2d517ad9b95171c1a91eccfbe39cd29eb6ac3a1d949",
+    "benchmarks/qev-wasm-local/performance-simd/case-1-run-3.json": "74072ca39a3b5571dcb232bba0cf6fff6cc59cdeba6e44ca4d79dd0fca4cc055",
+    "benchmarks/qev-wasm-local/performance-simd/case-1-run-1.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-simd/case-2-run-1.json": "79a55a5c5c41f375a8ea73fa7cc8c872a6af575718004c5c2681774bdc4fa7b4",
+    "benchmarks/qev-wasm-local/performance-simd/case-2-run-3.json": "3b638c08a5f926a9e9b49777cd187a0d1aed7c63d51b0b4cda31d289dd831764",
+    "benchmarks/qev-wasm-local/performance-simd/case-1-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-simd/case-2-run-2.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-simd/case-1-run-1.json": "aa5b8591421571f93c5dbfdb7c216cf36108f28272141eafd1b5535a005fddca",
+    "benchmarks/qev-wasm-local/performance-simd/case-2-run-0.json": "3d5bdf3f04d9aa12b3992d18ae14af5a0d6ae027bec47fbd36acdbe83b038326",
+    "benchmarks/qev-wasm-local/performance-simd/case-1-run-0.stdout.txt": "262b74560133d72aee35dd6fcae8d06188cc303d739425a462a95567a226d6d0",
+    "benchmarks/qev-wasm-local/performance-simd/case-1-run-3.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-simd/case-3-run-0.stdout.txt": "daed0090fc1450c9a08e6e55f184893e5c8df288b06084623a5f1f68c10bec9e",
+    "benchmarks/qev-wasm-local/performance-simd/case-0-run-1.stdout.txt": "ba94e3c23314228264258de34b11f659a3557439889e94ee7a7d89bf51cea235",
+    "benchmarks/qev-wasm-local/performance-simd/case-3-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-simd/case-0-run-3.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-simd/case-2-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-simd/case-0-run-2.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-simd/case-0-run-3.json": "add79d1182d6f8d1dd81eea31e7c2db1f0ec82c679dd5f37ff680047a15156f7",
+    "benchmarks/qev-wasm-local/performance-simd/case-3-run-2.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-simd/results.csv": "00bd6cbff9ad6a7f375fa1c91e95fd3c36d2cd480856928e12cda9c47ca376ae",
+    "benchmarks/qev-wasm-local/performance-simd/case-2-run-1.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/performance-simd/case-0-run-0.json": "6e4af7c31287362d279b78a6e90d47cc9f5d593afb15a339db8c7df8a51b2092",
+    "benchmarks/qev-wasm-local/performance-simd/case-0-run-2.json": "3ba9317f1caf4bfcf3659589479bfff2c9d38de07f9c87f5ead912d154141169",
+    "benchmarks/qev-wasm-local/check-final-8/metadata.json": "e1c60b4e01d14c17c8285e70929a4e349598930c103c62a10a32cb57b25e9af4",
+    "benchmarks/qev-wasm-local/check-final-8/case-0-run-0.stdout.txt": "4a1b79d4b59ba00884959adc0de39da98b5873accb671b40456d8397d9991509",
+    "benchmarks/qev-wasm-local/check-final-8/case-0-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/check-final-8/results.csv": "32b914afbe28e21a398b61a3ac3e0fa2f81ec84c303767fa91cfe19f8cddfbea",
+    "benchmarks/qev-wasm-local/check-final-8/case-0-run-0.json": "e66e434b28d00cc40af2d1084aa9402764ddbde7ca098bfe72e56b42ca2f794f",
+    "benchmarks/qev-wasm-local/portable-check/metadata.json": "6ba16870d71a6014f081bab3e31b6ef2b25646f8f6383faff615267d4536610b",
+    "benchmarks/qev-wasm-local/portable-check/case-0-run-0.stdout.txt": "5ec21bbf932f48cd7b8e55a497b97d0c514c2e8262a30ed8c62abdd1d98435ac",
+    "benchmarks/qev-wasm-local/portable-check/case-0-run-0.stderr.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "benchmarks/qev-wasm-local/portable-check/results.csv": "276b5cff19b3f1b5e4104747fd36e5cc8cd915d48eaa9230d8373ab588e923f3",
+    "benchmarks/qev-wasm-local/portable-check/case-0-run-0.json": "8fff97e2186ceddc802baa88750f1382984217f5491b5a08d31bc94e747b88d7",
+    ".cache/qev-wasm-reference-final.jsonl": "1ce4f8eb7d5eee5a36c46918d840c4b67cf1502f0af2713f8522587e004bc5ab",
+    ".cache/qev-wasm-protocol-reference.jsonl": "d824a5e234a55262b3db7de63953d302ce6fd5d264936e8271c6ff811bea34f6",
+    ".cache/wasm-native-ctest.log": "dd6adef253522c7254552ccbd6ac6deca8dac04bf94dac36f3c0810851612958",
+    ".cache/wasm-final-build.log": "606c1e44d0a4ab30d39012b8f66d54b4671d5d440c71135ec989c281e2c025f5",
+    "dist/wasm/scalar/qev_wasm.wasm": "da3d415e3fe9719fc0aaa54aa69292376754b6e20bad8dfcd8e30e6874734bf5",
+    "dist/wasm/scalar/qev_wasm.js": "39291aa372f7767e58a466fce0f46cb5f5a7eb3afce6619f5f5d2b4ff47f7b00",
+    "dist/wasm/scalar/toolchain.txt": "f6d715349a0f5a712fd6043fb14866ced8a16d5268bb00cd8c8faac3ff76a59b",
+    "dist/wasm/simd/qev_wasm.wasm": "f6d798fbdc318fd6408e075e351301f678cc7265ca966504b220d48844f8b0da",
+    "dist/wasm/simd/qev_wasm.js": "39291aa372f7767e58a466fce0f46cb5f5a7eb3afce6619f5f5d2b4ff47f7b00",
+    "dist/wasm/simd/toolchain.txt": "f6d715349a0f5a712fd6043fb14866ced8a16d5268bb00cd8c8faac3ff76a59b",
+    "dist/wasm/threads/qev_wasm.wasm": "060cc9617c4ae56fd87dd025c0d72714f782b39ada972b1215e92b0e41483e46",
+    "dist/wasm/threads/qev_wasm.js": "70acf4967aae969f82ae8b8ca4f4040a5b5e6f5a7cad49ca1dac863de23704ec",
+    "dist/wasm/threads/toolchain.txt": "f6d715349a0f5a712fd6043fb14866ced8a16d5268bb00cd8c8faac3ff76a59b",
+    "dist/wasm/relaxed/qev_wasm.wasm": "b6ce8c75ae1268e4ddf7c1e30d8d85a23d7ce2fa5cffb64365e8b1779fcc5241",
+    "dist/wasm/relaxed/qev_wasm.js": "39291aa372f7767e58a466fce0f46cb5f5a7eb3afce6619f5f5d2b4ff47f7b00",
+    "dist/wasm/relaxed/toolchain.txt": "f6d715349a0f5a712fd6043fb14866ced8a16d5268bb00cd8c8faac3ff76a59b",
+    "dist/wasm/relaxed-threads/qev_wasm.wasm": "4d917d4b3c6f9a3184efe6a44835a3bd6c4c2a918243b8e918c73ab33ef04d4f",
+    "dist/wasm/relaxed-threads/qev_wasm.js": "70acf4967aae969f82ae8b8ca4f4040a5b5e6f5a7cad49ca1dac863de23704ec",
+    "dist/wasm/relaxed-threads/toolchain.txt": "f6d715349a0f5a712fd6043fb14866ced8a16d5268bb00cd8c8faac3ff76a59b",
+    "build-linux/qev_browser_reference": "76b1c9414a075ab22faad5d4373c0031652d472d80e241885fa9cf577863f5f4",
+    "CMakeLists.txt": "da0971e1cd6b2a8dce5f5d60ca0523bfb33f5a06412713a97acf00a1b855d36a",
+    "cmake/Wasm.cmake": "76ec4c9deab0fb278f175693158716300b94e3baba63b2c7ea7176ca83eab069",
+    "web/capabilities.js": "2da072fa7bdd106bb5d89673a44fd765b2f00678f34d68666910c21a14790f88",
+    "web/index.html": "be540a5b8ffdf755362e9096f274d50b839290a3c00e6286f6c59ca04fed6b27",
+    "web/app.js": "0d3017694192a632e1f311c03902b48008a14962ca6f4a0db1c6bb3149e80767",
+    "web/worker.js": "eaeeb5f07100abfc9b28d8f194f670be3d3f00b174aa1646fb02bdbe9fda4ad4",
+    "web/style.css": "425f2fdddf3a53e545f1162dc296b2b2cc9fa21aa466ec35b5f1e28298aaa8be",
+    "configs/qev-wasm-check.jsonl": "9e75ac4afb80b4468b6df7db8704b8ff52bdd998063969824de8e18d43f70c8a",
+    "configs/qev-wasm-protocol.jsonl": "e5606f80dfe6abdf97c6e571a3d9c9aa81e9f02a2e18aa19b656ab93d9402d59",
+    "configs/qev-wasm-portable-check.jsonl": "cf1009a8702789ed3a2dda1857f9c9bb1c087688c98a4fd5fe71bba9b39347f0",
+    "configs/qev-wasm-bench.jsonl": "a8405576cd22c12b614a90accb6816355ccec95d9726a7219ce9e1eb0ea218ea",
+    "benchmarks/qev-wasm-local/ui/checks.json": "216228a097bc48e6a43d1d9cb1bfe596f2fed412ac9a6dbceb11ba7d7af72084",
+    "benchmarks/qev-wasm-local/ui/desktop.png": "232fcfee8362e2f15193965aebb47a254375d8f070cc8057652b77a28ef7b142",
+    "benchmarks/qev-wasm-local/ui/mobile.png": "2d03d74173c08c13a42cfe5f3e9713c1b2642340a230ecf88a9537807d894a65"
+  },
+  "ui_checks": [
+    "ticket",
+    "snake",
+    "responsive layout",
+    "cancel in UI",
+    "ticket",
+    "model cache reused after unload",
+    "malformed editor JSON",
+    "all resources from localhost"
+  ]
+}

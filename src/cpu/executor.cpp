@@ -392,7 +392,8 @@ CpuExecutorStatus CpuExecutor::q8_0_matvec(
        backend != Q8_0Backend::avx2 &&
        backend != Q8_0Backend::avx_vnni &&
        backend != Q8_0Backend::avx512 &&
-       backend != Q8_0Backend::avx512_vnni) ||
+       backend != Q8_0Backend::avx512_vnni &&
+       backend != Q8_0Backend::wasm_simd) ||
       output == nullptr ||
       (blocks_per_row != 0 && (matrix == nullptr || vector == nullptr)) ||
       (blocks_per_row != 0 &&
@@ -428,7 +429,8 @@ CpuExecutorStatus CpuExecutor::q8_0_matmul(
        backend != Q8_0Backend::avx2 &&
        backend != Q8_0Backend::avx_vnni &&
        backend != Q8_0Backend::avx512 &&
-       backend != Q8_0Backend::avx512_vnni) ||
+       backend != Q8_0Backend::avx512_vnni &&
+       backend != Q8_0Backend::wasm_simd) ||
       matrix == nullptr || vectors == nullptr || output == nullptr ||
       blocks_per_row == 0 ||
       row_count > std::numeric_limits<std::size_t>::max() / blocks_per_row ||
@@ -465,7 +467,8 @@ CpuExecutorStatus CpuExecutor::q4_0_matvec_q8_0(
        backend != Q8_0Backend::avx2 &&
        backend != Q8_0Backend::avx_vnni &&
        backend != Q8_0Backend::avx512 &&
-       backend != Q8_0Backend::avx512_vnni) ||
+       backend != Q8_0Backend::avx512_vnni &&
+       backend != Q8_0Backend::wasm_simd) ||
       output == nullptr ||
       (blocks_per_row != 0 && (matrix == nullptr || vector == nullptr)) ||
       (blocks_per_row != 0 &&
@@ -496,7 +499,8 @@ CpuExecutorStatus CpuExecutor::q4_0_matmul_q8_0(
        backend != Q8_0Backend::avx2 &&
        backend != Q8_0Backend::avx_vnni &&
        backend != Q8_0Backend::avx512 &&
-       backend != Q8_0Backend::avx512_vnni) ||
+       backend != Q8_0Backend::avx512_vnni &&
+       backend != Q8_0Backend::wasm_simd) ||
       matrix == nullptr || vectors == nullptr || output == nullptr ||
       blocks_per_row == 0 ||
       row_count > std::numeric_limits<std::size_t>::max() / blocks_per_row ||

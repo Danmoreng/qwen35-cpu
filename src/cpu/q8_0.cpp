@@ -301,6 +301,12 @@ bool q8_0_backend_available(const Q8_0Backend backend) noexcept {
     case Q8_0Backend::auto_select:
     case Q8_0Backend::scalar:
       return true;
+    case Q8_0Backend::wasm_simd:
+#if QWEN35X_HAS_WASM_SIMD_TU
+      return true;
+#else
+      return false;
+#endif
     case Q8_0Backend::avx2: {
       static const bool available = avx2_runtime_available();
       return available;
@@ -323,6 +329,8 @@ bool q8_0_backend_available(const Q8_0Backend backend) noexcept {
 
 Q8_0Backend q8_0_resolve_backend_for_capabilities(
   const Q8_0Backend requested, const CpuCapabilities capabilities) noexcept {
+  if ((requested == Q8_0Backend::auto_select || requested == Q8_0Backend::wasm_simd) && capabilities.wasm_simd)
+    return Q8_0Backend::wasm_simd;
   if (requested == Q8_0Backend::scalar || !capabilities.avx2) {
     return Q8_0Backend::scalar;
   }
@@ -349,7 +357,13 @@ Q8_0Backend q8_0_resolve_backend_for_capabilities(
 CpuCapabilities cpu_capabilities() noexcept {
   static const CpuCapabilities capabilities{
     avx2_runtime_available(), avx_vnni_runtime_available(),
-    avx512_runtime_available(), avx512_vnni_runtime_available()};
+    avx512_runtime_available(), avx512_vnni_runtime_available(),
+#if QWEN35X_HAS_WASM_SIMD_TU
+    true
+#else
+    false
+#endif
+  };
   return capabilities;
 }
 
@@ -360,6 +374,7 @@ Q8_0Backend q8_0_resolve_backend(const Q8_0Backend requested) noexcept {
 Q8_0Backend q8_0_dot_backend_for_capabilities(
   const Q8_0Backend requested, const CpuCapabilities capabilities) noexcept {
   const auto resolved = q8_0_resolve_backend_for_capabilities(requested, capabilities);
+  if (resolved == Q8_0Backend::wasm_simd) return resolved;
   if (resolved == Q8_0Backend::scalar || resolved == Q8_0Backend::avx2) return resolved;
   return capabilities.avx_vnni ? Q8_0Backend::avx_vnni : Q8_0Backend::avx2;
 }
@@ -385,6 +400,12 @@ const char * q8_0_backend_name(const Q8_0Backend backend) noexcept {
       return "auto";
     case Q8_0Backend::scalar:
       return "scalar";
+    case Q8_0Backend::wasm_simd:
+#if QWEN35X_HAS_WASM_RELAXED_DOT
+      return "wasm-simd128-dot4-bounded-relaxed";
+#else
+      return "wasm-simd128-dot4";
+#endif
     case Q8_0Backend::avx2:
       return "avx2+fma+f16c";
     case Q8_0Backend::avx_vnni:

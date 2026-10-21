@@ -1,6 +1,9 @@
 #include "qwen35x/cpu/delta_net.h"
 
 #include <cstddef>
+#if QWEN35X_HAS_WASM_SIMD_TU
+#include "delta_net_wasm.h"
+#endif
 
 namespace qwen35x::cpu {
 
@@ -137,6 +140,12 @@ void gated_delta_net_update_rows(
     return;
   }
   const std::size_t bounded_end = row_end < total_rows ? row_end : total_rows;
+#if QWEN35X_HAS_WASM_SIMD_TU
+  if (q8_0_resolve_backend(backend) == Q8_0Backend::wasm_simd) {
+    detail::gated_delta_net_update_rows_wasm(state, q, k, v, alpha, beta, output,
+      key_dim, value_dim, row_begin, bounded_end); return;
+  }
+#endif
 #if QWEN35X_Q8_0_HAS_AVX2_TU
   if (q8_0_backend_uses_avx2(backend)) {
     detail::gated_delta_net_update_rows_avx2(
@@ -169,6 +178,12 @@ void gated_delta_net_update_batch_rows(
     return;
   }
   const std::size_t bounded_end = row_end < head_count ? row_end : head_count;
+#if QWEN35X_HAS_WASM_SIMD_TU
+  if (q8_0_resolve_backend(backend) == Q8_0Backend::wasm_simd) {
+    detail::gated_delta_net_update_batch_rows_wasm(state, q, k, v, alpha, beta, output,
+      batch_size, head_count, key_dim, value_dim, row_begin, bounded_end); return;
+  }
+#endif
 #if QWEN35X_Q8_0_HAS_AVX2_TU
   if (q8_0_backend_uses_avx2(backend)) {
     detail::gated_delta_net_update_batch_rows_avx2(

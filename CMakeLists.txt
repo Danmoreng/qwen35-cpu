@@ -132,6 +132,16 @@ target_include_directories(qwen35x_core
 )
 target_link_libraries(qwen35x_core PRIVATE Threads::Threads)
 
+option(QWEN35_BUILD_WASM "Build the local browser decision engine" ${EMSCRIPTEN})
+option(QWEN35_WASM_SIMD "Use WebAssembly SIMD kernels" ON)
+option(QWEN35_WASM_THREADS "Use WebAssembly pthread workers" OFF)
+option(QWEN35_WASM_RELAXED_DOT "Use bounded integer relaxed SIMD dot products" OFF)
+if (QWEN35_BUILD_WASM)
+  include(cmake/Wasm.cmake)
+  if (EMSCRIPTEN)
+    return()
+  endif ()
+endif ()
 
 add_executable(qwen35_cpu src/main.cpp)
 target_link_libraries(qwen35_cpu PRIVATE qwen35x_core)
