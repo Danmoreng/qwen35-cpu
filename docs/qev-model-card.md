@@ -132,10 +132,14 @@ from the quality scoring above.
 | llama.cpp CPU / BF16 | 77.22 ms | 496.02 ms |
 | llama.cpp CPU / Q8_0 | 93.84 ms | 784.47 ms |
 
-The short Q4 request corresponds to **20.25 serial decisions/s**; the longer
-request to 4.74/s. These are B1 observations, not concurrent serving throughput. The separate
-concurrency workload reaches 27.15 decisions/s with 16 short requests, but mean
-request latency rises to 502 ms; longer requests show little throughput gain.
+These are B1 first-request observations. A separate fixed-work comparison sends
+the same 16 distinct requests serially or concurrently to one running server
+(76/581 input tokens per request). Serial throughput is **29.14/5.04
+decisions/s**; with 16 simultaneous calls it is **26.91/5.01 decisions/s**.
+Mean HTTP latency rises from 34 to 505 ms for short requests and from 198 to
+2,948 ms for long requests. The current scheduler shows no useful throughput
+gain from concurrency on this workload; it does not batch prefill across
+requests. These throughput measurements are separate from the cold B1 times.
 CPU results depend on prompt length, hardware and kernels; the BF16/Q8 ordering
 above is measured rather than inferred from bit width.
 

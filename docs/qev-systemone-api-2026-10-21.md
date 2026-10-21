@@ -107,7 +107,7 @@ throughput is compared with the B1 baselines of another engine.
 | llama.cpp CPU BF16 | 77.22 [76.18, 78.85] | 496.02 [483.28, 577.15] |
 | llama.cpp CPU Q8_0 | 93.84 [93.41, 97.10] | 784.47 [730.64, 839.93] |
 
-## Native Q4 concurrency
+## First-burst concurrency
 
 Separate workload: distinct state tags add two input tokens, so the control
 and all concurrent requests contain 76 or 581 input tokens. Throughput is the
@@ -121,14 +121,37 @@ three measured groups (latency uses each group's mean).
 | 8 | 26.16 | 263.01 | 5.11 | 1454.89 |
 | 16 | 27.15 | 502.14 | 5.04 | 2940.84 |
 
-For the short fixture, concurrency 16 increases observed throughput by 30.1%,
-while mean request latency rises from 48 ms to 502 ms. For the longer fixture,
-throughput changes by 5.8% (4.76 to 5.04 decisions/s), while mean latency
-rises from 210 ms to 2,941 ms. With only three groups, the modest long-prompt
-throughput difference is not a broad scaling claim. These measurements support
-bounded queueing and latency-aware admission; the current server does not get
-a decode-batching speedup on decision requests. The cause of the throughput
-changes is not isolated by this experiment.
+These first-burst samples vary the total work with concurrency. The apparent
+30.1% short-request throughput increase includes first-call amortization; it
+must not be interpreted as useful scaling of a warmed server. The following
+fixed-work comparison controls this distinction.
+
+## Fixed work: 16 requests at every concurrency
+
+Every sample processes the same 16 distinct requests on one fresh server,
+using a maximum of 1, 4, 8 or 16 simultaneous HTTP calls. Each server uses the
+same eight inference threads. B1 sends all 16 serially in the same process;
+all cases therefore amortize their first call over the same amount of work.
+The client pool queues remaining calls when concurrency is below 16. Per-call
+latency starts when the HTTP call begins, so client-pool waiting is excluded
+from that column; group wall time includes the complete workload.
+
+| Maximum concurrent calls | 76-token decisions/s | Mean HTTP latency ms | 581-token decisions/s | Mean HTTP latency ms |
+| ---: | ---: | ---: | ---: | ---: |
+| 1 | 29.14 | 34.27 | 5.04 | 198.33 |
+| 4 | 27.71 | 139.05 | 5.07 | 776.64 |
+| 8 | 27.24 | 272.11 | 5.01 | 1541.95 |
+| 16 | 26.91 | 504.86 | 5.01 | 2948.38 |
+
+There is **no useful throughput gain from concurrency in this fixed-work
+comparison**. Short requests are about 7.7% slower at concurrency 16; long
+requests are within 0.6% of the serial throughput. Mean HTTP latency rises from
+34 to 505 ms for short calls, and from 198 to 2,948 ms for long calls. The
+fixed-work result supersedes any scaling interpretation of the first-burst
+comparison. It does not claim a production steady-state load distribution.
+A cross-request prefill batching design or shared-state reuse would need
+separate implementation and measurement; decode batching cannot provide that
+benefit for zero-decode decisions.
 
 The final measurements integrate upstream CPU optimizations at
 `560847d021cd10a70a08d2a55ef7ca32af888415`; measured engine source is

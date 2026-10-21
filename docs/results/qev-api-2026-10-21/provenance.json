@@ -36,8 +36,8 @@
       "sha256": "d0d44ffe78e3d30f95cdc822b60da92823e888ec0d4f773d3e0002c0c8e5ba97"
     },
     "scripts/benchmark-systemone-http.py": {
-      "bytes": 4771,
-      "sha256": "69517b9751a559482ea0dc28949e8df885db0c78eb1ffd8906f02edd6be1e825"
+      "bytes": 5128,
+      "sha256": "1557e3d9a27cd94cc39d4c7e95a8f2edc41b4b91a6ea26507a7d84286690c95b"
     },
     "tests/systemone_server_smoke.py": {
       "bytes": 10824,
@@ -98,9 +98,30 @@
     "CMakeLists.txt": {
       "bytes": 13175,
       "sha256": "6e361cf69db90dee519f3407d643786df12d6a044828f7451c6cb896d7a0b021"
+    },
+    "docs/results/qev-api-2026-10-21/equal-work-concurrency.csv": {
+      "bytes": 1139,
+      "sha256": "232af2f0be01bf18518ae27c62a8d336f4f46df5a630c081020dbd981c41d78b"
+    },
+    "docs/results/qev-api-2026-10-21/equal-work-matrix.json": {
+      "bytes": 4799,
+      "sha256": "0ac0610121e40cf24eb633bebaa2a356074d853bb8d739f4e39008e6c0d5875f"
     }
   },
   "concurrency_protocol": "native only, distinct single-letter state prefixes; 1/4/8/16 concurrent requests; 8 inference threads; no cross-request prefill batching",
   "engine_revision": "1f5a6e42ba2b37eb930c06b7f3315e1701c193ed",
-  "inherited_upstream_revision": "560847d021cd10a70a08d2a55ef7ca32af888415"
+  "inherited_upstream_revision": "560847d021cd10a70a08d2a55ef7ca32af888415",
+  "equal_work_protocol": {
+    "total_requests": 16,
+    "client_concurrency": [
+      1,
+      4,
+      8,
+      16
+    ],
+    "runs": 3,
+    "warmups": 1,
+    "raw_root": "benchmarks/qev-api-2026-10-21/http-equal-work",
+    "note": "Same 16 distinct requests per sample, including serial control; no cross-request prefill batching"
+  }
 }
