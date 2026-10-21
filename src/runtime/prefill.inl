@@ -511,6 +511,7 @@ bool run_full_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
     score_partitions,
     attention_rows,
     state.pages.width()?&page_rows:nullptr,
+    runtime && runtime->balance_attention_rows,
   };
   if (runtime != nullptr && runtime->executor != nullptr) {
     const cpu::CpuExecutorStatus status = runtime->executor->parallel_for_rows(

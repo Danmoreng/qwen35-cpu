@@ -43,6 +43,7 @@ struct CpuExecutionContext {
   int query_tile = 8, kv_tile = 64;
   std::size_t linear_prepare_min_tokens = 128;
   std::size_t mlp_prepare_min_tokens = 8;
+  bool balance_attention_rows = false, merge_tail_jobs = false;
   CpuDecodeWorkspace decode;
   CpuPrefillWorkspace prefill;
   std::unique_ptr<cpu::CpuExecutor> executor;
@@ -256,6 +257,23 @@ void run_packed_q4_prefill_tiles(
     job.blocks_per_row,
     job.output_row_stride,
     job.backend);
+}
+
+struct PackedQ4TailJob {
+  const cpu::Q4_0BlockX8 * matrix;
+  const cpu::Q8_0BlockX1 * vectors;
+  float * output;
+  std::size_t blocks, stride, count;
+  cpu::Q8_0Backend backend;
+  bool dot4;
+};
+void run_packed_q4_tail_tiles(void *opaque, std::size_t begin, std::size_t end) noexcept {
+  auto &job=*static_cast<PackedQ4TailJob *>(opaque);
+  for(std::size_t token=0;token<job.count;++token)
+    (job.dot4 ? cpu::q4_dot4_matvec : cpu::q4_0_packed_matvec_prepared_q8_0)(
+      job.matrix+begin*job.blocks, job.vectors+token*job.blocks,
+      job.output+token*job.stride+begin*cpu::q4_0_packed_rows,
+      (end-begin)*cpu::q4_0_packed_rows, job.blocks, job.backend);
 }
 
 void run_packed_q4_matvec_tiles(
@@ -555,6 +573,7 @@ struct FullAttentionBatchCpuJob {
   std::size_t score_partitions = 0;
   std::size_t attention_rows = 0;
   const cpu::AttentionKvRows *pages = nullptr;
+  bool balance_rows = false;
 };
 
 void run_full_attention_batch_cpu_rows(
@@ -566,8 +585,14 @@ void run_full_attention_batch_cpu_rows(
   for (std::size_t partition = row_begin; partition < row_end; ++partition) {
     const std::size_t base = job.attention_rows / job.score_partitions;
     const std::size_t extra = job.attention_rows % job.score_partitions;
-    const std::size_t begin = partition * base + std::min(partition, extra);
-    const std::size_t end = begin + base + (partition < extra ? 1 : 0);
+    const std::size_t begin = job.balance_rows
+      ? detail::attention_partition_boundary(partition, job.score_partitions,
+          job.attention_rows, job.head_count, job.position_start)
+      : partition * base + std::min(partition, extra);
+    const std::size_t end = job.balance_rows
+      ? detail::attention_partition_boundary(partition + 1, job.score_partitions,
+          job.attention_rows, job.head_count, job.position_start)
+      : begin + base + (partition < extra ? 1 : 0);
     cpu::causal_attention_batch_rows(
       job.queries, job.gates, job.k_cache, job.v_cache,
       job.k_cache_f16, job.v_cache_f16,
@@ -1357,7 +1382,15 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
       }
       probe.prepared();
       float * tail_output = out.data() + packed_vector_count * output_stride;
-      for (std::size_t token = 0; token < tail_vector_count; ++token) {
+      if (cpu_context->merge_tail_jobs && cpu_context->executor && tail_vector_count > 1) {
+        PackedQ4TailJob job{w.packed_q4_0_blocks.data(), prepared.data(), tail_output,
+          blocks_per_row, output_stride, tail_vector_count, w.q8_0_backend, w.q4_dot4};
+        const auto status = cpu_context->executor->parallel_for_rows(
+          rows/cpu::q4_0_packed_rows, run_packed_q4_tail_tiles, &job, probe.executor_timing());
+        if(status!=cpu::CpuExecutorStatus::ok) {
+          error_message="Merged Q4 tail executor failed."; return false;
+        }
+      } else for (std::size_t token = 0; token < tail_vector_count; ++token) {
         const cpu::Q8_0BlockX1 * tail_vector =
           prepared.data() + token * blocks_per_row;
         float * token_output = tail_output + token * output_stride;

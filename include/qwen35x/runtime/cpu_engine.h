@@ -52,6 +52,7 @@ struct CpuEngineConfig {
   // only by eligible multithreaded WASM H128/DOT4 execution.
   std::size_t linear_prepare_min_tokens = 128;
   std::size_t mlp_prepare_min_tokens = 8;
+  bool balance_attention_rows = false, merge_tail_jobs = false;
   // Zero keeps backend selection; explicit 16/32 override contiguous KV storage.
   std::size_t kv_cache_bits = 0;
   std::size_t executor_spin_count = 1024U * 128U * 50U;

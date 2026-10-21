@@ -6,6 +6,7 @@
 #include "../src/cpu/q4_0_internal.h"
 #include "../src/cpu/q8_0_internal.h"
 #include <bit>
+#include "attention_partition_cases.h"
 #include <cmath>
 #include <cstring>
 #include <iostream>
@@ -21,6 +22,7 @@ bool equal_fields(const Block &a,const Block &b,std::size_t lanes) {
   return true;
 }
 int main() {
+  if(!attention_partition_cases())return 9;
   std::mt19937 rng(91827);
   for (int pattern=0;pattern<10;++pattern) for (std::size_t blocks:{1U,4U,32U,64U,112U}) {
     std::vector<float> input(blocks*32*8);

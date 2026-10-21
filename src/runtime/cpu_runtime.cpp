@@ -1,4 +1,5 @@
 #include "qwen35x/cpu/q4_g16.h"
+#include "attention_partition.h"
 #include "qwen35x/runtime/cpu_engine.h"
 
 #include "qwen35x/cpu/activation.h"

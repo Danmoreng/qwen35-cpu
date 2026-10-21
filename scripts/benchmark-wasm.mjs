@@ -150,7 +150,7 @@ try {
     'web/worker.js', 'web/app.js', 'web/capabilities.js', 'src/wasm/decision.cpp',
     'src/cpu/q4_dot4_wasm.cpp', 'src/cpu/delta_net_wasm.cpp', 'cmake/Wasm.cmake',
     'src/cpu/q8_packed_wasm.cpp', 'src/cpu/q4_h128.cpp', 'src/runtime/weights.inl',
-    'src/runtime/prefill.inl', 'src/runtime/cpu_engine.inl', 'include/qwen35x/runtime/cpu_engine.h',
+    'src/runtime/prefill.inl', 'src/runtime/cpu_engine.inl', 'include/qwen35x/runtime/cpu_engine.h', 'src/runtime/attention_partition.h',
     'src/cpu/q4_h128_wasm.cpp', 'src/cpu/wasm_fma.h', 'src/cpu/wasm_half.h'
   ].map(file => [file, sha(file)]));
   assert.deepEqual(errors, []);

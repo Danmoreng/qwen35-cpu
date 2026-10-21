@@ -1,0 +1,33 @@
+{
+  "compute_ms": {
+    "balanced-attention": [
+      132.260096,
+      132.649728,
+      1077.965568
+    ],
+    "merged-tails": [
+      133.444864,
+      132.965376,
+      1078.4248320000002
+    ],
+    "control": [
+      134.64448,
+      133.039872,
+      1075.6398080000001
+    ]
+  },
+  "quality": {
+    "balanced-attention": {
+      "questions": 24,
+      "baseline_bit_mismatches": [],
+      "max_reference_probability_delta": 0.0040000000000000036
+    },
+    "merged-tails": {
+      "questions": 24,
+      "baseline_bit_mismatches": [],
+      "max_reference_probability_delta": 0.0040000000000000036
+    }
+  },
+  "trial_order": "Latin rotation: each of three candidates occupies each position once in the three measured runs",
+  "raw_root": "benchmarks/qev-pro-review-2026-10-21"
+}

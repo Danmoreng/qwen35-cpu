@@ -67,6 +67,8 @@ const char *failure(const std::exception &e) {
 void apply_tuning(CpuEngineConfig &config) {
   config.linear_prepare_min_tokens = tuning.value("linear_prepare_min_tokens", std::size_t{128});
   config.mlp_prepare_min_tokens = tuning.value("mlp_prepare_min_tokens", std::size_t{8});
+  config.balance_attention_rows = tuning.value("balance_attention_rows", std::size_t{0}) != 0;
+  config.merge_tail_jobs = tuning.value("merge_tail_jobs", std::size_t{0}) != 0;
   config.kv_cache_bits = tuning.value("kv_cache_bits", std::size_t{0});
   config.executor_spin_count = tuning.value("executor_spin_count", std::size_t{1024U * 128U * 50U});
 }
@@ -77,13 +79,16 @@ const char *qev_tune(const char *body) try {
   auto options = Json::parse(body);
   systemone::require(options.is_object(), "Tuning must be an object");
   for (const auto &[key, value] : options.items()) {
-    systemone::require(key == "linear_prepare_min_tokens" || key == "executor_spin_count" || key == "mlp_prepare_min_tokens" || key == "kv_cache_bits", "Unknown tuning option: " + key);
+    systemone::require(key == "linear_prepare_min_tokens" || key == "executor_spin_count" || key == "mlp_prepare_min_tokens" || key == "kv_cache_bits" || key == "balance_attention_rows" || key == "merge_tail_jobs", "Unknown tuning option: " + key);
     systemone::require(value.is_number_unsigned() && value.get<std::size_t>() <= 67108864, "Invalid tuning value");
   }
   if (options.contains("kv_cache_bits")) {
     const auto bits = options["kv_cache_bits"].get<std::size_t>();
     systemone::require(bits == 0 || bits == 16 || bits == 32, "kv_cache_bits must be 0, 16 or 32");
   }
+  for (const auto *key : {"balance_attention_rows", "merge_tail_jobs"})
+    systemone::require(!options.contains(key) || options[key].get<std::size_t>() <= 1,
+                       std::string(key) + " must be 0 or 1");
   tuning = std::move(options);
   if (session) {
     // Recreate only the idle executor/workspaces, retaining immutable weights.

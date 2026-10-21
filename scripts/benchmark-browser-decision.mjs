@@ -27,6 +27,7 @@ const profile = {engine, provider: args.provider, dtype: args.dtype,
   runtime_path: args['runtime-path'] || args.mode || 'relaxed-threads',
   tuning: args.tuning ? JSON.parse(args.tuning) : null,
   tuning_grid: args['tuning-grid'] ? JSON.parse(args['tuning-grid']) : null,
+  grid_order: args['grid-order'] || 'reverse',
   session_warmup: args['session-warmup'] !== 'false',
   runtime_version: JSON.parse(fs.readFileSync('.cache/wasm-browser/node_modules/@huggingface/transformers/package.json')).version,
   ort_version: JSON.parse(fs.readFileSync('.cache/wasm-browser/node_modules/onnxruntime-web/package.json')).version};
@@ -36,7 +37,7 @@ try {
   page.on('console', e => logs.push({type: e.type(), message: e.text()}));
   page.on('pageerror', e => errors.push(e.message));
   await page.goto(args.url || `http://127.0.0.1:8765/${engine === 'llama.cpp' ? 'llama-bench/' : 'onnx-bench/'}`);
-  const result = await page.evaluate(async ({provider, dtype, threads, inputs, warmup, ortBuild, engine, weights, ubatch, flashAttn, mode, chunk, profileOps, tuning, runtimePath, tuningGrid, reverseTrials}) => {
+  const result = await page.evaluate(async ({provider, dtype, threads, inputs, warmup, ortBuild, engine, weights, ubatch, flashAttn, mode, chunk, profileOps, tuning, runtimePath, tuningGrid, reverseTrials, gridOrder, trialOffset}) => {
     const worker = new Worker(engine === 'custom' ? '../worker.js' : './worker.js',
       engine === 'transformers.js' ? {type: 'module'} : {});
     const events = [];
@@ -62,7 +63,12 @@ try {
       if (tuningGrid) {
         if (engine !== 'custom') throw new Error('Tuning grids require the custom engine');
         const trials = [];
-        for (const trial of reverseTrials ? [...tuningGrid].reverse() : tuningGrid) {
+        if (!['reverse','rotate'].includes(gridOrder)) throw new Error('Unknown grid order');
+        const offset = trialOffset % tuningGrid.length;
+        const ordered = gridOrder === 'rotate'
+          ? [...tuningGrid.slice(offset), ...tuningGrid.slice(0, offset)]
+          : reverseTrials ? [...tuningGrid].reverse() : tuningGrid;
+        for (const trial of ordered) {
           const start = performance.now();
           await rpc({type: 'tune', tuning: trial.tuning});
           const retuneMs = performance.now() - start;
@@ -89,7 +95,8 @@ try {
     weights: args.weights ? path.basename(args.weights) : null, ubatch: Number(args.ubatch || 512),
     flashAttn: {auto: -1, off: 0, on: 1}[profile.flash_attn],
     mode: profile.custom_mode, chunk: profile.chunk, profileOps: profile.profile_ops, tuning: profile.tuning, runtimePath: profile.runtime_path,
-    tuningGrid: profile.tuning_grid, reverseTrials: Number(args['profile-json'].match(/run-(\d+)/)?.[1] || 0) % 2 === 1});
+    tuningGrid: profile.tuning_grid, gridOrder: profile.grid_order,
+    trialOffset: Number(args['profile-json'].match(/run-(\d+)/)?.[1] || 0), reverseTrials: Number(args['profile-json'].match(/run-(\d+)/)?.[1] || 0) % 2 === 1});
   Object.assign(profile, result);
   result.outputs.forEach((o, i) => { profile[`request_${i}_ms`] = o.worker_ms; });
   const cdp = await browser.newBrowserCDPSession();
@@ -114,7 +121,7 @@ try {
     'src/cpu/wasm_fma.h', 'src/cpu/wasm_half.h', 'src/cpu/q4_dot4_wasm.cpp', 'src/cpu/delta_net_wasm.cpp',
     'src/wasm/decision.cpp', 'cmake/Wasm.cmake', 'src/cpu/q8_packed_wasm.cpp',
     'src/cpu/q4_h128.cpp', 'src/runtime/weights.inl', 'src/runtime/prefill.inl',
-    'src/runtime/cpu_engine.inl', 'include/qwen35x/runtime/cpu_engine.h',
+    'src/runtime/cpu_engine.inl', 'include/qwen35x/runtime/cpu_engine.h', 'src/runtime/attention_partition.h',
     `dist/wasm/${profile.runtime_path}/qev_wasm.js`, `dist/wasm/${profile.runtime_path}/qev_wasm.wasm`];
   artifacts.push('scripts/benchmark-browser-decision.mjs');
   if (args.weights) artifacts.push(args.weights);

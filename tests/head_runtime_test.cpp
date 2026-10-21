@@ -1,8 +1,32 @@
 #include "../src/runtime/cpu_runtime.cpp"
 #include "qwen35x/cpu/q4_quantizer.h"
 #include <iostream>
+#include "attention_partition_cases.h"
 int main() {
   using namespace qwen35x;
+  if(!attention_partition_cases()) return 22;
+  for(auto backend:{cpu::Q8_0Backend::scalar,cpu::Q8_0Backend::avx2,cpu::Q8_0Backend::auto_select})
+    for(bool half:{false,true}) for(std::size_t count:{3U,33U}) for(int position:{0,37}) {
+      constexpr std::size_t heads=8,kv_heads=2,dim=256,qw=heads*dim,kw=kv_heads*dim;
+      const auto length=count+position;
+      std::vector<float> q(count*qw),g(q.size()),k(length*kw),v(k.size()),a(q.size()),b(q.size()),scores(3*length);
+      for(std::size_t i=0;i<q.size();++i){q[i]=std::sin(float(i)*.07F);g[i]=std::cos(float(i)*.13F);}
+      for(std::size_t i=0;i<k.size();++i){k[i]=std::cos(float(i)*.09F);v[i]=std::sin(float(i)*.11F);}
+      std::vector<std::uint16_t> kh(k.size()),vh(v.size());
+      cpu::attention_cache_store_f16(k.data(),kh.data(),k.size(),backend);
+      cpu::attention_cache_store_f16(v.data(),vh.data(),v.size(),backend);
+      std::string error;auto context=make_cpu_execution_context(3,error);if(!context)return 24;
+      FullAttentionBatchCpuJob job;
+      job.queries=q.data();job.gates=g.data();job.k_cache=half?nullptr:k.data();job.v_cache=half?nullptr:v.data();
+      job.k_cache_f16=half?kh.data():nullptr;job.v_cache_f16=half?vh.data():nullptr;
+      job.scores=scores.data();job.output=a.data();job.context_stride=length;job.query_width=qw;job.kv_width=kw;
+      job.position_start=position;job.head_count=heads;job.kv_head_count=kv_heads;job.head_dim=dim;
+      job.attention_scale=1.F/16;job.backend=backend;job.score_partitions=3;job.attention_rows=count*heads;
+      if(context->executor->parallel_for_rows(3,run_full_attention_batch_cpu_rows,&job)!=cpu::CpuExecutorStatus::ok)return 25;
+      job.balance_rows=true;job.output=b.data();
+      if(context->executor->parallel_for_rows(3,run_full_attention_batch_cpu_rows,&job)!=cpu::CpuExecutorStatus::ok ||
+         std::memcmp(a.data(),b.data(),a.size()*sizeof(float)))return 26;
+    }
   constexpr std::size_t rows=264,cols=256,blocks=cols/32;
   for(bool rotated:{false,true}) for(bool g16:{false,true})
   for(auto backend:{cpu::Q8_0Backend::scalar,cpu::Q8_0Backend::avx2,cpu::Q8_0Backend::auto_select}) {
@@ -42,6 +66,11 @@ int main() {
       std::vector<float> x(count*cols),out;
       for(std::size_t i=0;i<x.size();++i) x[i]=std::cos(float(i)*.19F);
       if(!matmul_2d_quantized_batch(ctx.get(),w,x,count,out,error)) {std::cerr<<error;return 8;}
+      std::vector<float> merged;
+      ctx->merge_tail_jobs=true;
+      if(!matmul_2d_quantized_batch(ctx.get(),w,x,count,merged,error) ||
+         merged.size()!=out.size() || std::memcmp(merged.data(),out.data(),out.size()*sizeof(float)))return 23;
+      ctx->merge_tail_jobs=false;
       for(std::size_t t=0;t<count;++t) {
         std::vector<cpu::Q8_0BlockX1> a(blocks);
         if(rotated) {

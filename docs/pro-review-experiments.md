@@ -217,3 +217,31 @@ Compact samples/hashes: `results/qev-pro-review-2026-10-21/final.json` and
 `native-control.json`. Raw evidence, commands, affinity, binary/checkpoint hashes
 and environment metadata remain in `benchmarks/qev-pro-review-2026-10-21/`.
 All changes and artifacts stay local; no repository/model/Space was published.
+
+## P5 and P10: weighted attention rows and merged remainder jobs
+
+Two independently disabled controls were added: `balance_attention_rows:1` and
+`merge_tail_jobs:1`. The former finds contiguous boundaries by cumulative
+query-key pair count in token-major/head-minor order, with 64-bit work sums on
+WASM32. Every partition retains private score scratch. The latter dispatches
+all two/three remainder-token matvecs in one weight-tile job, calling the same
+single-token kernel separately for each output. One-token tails keep their
+existing path. Defaults remain false for both controls.
+
+Coverage/nonoverlap and work bounds pass for heads 1/2/8/16, token counts
+1/2/3/7/8/31/32/33/127/128/129, positions 0/1/31/1024/8192 and 1/2/4/8/16
+requested partitions, on native and WASM32. Native row-attention outputs are
+bit-identical for FP32/FP16 KV and scalar/AVX2/automatic backends at short and
+longer positions. Native tail tests cover counts 1/2/3/4/5/8/15/16/17/31/32
+and require exact merged/unmerged output bits. Actual Chromium unit checks and
+both complete 24-question WASM suites pass the unchanged logit/answer gate.
+
+The performance grid rotates three candidates over three measured processes
+so that each occupies every position once (plus process and per-shape warmups).
+Control medians are 134.64/133.04/1075.64 ms; balanced attention gives
+132.26/132.65/1077.97 ms; merged tails give 133.44/132.97/1078.42 ms. The small
+short-request difference for attention is unproven, and neither establishes a
+useful consistent end-to-end gain. Both remain experimental and disabled.
+No per-worker wall-time benefit is claimed from the mathematical work bounds.
+Compact results: `results/qev-pro-review-2026-10-21/P5-P10.json`; raw
+`P5-P10-quality` and `P5-P10-performance`.

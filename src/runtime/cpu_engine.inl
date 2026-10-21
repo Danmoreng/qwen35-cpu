@@ -477,6 +477,8 @@ CpuEngine::create(std::shared_ptr<const CpuModel> model,
   rt.stages = config.prefill_profile;
   rt.linear_prepare_min_tokens = config.linear_prepare_min_tokens;
   rt.mlp_prepare_min_tokens = config.mlp_prepare_min_tokens;
+  rt.balance_attention_rows = config.balance_attention_rows;
+  rt.merge_tail_jobs = config.merge_tail_jobs;
   rt.automatic_attention = true;
   rt.attention_gqa = true;
   rt.attention_backend = impl->model->impl_->backend;
