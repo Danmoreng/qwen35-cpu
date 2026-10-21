@@ -40,6 +40,25 @@ must be the immutable 40-character Hugging Face commit, not `main`.
 
 ## CI and releases
 
+### qev decision package
+
+The qev fine-tune has its own repository and fixed evaluated artifact. Prepare it
+with `scripts/prepare-qev-hf-package.py`, passing its source directory,
+`model-cal-1024-block128.q35h`, a fresh output directory and `--license-file`
+containing the standard Apache-2.0 text. The upstream model declares that license
+in its card but does not ship a LICENSE file. The preparation script preserves
+the decision configuration and adds source/calibration/evaluation provenance.
+It rejects any artifact SHA256 other than the frozen final candidate. No chat
+template is needed for its plain System One prompts.
+
+Test the prepared directory with `tests/systemone_server_smoke.py` and the native
+server before using the existing uploader with
+`--repo danmoreng/qev-0.8b-H128-Q4-G32-DOT4`. The uploader recognizes this exact
+qev package profile while preserving the original model's file allowlist.
+The model card pins the engine commit introducing the API; use that source
+revision until a subsequent binary release includes it. The base/chat HF model
+and its existing published revision are unchanged.
+
 `.github/workflows/build-release.yml` runs on pushes, pull requests and manual
 dispatch. It builds and runs CTest on Windows Server 2022/MSVC and Ubuntu
 22.04/GCC 12. Model tests run when the public pinned model variables are set.

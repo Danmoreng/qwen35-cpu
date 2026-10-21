@@ -1,0 +1,149 @@
+{
+  "bf16": {
+    "questions": 19,
+    "argmax_matches": 19,
+    "failures": [],
+    "snake": {
+      "up": 0.08661756903967223,
+      "left": 0.7080891973661251,
+      "right": 0.20529323359420273
+    }
+  },
+  "q8": {
+    "questions": 19,
+    "argmax_matches": 19,
+    "failures": [],
+    "snake": {
+      "up": 0.08273907222792871,
+      "left": 0.7073704649458081,
+      "right": 0.20989046282626309
+    }
+  },
+  "uncalibrated": {
+    "questions": 19,
+    "argmax_matches": 19,
+    "failures": [],
+    "snake": {
+      "up": 0.13366396341107256,
+      "left": 0.4384266591931999,
+      "right": 0.42790937739572754
+    }
+  },
+  "256-diagonal": {
+    "questions": 19,
+    "argmax_matches": 18,
+    "failures": [
+      {
+        "request": "snake",
+        "question": "move",
+        "expected": "left",
+        "actual": "right"
+      }
+    ],
+    "snake": {
+      "up": 0.12064180781550811,
+      "left": 0.42803595839852027,
+      "right": 0.4513222337859716
+    }
+  },
+  "256-block128": {
+    "questions": 19,
+    "argmax_matches": 19,
+    "failures": [],
+    "snake": {
+      "up": 0.13998552294281844,
+      "left": 0.5865060998904122,
+      "right": 0.2735083771667693
+    }
+  },
+  "1024-block128": {
+    "questions": 19,
+    "argmax_matches": 19,
+    "failures": [],
+    "snake": {
+      "up": 0.09373673650948118,
+      "left": 0.6609198466297835,
+      "right": 0.2453434168607353
+    }
+  },
+  "1024-block128-d0001": {
+    "questions": 19,
+    "argmax_matches": 19,
+    "failures": [],
+    "snake": {
+      "up": 0.06921692225144409,
+      "left": 0.6940726463440594,
+      "right": 0.23671043140449657
+    }
+  },
+  "1024-block128-d0100": {
+    "questions": 19,
+    "argmax_matches": 19,
+    "failures": [],
+    "snake": {
+      "up": 0.11059844727797595,
+      "left": 0.585665590304523,
+      "right": 0.303735962417501
+    }
+  },
+  "1024-block128-d0100-q8-head": {
+    "questions": 19,
+    "argmax_matches": 19,
+    "failures": [],
+    "snake": {
+      "up": 0.09438385790828967,
+      "left": 0.6276950515290687,
+      "right": 0.2779210905626417
+    }
+  },
+  "1024-block128-d0100-q8-gates": {
+    "questions": 19,
+    "argmax_matches": 19,
+    "failures": [],
+    "snake": {
+      "up": 0.11349365899009808,
+      "left": 0.5922890241045731,
+      "right": 0.29421731690532876
+    }
+  },
+  "1024-block128-d0100-q8-head-gates": {
+    "questions": 19,
+    "argmax_matches": 19,
+    "failures": [],
+    "snake": {
+      "up": 0.09506110582946031,
+      "left": 0.6393471406078407,
+      "right": 0.26559175356269904
+    }
+  },
+  "1024-block128-q8-head": {
+    "questions": 19,
+    "argmax_matches": 19,
+    "failures": [],
+    "snake": {
+      "up": 0.08597917778409589,
+      "left": 0.6825892711577695,
+      "right": 0.23143155105813465
+    }
+  },
+  "1024-block128-q8-gates": {
+    "questions": 19,
+    "argmax_matches": 19,
+    "failures": [],
+    "snake": {
+      "up": 0.0915889605844404,
+      "left": 0.6807243065310496,
+      "right": 0.22768673288451002
+    }
+  },
+  "1024-block128-q8-head-gates": {
+    "questions": 19,
+    "argmax_matches": 19,
+    "failures": [],
+    "snake": {
+      "up": 0.08332972590329464,
+      "left": 0.7004080405411071,
+      "right": 0.21626223355559818
+    }
+  }
+}

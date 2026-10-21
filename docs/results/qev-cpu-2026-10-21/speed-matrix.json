@@ -1,0 +1,120 @@
+[
+  {
+    "name": "BF16-short",
+    "executable": "build-llama-linux/bin/llama-fixed-cpu-bench",
+    "args": [
+      "--cpu-gguf",
+      "models/qev-0.8b/qev-0.8b-bf16.gguf",
+      "--prompt-tokens-file",
+      "benchmarks/qev-2026-10-21/prepared/row-0000/tokens.txt",
+      "--forced-output-tokens",
+      "32",
+      "--max-new-tokens",
+      "1",
+      "--cpu-threads",
+      "8",
+      "--max-context",
+      "8192"
+    ]
+  },
+  {
+    "name": "Q8_0-short",
+    "executable": "build-llama-linux/bin/llama-fixed-cpu-bench",
+    "args": [
+      "--cpu-gguf",
+      "models/qev-0.8b/qev-0.8b-Q8_0.gguf",
+      "--prompt-tokens-file",
+      "benchmarks/qev-2026-10-21/prepared/row-0000/tokens.txt",
+      "--forced-output-tokens",
+      "32",
+      "--max-new-tokens",
+      "1",
+      "--cpu-threads",
+      "8",
+      "--max-context",
+      "8192"
+    ]
+  },
+  {
+    "name": "H128-short",
+    "executable": "build-linux/qwen35_cpu_bench",
+    "args": [
+      "--hf-model-dir",
+      "models/qev-0.8b",
+      "--cpu-q4-h128",
+      "models/qev-0.8b/model-mse16.q35h",
+      "--cpu-batch",
+      "1",
+      "--cpu-batch-full-logits",
+      "--prompt-tokens-file",
+      "benchmarks/qev-2026-10-21/prepared/row-0000/tokens.txt",
+      "--forced-output-tokens",
+      "32",
+      "--max-new-tokens",
+      "1",
+      "--cpu-threads",
+      "8",
+      "--max-context",
+      "8192"
+    ]
+  },
+  {
+    "name": "BF16-long",
+    "executable": "build-llama-linux/bin/llama-fixed-cpu-bench",
+    "args": [
+      "--cpu-gguf",
+      "models/qev-0.8b/qev-0.8b-bf16.gguf",
+      "--prompt-tokens-file",
+      "benchmarks/qev-2026-10-21/long-prepared/row-0000/tokens.txt",
+      "--forced-output-tokens",
+      "32",
+      "--max-new-tokens",
+      "1",
+      "--cpu-threads",
+      "8",
+      "--max-context",
+      "8192"
+    ]
+  },
+  {
+    "name": "Q8_0-long",
+    "executable": "build-llama-linux/bin/llama-fixed-cpu-bench",
+    "args": [
+      "--cpu-gguf",
+      "models/qev-0.8b/qev-0.8b-Q8_0.gguf",
+      "--prompt-tokens-file",
+      "benchmarks/qev-2026-10-21/long-prepared/row-0000/tokens.txt",
+      "--forced-output-tokens",
+      "32",
+      "--max-new-tokens",
+      "1",
+      "--cpu-threads",
+      "8",
+      "--max-context",
+      "8192"
+    ]
+  },
+  {
+    "name": "H128-long",
+    "executable": "build-linux/qwen35_cpu_bench",
+    "args": [
+      "--hf-model-dir",
+      "models/qev-0.8b",
+      "--cpu-q4-h128",
+      "models/qev-0.8b/model-mse16.q35h",
+      "--cpu-batch",
+      "1",
+      "--cpu-batch-full-logits",
+      "--prompt-tokens-file",
+      "benchmarks/qev-2026-10-21/long-prepared/row-0000/tokens.txt",
+      "--forced-output-tokens",
+      "32",
+      "--max-new-tokens",
+      "1",
+      "--cpu-threads",
+      "8",
+      "--max-context",
+      "8192"
+    ]
+  }
+]

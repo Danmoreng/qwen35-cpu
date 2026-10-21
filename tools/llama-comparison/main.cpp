@@ -68,7 +68,8 @@ int main(int argc, char ** argv) try {
   if(final_logits_path=="@profile") final_logits_path=profile_path+".final-logits";
   if (model_path.empty() || profile_path.empty() || prompt.empty() || threads < 1 ||
       sequences < 1 || sequences > 100 || (!logits_path.empty() && sequences != 1) ||
-      (!prefill_only && (generated < 2 || forced.size() != std::size_t(generated))) ||
+      (!prefill_only && generated == 1 && sequences != 1) ||
+      (!prefill_only && (generated < 1 || forced.size() != std::size_t(generated))) ||
       context < int(prompt.size()) + (prefill_only ? 0 : generated))
     throw std::runtime_error("Invalid fixed benchmark configuration");
 #ifndef QWEN35_IK_LLAMA
@@ -209,7 +210,9 @@ int main(int argc, char ** argv) try {
     std::ofstream final_dump;
     if (!final_logits_path.empty()) final_dump.open(final_logits_path, std::ios::binary);
     for (int sequence = 0; sequence < sequences; ++sequence) {
-      const float * logits = llama_get_logits_ith(ctx.get(), sequence);
+      // A one-output decision has no decode batch; its output is the last
+      // prompt token, rather than row zero of a subsequent decode batch.
+      const float * logits = llama_get_logits_ith(ctx.get(), generated == 1 ? -1 : sequence);
       if (!logits) throw std::runtime_error("Missing final logits");
       for (int i = 0; i < vocab; ++i)
         if (!std::isfinite(logits[i])) throw std::runtime_error("Non-finite final logits");

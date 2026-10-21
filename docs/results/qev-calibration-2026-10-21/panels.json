@@ -1,0 +1,18 @@
+{
+  "seed": "qev-20261021-development-v1",
+  "per_skill": 45,
+  "group_policy": "same request, game question/state variants, missing/complete pairs stay together",
+  "selection": "stable SHA256 ordering, independent of labels/model outputs",
+  "development": {
+    "items": 1035,
+    "rows": 1553,
+    "tokens": 464693,
+    "ids_sha256": "13658445400bb579882712f75c9f4a07cc4a9fd803b06ec9332b498d52f48ad8"
+  },
+  "final": {
+    "items": 9133,
+    "rows": 13601,
+    "tokens": 4754610,
+    "ids_sha256": "5e1a40b2c63ab7f391db53fcdc2da5fb532d08a0a8f29bdd180cb239d7acfa65"
+  }
+}

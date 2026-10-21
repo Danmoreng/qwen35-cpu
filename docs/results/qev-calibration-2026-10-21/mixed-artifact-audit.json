@@ -1,0 +1,3137 @@
+{
+  "baseline_sha256": "c08d69de5c4ad79571f588d944af4d6de17f20b1cd93df7d68ede13e9593ca86",
+  "candidate_sha256": "b755d8639a48df3ef71285121dd817a63ab69e7519959101ebcf08ce6473256a",
+  "baseline_file_bytes": 424964864,
+  "candidate_file_bytes": 552104704,
+  "baseline_tensor_bytes": 424934656,
+  "candidate_tensor_bytes": 552074496,
+  "q8_tensors": [
+    "model.language_model.embed_tokens.weight"
+  ],
+  "remaining_q4_bytes_unchanged": true,
+  "tensors": {
+    "model.language_model.embed_tokens.weight": {
+      "encoding": 7,
+      "transform": 0,
+      "group": 32,
+      "seed": 0,
+      "elements": 254279680,
+      "offset": 30208,
+      "bytes": 270172160,
+      "checksum": 2590717423908365542,
+      "shape": [
+        248320,
+        1024
+      ]
+    },
+    "model.language_model.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 270202368,
+      "bytes": 4096,
+      "checksum": 5221630048230817933,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.0.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 270206464,
+      "bytes": 4096,
+      "checksum": 3123936163329778299,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.0.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 270210560,
+      "bytes": 4096,
+      "checksum": 13299799686404025842,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.0.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 270214656,
+      "bytes": 4128768,
+      "checksum": 7736376503371665517,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.0.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 274343424,
+      "bytes": 2064384,
+      "checksum": 17284488636512315944,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.0.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 276407808,
+      "bytes": 4737024,
+      "checksum": 12734408399468115447,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.0.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 281144832,
+      "bytes": 98304,
+      "checksum": 16581120438977732312,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.0.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 281243136,
+      "bytes": 1179648,
+      "checksum": 16668255825035622802,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.0.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 282422784,
+      "bytes": 512,
+      "checksum": 17182527061157162696,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.0.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 282423296,
+      "bytes": 64,
+      "checksum": 9566110553842465194,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.0.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 282423360,
+      "bytes": 64,
+      "checksum": 5365628401113103577,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.1.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 282423424,
+      "bytes": 4096,
+      "checksum": 5609475196891737200,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.1.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 282427520,
+      "bytes": 4096,
+      "checksum": 9923919058776821616,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.1.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 282431616,
+      "bytes": 4128768,
+      "checksum": 11948047805939345222,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.1.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 286560384,
+      "bytes": 2064384,
+      "checksum": 12527780903695354205,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.1.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 288624768,
+      "bytes": 4737024,
+      "checksum": 2123231239934096716,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.1.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 293361792,
+      "bytes": 98304,
+      "checksum": 16529052242219884490,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.1.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 293460096,
+      "bytes": 1179648,
+      "checksum": 7746422281737038240,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.1.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 294639744,
+      "bytes": 512,
+      "checksum": 12504255478570343638,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.1.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 294640256,
+      "bytes": 64,
+      "checksum": 5687059364694597218,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.1.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 294640320,
+      "bytes": 64,
+      "checksum": 16239980160370500716,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.2.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 294640384,
+      "bytes": 4096,
+      "checksum": 6486245710410422593,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.2.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 294644480,
+      "bytes": 4096,
+      "checksum": 17961666172970795364,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.2.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 294648576,
+      "bytes": 4128768,
+      "checksum": 13240158485593813060,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.2.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 298777344,
+      "bytes": 2064384,
+      "checksum": 3662827906414592715,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.2.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 300841728,
+      "bytes": 4737024,
+      "checksum": 5534253088976524832,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.2.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 305578752,
+      "bytes": 98304,
+      "checksum": 413226603507006601,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.2.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 305677056,
+      "bytes": 1179648,
+      "checksum": 7277414948899875973,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.2.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 306856704,
+      "bytes": 512,
+      "checksum": 12746895626383010750,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.2.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 306857216,
+      "bytes": 64,
+      "checksum": 7046936939843085440,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.2.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 306857280,
+      "bytes": 64,
+      "checksum": 7724742074543512964,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.3.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 306857344,
+      "bytes": 4096,
+      "checksum": 6944714121200599975,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.3.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 306861440,
+      "bytes": 4096,
+      "checksum": 4694051963756159176,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.3.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 306865536,
+      "bytes": 4128768,
+      "checksum": 886819225048436640,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.3.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 310994304,
+      "bytes": 2064384,
+      "checksum": 3041153826711742164,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.3.self_attn.qkv_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 5242880,
+      "offset": 313058688,
+      "bytes": 2949120,
+      "checksum": 2637496960592615170,
+      "shape": [
+        5120,
+        1024
+      ]
+    },
+    "model.language_model.layers.3.self_attn.o_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 316007808,
+      "bytes": 1179648,
+      "checksum": 12998671054797961343,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.3.self_attn.q_norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 256,
+      "offset": 317187456,
+      "bytes": 1024,
+      "checksum": 10338640848910876814,
+      "shape": [
+        256
+      ]
+    },
+    "model.language_model.layers.3.self_attn.k_norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 256,
+      "offset": 317188480,
+      "bytes": 1024,
+      "checksum": 17417194709445503343,
+      "shape": [
+        256
+      ]
+    },
+    "model.language_model.layers.4.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 317189504,
+      "bytes": 4096,
+      "checksum": 1071301578567372770,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.4.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 317193600,
+      "bytes": 4096,
+      "checksum": 3041931132370885522,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.4.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 317197696,
+      "bytes": 4128768,
+      "checksum": 7246611846750628192,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.4.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 321326464,
+      "bytes": 2064384,
+      "checksum": 3762477403910107919,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.4.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 323390848,
+      "bytes": 4737024,
+      "checksum": 17949801789992502584,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.4.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 328127872,
+      "bytes": 98304,
+      "checksum": 4787199199490561997,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.4.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 328226176,
+      "bytes": 1179648,
+      "checksum": 6959282125939458552,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.4.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 329405824,
+      "bytes": 512,
+      "checksum": 2212423914789042394,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.4.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 329406336,
+      "bytes": 64,
+      "checksum": 1827635443170317086,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.4.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 329406400,
+      "bytes": 64,
+      "checksum": 6848232038439083823,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.5.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 329406464,
+      "bytes": 4096,
+      "checksum": 11505141063361492580,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.5.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 329410560,
+      "bytes": 4096,
+      "checksum": 11376095376349131590,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.5.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 329414656,
+      "bytes": 4128768,
+      "checksum": 14300823085824002402,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.5.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 333543424,
+      "bytes": 2064384,
+      "checksum": 16705932155313770055,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.5.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 335607808,
+      "bytes": 4737024,
+      "checksum": 1837015487583407121,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.5.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 340344832,
+      "bytes": 98304,
+      "checksum": 12866430052364716999,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.5.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 340443136,
+      "bytes": 1179648,
+      "checksum": 12152334774810891957,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.5.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 341622784,
+      "bytes": 512,
+      "checksum": 4446800506413269676,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.5.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 341623296,
+      "bytes": 64,
+      "checksum": 16225602115379039887,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.5.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 341623360,
+      "bytes": 64,
+      "checksum": 4853693028948744065,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.6.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 341623424,
+      "bytes": 4096,
+      "checksum": 11304349328596673416,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.6.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 341627520,
+      "bytes": 4096,
+      "checksum": 5502761099954994020,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.6.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 341631616,
+      "bytes": 4128768,
+      "checksum": 8814661748314632988,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.6.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 345760384,
+      "bytes": 2064384,
+      "checksum": 18145246991445120192,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.6.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 347824768,
+      "bytes": 4737024,
+      "checksum": 10323969591114730327,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.6.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 352561792,
+      "bytes": 98304,
+      "checksum": 6875665099872453669,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.6.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 352660096,
+      "bytes": 1179648,
+      "checksum": 1943223269013611484,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.6.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 353839744,
+      "bytes": 512,
+      "checksum": 8336466876714934221,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.6.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 353840256,
+      "bytes": 64,
+      "checksum": 8151555581641284012,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.6.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 353840320,
+      "bytes": 64,
+      "checksum": 8590987068841705308,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.7.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 353840384,
+      "bytes": 4096,
+      "checksum": 6791011222488186215,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.7.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 353844480,
+      "bytes": 4096,
+      "checksum": 3491151394372599865,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.7.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 353848576,
+      "bytes": 4128768,
+      "checksum": 3907114913298452444,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.7.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 357977344,
+      "bytes": 2064384,
+      "checksum": 7804573169949446605,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.7.self_attn.qkv_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 5242880,
+      "offset": 360041728,
+      "bytes": 2949120,
+      "checksum": 12068915056566062147,
+      "shape": [
+        5120,
+        1024
+      ]
+    },
+    "model.language_model.layers.7.self_attn.o_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 362990848,
+      "bytes": 1179648,
+      "checksum": 16234078258923692404,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.7.self_attn.q_norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 256,
+      "offset": 364170496,
+      "bytes": 1024,
+      "checksum": 18070607027149706389,
+      "shape": [
+        256
+      ]
+    },
+    "model.language_model.layers.7.self_attn.k_norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 256,
+      "offset": 364171520,
+      "bytes": 1024,
+      "checksum": 9990573128625338147,
+      "shape": [
+        256
+      ]
+    },
+    "model.language_model.layers.8.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 364172544,
+      "bytes": 4096,
+      "checksum": 8413943871387622373,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.8.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 364176640,
+      "bytes": 4096,
+      "checksum": 2597072438037372011,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.8.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 364180736,
+      "bytes": 4128768,
+      "checksum": 6063909094792779469,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.8.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 368309504,
+      "bytes": 2064384,
+      "checksum": 5402473686533852866,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.8.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 370373888,
+      "bytes": 4737024,
+      "checksum": 3974125352279599412,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.8.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 375110912,
+      "bytes": 98304,
+      "checksum": 13056559884409518980,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.8.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 375209216,
+      "bytes": 1179648,
+      "checksum": 15159867307996318099,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.8.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 376388864,
+      "bytes": 512,
+      "checksum": 13189849555610707092,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.8.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 376389376,
+      "bytes": 64,
+      "checksum": 3514331370195766790,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.8.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 376389440,
+      "bytes": 64,
+      "checksum": 17903463846627063170,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.9.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 376389504,
+      "bytes": 4096,
+      "checksum": 15920097430124118845,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.9.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 376393600,
+      "bytes": 4096,
+      "checksum": 14867705557871318648,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.9.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 376397696,
+      "bytes": 4128768,
+      "checksum": 16257730673629628679,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.9.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 380526464,
+      "bytes": 2064384,
+      "checksum": 4773364341761925360,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.9.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 382590848,
+      "bytes": 4737024,
+      "checksum": 4362653095343413361,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.9.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 387327872,
+      "bytes": 98304,
+      "checksum": 15882071613854553820,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.9.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 387426176,
+      "bytes": 1179648,
+      "checksum": 1625338508193493052,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.9.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 388605824,
+      "bytes": 512,
+      "checksum": 5628654217065012049,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.9.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 388606336,
+      "bytes": 64,
+      "checksum": 4388927294580382614,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.9.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 388606400,
+      "bytes": 64,
+      "checksum": 14723623373088306342,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.10.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 388606464,
+      "bytes": 4096,
+      "checksum": 9288201376428661845,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.10.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 388610560,
+      "bytes": 4096,
+      "checksum": 16019370279868388539,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.10.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 388614656,
+      "bytes": 4128768,
+      "checksum": 1480413777807673409,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.10.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 392743424,
+      "bytes": 2064384,
+      "checksum": 83787285438411226,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.10.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 394807808,
+      "bytes": 4737024,
+      "checksum": 9860300995550150661,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.10.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 399544832,
+      "bytes": 98304,
+      "checksum": 10433274205889941947,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.10.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 399643136,
+      "bytes": 1179648,
+      "checksum": 7641266182840159908,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.10.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 400822784,
+      "bytes": 512,
+      "checksum": 10066913859551758779,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.10.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 400823296,
+      "bytes": 64,
+      "checksum": 7982213829374695973,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.10.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 400823360,
+      "bytes": 64,
+      "checksum": 17196302935114358616,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.11.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 400823424,
+      "bytes": 4096,
+      "checksum": 3818646115498872464,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.11.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 400827520,
+      "bytes": 4096,
+      "checksum": 11095293616911242924,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.11.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 400831616,
+      "bytes": 4128768,
+      "checksum": 9910831185250065286,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.11.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 404960384,
+      "bytes": 2064384,
+      "checksum": 8531714317438440997,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.11.self_attn.qkv_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 5242880,
+      "offset": 407024768,
+      "bytes": 2949120,
+      "checksum": 17307785115652840415,
+      "shape": [
+        5120,
+        1024
+      ]
+    },
+    "model.language_model.layers.11.self_attn.o_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 409973888,
+      "bytes": 1179648,
+      "checksum": 3907116384418062457,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.11.self_attn.q_norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 256,
+      "offset": 411153536,
+      "bytes": 1024,
+      "checksum": 13356327194549551127,
+      "shape": [
+        256
+      ]
+    },
+    "model.language_model.layers.11.self_attn.k_norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 256,
+      "offset": 411154560,
+      "bytes": 1024,
+      "checksum": 4290554760386288344,
+      "shape": [
+        256
+      ]
+    },
+    "model.language_model.layers.12.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 411155584,
+      "bytes": 4096,
+      "checksum": 18087688826437308115,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.12.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 411159680,
+      "bytes": 4096,
+      "checksum": 7908055765786079830,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.12.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 411163776,
+      "bytes": 4128768,
+      "checksum": 8447773899436689888,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.12.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 415292544,
+      "bytes": 2064384,
+      "checksum": 5142268897958814672,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.12.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 417356928,
+      "bytes": 4737024,
+      "checksum": 17027667013752011059,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.12.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 422093952,
+      "bytes": 98304,
+      "checksum": 17273208004606380155,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.12.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 422192256,
+      "bytes": 1179648,
+      "checksum": 16203695199887304419,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.12.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 423371904,
+      "bytes": 512,
+      "checksum": 2095300135501276552,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.12.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 423372416,
+      "bytes": 64,
+      "checksum": 3748311566953245987,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.12.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 423372480,
+      "bytes": 64,
+      "checksum": 12440923210972355228,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.13.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 423372544,
+      "bytes": 4096,
+      "checksum": 4491383399747932957,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.13.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 423376640,
+      "bytes": 4096,
+      "checksum": 8826044657912150635,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.13.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 423380736,
+      "bytes": 4128768,
+      "checksum": 4057703876474868999,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.13.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 427509504,
+      "bytes": 2064384,
+      "checksum": 738980908087560521,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.13.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 429573888,
+      "bytes": 4737024,
+      "checksum": 15683734513506580784,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.13.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 434310912,
+      "bytes": 98304,
+      "checksum": 8185279458733208134,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.13.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 434409216,
+      "bytes": 1179648,
+      "checksum": 3579350987269166512,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.13.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 435588864,
+      "bytes": 512,
+      "checksum": 5463998035541661483,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.13.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 435589376,
+      "bytes": 64,
+      "checksum": 8475950775572766587,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.13.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 435589440,
+      "bytes": 64,
+      "checksum": 18015180176480857056,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.14.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 435589504,
+      "bytes": 4096,
+      "checksum": 3407128438892024545,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.14.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 435593600,
+      "bytes": 4096,
+      "checksum": 17425322327797190948,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.14.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 435597696,
+      "bytes": 4128768,
+      "checksum": 6501230267379655238,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.14.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 439726464,
+      "bytes": 2064384,
+      "checksum": 13323068401604359400,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.14.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 441790848,
+      "bytes": 4737024,
+      "checksum": 6241266779060800404,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.14.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 446527872,
+      "bytes": 98304,
+      "checksum": 16912147463305378232,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.14.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 446626176,
+      "bytes": 1179648,
+      "checksum": 11452901168089148200,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.14.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 447805824,
+      "bytes": 512,
+      "checksum": 17835797025121222464,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.14.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 447806336,
+      "bytes": 64,
+      "checksum": 17387764688414414001,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.14.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 447806400,
+      "bytes": 64,
+      "checksum": 11735264241902738116,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.15.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 447806464,
+      "bytes": 4096,
+      "checksum": 9783305999468086470,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.15.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 447810560,
+      "bytes": 4096,
+      "checksum": 16408177074991296899,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.15.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 447814656,
+      "bytes": 4128768,
+      "checksum": 7780176952937632553,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.15.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 451943424,
+      "bytes": 2064384,
+      "checksum": 14821066127596587530,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.15.self_attn.qkv_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 5242880,
+      "offset": 454007808,
+      "bytes": 2949120,
+      "checksum": 1205409332929877719,
+      "shape": [
+        5120,
+        1024
+      ]
+    },
+    "model.language_model.layers.15.self_attn.o_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 456956928,
+      "bytes": 1179648,
+      "checksum": 9582474084226678262,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.15.self_attn.q_norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 256,
+      "offset": 458136576,
+      "bytes": 1024,
+      "checksum": 8093135296797426607,
+      "shape": [
+        256
+      ]
+    },
+    "model.language_model.layers.15.self_attn.k_norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 256,
+      "offset": 458137600,
+      "bytes": 1024,
+      "checksum": 5879849925446586430,
+      "shape": [
+        256
+      ]
+    },
+    "model.language_model.layers.16.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 458138624,
+      "bytes": 4096,
+      "checksum": 4522393692321511521,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.16.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 458142720,
+      "bytes": 4096,
+      "checksum": 16486184239588964117,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.16.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 458146816,
+      "bytes": 4128768,
+      "checksum": 6228307335583995986,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.16.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 462275584,
+      "bytes": 2064384,
+      "checksum": 18033149846970015699,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.16.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 464339968,
+      "bytes": 4737024,
+      "checksum": 10699862923621282809,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.16.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 469076992,
+      "bytes": 98304,
+      "checksum": 6939301642185799351,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.16.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 469175296,
+      "bytes": 1179648,
+      "checksum": 11746603536410432654,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.16.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 470354944,
+      "bytes": 512,
+      "checksum": 1281464595452531569,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.16.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 470355456,
+      "bytes": 64,
+      "checksum": 837593459892561234,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.16.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 470355520,
+      "bytes": 64,
+      "checksum": 16221682240743370533,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.17.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 470355584,
+      "bytes": 4096,
+      "checksum": 11964380321516217930,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.17.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 470359680,
+      "bytes": 4096,
+      "checksum": 11415189728213675514,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.17.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 470363776,
+      "bytes": 4128768,
+      "checksum": 14546712077730516363,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.17.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 474492544,
+      "bytes": 2064384,
+      "checksum": 17202888756199487442,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.17.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 476556928,
+      "bytes": 4737024,
+      "checksum": 12233748476281135258,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.17.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 481293952,
+      "bytes": 98304,
+      "checksum": 7715304184243862954,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.17.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 481392256,
+      "bytes": 1179648,
+      "checksum": 15113800798491907897,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.17.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 482571904,
+      "bytes": 512,
+      "checksum": 6292771434006226767,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.17.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 482572416,
+      "bytes": 64,
+      "checksum": 493854868927403307,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.17.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 482572480,
+      "bytes": 64,
+      "checksum": 18280809046868254162,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.18.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 482572544,
+      "bytes": 4096,
+      "checksum": 6614927722613627088,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.18.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 482576640,
+      "bytes": 4096,
+      "checksum": 14662752646067836599,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.18.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 482580736,
+      "bytes": 4128768,
+      "checksum": 701932286667626231,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.18.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 486709504,
+      "bytes": 2064384,
+      "checksum": 6911924425322480380,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.18.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 488773888,
+      "bytes": 4737024,
+      "checksum": 12729511820134333222,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.18.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 493510912,
+      "bytes": 98304,
+      "checksum": 9363184504750759187,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.18.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 493609216,
+      "bytes": 1179648,
+      "checksum": 10399958761009014221,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.18.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 494788864,
+      "bytes": 512,
+      "checksum": 13470445078146954404,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.18.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 494789376,
+      "bytes": 64,
+      "checksum": 872914609638221262,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.18.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 494789440,
+      "bytes": 64,
+      "checksum": 6347212809332917377,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.19.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 494789504,
+      "bytes": 4096,
+      "checksum": 17409305296041578518,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.19.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 494793600,
+      "bytes": 4096,
+      "checksum": 17243935286611728108,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.19.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 494797696,
+      "bytes": 4128768,
+      "checksum": 5055785126516756402,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.19.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 498926464,
+      "bytes": 2064384,
+      "checksum": 14164976840322677786,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.19.self_attn.qkv_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 5242880,
+      "offset": 500990848,
+      "bytes": 2949120,
+      "checksum": 11943900408209323678,
+      "shape": [
+        5120,
+        1024
+      ]
+    },
+    "model.language_model.layers.19.self_attn.o_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 503939968,
+      "bytes": 1179648,
+      "checksum": 3079978072626157768,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.19.self_attn.q_norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 256,
+      "offset": 505119616,
+      "bytes": 1024,
+      "checksum": 6313920478193140810,
+      "shape": [
+        256
+      ]
+    },
+    "model.language_model.layers.19.self_attn.k_norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 256,
+      "offset": 505120640,
+      "bytes": 1024,
+      "checksum": 8581115282363862323,
+      "shape": [
+        256
+      ]
+    },
+    "model.language_model.layers.20.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 505121664,
+      "bytes": 4096,
+      "checksum": 7895651598297035472,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.20.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 505125760,
+      "bytes": 4096,
+      "checksum": 9526652600452317978,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.20.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 505129856,
+      "bytes": 4128768,
+      "checksum": 5075116352098884509,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.20.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 509258624,
+      "bytes": 2064384,
+      "checksum": 17396927679016202612,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.20.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 511323008,
+      "bytes": 4737024,
+      "checksum": 11595366504918980107,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.20.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 516060032,
+      "bytes": 98304,
+      "checksum": 15751585235322770955,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.20.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 516158336,
+      "bytes": 1179648,
+      "checksum": 2064472126627642285,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.20.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 517337984,
+      "bytes": 512,
+      "checksum": 13512066864245613535,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.20.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 517338496,
+      "bytes": 64,
+      "checksum": 5708876388690109464,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.20.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 517338560,
+      "bytes": 64,
+      "checksum": 8053943343722207068,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.21.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 517338624,
+      "bytes": 4096,
+      "checksum": 12366431970153491789,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.21.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 517342720,
+      "bytes": 4096,
+      "checksum": 14957278313728479134,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.21.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 517346816,
+      "bytes": 4128768,
+      "checksum": 12272326666367522089,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.21.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 521475584,
+      "bytes": 2064384,
+      "checksum": 13066199286976200696,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.21.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 523539968,
+      "bytes": 4737024,
+      "checksum": 2024190192250503364,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.21.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 528276992,
+      "bytes": 98304,
+      "checksum": 496111297199126584,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.21.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 528375296,
+      "bytes": 1179648,
+      "checksum": 14372737930787820234,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.21.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 529554944,
+      "bytes": 512,
+      "checksum": 2713580185342076723,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.21.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 529555456,
+      "bytes": 64,
+      "checksum": 10672528513636754796,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.21.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 529555520,
+      "bytes": 64,
+      "checksum": 3207190006187006280,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.22.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 529555584,
+      "bytes": 4096,
+      "checksum": 13008173041522644984,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.22.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 529559680,
+      "bytes": 4096,
+      "checksum": 15842876238970132287,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.22.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 529563776,
+      "bytes": 4128768,
+      "checksum": 16961241061547711119,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.22.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 533692544,
+      "bytes": 2064384,
+      "checksum": 16758787155554127083,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.22.linear_attn.in_proj_all.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 8421376,
+      "offset": 535756928,
+      "bytes": 4737024,
+      "checksum": 5350270472176046833,
+      "shape": [
+        8224,
+        1024
+      ]
+    },
+    "model.language_model.layers.22.linear_attn.conv1d.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 24576,
+      "offset": 540493952,
+      "bytes": 98304,
+      "checksum": 14944643711691037829,
+      "shape": [
+        6144,
+        1,
+        4
+      ]
+    },
+    "model.language_model.layers.22.linear_attn.out_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 540592256,
+      "bytes": 1179648,
+      "checksum": 12700236845513998296,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.22.linear_attn.norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 128,
+      "offset": 541771904,
+      "bytes": 512,
+      "checksum": 6922596931539543743,
+      "shape": [
+        128
+      ]
+    },
+    "model.language_model.layers.22.linear_attn.A_log": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 541772416,
+      "bytes": 64,
+      "checksum": 13242443251891987241,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.22.linear_attn.dt_bias": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 16,
+      "offset": 541772480,
+      "bytes": 64,
+      "checksum": 12105785171585769349,
+      "shape": [
+        16
+      ]
+    },
+    "model.language_model.layers.23.input_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 541772544,
+      "bytes": 4096,
+      "checksum": 16950237177015576650,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.23.post_attention_layernorm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 1024,
+      "offset": 541776640,
+      "bytes": 4096,
+      "checksum": 12025899192884862293,
+      "shape": [
+        1024
+      ]
+    },
+    "model.language_model.layers.23.mlp.gate_up_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 7340032,
+      "offset": 541780736,
+      "bytes": 4128768,
+      "checksum": 4011098616492075971,
+      "shape": [
+        7168,
+        1024
+      ]
+    },
+    "model.language_model.layers.23.mlp.down_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 3670016,
+      "offset": 545909504,
+      "bytes": 2064384,
+      "checksum": 15659895989326390982,
+      "shape": [
+        1024,
+        3584
+      ]
+    },
+    "model.language_model.layers.23.self_attn.qkv_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 5242880,
+      "offset": 547973888,
+      "bytes": 2949120,
+      "checksum": 4914987021886408820,
+      "shape": [
+        5120,
+        1024
+      ]
+    },
+    "model.language_model.layers.23.self_attn.o_proj.weight": {
+      "encoding": 6,
+      "transform": 128,
+      "group": 32,
+      "seed": 5856987619332796984,
+      "elements": 2097152,
+      "offset": 550923008,
+      "bytes": 1179648,
+      "checksum": 6417468225207848531,
+      "shape": [
+        1024,
+        2048
+      ]
+    },
+    "model.language_model.layers.23.self_attn.q_norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 256,
+      "offset": 552102656,
+      "bytes": 1024,
+      "checksum": 1354235338331689963,
+      "shape": [
+        256
+      ]
+    },
+    "model.language_model.layers.23.self_attn.k_norm.weight": {
+      "encoding": 0,
+      "transform": 0,
+      "group": 0,
+      "seed": 0,
+      "elements": 256,
+      "offset": 552103680,
+      "bytes": 1024,
+      "checksum": 10096336350525244631,
+      "shape": [
+        256
+      ]
+    }
+  }
+}

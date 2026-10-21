@@ -45,6 +45,74 @@ Prompt text must already contain any desired chat template. Unsupported fields,
 multiple completions and streaming are rejected explicitly.
 This is a limited completions API, not complete OpenAI API compatibility.
 
+## qev decision API
+
+With the calibrated [qev-0.8b model](https://huggingface.co/danmoreng/qev-0.8b-H128-Q4-G32-DOT4),
+the same executable also serves **`POST /v1/systemone`**. A supported
+`qev_config.json` in the model directory enables the route and validates the
+255 label IDs and the publisher's temperatures. The model ID becomes
+`qev-0.8b-H128-Q4-G32-DOT4`. A directory without that configuration retains
+the original completion behavior and rejects decision requests.
+
+```sh
+qwen35_cpu_server --model-dir models/qev --threads 8 --decision-encoding per_question
+curl http://127.0.0.1:8080/v1/systemone -H 'Content-Type: application/json' -d '{
+  "state": {"ticket": "My card was charged twice. Please refund the duplicate."},
+  "encoding": "per_question",
+  "questions": {
+    "dept": {"type": "choice", "instructions": "Which team should handle this?",
+             "criteria": {"billing": "payments and refunds", "tech": "bugs", "sales": null}},
+    "urgent": {"type": "noul", "instructions": "Is this urgent?"}
+  }}'
+```
+
+The request accepts `state` (string/object/array), `questions` (1..32 named
+questions), optional `encoding`, and optional `model` (accepted and ignored,
+as in the publisher's System One API). Other top-level fields are rejected.
+Question and option insertion order is preserved. Structured states use the
+publisher's JSON spacing and index annotation for arrays of eight or more
+elements. Tokenization uses NFC and the model's Qwen regex variant.
+
+| Question type | Criteria | Answer |
+| --- | --- | --- |
+| `choice` | 2..255 named options and optional descriptions | `choice`, `probabilities`, `confidence`, `x_p_max`, `certainty` |
+| `noul` (`bool` alias) | optional `true`/`false` descriptions | `noul`, the probability of true |
+| `score` | 2..10 ordered level descriptions | `score` (expected index), `legend`, `probabilities`, `confidence`, `x_p_max`, `certainty` |
+
+Choice lists and numeric-keyed score legends are also accepted. A noul question
+may omit instructions if its true/false criteria describe the question.
+Probabilities and confidence fields are rounded to four decimal places; expected
+scores to two. `confidence` follows TypeSafe's rescaling formulas and differs
+from the top probability `x_p_max`; `certainty` is normalized entropy reduction.
+The response contains `model`, `answers`, `usage: {input_tokens, output_tokens: 0}`
+and `latency_ms` (including queueing from admission). This endpoint returns
+probabilities rather than generated text. It has the same authentication,
+deadline, disconnect cancellation and capacity bounds as completions.
+
+Encoding defaults to **`joint`** for compatibility; `--decision-encoding
+per_question` changes that default. `per_question` matches the published Q4
+evaluation and gives every question its own independent state/question prompt.
+`joint` includes previous question/answer-slot prefixes, without inserting
+predicted letters. This initial native implementation evaluates each causal
+prefix separately. It does not read multiple slots in one forward or reuse
+decision prefixes. Joint `usage.input_tokens` counts the full logical prompt
+once; per-question usage sums the independent rows. Computed tokens can exceed
+logical joint usage because of the separate prefix evaluations.
+
+The native path computes full-vocabulary logits and selects option-letter
+logits from them; it performs **zero decode forwards**. Multiple decision
+requests share the existing bounded scheduler. Prefill chunks use one executor
+and are time-sliced between requests; there is no cross-request prefill batch.
+Decode batching therefore does not accelerate this workload. See the
+[HTTP and concurrency measurements](qev-systemone-api-2026-10-21.md).
+
+The existing body/context bounds apply. Rendered state <=64 KiB and evaluated
+input tokens <=131,072 per request; context overflow fails explicitly, without
+truncation. Images, streaming and chat templates are unsupported for decisions.
+The server uses only native CPU code; Python and decider-ai are optional test
+dependencies. Build the engine revision named by the model card, since earlier
+release binaries predate this endpoint.
+
 ## Sampling (v0.1.1+)
 
 The server uses the engine's existing per-request sampler. Defaults above retain

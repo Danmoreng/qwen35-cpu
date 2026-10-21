@@ -2,7 +2,7 @@
 #include "qwen35x/runtime/cpu_engine.h"
 #include "qwen35x/tokenizer/tokenizer.h"
 #include "httplib.h"
-#include <nlohmann/json.hpp>
+#include "systemone.h"
 #include <atomic>
 #include <cmath>
 #include <limits>
@@ -15,7 +15,7 @@
 #include <thread>
 
 using namespace qwen35x;
-using Json = nlohmann::json;
+using Json = systemone::Json;
 namespace {
 const char *model_name = "Qwen3.5-0.8B-H128-Q4-G32-DOT4";
 struct Reply { int status; Json body; };
@@ -28,6 +28,20 @@ struct Job {
   std::promise<Reply> promise;
   std::atomic<bool> cancelled{false};
   std::size_t prompt_count = 0, limit = 0;
+  std::optional<systemone::Request> decision;
+  std::size_t question = 0;
+  std::vector<std::int32_t> readout_ids;
+  std::vector<float> option_logits;
+  std::chrono::steady_clock::time_point started = std::chrono::steady_clock::now();
+  static bool capture(void *opaque, std::size_t, std::int32_t, const float *logits, std::size_t n, std::string &error) {
+    auto &job = *static_cast<Job *>(opaque);
+    job.option_logits.clear();
+    for (auto id : job.readout_ids) {
+      if (id < 0 || std::size_t(id) >= n || !std::isfinite(logits[id])) { error = "Invalid decision logit"; return false; }
+      job.option_logits.push_back(logits[id]);
+    }
+    return true;
+  }
 };
 
 // Only this worker touches the tokenizer and CpuEngine. HTTP workers wait on
@@ -36,12 +50,24 @@ class Service {
   struct Active { CpuRequestId id; std::shared_ptr<Job> job; std::vector<int32_t> output; };
   QwenTokenizer tokenizer_;
   std::unique_ptr<CpuEngine> engine_;
+  std::optional<systemone::Config> decision_;
+  std::size_t max_context_;
   std::mutex mutex_;
   std::condition_variable wake_;
   std::deque<std::shared_ptr<Job>> pending_;
   bool stopping_ = false;
   std::size_t outstanding_ = 0;
   std::thread worker_;
+  CpuRequestId submit_decision(const std::shared_ptr<Job> &job, std::string &error) {
+    const auto count = job->decision->questions[job->question].names.size();
+    job->readout_ids.assign(decision_->ids.begin(), decision_->ids.begin() + count);
+    job->option_logits.clear();
+    CpuRequestSpec spec;
+    spec.prompt_tokens = job->decision->rows[job->question]; spec.max_new_tokens = 1;
+    spec.forced_output_tokens = {decision_->ids.front()};
+    spec.logits_callback = Job::capture; spec.logits_callback_context = job.get();
+    return engine_->submit(std::move(spec), error);
+  }
   void finish(const std::shared_ptr<Job> &job, Reply reply) {
     job->promise.set_value(std::move(reply));
     std::lock_guard lock(mutex_); --outstanding_;
@@ -62,6 +88,13 @@ class Service {
         if (stopping || job->cancelled) { finish(job, failure(499, "Request cancelled")); continue; }
         try {
           std::string error;
+          if (job->decision) {
+            try { systemone::prepare(*job->decision, tokenizer_, *decision_, max_context_); }
+            catch (const std::exception &e) { finish(job, failure(400, e.what())); continue; }
+            auto id = submit_decision(job, error);
+            if (!id) { finish(job, failure(400, error)); continue; }
+            active.push_back({id, job, {}}); continue;
+          }
           if (!tokenizer_.encode(job->prompt, job->spec.prompt_tokens, error)) {
             finish(job, failure(400, error)); continue;
           }
@@ -97,6 +130,24 @@ class Service {
           Reply reply = failure(500, result.error);
           if (result.status == CpuRequestStatus::cancelled) reply = failure(499, "Request cancelled");
           if (result.status == CpuRequestStatus::complete) {
+            if (it->job->decision) {
+              auto &job = it->job; auto &decision = *job->decision;
+              try {
+                const auto &q = decision.questions[job->question];
+                decision.answers[q.id] = systemone::answer(q, job->option_logits, *decision_);
+                if (++job->question < decision.questions.size() && !job->cancelled && !stopping) {
+                  engine_->release(it->id);
+                  it->id = submit_decision(job, error); it->output.clear();
+                  if (!it->id) { finish(job, failure(500, error)); it = active.erase(it); }
+                  else ++it;
+                  continue;
+                }
+                const double elapsed = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - job->started).count();
+                reply = job->cancelled || stopping ? failure(499, "Request cancelled") : Reply{200, {
+                  {"model", model_name}, {"answers", decision.answers},
+                  {"usage", {{"input_tokens", decision.input_tokens}, {"output_tokens", 0}}}, {"latency_ms", elapsed}}};
+              } catch (const std::exception &e) { reply = failure(500, e.what()); }
+            } else {
             std::string text;
             if (!tokenizer_.decode(it->output, text, error)) reply = failure(500, error);
             else reply = {200, {
@@ -107,6 +158,7 @@ class Service {
               {"usage", {{"prompt_tokens", it->job->prompt_count},
                 {"completion_tokens", result.output_tokens.size()},
                 {"total_tokens", it->job->prompt_count + result.output_tokens.size()}}}}};
+            }
           }
           engine_->release(it->id);
           finish(it->job, std::move(reply)); it = active.erase(it);
@@ -116,15 +168,17 @@ class Service {
     }
   }
 public:
-  Service(const CpuLoadOptions &load, const CpuEngineConfig &config) {
+  Service(const CpuLoadOptions &load, const CpuEngineConfig &config) : max_context_(config.max_context) {
     std::string error;
     if (!QwenTokenizer::load_from_hf_directory(load.model_dir, tokenizer_, error)) throw std::runtime_error(error);
+    decision_ = systemone::Config::load(load.model_dir, tokenizer_);
     auto profile = ProfileLoader::load_from_hf_directory(load.model_dir, error);
     if (!profile) throw std::runtime_error(error);
     auto model = CpuModel::load(*profile, load, error);
     if (!model) throw std::runtime_error(error);
     if (std::string(model->weight_format()).starts_with("gguf-"))
       model_name = "Qwen3.5-0.8B-GGUF";
+    if (decision_) model_name = "qev-0.8b-H128-Q4-G32-DOT4";
     engine_ = CpuEngine::create(model, config, error);
     if (!engine_) throw std::runtime_error(error);
     worker_ = std::thread([this] { run(); });
@@ -138,6 +192,7 @@ public:
     if (stopping_ || outstanding_ >= 64) return false;
     ++outstanding_; pending_.push_back(std::move(job)); wake_.notify_one(); return true;
   }
+  bool decisions_enabled() const { return decision_.has_value(); }
 };
 
 std::shared_ptr<Job> parse(const std::string &body, std::size_t context) {
@@ -199,13 +254,15 @@ int main(int argc, char **argv) try {
   config.max_resident_requests = 16; config.max_queued_requests = 64;
   config.max_decode_batch_size = 16; config.shared_kv_pages = true;
   std::string host = "127.0.0.1";
+  std::string decision_encoding = "joint";
   int port = 8080;
   for (int i = 1; i < argc; ++i) {
     const std::string key = argv[i];
     if (key == "--help") {
       std::cout << "Qwen3.5 CPU HTTP server\n--model-dir DIR [--weights FILE] [--threads N]\n"
         "[--host 127.0.0.1] [--port 8080] [--max-context 8192] [--residents 16]\n"
-        "GET /health, GET /v1/models, POST /v1/completions (sampling, non-streaming)\n";
+        "[--decision-encoding joint|per_question] (qev_config.json required)\n"
+        "GET /health, GET /v1/models, POST /v1/completions, POST /v1/systemone\n";
       return 0;
     }
     if (++i == argc) throw std::runtime_error("Missing value: " + key);
@@ -220,6 +277,10 @@ int main(int argc, char **argv) try {
     else if (key == "--threads") config.threads = number();
     else if (key == "--host") host = value;
     else if (key == "--port") port = number();
+    else if (key == "--decision-encoding") {
+      if (value != "joint" && value != "per_question") throw std::runtime_error("Invalid decision encoding");
+      decision_encoding = value;
+    }
     else if (key == "--max-context") config.max_context = number();
     else if (key == "--residents") {
       config.max_resident_requests = number();
@@ -251,11 +312,7 @@ int main(int argc, char **argv) try {
     if (authorized(request, response)) send(response, {200, {{"object", "list"},
       {"data", Json::array({{{"id", model_name}, {"object", "model"}, {"owned_by", "local"}}})}}});
   });
-  http.Post("/v1/completions", [&](const httplib::Request &request, httplib::Response &response) {
-    if (!authorized(request, response)) return;
-    std::shared_ptr<Job> job;
-    try { job = parse(request.body, config.max_context); }
-    catch (const std::exception &e) { send(response, failure(400, e.what())); return; }
+  auto dispatch = [&](const std::shared_ptr<Job> &job, const httplib::Request &request, httplib::Response &response) {
     auto result = job->promise.get_future();
     if (!service.enqueue(job)) { send(response, failure(429, "Request capacity exhausted")); return; }
     const auto deadline = std::chrono::steady_clock::now() + std::chrono::minutes(5);
@@ -266,6 +323,21 @@ int main(int argc, char **argv) try {
       }
     }
     send(response, result.get());
+  };
+  http.Post("/v1/completions", [&](const httplib::Request &request, httplib::Response &response) {
+    if (!authorized(request, response)) return;
+    std::shared_ptr<Job> job;
+    try { job = parse(request.body, config.max_context); }
+    catch (const std::exception &e) { send(response, failure(400, e.what())); return; }
+    dispatch(job, request, response);
+  });
+  http.Post("/v1/systemone", [&](const httplib::Request &request, httplib::Response &response) {
+    if (!authorized(request, response)) return;
+    if (!service.decisions_enabled()) { send(response, failure(400, "This model has no supported qev_config.json")); return; }
+    auto job = std::make_shared<Job>();
+    try { job->decision = systemone::parse(request.body, decision_encoding); }
+    catch (const std::exception &e) { send(response, failure(400, e.what())); return; }
+    dispatch(job, request, response);
   });
   std::cout << "Listening on http://" << host << ':' << port << " (" << config.threads << " inference threads)" << std::endl;
   if (!http.listen(host, port)) throw std::runtime_error("Cannot bind HTTP listener");

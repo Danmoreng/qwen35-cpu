@@ -1,0 +1,1350 @@
+{
+  "bf16": {
+    "skills": {
+      "agents/agent_action": {
+        "n": 541,
+        "accuracy": 0.464,
+        "brier": 0.7617,
+        "ece": 0.2684
+      },
+      "agents/browser": {
+        "n": 1444,
+        "accuracy": 0.8927,
+        "brier": 0.1752,
+        "ece": 0.0239
+      },
+      "agents/tools": {
+        "n": 526,
+        "accuracy": 0.8688,
+        "brier": 0.2148,
+        "ece": 0.077
+      },
+      "games_spatial/chess": {
+        "n": 555,
+        "accuracy": 0.445,
+        "brier": 0.6953,
+        "ece": 0.0983
+      },
+      "games_spatial/game_moves_facts_in_question": {
+        "n": 1496,
+        "accuracy": 0.8382,
+        "brier": 0.2643,
+        "ece": 0.1325
+      },
+      "games_spatial/game_moves_facts_in_state": {
+        "n": 1757,
+        "accuracy": 0.8924,
+        "brier": 0.1427,
+        "ece": 0.0358
+      },
+      "games_spatial/game_rules": {
+        "n": 1035,
+        "accuracy": 0.7758,
+        "brier": 0.3062,
+        "ece": 0.0556
+      },
+      "games_spatial/small_games": {
+        "n": 335,
+        "accuracy": 0.5373,
+        "brier": 0.5603,
+        "ece": 0.0904
+      },
+      "games_spatial/spatial_coordinates": {
+        "n": 375,
+        "accuracy": 0.6027,
+        "brier": 0.4983,
+        "ece": 0.0902
+      },
+      "games_spatial/spatial_grids": {
+        "n": 375,
+        "accuracy": 0.6613,
+        "brier": 0.4628,
+        "ece": 0.0992
+      },
+      "judging/grounding": {
+        "n": 877,
+        "accuracy": 0.7389,
+        "brier": 0.3642,
+        "ece": 0.0551
+      },
+      "judging/response_judging": {
+        "n": 542,
+        "accuracy": 0.6993,
+        "brier": 0.4153,
+        "ece": 0.1094
+      },
+      "rules/admission": {
+        "n": 355,
+        "accuracy": 0.893,
+        "brier": 0.1426,
+        "ece": 0.031
+      },
+      "rules/agent_rules": {
+        "n": 355,
+        "accuracy": 0.8817,
+        "brier": 0.1713,
+        "ece": 0.0267
+      },
+      "rules/authority": {
+        "n": 355,
+        "accuracy": 0.6732,
+        "brier": 0.4722,
+        "ece": 0.0682
+      },
+      "rules/fraud_points": {
+        "n": 355,
+        "accuracy": 0.4394,
+        "brier": 0.6531,
+        "ece": 0.0656
+      },
+      "rules/missing_facts": {
+        "n": 275,
+        "accuracy": 0.6473,
+        "brier": 0.4196,
+        "ece": 0.0561
+      },
+      "rules/patent_phrases": {
+        "n": 355,
+        "accuracy": 0.3577,
+        "brier": 0.7355,
+        "ece": 0.0791
+      },
+      "rules/rental": {
+        "n": 355,
+        "accuracy": 0.4394,
+        "brier": 0.6787,
+        "ece": 0.0716
+      },
+      "rules/sharc": {
+        "n": 355,
+        "accuracy": 0.7606,
+        "brier": 0.3399,
+        "ece": 0.0792
+      },
+      "safety/content_safety": {
+        "n": 390,
+        "accuracy": 0.7256,
+        "brier": 0.3683,
+        "ece": 0.1086
+      },
+      "safety/prompt_injection": {
+        "n": 318,
+        "accuracy": 0.8868,
+        "brier": 0.1813,
+        "ece": 0.0711
+      }
+    },
+    "pooled_by_category": {
+      "agents": 0.7418,
+      "rules": 0.635,
+      "games_spatial": 0.679,
+      "safety": 0.8062,
+      "judging": 0.7191
+    },
+    "extras": {
+      "games_spatial/game_moves_facts_in_question": {
+        "balanced_accuracy": 0.8044,
+        "pick_accuracy/seen_game": 0.9721,
+        "pick_accuracy/unseen_game": 0.8194
+      },
+      "games_spatial/game_moves_facts_in_state": {
+        "balanced_accuracy": 0.9156,
+        "pick_accuracy/seen_game": 0.9888,
+        "pick_accuracy/unseen_game": 0.9815
+      },
+      "games_spatial/game_rules": {
+        "balanced_accuracy": 0.7726,
+        "pick_accuracy/seen_game": 0.7391,
+        "pick_accuracy/unseen_game": 0.7486
+      },
+      "games_spatial/spatial_coordinates": {
+        "balanced_accuracy": 0.6378
+      },
+      "games_spatial/spatial_grids": {
+        "balanced_accuracy": 0.7358
+      },
+      "games_spatial/small_games": {
+        "balanced_accuracy": 0.516
+      },
+      "judging/grounding": {
+        "balanced_accuracy": 0.6363
+      },
+      "rules/admission": {
+        "balanced_accuracy": 0.8935
+      },
+      "rules/agent_rules": {
+        "balanced_accuracy": 0.8813
+      },
+      "rules/sharc": {
+        "balanced_accuracy": 0.761
+      },
+      "rules/missing_facts": {
+        "balanced_accuracy": 0.8922,
+        "auroc/admission": 0.5953,
+        "auroc/fraud_points": 0.5026
+      },
+      "safety/prompt_injection": {
+        "balanced_accuracy": 0.8895
+      },
+      "safety/content_safety": {
+        "balanced_accuracy": 0.7243
+      }
+    }
+  },
+  "q8": {
+    "skills": {
+      "agents/agent_action": {
+        "n": 541,
+        "accuracy": 0.4658,
+        "brier": 0.7604,
+        "ece": 0.2654
+      },
+      "agents/browser": {
+        "n": 1444,
+        "accuracy": 0.8899,
+        "brier": 0.1765,
+        "ece": 0.0204
+      },
+      "agents/tools": {
+        "n": 526,
+        "accuracy": 0.8707,
+        "brier": 0.2126,
+        "ece": 0.0747
+      },
+      "games_spatial/chess": {
+        "n": 555,
+        "accuracy": 0.445,
+        "brier": 0.6952,
+        "ece": 0.0975
+      },
+      "games_spatial/game_moves_facts_in_question": {
+        "n": 1496,
+        "accuracy": 0.8342,
+        "brier": 0.2658,
+        "ece": 0.1287
+      },
+      "games_spatial/game_moves_facts_in_state": {
+        "n": 1757,
+        "accuracy": 0.897,
+        "brier": 0.141,
+        "ece": 0.0386
+      },
+      "games_spatial/game_rules": {
+        "n": 1035,
+        "accuracy": 0.771,
+        "brier": 0.3065,
+        "ece": 0.0543
+      },
+      "games_spatial/small_games": {
+        "n": 335,
+        "accuracy": 0.5343,
+        "brier": 0.5608,
+        "ece": 0.0955
+      },
+      "games_spatial/spatial_coordinates": {
+        "n": 375,
+        "accuracy": 0.5947,
+        "brier": 0.4993,
+        "ece": 0.098
+      },
+      "games_spatial/spatial_grids": {
+        "n": 375,
+        "accuracy": 0.6533,
+        "brier": 0.4624,
+        "ece": 0.0917
+      },
+      "judging/grounding": {
+        "n": 877,
+        "accuracy": 0.7412,
+        "brier": 0.3641,
+        "ece": 0.0568
+      },
+      "judging/response_judging": {
+        "n": 542,
+        "accuracy": 0.6974,
+        "brier": 0.4152,
+        "ece": 0.1089
+      },
+      "rules/admission": {
+        "n": 355,
+        "accuracy": 0.8901,
+        "brier": 0.143,
+        "ece": 0.0356
+      },
+      "rules/agent_rules": {
+        "n": 355,
+        "accuracy": 0.8817,
+        "brier": 0.1732,
+        "ece": 0.0268
+      },
+      "rules/authority": {
+        "n": 355,
+        "accuracy": 0.6901,
+        "brier": 0.4628,
+        "ece": 0.0831
+      },
+      "rules/fraud_points": {
+        "n": 355,
+        "accuracy": 0.4394,
+        "brier": 0.6526,
+        "ece": 0.0693
+      },
+      "rules/missing_facts": {
+        "n": 275,
+        "accuracy": 0.6364,
+        "brier": 0.422,
+        "ece": 0.0722
+      },
+      "rules/patent_phrases": {
+        "n": 355,
+        "accuracy": 0.3577,
+        "brier": 0.7351,
+        "ece": 0.0828
+      },
+      "rules/rental": {
+        "n": 355,
+        "accuracy": 0.431,
+        "brier": 0.6821,
+        "ece": 0.0505
+      },
+      "rules/sharc": {
+        "n": 355,
+        "accuracy": 0.7577,
+        "brier": 0.3423,
+        "ece": 0.0807
+      },
+      "safety/content_safety": {
+        "n": 390,
+        "accuracy": 0.7282,
+        "brier": 0.3675,
+        "ece": 0.1058
+      },
+      "safety/prompt_injection": {
+        "n": 318,
+        "accuracy": 0.8931,
+        "brier": 0.1806,
+        "ece": 0.0774
+      }
+    },
+    "pooled_by_category": {
+      "agents": 0.7421,
+      "rules": 0.6354,
+      "games_spatial": 0.6756,
+      "safety": 0.8106,
+      "judging": 0.7193
+    },
+    "extras": {
+      "games_spatial/game_moves_facts_in_question": {
+        "balanced_accuracy": 0.7988,
+        "pick_accuracy/seen_game": 0.9609,
+        "pick_accuracy/unseen_game": 0.8241
+      },
+      "games_spatial/game_moves_facts_in_state": {
+        "balanced_accuracy": 0.9192,
+        "pick_accuracy/seen_game": 0.9888,
+        "pick_accuracy/unseen_game": 0.9815
+      },
+      "games_spatial/game_rules": {
+        "balanced_accuracy": 0.7664,
+        "pick_accuracy/seen_game": 0.75,
+        "pick_accuracy/unseen_game": 0.7377
+      },
+      "games_spatial/spatial_coordinates": {
+        "balanced_accuracy": 0.6299
+      },
+      "games_spatial/spatial_grids": {
+        "balanced_accuracy": 0.7313
+      },
+      "games_spatial/small_games": {
+        "balanced_accuracy": 0.5011
+      },
+      "judging/grounding": {
+        "balanced_accuracy": 0.6451
+      },
+      "rules/admission": {
+        "balanced_accuracy": 0.8906
+      },
+      "rules/agent_rules": {
+        "balanced_accuracy": 0.8813
+      },
+      "rules/sharc": {
+        "balanced_accuracy": 0.7582
+      },
+      "rules/missing_facts": {
+        "balanced_accuracy": 0.8778,
+        "auroc/admission": 0.598,
+        "auroc/fraud_points": 0.5025
+      },
+      "safety/prompt_injection": {
+        "balanced_accuracy": 0.8962
+      },
+      "safety/content_safety": {
+        "balanced_accuracy": 0.727
+      }
+    },
+    "to_bf16": {
+      "mean_kl": 0.0004956295636250797,
+      "mean_tv": 0.007900503383699294,
+      "max_option_delta": 0.1905753925974002,
+      "argmax_flips": 159,
+      "rows": 13601,
+      "by_skill": {
+        "agents/agent_action": {
+          "mean_kl": 0.0004369115440136396,
+          "flips": 4
+        },
+        "agents/browser": {
+          "mean_kl": 0.0006436097971450768,
+          "flips": 7
+        },
+        "agents/tools": {
+          "mean_kl": 0.0002673432396711292,
+          "flips": 1
+        },
+        "games_spatial/chess": {
+          "mean_kl": 0.00020734647289504549,
+          "flips": 5
+        },
+        "games_spatial/game_moves_facts_in_question": {
+          "mean_kl": 0.0002785443958515923,
+          "flips": 22
+        },
+        "games_spatial/game_moves_facts_in_state": {
+          "mean_kl": 0.0005737132877677076,
+          "flips": 14
+        },
+        "games_spatial/game_rules": {
+          "mean_kl": 0.0006846004584179456,
+          "flips": 17
+        },
+        "games_spatial/small_games": {
+          "mean_kl": 0.00014176252869362697,
+          "flips": 4
+        },
+        "games_spatial/spatial_coordinates": {
+          "mean_kl": 0.000528722238569194,
+          "flips": 3
+        },
+        "games_spatial/spatial_grids": {
+          "mean_kl": 0.0003217450037013345,
+          "flips": 9
+        },
+        "judging/grounding": {
+          "mean_kl": 0.00023466894575892644,
+          "flips": 6
+        },
+        "judging/response_judging": {
+          "mean_kl": 0.00020663842845734245,
+          "flips": 5
+        },
+        "rules/admission": {
+          "mean_kl": 0.0006686763795002635,
+          "flips": 1
+        },
+        "rules/agent_rules": {
+          "mean_kl": 0.0009120732996742793,
+          "flips": 0
+        },
+        "rules/authority": {
+          "mean_kl": 0.0010627971952904935,
+          "flips": 10
+        },
+        "rules/fraud_points": {
+          "mean_kl": 0.0006098189707767661,
+          "flips": 8
+        },
+        "rules/missing_facts": {
+          "mean_kl": 0.0006562933805629971,
+          "flips": 9
+        },
+        "rules/patent_phrases": {
+          "mean_kl": 0.0008659061275537097,
+          "flips": 19
+        },
+        "rules/rental": {
+          "mean_kl": 0.00038173796233677976,
+          "flips": 9
+        },
+        "rules/sharc": {
+          "mean_kl": 0.0006768194120906223,
+          "flips": 3
+        },
+        "safety/content_safety": {
+          "mean_kl": 0.00027560565301229084,
+          "flips": 1
+        },
+        "safety/prompt_injection": {
+          "mean_kl": 0.0006149141189333618,
+          "flips": 2
+        }
+      }
+    }
+  },
+  "uncalibrated": {
+    "skills": {
+      "agents/agent_action": {
+        "n": 541,
+        "accuracy": 0.4418,
+        "brier": 0.8209,
+        "ece": 0.3183
+      },
+      "agents/browser": {
+        "n": 1444,
+        "accuracy": 0.8913,
+        "brier": 0.1792,
+        "ece": 0.0155
+      },
+      "agents/tools": {
+        "n": 526,
+        "accuracy": 0.8536,
+        "brier": 0.2276,
+        "ece": 0.0813
+      },
+      "games_spatial/chess": {
+        "n": 555,
+        "accuracy": 0.4396,
+        "brier": 0.6962,
+        "ece": 0.0954
+      },
+      "games_spatial/game_moves_facts_in_question": {
+        "n": 1496,
+        "accuracy": 0.7968,
+        "brier": 0.3303,
+        "ece": 0.1388
+      },
+      "games_spatial/game_moves_facts_in_state": {
+        "n": 1757,
+        "accuracy": 0.8981,
+        "brier": 0.1429,
+        "ece": 0.0597
+      },
+      "games_spatial/game_rules": {
+        "n": 1035,
+        "accuracy": 0.7372,
+        "brier": 0.3383,
+        "ece": 0.033
+      },
+      "games_spatial/small_games": {
+        "n": 335,
+        "accuracy": 0.4866,
+        "brier": 0.5794,
+        "ece": 0.1127
+      },
+      "games_spatial/spatial_coordinates": {
+        "n": 375,
+        "accuracy": 0.5867,
+        "brier": 0.5086,
+        "ece": 0.1198
+      },
+      "games_spatial/spatial_grids": {
+        "n": 375,
+        "accuracy": 0.616,
+        "brier": 0.4799,
+        "ece": 0.0786
+      },
+      "judging/grounding": {
+        "n": 877,
+        "accuracy": 0.7343,
+        "brier": 0.3772,
+        "ece": 0.0514
+      },
+      "judging/response_judging": {
+        "n": 542,
+        "accuracy": 0.6863,
+        "brier": 0.4052,
+        "ece": 0.0898
+      },
+      "rules/admission": {
+        "n": 355,
+        "accuracy": 0.8873,
+        "brier": 0.1487,
+        "ece": 0.0366
+      },
+      "rules/agent_rules": {
+        "n": 355,
+        "accuracy": 0.8479,
+        "brier": 0.2184,
+        "ece": 0.0463
+      },
+      "rules/authority": {
+        "n": 355,
+        "accuracy": 0.7521,
+        "brier": 0.3891,
+        "ece": 0.1441
+      },
+      "rules/fraud_points": {
+        "n": 355,
+        "accuracy": 0.4535,
+        "brier": 0.6486,
+        "ece": 0.0159
+      },
+      "rules/missing_facts": {
+        "n": 275,
+        "accuracy": 0.6618,
+        "brier": 0.4016,
+        "ece": 0.0374
+      },
+      "rules/patent_phrases": {
+        "n": 355,
+        "accuracy": 0.3577,
+        "brier": 0.7165,
+        "ece": 0.0736
+      },
+      "rules/rental": {
+        "n": 355,
+        "accuracy": 0.3634,
+        "brier": 0.7199,
+        "ece": 0.0995
+      },
+      "rules/sharc": {
+        "n": 355,
+        "accuracy": 0.7465,
+        "brier": 0.3536,
+        "ece": 0.0865
+      },
+      "safety/content_safety": {
+        "n": 390,
+        "accuracy": 0.7179,
+        "brier": 0.3636,
+        "ece": 0.1036
+      },
+      "safety/prompt_injection": {
+        "n": 318,
+        "accuracy": 0.9025,
+        "brier": 0.1658,
+        "ece": 0.0623
+      }
+    },
+    "pooled_by_category": {
+      "agents": 0.7289,
+      "rules": 0.6298,
+      "games_spatial": 0.6516,
+      "safety": 0.8102,
+      "judging": 0.7103
+    },
+    "extras": {
+      "games_spatial/game_moves_facts_in_question": {
+        "balanced_accuracy": 0.7612,
+        "pick_accuracy/seen_game": 0.9832,
+        "pick_accuracy/unseen_game": 0.6528
+      },
+      "games_spatial/game_moves_facts_in_state": {
+        "balanced_accuracy": 0.921,
+        "pick_accuracy/seen_game": 0.9888,
+        "pick_accuracy/unseen_game": 0.963
+      },
+      "games_spatial/game_rules": {
+        "balanced_accuracy": 0.7049,
+        "pick_accuracy/seen_game": 0.7174,
+        "pick_accuracy/unseen_game": 0.6831
+      },
+      "games_spatial/spatial_coordinates": {
+        "balanced_accuracy": 0.6255
+      },
+      "games_spatial/spatial_grids": {
+        "balanced_accuracy": 0.6951
+      },
+      "games_spatial/small_games": {
+        "balanced_accuracy": 0.4806
+      },
+      "judging/grounding": {
+        "balanced_accuracy": 0.6162
+      },
+      "rules/admission": {
+        "balanced_accuracy": 0.8879
+      },
+      "rules/agent_rules": {
+        "balanced_accuracy": 0.8472
+      },
+      "rules/sharc": {
+        "balanced_accuracy": 0.7469
+      },
+      "rules/missing_facts": {
+        "balanced_accuracy": 0.8875,
+        "auroc/admission": 0.5902,
+        "auroc/fraud_points": 0.4766
+      },
+      "safety/prompt_injection": {
+        "balanced_accuracy": 0.9038
+      },
+      "safety/content_safety": {
+        "balanced_accuracy": 0.7164
+      }
+    },
+    "to_bf16": {
+      "mean_kl": 0.04039377490658311,
+      "mean_tv": 0.07515754632408621,
+      "max_option_delta": 0.9061521404604232,
+      "argmax_flips": 1573,
+      "rows": 13601,
+      "by_skill": {
+        "agents/agent_action": {
+          "mean_kl": 0.04302382865807396,
+          "flips": 53
+        },
+        "agents/browser": {
+          "mean_kl": 0.04923139760590013,
+          "flips": 78
+        },
+        "agents/tools": {
+          "mean_kl": 0.016184920716850903,
+          "flips": 13
+        },
+        "games_spatial/chess": {
+          "mean_kl": 0.01277643982929299,
+          "flips": 61
+        },
+        "games_spatial/game_moves_facts_in_question": {
+          "mean_kl": 0.03504385018590687,
+          "flips": 172
+        },
+        "games_spatial/game_moves_facts_in_state": {
+          "mean_kl": 0.04563080381268266,
+          "flips": 130
+        },
+        "games_spatial/game_rules": {
+          "mean_kl": 0.046613287836095176,
+          "flips": 123
+        },
+        "games_spatial/small_games": {
+          "mean_kl": 0.011160799609577826,
+          "flips": 57
+        },
+        "games_spatial/spatial_coordinates": {
+          "mean_kl": 0.03200142345465026,
+          "flips": 50
+        },
+        "games_spatial/spatial_grids": {
+          "mean_kl": 0.023106589413392088,
+          "flips": 57
+        },
+        "judging/grounding": {
+          "mean_kl": 0.01834988756191501,
+          "flips": 59
+        },
+        "judging/response_judging": {
+          "mean_kl": 0.01701245861488907,
+          "flips": 51
+        },
+        "rules/admission": {
+          "mean_kl": 0.03281649605606669,
+          "flips": 20
+        },
+        "rules/agent_rules": {
+          "mean_kl": 0.06531303941104619,
+          "flips": 26
+        },
+        "rules/authority": {
+          "mean_kl": 0.1397021946988237,
+          "flips": 76
+        },
+        "rules/fraud_points": {
+          "mean_kl": 0.06621016150009326,
+          "flips": 106
+        },
+        "rules/missing_facts": {
+          "mean_kl": 0.06149158522678394,
+          "flips": 110
+        },
+        "rules/patent_phrases": {
+          "mean_kl": 0.038149026721667825,
+          "flips": 93
+        },
+        "rules/rental": {
+          "mean_kl": 0.040223114932681825,
+          "flips": 161
+        },
+        "rules/sharc": {
+          "mean_kl": 0.04786949328747448,
+          "flips": 37
+        },
+        "safety/content_safety": {
+          "mean_kl": 0.02440893521197063,
+          "flips": 27
+        },
+        "safety/prompt_injection": {
+          "mean_kl": 0.04016776842401749,
+          "flips": 13
+        }
+      }
+    }
+  },
+  "1024-block128": {
+    "skills": {
+      "agents/agent_action": {
+        "n": 541,
+        "accuracy": 0.4492,
+        "brier": 0.7716,
+        "ece": 0.2702
+      },
+      "agents/browser": {
+        "n": 1444,
+        "accuracy": 0.885,
+        "brier": 0.1816,
+        "ece": 0.0163
+      },
+      "agents/tools": {
+        "n": 526,
+        "accuracy": 0.8555,
+        "brier": 0.233,
+        "ece": 0.0797
+      },
+      "games_spatial/chess": {
+        "n": 555,
+        "accuracy": 0.4577,
+        "brier": 0.6997,
+        "ece": 0.1258
+      },
+      "games_spatial/game_moves_facts_in_question": {
+        "n": 1496,
+        "accuracy": 0.8275,
+        "brier": 0.2642,
+        "ece": 0.1568
+      },
+      "games_spatial/game_moves_facts_in_state": {
+        "n": 1757,
+        "accuracy": 0.9061,
+        "brier": 0.1343,
+        "ece": 0.0527
+      },
+      "games_spatial/game_rules": {
+        "n": 1035,
+        "accuracy": 0.771,
+        "brier": 0.3165,
+        "ece": 0.0524
+      },
+      "games_spatial/small_games": {
+        "n": 335,
+        "accuracy": 0.5134,
+        "brier": 0.5688,
+        "ece": 0.0806
+      },
+      "games_spatial/spatial_coordinates": {
+        "n": 375,
+        "accuracy": 0.6107,
+        "brier": 0.4881,
+        "ece": 0.0701
+      },
+      "games_spatial/spatial_grids": {
+        "n": 375,
+        "accuracy": 0.6427,
+        "brier": 0.4815,
+        "ece": 0.1046
+      },
+      "judging/grounding": {
+        "n": 877,
+        "accuracy": 0.7275,
+        "brier": 0.3756,
+        "ece": 0.0467
+      },
+      "judging/response_judging": {
+        "n": 542,
+        "accuracy": 0.7048,
+        "brier": 0.4204,
+        "ece": 0.1118
+      },
+      "rules/admission": {
+        "n": 355,
+        "accuracy": 0.8958,
+        "brier": 0.1422,
+        "ece": 0.0306
+      },
+      "rules/agent_rules": {
+        "n": 355,
+        "accuracy": 0.8986,
+        "brier": 0.1651,
+        "ece": 0.037
+      },
+      "rules/authority": {
+        "n": 355,
+        "accuracy": 0.6479,
+        "brier": 0.467,
+        "ece": 0.0844
+      },
+      "rules/fraud_points": {
+        "n": 355,
+        "accuracy": 0.4423,
+        "brier": 0.6585,
+        "ece": 0.072
+      },
+      "rules/missing_facts": {
+        "n": 275,
+        "accuracy": 0.6655,
+        "brier": 0.4174,
+        "ece": 0.057
+      },
+      "rules/patent_phrases": {
+        "n": 355,
+        "accuracy": 0.3465,
+        "brier": 0.731,
+        "ece": 0.0972
+      },
+      "rules/rental": {
+        "n": 355,
+        "accuracy": 0.462,
+        "brier": 0.689,
+        "ece": 0.0997
+      },
+      "rules/sharc": {
+        "n": 355,
+        "accuracy": 0.7634,
+        "brier": 0.3388,
+        "ece": 0.0671
+      },
+      "safety/content_safety": {
+        "n": 390,
+        "accuracy": 0.741,
+        "brier": 0.356,
+        "ece": 0.0829
+      },
+      "safety/prompt_injection": {
+        "n": 318,
+        "accuracy": 0.8868,
+        "brier": 0.1794,
+        "ece": 0.0751
+      }
+    },
+    "pooled_by_category": {
+      "agents": 0.7299,
+      "rules": 0.6366,
+      "games_spatial": 0.6756,
+      "safety": 0.8139,
+      "judging": 0.7162
+    },
+    "extras": {
+      "games_spatial/game_moves_facts_in_question": {
+        "balanced_accuracy": 0.7786,
+        "pick_accuracy/seen_game": 0.9944,
+        "pick_accuracy/unseen_game": 0.8519
+      },
+      "games_spatial/game_moves_facts_in_state": {
+        "balanced_accuracy": 0.9282,
+        "pick_accuracy/seen_game": 0.9721,
+        "pick_accuracy/unseen_game": 1.0
+      },
+      "games_spatial/game_rules": {
+        "balanced_accuracy": 0.7848,
+        "pick_accuracy/seen_game": 0.913,
+        "pick_accuracy/unseen_game": 0.7377
+      },
+      "games_spatial/spatial_coordinates": {
+        "balanced_accuracy": 0.6423
+      },
+      "games_spatial/spatial_grids": {
+        "balanced_accuracy": 0.7178
+      },
+      "games_spatial/small_games": {
+        "balanced_accuracy": 0.4987
+      },
+      "judging/grounding": {
+        "balanced_accuracy": 0.6363
+      },
+      "rules/admission": {
+        "balanced_accuracy": 0.896
+      },
+      "rules/agent_rules": {
+        "balanced_accuracy": 0.8991
+      },
+      "rules/sharc": {
+        "balanced_accuracy": 0.7639
+      },
+      "rules/missing_facts": {
+        "balanced_accuracy": 0.89,
+        "auroc/admission": 0.5964,
+        "auroc/fraud_points": 0.471
+      },
+      "safety/prompt_injection": {
+        "balanced_accuracy": 0.8895
+      },
+      "safety/content_safety": {
+        "balanced_accuracy": 0.7394
+      }
+    },
+    "to_bf16": {
+      "mean_kl": 0.02316929653950156,
+      "mean_tv": 0.05574309475879967,
+      "max_option_delta": 0.8424042030041667,
+      "argmax_flips": 1074,
+      "rows": 13601,
+      "by_skill": {
+        "agents/agent_action": {
+          "mean_kl": 0.023520753691478505,
+          "flips": 32
+        },
+        "agents/browser": {
+          "mean_kl": 0.029203646327001447,
+          "flips": 56
+        },
+        "agents/tools": {
+          "mean_kl": 0.012524468306778705,
+          "flips": 13
+        },
+        "games_spatial/chess": {
+          "mean_kl": 0.009612211634005084,
+          "flips": 37
+        },
+        "games_spatial/game_moves_facts_in_question": {
+          "mean_kl": 0.0174872723170275,
+          "flips": 162
+        },
+        "games_spatial/game_moves_facts_in_state": {
+          "mean_kl": 0.023971111839919994,
+          "flips": 80
+        },
+        "games_spatial/game_rules": {
+          "mean_kl": 0.022060297902453643,
+          "flips": 74
+        },
+        "games_spatial/small_games": {
+          "mean_kl": 0.006922267938067841,
+          "flips": 42
+        },
+        "games_spatial/spatial_coordinates": {
+          "mean_kl": 0.02870566751587545,
+          "flips": 43
+        },
+        "games_spatial/spatial_grids": {
+          "mean_kl": 0.018933754004176104,
+          "flips": 41
+        },
+        "judging/grounding": {
+          "mean_kl": 0.013486865309496039,
+          "flips": 51
+        },
+        "judging/response_judging": {
+          "mean_kl": 0.00965889027014676,
+          "flips": 27
+        },
+        "rules/admission": {
+          "mean_kl": 0.03166512179259807,
+          "flips": 17
+        },
+        "rules/agent_rules": {
+          "mean_kl": 0.06246085926512537,
+          "flips": 24
+        },
+        "rules/authority": {
+          "mean_kl": 0.06273307702887203,
+          "flips": 60
+        },
+        "rules/fraud_points": {
+          "mean_kl": 0.03316606882133437,
+          "flips": 65
+        },
+        "rules/missing_facts": {
+          "mean_kl": 0.032546845934478506,
+          "flips": 54
+        },
+        "rules/patent_phrases": {
+          "mean_kl": 0.02543904400102952,
+          "flips": 78
+        },
+        "rules/rental": {
+          "mean_kl": 0.012605625792351954,
+          "flips": 61
+        },
+        "rules/sharc": {
+          "mean_kl": 0.023380764149707144,
+          "flips": 25
+        },
+        "safety/content_safety": {
+          "mean_kl": 0.013557161182963231,
+          "flips": 20
+        },
+        "safety/prompt_injection": {
+          "mean_kl": 0.023577675241007023,
+          "flips": 12
+        }
+      }
+    }
+  },
+  "1024-block128-d0100-q8-head": {
+    "skills": {
+      "agents/agent_action": {
+        "n": 541,
+        "accuracy": 0.451,
+        "brier": 0.7738,
+        "ece": 0.2761
+      },
+      "agents/browser": {
+        "n": 1444,
+        "accuracy": 0.8781,
+        "brier": 0.1908,
+        "ece": 0.0193
+      },
+      "agents/tools": {
+        "n": 526,
+        "accuracy": 0.8612,
+        "brier": 0.2271,
+        "ece": 0.0834
+      },
+      "games_spatial/chess": {
+        "n": 555,
+        "accuracy": 0.4577,
+        "brier": 0.6995,
+        "ece": 0.1211
+      },
+      "games_spatial/game_moves_facts_in_question": {
+        "n": 1496,
+        "accuracy": 0.7975,
+        "brier": 0.2958,
+        "ece": 0.115
+      },
+      "games_spatial/game_moves_facts_in_state": {
+        "n": 1757,
+        "accuracy": 0.9044,
+        "brier": 0.1379,
+        "ece": 0.0767
+      },
+      "games_spatial/game_rules": {
+        "n": 1035,
+        "accuracy": 0.7826,
+        "brier": 0.2979,
+        "ece": 0.0534
+      },
+      "games_spatial/small_games": {
+        "n": 335,
+        "accuracy": 0.4955,
+        "brier": 0.5731,
+        "ece": 0.1108
+      },
+      "games_spatial/spatial_coordinates": {
+        "n": 375,
+        "accuracy": 0.6187,
+        "brier": 0.4813,
+        "ece": 0.053
+      },
+      "games_spatial/spatial_grids": {
+        "n": 375,
+        "accuracy": 0.648,
+        "brier": 0.4754,
+        "ece": 0.1112
+      },
+      "judging/grounding": {
+        "n": 877,
+        "accuracy": 0.7377,
+        "brier": 0.372,
+        "ece": 0.053
+      },
+      "judging/response_judging": {
+        "n": 542,
+        "accuracy": 0.6993,
+        "brier": 0.4118,
+        "ece": 0.0941
+      },
+      "rules/admission": {
+        "n": 355,
+        "accuracy": 0.893,
+        "brier": 0.1392,
+        "ece": 0.0324
+      },
+      "rules/agent_rules": {
+        "n": 355,
+        "accuracy": 0.8873,
+        "brier": 0.1781,
+        "ece": 0.0399
+      },
+      "rules/authority": {
+        "n": 355,
+        "accuracy": 0.6254,
+        "brier": 0.5049,
+        "ece": 0.0889
+      },
+      "rules/fraud_points": {
+        "n": 355,
+        "accuracy": 0.4817,
+        "brier": 0.6423,
+        "ece": 0.0516
+      },
+      "rules/missing_facts": {
+        "n": 275,
+        "accuracy": 0.6545,
+        "brier": 0.4077,
+        "ece": 0.0672
+      },
+      "rules/patent_phrases": {
+        "n": 355,
+        "accuracy": 0.3662,
+        "brier": 0.7231,
+        "ece": 0.0631
+      },
+      "rules/rental": {
+        "n": 355,
+        "accuracy": 0.4845,
+        "brier": 0.6815,
+        "ece": 0.1307
+      },
+      "rules/sharc": {
+        "n": 355,
+        "accuracy": 0.7634,
+        "brier": 0.3243,
+        "ece": 0.0713
+      },
+      "safety/content_safety": {
+        "n": 390,
+        "accuracy": 0.7359,
+        "brier": 0.3562,
+        "ece": 0.0904
+      },
+      "safety/prompt_injection": {
+        "n": 318,
+        "accuracy": 0.8931,
+        "brier": 0.1688,
+        "ece": 0.0702
+      }
+    },
+    "pooled_by_category": {
+      "agents": 0.7301,
+      "rules": 0.6431,
+      "games_spatial": 0.6721,
+      "safety": 0.8145,
+      "judging": 0.7185
+    },
+    "extras": {
+      "games_spatial/game_moves_facts_in_question": {
+        "balanced_accuracy": 0.7377,
+        "pick_accuracy/seen_game": 0.9832,
+        "pick_accuracy/unseen_game": 0.8843
+      },
+      "games_spatial/game_moves_facts_in_state": {
+        "balanced_accuracy": 0.9315,
+        "pick_accuracy/seen_game": 0.9721,
+        "pick_accuracy/unseen_game": 0.9815
+      },
+      "games_spatial/game_rules": {
+        "balanced_accuracy": 0.7993,
+        "pick_accuracy/seen_game": 0.7609,
+        "pick_accuracy/unseen_game": 0.776
+      },
+      "games_spatial/spatial_coordinates": {
+        "balanced_accuracy": 0.638
+      },
+      "games_spatial/spatial_grids": {
+        "balanced_accuracy": 0.7177
+      },
+      "games_spatial/small_games": {
+        "balanced_accuracy": 0.4955
+      },
+      "judging/grounding": {
+        "balanced_accuracy": 0.6258
+      },
+      "rules/admission": {
+        "balanced_accuracy": 0.8933
+      },
+      "rules/agent_rules": {
+        "balanced_accuracy": 0.8875
+      },
+      "rules/sharc": {
+        "balanced_accuracy": 0.764
+      },
+      "rules/missing_facts": {
+        "balanced_accuracy": 0.8846,
+        "auroc/admission": 0.6033,
+        "auroc/fraud_points": 0.4688
+      },
+      "safety/prompt_injection": {
+        "balanced_accuracy": 0.8946
+      },
+      "safety/content_safety": {
+        "balanced_accuracy": 0.7324
+      }
+    },
+    "to_bf16": {
+      "mean_kl": 0.02050066926654177,
+      "mean_tv": 0.0533988336897129,
+      "max_option_delta": 0.7911559710139534,
+      "argmax_flips": 1138,
+      "rows": 13601,
+      "by_skill": {
+        "agents/agent_action": {
+          "mean_kl": 0.018662414400108775,
+          "flips": 32
+        },
+        "agents/browser": {
+          "mean_kl": 0.024742560729023918,
+          "flips": 58
+        },
+        "agents/tools": {
+          "mean_kl": 0.011575335456029854,
+          "flips": 13
+        },
+        "games_spatial/chess": {
+          "mean_kl": 0.007857000999872394,
+          "flips": 33
+        },
+        "games_spatial/game_moves_facts_in_question": {
+          "mean_kl": 0.01561537360875524,
+          "flips": 199
+        },
+        "games_spatial/game_moves_facts_in_state": {
+          "mean_kl": 0.022238601554518594,
+          "flips": 83
+        },
+        "games_spatial/game_rules": {
+          "mean_kl": 0.011660567825391498,
+          "flips": 50
+        },
+        "games_spatial/small_games": {
+          "mean_kl": 0.006498273882524135,
+          "flips": 35
+        },
+        "games_spatial/spatial_coordinates": {
+          "mean_kl": 0.02128256780986762,
+          "flips": 33
+        },
+        "games_spatial/spatial_grids": {
+          "mean_kl": 0.015025991845685415,
+          "flips": 40
+        },
+        "judging/grounding": {
+          "mean_kl": 0.010866311578898462,
+          "flips": 43
+        },
+        "judging/response_judging": {
+          "mean_kl": 0.009956243916337296,
+          "flips": 38
+        },
+        "rules/admission": {
+          "mean_kl": 0.019174831586486123,
+          "flips": 16
+        },
+        "rules/agent_rules": {
+          "mean_kl": 0.03277997431282128,
+          "flips": 20
+        },
+        "rules/authority": {
+          "mean_kl": 0.08572669238613544,
+          "flips": 70
+        },
+        "rules/fraud_points": {
+          "mean_kl": 0.037757938338217174,
+          "flips": 79
+        },
+        "rules/missing_facts": {
+          "mean_kl": 0.035437071450900345,
+          "flips": 78
+        },
+        "rules/patent_phrases": {
+          "mean_kl": 0.01978377979815029,
+          "flips": 76
+        },
+        "rules/rental": {
+          "mean_kl": 0.013304426483446893,
+          "flips": 79
+        },
+        "rules/sharc": {
+          "mean_kl": 0.02249425861491514,
+          "flips": 31
+        },
+        "safety/content_safety": {
+          "mean_kl": 0.016822714172112223,
+          "flips": 20
+        },
+        "safety/prompt_injection": {
+          "mean_kl": 0.02915255758927761,
+          "flips": 12
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "seed": 20261021,
+  "independent_train_inputs": true,
+  "evaluation_labels_used": false,
+  "groups": {
+    "banking": 128,
+    "boolq": 256,
+    "paws": 128,
+    "injection": 128,
+    "policy": 128,
+    "spatial": 128,
+    "preference": 128
+  },
+  "requests": 1024,
+  "tokens": 252138,
+  "first_256_tokens": 63800,
+  "overlap_screen": "normalized exact state and shared 16-word state shingles",
+  "rejected": {
+    "boolq/duplicate": 2,
+    "preference/evaluation_overlap": 3,
+    "preference/over_2048_tokens": 3
+  },
+  "source_files": {
+    "ultrafeedback-info.json": "600b92182333cf7e050bb631d9bc985b581948e73b1fd4a73534f9f9e3a10eb8",
+    "deepset--prompt-injections.parquet": "2e10bc7ab30f542c97e4e83e2a5683000b5057d25ec10908784c631d44124c04",
+    "deepset--prompt-injections.json": "b2926b895cfa5251e0823675f093a531583b6fec109df73b8260b7448bdf229f",
+    "google--boolq-README.md": "07447668f46c7c1e62e24b650ea2a73f1ab34f2b3759b1587c7b7a81b4bf1cf4",
+    "google--boolq.json": "7a1200eb511faa3c52813a2492639e223cf8bd2f47e4f704d33d9e5bb72aa436",
+    "banking-github-revision.json": "a8e260022dde972cca35334070f6577ed29749023e0d4ff6dba8a1aae9901a8d",
+    "banking-train.csv": "b06e26ac675513959a63135f11b94ea7786ed02da65db93a5650d8838cbc664b",
+    "google--boolq.parquet": "4f028e992c0bd4df30b9f056f4946b64f5c23028034ff0ed5ea467d8538cc623",
+    "google-research-datasets--paws-README.md": "f281c5c5099f08da86c25f83419eedb01eaafaf0bb29b8eb14036249cfc97e89",
+    "google-research-datasets--paws.parquet": "8dc9ad3e5f30ad9a86b290fe236d528ef23a5751fec9a35d99cbacf68ba277cf",
+    "ultrafeedback-README.md": "c774e58776969093f0dad0a3ddf031e943f36aeabd34471d29b21fac36469d25",
+    "banking77.py": "0e2b20c18def828886300332b15c6f647b77cdc289d1b49fffe65d8fde1d0834",
+    "PolyAI--banking77.json": "eda45e3f701e59f09822d63b20058c731b6bc1bd25a49faa9dd704b7313d97a8",
+    "banking-categories.json": "53261da888122daf2d120d925458631d9619e15d82e56052e7a42e535ce32b63",
+    "ultrafeedback-train.parquet": "0f951ca4502001d31f3e4c70716ae51d20e4ce4f847d12b6a6695a40d4d353a8",
+    "deepset--prompt-injections-README.md": "d90b4518dfe06154deeec938243d1ec9119bdfbfd2105aee9cf1567999764b94",
+    "google-research-datasets--paws.json": "02233b29ac187dcb39364d28a5c2fba06dbf35183ea21c819238eb5d86c80477",
+    "banking-LICENSE": "7e7170e3cebf88a9f60c7b8421418323c09304da1af4d5e90f4da1dc1c8a2661"
+  }
+}

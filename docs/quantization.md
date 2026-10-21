@@ -77,6 +77,11 @@ Q8_0; `--q8-head` promotes the tied embedding/output matrix. Both flags default
 to off. These artifacts introduce tensor encoding ID 7 and require a new
 engine; older readers reject them. The packer writes a `.precision.json`
 sidecar identifying these choices. They do not alter the published standard.
+Both modes can be combined with `--covariance-dir`: promoted Q8 tensors bypass
+the Q4 fitting inputs, while the remaining Q4 tensors use the supplied diagonal
+and covariance statistics. See the [qev decision study](qev-calibration-2026-10-21.md)
+for a model-specific comparison; results do not transfer automatically between
+the base/chat model and its decision fine-tune.
 See the [selective Q8 experiment](q8-experiments-2026-09-06.md) for measured
 gate results and format details. The subsequent
 [Q8 embedding/output experiment](q8-head-experiment-2026-09-06.md) measures the

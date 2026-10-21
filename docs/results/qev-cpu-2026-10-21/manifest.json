@@ -1,0 +1,174 @@
+{
+  "date": "2026-10-21",
+  "cpu": "AMD Ryzen 9 9955HX3D",
+  "threads": 8,
+  "affinity": "0-7 (mask 255), eight physical cores sharing 96 MiB L3",
+  "repository_revision": "2282b462644ad8590e6fc6dcbdaad25208ae8d29",
+  "llama_revision": "73a43d1f69345aee8bb186ef4b3172cef892f2e5",
+  "model_revision": "6334efd2d556cad22a3040049efb2887a60e7fb2",
+  "gguf_revision": "79caef6979f61c4ee4fa6e894424789ce66042db",
+  "warmup_process_runs": 1,
+  "measured_process_runs": 3,
+  "encoding": "per_question",
+  "quantization": "unweighted mse16, no calibration",
+  "timing": "First prompt forward per fresh process/context; full-vocabulary logits; model/context loading, tokenization, probability postprocessing and dump I/O excluded. No decode forwards, no prefix cache.",
+  "speed_command": [
+    "taskset",
+    "-c",
+    "0-7",
+    ".cache/powershell/pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/benchmark-inference-seq.ps1",
+    "-Matrix",
+    "benchmarks/qev-2026-10-21/speed-matrix.json",
+    "-OutputDir",
+    "benchmarks/qev-2026-10-21/speed",
+    "-Runs",
+    "3",
+    "-WarmupRuns",
+    "1",
+    "-Affinity",
+    "255"
+  ],
+  "conversion_command": [
+    "build-linux/qwen35_cpu_pack",
+    "--hf-model-dir",
+    "models/qev-0.8b",
+    "--output",
+    "models/qev-0.8b/model-mse16.q35h"
+  ],
+  "files": {
+    "models/qev-0.8b/model-mse16.q35h": {
+      "bytes": 424964864,
+      "sha256": "b537edd592d48403fccabacbae627800aacebf5f4c9f55e46865aec217e97f6b"
+    },
+    "build-llama-linux/bin/libggml-base.so.0.23.0": {
+      "bytes": 974480,
+      "sha256": "8092fca674c4a2cd2f2a3ad0502a7c9134f125e9df55fe1aff537465a8553f82"
+    },
+    "build-llama-linux/bin/libggml.so.0.23.0": {
+      "bytes": 59664,
+      "sha256": "81897c5ab08bbc536d9686f5ec382a6466e21360f3024707415bfddd0adb9ca3"
+    },
+    "build-llama-linux/bin/libggml-cpu.so.0.23.0": {
+      "bytes": 1429120,
+      "sha256": "b9565d53c2662fdaca95ddda34b648725d80d07709c69b017ef08fbcd4b0d5b4"
+    },
+    "build-llama-linux/bin/libllama.so.0.4.0": {
+      "bytes": 4748744,
+      "sha256": "6cc287deb1fa815c5e1fb75fd17ae2906b12319574f9ac1dd1db69dc7acc2831"
+    },
+    "build-llama-linux/bin/llama-fixed-cpu-bench": {
+      "bytes": 71840,
+      "sha256": "74d7de2de2a3b41c0f19ac00531b77025db6b78853c26b9a0244e3f16ece51da"
+    },
+    "build-linux/qwen35_cpu": {
+      "bytes": 1080464,
+      "sha256": "e7c0902a60f6e01afa61f14896812a6637f642d8ef9a864c5db1800e93aee1ec"
+    },
+    "build-linux/qwen35_cpu_bench": {
+      "bytes": 1009344,
+      "sha256": "ba361a2219401b0808b1d4c0ea4ccd1ac9306d5dbe58ccf0ad3014748832f21a"
+    },
+    "build-linux/qwen35_cpu_pack": {
+      "bytes": 604704,
+      "sha256": "7ded1fc6970861b417714fc6eadde213a4ce09a620acb6b7d8e187b5c3ffa722"
+    }
+  },
+  "downloads": [
+    {
+      "path": "models/qev-0.8b/config.json",
+      "sha256": "d9ab6f1698a46bbf04895d171fa0666816745e0d7209b9493d44d3df0caa1b5f",
+      "bytes": 2485,
+      "url": "https://huggingface.co/labqoat/qev-0.8b/resolve/6334efd2d556cad22a3040049efb2887a60e7fb2/config.json"
+    },
+    {
+      "path": "models/qev-0.8b/tokenizer.json",
+      "sha256": "466f27fefa1f44a7bb82cb1b42163c761e01dc6f7f51fc4f3d0a499a5a9b4249",
+      "bytes": 12807181,
+      "url": "https://huggingface.co/labqoat/qev-0.8b/resolve/6334efd2d556cad22a3040049efb2887a60e7fb2/tokenizer.json"
+    },
+    {
+      "path": "models/qev-0.8b/tokenizer_config.json",
+      "sha256": "e611fbccc7c29ef3b1cafb1cb7ea548d189968632901d678fd62be68c47885de",
+      "bytes": 16712,
+      "url": "https://huggingface.co/labqoat/qev-0.8b/resolve/6334efd2d556cad22a3040049efb2887a60e7fb2/tokenizer_config.json"
+    },
+    {
+      "path": "models/qev-0.8b/qev_config.json",
+      "sha256": "5260608d19e1d02c7a59d7ee0351ab4a5d57cf40154132e3122eb9b147f6adb7",
+      "bytes": 5149,
+      "url": "https://huggingface.co/labqoat/qev-0.8b/resolve/6334efd2d556cad22a3040049efb2887a60e7fb2/qev_config.json"
+    },
+    {
+      "path": "models/qev-0.8b/model.safetensors",
+      "sha256": "d33a719c0eedc34a530879e3840ddf0a0769b5060a987aed24e84e1170b8beb5",
+      "bytes": 1706035272,
+      "url": "https://huggingface.co/labqoat/qev-0.8b/resolve/6334efd2d556cad22a3040049efb2887a60e7fb2/model.safetensors"
+    },
+    {
+      "path": "models/qev-0.8b/qev-0.8b-bf16.gguf",
+      "sha256": "47a3e93109187add85f7905d507024ade0fc4c957a503183f3cc6106c68a9980",
+      "bytes": 1516746912,
+      "url": "https://huggingface.co/labqoat/qev-0.8b-GGUF/resolve/79caef6979f61c4ee4fa6e894424789ce66042db/qev-0.8b-bf16.gguf"
+    },
+    {
+      "path": "models/qev-0.8b/qev-0.8b-Q8_0.gguf",
+      "sha256": "07856dd5d6c7d1e19a9579ef324e5377649890a6438f7735ea5ac8935f2b2140",
+      "bytes": 811845792,
+      "url": "https://huggingface.co/labqoat/qev-0.8b-GGUF/resolve/79caef6979f61c4ee4fa6e894424789ce66042db/qev-0.8b-Q8_0.gguf"
+    },
+    {
+      "path": "models/qev-0.8b/vocab.json",
+      "url": "https://huggingface.co/labqoat/qev-0.8b/resolve/6334efd2d556cad22a3040049efb2887a60e7fb2/vocab.json",
+      "sha256": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003",
+      "bytes": 6722759
+    },
+    {
+      "path": "models/qev-0.8b/merges.txt",
+      "url": "https://huggingface.co/labqoat/qev-0.8b/resolve/6334efd2d556cad22a3040049efb2887a60e7fb2/merges.txt",
+      "sha256": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d",
+      "bytes": 3353259
+    }
+  ],
+  "raw_evidence_directory": "/home/sebastian/Development/qwen35-cpu/benchmarks/qev-2026-10-21",
+  "validation": [
+    "19 token encodings and probability readouts match pinned upstream qev.py",
+    "one-output vs two-output first logits bit-identical",
+    "16/16 ctest checks passed",
+    "all downloaded model assets match upstream SHA256SUMS"
+  ],
+  "raw_evidence": {
+    "speed/metadata.json": {
+      "sha256": "0ffa07d2264a5d95e59da5fcc0f397aeaec56fdb46d853885fc703ff67f233a8",
+      "bytes": 47895
+    },
+    "speed/results.csv": {
+      "sha256": "930ae82db5051b5ca3a4842394dfa0dae5f89829a3d9d21ccf3cbd58ad6c8808",
+      "bytes": 5986
+    },
+    "bf16-v2/results.json": {
+      "sha256": "1388f90e4ee07389f578280f6225d337781452ca0c909c3a704a0ab377f0299c",
+      "bytes": 37731
+    },
+    "q8/results.json": {
+      "sha256": "3093d83bc6529b1a94b9bce04eede2c6de8393636d68cc8088d37c807912cd7c",
+      "bytes": 37341
+    },
+    "native-v2/results.json": {
+      "sha256": "d8f3619e2e9bedeafe9aa5b4fe7db7e01fd2bf9dd3055f267c653e7aa843d17b",
+      "bytes": 36395
+    },
+    "convert-mse16.log": {
+      "sha256": "89362f6e390c5fdcf69d881ba34e0f67912ee2a784135bfc87a4a546a65f7738",
+      "bytes": 18267
+    }
+  },
+  "source_files": {
+    "scripts/qev-cpu.py": "e85ab83b5d81bbe8455634fb1cad5207f0f657859025403a2eef45c7ecf50270",
+    "configs/qev-smoke.jsonl": "e66770c3ad2cfcd940db4a7229dda27002c647fab91b8afe1cb68126f7f07c7f",
+    "tools/llama-comparison/main.cpp": "91c8eecbe68be12d4fa2788283ef33b4b3de1b1f74158745282609465694d664"
+  }
+}

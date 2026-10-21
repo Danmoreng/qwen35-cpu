@@ -1,0 +1,7 @@
+{
+  "group_policy": "same request, canonical game_q/game_s IDs, complete/missing suffixes",
+  "request_groups": 9408,
+  "related_groups": 760,
+  "requests_in_related_groups": 1520,
+  "cross_panel_groups": 0
+}

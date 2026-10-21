@@ -450,9 +450,9 @@ int main(int argc, char ** argv) {
       !std::filesystem::exists(std::filesystem::path(importance_dir)/"manifest.json"))) {
     std::cerr << "Importance requires mse16 and a calibration manifest\n";return 2;
   }
-  if (!covariance_dir.empty() && (importance_dir.empty() || quantizer!="mse16" || head_g16 || q8_head || q8_gates || head_basis!="identity" ||
+  if (!covariance_dir.empty() && (importance_dir.empty() || quantizer!="mse16" || head_g16 || head_basis!="identity" ||
       !std::filesystem::exists(std::filesystem::path(covariance_dir)/"manifest.json"))) {
-    std::cerr<<"Covariance fitting requires calibrated MSE16 G32 with identity head.\n";return 2;
+    std::cerr<<"Covariance fitting requires calibrated MSE16 G32 with identity head; Q8 tensors bypass the Q4 fit.\n";return 2;
   }
   const auto recipe = quantizer == "mse16" ? qwen35x::cpu::Q4Quantizer::mse16
                                          : qwen35x::cpu::Q4Quantizer::legacy_absmax15;

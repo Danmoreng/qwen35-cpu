@@ -1,0 +1,12 @@
+{
+  "Q4": {
+    "tensors": 97,
+    "parameters": 751894528,
+    "bytes": 422940672
+  },
+  "F32": {
+    "tensors": 133,
+    "parameters": 498496,
+    "bytes": 1993984
+  }
+}

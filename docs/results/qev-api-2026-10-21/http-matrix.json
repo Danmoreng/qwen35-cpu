@@ -1,0 +1,264 @@
+[
+  {
+    "name": "Q4-short",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "models/qev-0.8b",
+      "--weights",
+      "models/qev-0.8b/model-cal-1024-block128.q35h",
+      "--request",
+      "benchmarks/qev-api-2026-10-21/short-request.json"
+    ]
+  },
+  {
+    "name": "BF16-short",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "llama",
+      "--server",
+      "build-qev-server-current/bin/llama-server",
+      "--model-dir",
+      "models/qev-0.8b",
+      "--weights",
+      "models/qev-0.8b/qev-0.8b-bf16.gguf",
+      "--request",
+      "benchmarks/qev-api-2026-10-21/short-request.json"
+    ]
+  },
+  {
+    "name": "Q8_0-short",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "llama",
+      "--server",
+      "build-qev-server-current/bin/llama-server",
+      "--model-dir",
+      "models/qev-0.8b",
+      "--weights",
+      "models/qev-0.8b/qev-0.8b-Q8_0.gguf",
+      "--request",
+      "benchmarks/qev-api-2026-10-21/short-request.json"
+    ]
+  },
+  {
+    "name": "Q4-long",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "models/qev-0.8b",
+      "--weights",
+      "models/qev-0.8b/model-cal-1024-block128.q35h",
+      "--request",
+      "benchmarks/qev-api-2026-10-21/long-request.json"
+    ]
+  },
+  {
+    "name": "BF16-long",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "llama",
+      "--server",
+      "build-qev-server-current/bin/llama-server",
+      "--model-dir",
+      "models/qev-0.8b",
+      "--weights",
+      "models/qev-0.8b/qev-0.8b-bf16.gguf",
+      "--request",
+      "benchmarks/qev-api-2026-10-21/long-request.json"
+    ]
+  },
+  {
+    "name": "Q8_0-long",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "llama",
+      "--server",
+      "build-qev-server-current/bin/llama-server",
+      "--model-dir",
+      "models/qev-0.8b",
+      "--weights",
+      "models/qev-0.8b/qev-0.8b-Q8_0.gguf",
+      "--request",
+      "benchmarks/qev-api-2026-10-21/long-request.json"
+    ]
+  },
+  {
+    "name": "Q4-short-C1",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "models/qev-0.8b",
+      "--weights",
+      "models/qev-0.8b/model-cal-1024-block128.q35h",
+      "--request",
+      "benchmarks/qev-api-2026-10-21/short-request.json",
+      "--concurrency",
+      "1",
+      "--distinct-states"
+    ]
+  },
+  {
+    "name": "Q4-short-C4",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "models/qev-0.8b",
+      "--weights",
+      "models/qev-0.8b/model-cal-1024-block128.q35h",
+      "--request",
+      "benchmarks/qev-api-2026-10-21/short-request.json",
+      "--concurrency",
+      "4",
+      "--distinct-states"
+    ]
+  },
+  {
+    "name": "Q4-short-C8",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "models/qev-0.8b",
+      "--weights",
+      "models/qev-0.8b/model-cal-1024-block128.q35h",
+      "--request",
+      "benchmarks/qev-api-2026-10-21/short-request.json",
+      "--concurrency",
+      "8",
+      "--distinct-states"
+    ]
+  },
+  {
+    "name": "Q4-short-C16",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "models/qev-0.8b",
+      "--weights",
+      "models/qev-0.8b/model-cal-1024-block128.q35h",
+      "--request",
+      "benchmarks/qev-api-2026-10-21/short-request.json",
+      "--concurrency",
+      "16",
+      "--distinct-states"
+    ]
+  },
+  {
+    "name": "Q4-long-C1",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "models/qev-0.8b",
+      "--weights",
+      "models/qev-0.8b/model-cal-1024-block128.q35h",
+      "--request",
+      "benchmarks/qev-api-2026-10-21/long-request.json",
+      "--concurrency",
+      "1",
+      "--distinct-states"
+    ]
+  },
+  {
+    "name": "Q4-long-C4",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "models/qev-0.8b",
+      "--weights",
+      "models/qev-0.8b/model-cal-1024-block128.q35h",
+      "--request",
+      "benchmarks/qev-api-2026-10-21/long-request.json",
+      "--concurrency",
+      "4",
+      "--distinct-states"
+    ]
+  },
+  {
+    "name": "Q4-long-C8",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "models/qev-0.8b",
+      "--weights",
+      "models/qev-0.8b/model-cal-1024-block128.q35h",
+      "--request",
+      "benchmarks/qev-api-2026-10-21/long-request.json",
+      "--concurrency",
+      "8",
+      "--distinct-states"
+    ]
+  },
+  {
+    "name": "Q4-long-C16",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "models/qev-0.8b",
+      "--weights",
+      "models/qev-0.8b/model-cal-1024-block128.q35h",
+      "--request",
+      "benchmarks/qev-api-2026-10-21/long-request.json",
+      "--concurrency",
+      "16",
+      "--distinct-states"
+    ]
+  }
+]
