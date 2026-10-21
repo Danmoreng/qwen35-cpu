@@ -267,7 +267,8 @@ struct CpuEngine::Impl {
             capacity * static_cast<std::size_t>(d.n_kv_heads) * d.head_dim;
         if (config.shared_kv_pages) {
           state.pages=cpu::KvPagesF16(static_cast<std::size_t>(d.n_kv_heads)*d.head_dim,capacity);
-        } else if (cpu::q8_0_backend_uses_avx2(model->impl_->backend)) {
+        } else if (config.kv_cache_bits == 16 ||
+                   (!config.kv_cache_bits && cpu::q8_0_backend_uses_avx2(model->impl_->backend))) {
           state.k_cache_f16.resize(values);
           state.v_cache_f16.resize(values);
         } else {
@@ -457,6 +458,8 @@ CpuEngine::create(std::shared_ptr<const CpuModel> model,
       config.max_context >
           static_cast<std::size_t>(std::numeric_limits<int>::max()) ||
       config.prefill_chunk_size > 2048 ||
+      (config.kv_cache_bits != 0 && config.kv_cache_bits != 16 && config.kv_cache_bits != 32) ||
+      (config.shared_kv_pages && config.kv_cache_bits == 32) ||
       (model && config.shared_kv_pages && !cpu::q8_0_backend_uses_avx2(model->impl_->backend)) ||
       config.max_queued_requests > std::numeric_limits<std::size_t>::max() - config.max_resident_requests ||
       (config.max_queued_requests && (!config.max_decode_batch_size || !config.max_buffered_tokens))) {

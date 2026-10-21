@@ -51,6 +51,8 @@ struct CpuEngineConfig {
   // Explicit tuning controls; defaults preserve the established execution path.
   std::size_t linear_prepare_min_tokens = 128;
   std::size_t mlp_prepare_min_tokens = 0;
+  // Zero keeps backend selection; explicit 16/32 override contiguous KV storage.
+  std::size_t kv_cache_bits = 0;
   std::size_t executor_spin_count = 1024U * 128U * 50U;
   // Shared vocabulary-tile reduction for all-greedy batches. False preserves
   // the full-logits reference. General sampling/callbacks always use logits.

@@ -67,6 +67,7 @@ const char *failure(const std::exception &e) {
 void apply_tuning(CpuEngineConfig &config) {
   config.linear_prepare_min_tokens = tuning.value("linear_prepare_min_tokens", std::size_t{128});
   config.mlp_prepare_min_tokens = tuning.value("mlp_prepare_min_tokens", std::size_t{0});
+  config.kv_cache_bits = tuning.value("kv_cache_bits", std::size_t{0});
   config.executor_spin_count = tuning.value("executor_spin_count", std::size_t{1024U * 128U * 50U});
 }
 }
@@ -76,8 +77,12 @@ const char *qev_tune(const char *body) try {
   auto options = Json::parse(body);
   systemone::require(options.is_object(), "Tuning must be an object");
   for (const auto &[key, value] : options.items()) {
-    systemone::require(key == "linear_prepare_min_tokens" || key == "executor_spin_count" || key == "mlp_prepare_min_tokens", "Unknown tuning option: " + key);
+    systemone::require(key == "linear_prepare_min_tokens" || key == "executor_spin_count" || key == "mlp_prepare_min_tokens" || key == "kv_cache_bits", "Unknown tuning option: " + key);
     systemone::require(value.is_number_unsigned() && value.get<std::size_t>() <= 67108864, "Invalid tuning value");
+  }
+  if (options.contains("kv_cache_bits")) {
+    const auto bits = options["kv_cache_bits"].get<std::size_t>();
+    systemone::require(bits == 0 || bits == 16 || bits == 32, "kv_cache_bits must be 0, 16 or 32");
   }
   tuning = std::move(options);
   if (session) {
@@ -126,7 +131,7 @@ const char *qev_load(const char *directory, int threads, int context) try {
   session = std::move(s);
   Json info = {{"status", "ready"}, {"threads", threads}, {"max_context", context},
                 {"format", "H128/Q4-G32-DOT4"}, {"chunk", chunk_size}, {"profiling", profiling},
-                {"tuning", tuning}, {"kv_type", cpu::q8_0_backend_uses_avx2(cpu::Q8_0Backend::auto_select) ? "f16" : "f32"},
+                {"tuning", tuning}, {"kv_type", (config.kv_cache_bits == 16 || (!config.kv_cache_bits && cpu::q8_0_backend_uses_avx2(cpu::Q8_0Backend::auto_select))) ? "f16" : "f32"},
                 {"backend", cpu::q8_0_backend_name(cpu::q8_0_resolve_backend(cpu::Q8_0Backend::auto_select))}};
 #ifdef __EMSCRIPTEN__
   info["wasm_heap_bytes"] = emscripten_get_heap_size();
@@ -158,6 +163,7 @@ const char *qev_step() try {
   std::vector<std::uint32_t> bits;
   for (float value : s.logits) bits.push_back(std::bit_cast<std::uint32_t>(value));
   s.debug["option_logit_bits"].push_back(bits);
+  s.debug["kv_payload_bytes"].push_back(s.engine->stats().physical_kv_bytes);
   s.evaluated += result.prefill_tokens; s.prefill_ms += result.prefill_ms; s.decode += result.decode_forwards;
   s.engine->release(s.active); s.active = 0;
   if (++s.question < s.request->questions.size()) {
@@ -179,6 +185,9 @@ const char *qev_cancel() {
 const char *qev_debug() {
   if (!session) return reply(Json::object());
   auto diagnostic = session->debug;
+  const auto bits = session->config.kv_cache_bits;
+  diagnostic["kv_cache_bits"] = bits ? bits :
+    (cpu::q8_0_backend_uses_avx2(cpu::Q8_0Backend::auto_select) ? 16 : 32);
   if (profiling) {
     diagnostic["operations"] = Json::array(); diagnostic["stages"] = Json::array();
     for (const auto &x : session->operations)

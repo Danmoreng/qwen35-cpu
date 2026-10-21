@@ -2,7 +2,9 @@
 #include "qwen35x/cpu/q4_0.h"
 #include "qwen35x/cpu/q4_h128.h"
 #include "qwen35x/cpu/activation.h"
+#include "qwen35x/cpu/full_attention.h"
 #include "../src/cpu/q4_0_internal.h"
+#include "../src/cpu/q8_0_internal.h"
 #include <bit>
 #include <cmath>
 #include <cstring>
@@ -72,5 +74,29 @@ int main() {
       if(std::memcmp(hidden.data(),reference.data(),hidden.size()*sizeof(float)))return 6;
       for(std::size_t b=0;b<actual.size();++b)if(!equal_fields(actual[b],expected[b],4))return 7;
     }
-  std::cout<<"WASM Q8 exact scalar parity: rounding neighbours, exceptional inputs, X1/X4, H128 widths/seeds and fused SiLU fields passed\n";
+  // FP16 storage must match the same scalar attention arithmetic after exact
+  // widening. This isolates storage conversion from intentional FP16 error.
+  for (std::size_t count : {1U, 3U, 31U, 32U, 33U})
+    for (int position : {0, 127, 1024}) {
+      constexpr int heads=4, kv_heads=2, dim=256;
+      const std::size_t length=position+count, qw=heads*dim, kw=kv_heads*dim;
+      std::vector<float> q(count*qw),g(q.size()),k(length*kw),v(k.size());
+      for(auto *a : {&q,&g,&k,&v})
+        for(auto &x:*a)x=(static_cast<int>(rng()%20001)-10000)*.0001f;
+      std::vector<std::uint16_t> kh(k.size()),vh(v.size());
+      attention_cache_store_f16(k.data(),kh.data(),k.size());
+      attention_cache_store_f16(v.data(),vh.data(),v.size());
+      for(std::size_t i=0;i<k.size();++i) {
+        k[i]=detail::half_to_float(kh[i]);v[i]=detail::half_to_float(vh[i]);
+      }
+      std::vector<float> a(q.size()),b(q.size()),scores(length);
+      causal_attention_batch_rows(q.data(),g.data(),k.data(),v.data(),nullptr,nullptr,
+        scores.data(),a.data(),length,qw,kw,position,heads,kv_heads,dim,1.f/16,
+        0,count*heads,Q8_0Backend::scalar,true);
+      causal_attention_batch_rows(q.data(),g.data(),nullptr,nullptr,kh.data(),vh.data(),
+        scores.data(),b.data(),length,qw,kw,position,heads,kv_heads,dim,1.f/16,
+        0,count*heads,Q8_0Backend::scalar,true);
+      if(std::memcmp(a.data(),b.data(),a.size()*sizeof(float)))return 8;
+    }
+  std::cout<<"WASM Q8 exact scalar parity: rounding neighbours, exceptional inputs, X1/X4, H128 widths/seeds fused SiLU fields and FP16 KV widening passed\n";
 }

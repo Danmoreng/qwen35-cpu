@@ -102,3 +102,39 @@ The fused activation work belongs to prepare time; a near-zero serial activation
 subtimer must not be interpreted as eliminating all SiLU cost. Raw evidence:
 `C-quality` and `C-performance`; medians in `results/qev-pro-review-2026-10-21/
 C-mlp.json`.
+
+## User-requested FP16 versus FP32 KV storage
+
+`kv_cache_bits` selects 16 or 32 for contiguous caches; zero retains the existing
+backend choice (native AVX2 family: FP16; WASM: FP32). Shared pages reject an
+explicit FP32 setting rather than silently ignoring it. The C ABI validates the
+setting before replacing an idle engine. Debug records include the actual
+format and per-question allocated KV payload bytes before request release.
+This excludes weights, recurrent state, workspaces and allocator high-water
+marks. It is not a promise to halve the total browser memory.
+
+The first experiment uses the existing scalar FP16 cache conversion/attention
+path. No new precision arithmetic or GPU backend is introduced. Node and actual
+Chromium tests compare FP16 reads with exactly widened, already-rounded FP32
+values at 1/3/31/32/33 tokens and positions 0/127/1024. The 24-question model
+comparison against unchanged FP32 WASM outputs has no choice changes, but the
+maximum probability deviation is 0.0081 (0.81 percentage points) and raw logit
+difference is 0.08457. The existing 0.005 probability gate correctly failed; it
+was not relaxed. This is not a BF16 model quality evaluation.
+
+Three process measurements plus one warmup compare explicit FP32 and FP16 at
+the same eight threads/chunk 32, without MLP fusion, to isolate storage choice.
+For the 579-token request the actual cache payload halves from 14,229,504 to
+7,114,752 bytes (13.57 to 6.79 MiB). The much larger immutable checkpoint and
+other runtime state remain. The current FP16 path is slower, consistent with
+repeated half conversion in the scalar attention loops. This result concerns
+the current implementation and workload, not every possible FP16 WASM kernel.
+Keep automatic FP32 for WASM; explicit FP16 remains an experimental comparison
+control. Exact timing medians and heap observations: `results/
+qev-pro-review-2026-10-21/kv-fp16.json`; raw `kv-fp16-quality` and `kv-performance`.
+
+Reproduce the storage A/B with the browser driver
+`scripts/benchmark-browser-decision.mjs --tuning '{"kv_cache_bits":32}'` and
+`--tuning '{"kv_cache_bits":16}'`, using the sequential runner, frozen browser
+inputs and the other arguments in the raw metadata. Omit the bitwise FP32 gate
+for this intentional precision experiment; retain probability/choice reporting.

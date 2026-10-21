@@ -112,6 +112,7 @@ try {
     decisions_per_second: questions / (collected.wall_ms / 1000), mean_request_ms: times.reduce((a, b) => a + b) / times.length,
     total_wall_ms: collected.wall_ms, prefill_tokens_per_second: totalTokens / (collected.wall_ms / 1000),
     wasm_heap_bytes: Math.max(...collected.outputs.map(x => x.result.metrics.wasm_heap_bytes)),
+    tuning: args.tuning ? JSON.parse(args.tuning) : {},
     reference_checked: !!references,
     max_reference_logit_delta: references ? maxLogit : null, max_reference_probability_delta: references ? maxProbability : null,
     choice_changes: choiceChanges,
@@ -141,6 +142,8 @@ try {
     `dist/wasm/${args['runtime-path'] || args.mode}/qev_wasm.js`, `dist/wasm/${args['runtime-path'] || args.mode}/qev_wasm.wasm`,
     'web/worker.js', 'web/app.js', 'web/capabilities.js', 'src/wasm/decision.cpp',
     'src/cpu/q4_dot4_wasm.cpp', 'src/cpu/delta_net_wasm.cpp', 'cmake/Wasm.cmake',
+    'src/cpu/q8_packed_wasm.cpp', 'src/cpu/q4_h128.cpp', 'src/runtime/weights.inl',
+    'src/runtime/prefill.inl', 'src/runtime/cpu_engine.inl', 'include/qwen35x/runtime/cpu_engine.h',
     'src/cpu/q4_h128_wasm.cpp', 'src/cpu/wasm_fma.h', 'src/cpu/wasm_half.h'
   ].map(file => [file, sha(file)]));
   assert.deepEqual(errors, []);
