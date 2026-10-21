@@ -40,6 +40,25 @@ must be the immutable 40-character Hugging Face commit, not `main`.
 
 ## CI and releases
 
+### qev decision package
+
+The qev fine-tune has its own repository and fixed evaluated artifact. Prepare it
+with `scripts/prepare-qev-hf-package.py`, passing its source directory,
+`model-cal-1024-block128.q35h`, a fresh output directory and `--license-file`
+containing the standard Apache-2.0 text. The upstream model declares that license
+in its card but does not ship a LICENSE file. The preparation script preserves
+the decision configuration and adds source/calibration/evaluation provenance.
+It rejects any artifact SHA256 other than the frozen final candidate. No chat
+template is needed for its plain System One prompts.
+
+Test the prepared directory with `tests/systemone_server_smoke.py` and the native
+server before using the existing uploader with
+`--repo danmoreng/qev-0.8b-H128-Q4-G32-DOT4`. The uploader recognizes this exact
+qev package profile while preserving the original model's file allowlist.
+The model card pins the engine commit introducing the API; use that source
+revision until a subsequent binary release includes it. The base/chat HF model
+and its existing published revision are unchanged.
+
 `.github/workflows/build-release.yml` runs on pushes, pull requests and manual
 dispatch. It builds and runs CTest on Windows Server 2022/MSVC and Ubuntu
 22.04/GCC 12. Model tests run when the public pinned model variables are set.
@@ -91,3 +110,16 @@ The public package was downloaded through the documented checksum-verifying
 script and passed HTTP validation, greedy/seeded sampling, mixed batches and
 prefix parity. README and CI pin this revision. Model metadata is compact;
 full activation-input manifests remain local, outside the engine repository.
+
+## Published qev decision model
+
+The calibrated 425 MB qev artifact is public at
+[`danmoreng/qev-0.8b-H128-Q4-G32-DOT4`](https://huggingface.co/danmoreng/qev-0.8b-H128-Q4-G32-DOT4),
+immutable model revision `fc805be27e1409630b14b233ad7aac1a6dbb213f`. The model card pins
+engine source `be5b9fa510b050c99faef4af83e58585093dc3aa`; the server change is
+available in [PR #1](https://github.com/Danmoreng/qwen35-cpu/pull/1).
+The anonymous public download passed every SHA256SUMS entry. Its artifact hash
+is `e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69`.
+This publication is separate from the existing base/chat model and does not
+change its CI model variables or existing binary releases. The new decision
+endpoint is available by building the pinned source revision.

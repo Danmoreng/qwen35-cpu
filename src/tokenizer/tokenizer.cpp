@@ -7,6 +7,10 @@
 #include <fstream>
 #include <limits>
 #include <sstream>
+#include <memory>
+#include <cstdlib>
+#include <utf8proc.h>
+
 
 namespace qwen35x {
 
@@ -29,7 +33,7 @@ bool is_space_no_newline(const std::uint32_t cp) {
   if (cp < 128) {
     return std::isspace(static_cast<unsigned char>(cp)) != 0;
   }
-  return cp == 0x00A0u || cp == 0x1680u || cp == 0x2000u || cp == 0x2001u || cp == 0x2002u || cp == 0x2003u ||
+  return cp == 0x0085u || cp == 0x2028u || cp == 0x2029u || cp == 0x00A0u || cp == 0x1680u || cp == 0x2000u || cp == 0x2001u || cp == 0x2002u || cp == 0x2003u ||
          cp == 0x2004u || cp == 0x2005u || cp == 0x2006u || cp == 0x2007u || cp == 0x2008u || cp == 0x2009u ||
          cp == 0x200Au || cp == 0x202Fu || cp == 0x205Fu || cp == 0x3000u;
 }
@@ -39,23 +43,21 @@ bool is_space_any(const std::uint32_t cp) {
 }
 
 bool is_mark(const std::uint32_t cp) {
-  return (cp >= 0x0300u && cp <= 0x036Fu) || (cp >= 0x1AB0u && cp <= 0x1AFFu) || (cp >= 0x1DC0u && cp <= 0x1DFFu) ||
-         (cp >= 0x20D0u && cp <= 0x20FFu) || (cp >= 0xFE20u && cp <= 0xFE2Fu);
+  const auto category = utf8proc_category(cp);
+  return category >= UTF8PROC_CATEGORY_MN && category <= UTF8PROC_CATEGORY_ME;
 }
 
 bool is_digit(const std::uint32_t cp) {
-  return cp >= static_cast<std::uint32_t>('0') && cp <= static_cast<std::uint32_t>('9');
+  const auto category = utf8proc_category(cp);
+  return category >= UTF8PROC_CATEGORY_ND && category <= UTF8PROC_CATEGORY_NO;
 }
 
 bool is_letter(const std::uint32_t cp) {
   if (cp < 128) {
     return std::isalpha(static_cast<unsigned char>(cp)) != 0;
   }
-  return !is_mark(cp) && !is_digit(cp) && !is_space_any(cp);
-}
-
-bool is_letter_or_mark(const std::uint32_t cp) {
-  return is_letter(cp) || is_mark(cp);
+  const auto category = utf8proc_category(cp);
+  return category >= UTF8PROC_CATEGORY_LU && category <= UTF8PROC_CATEGORY_LO;
 }
 
 std::uint32_t parse_hex4(const std::string & text, const std::size_t cursor) {
@@ -457,7 +459,9 @@ bool QwenTokenizer::parse_merges_txt(
     }
     const auto end = line.find_last_not_of(" \t\r\n");
     const std::string trimmed = line.substr(begin, end - begin + 1);
-    if (trimmed.empty() || trimmed[0] == '#') {
+    // '#' is an ordinary BPE symbol (for example the '# #' -> '##' merge).
+    // Only the conventional version header is a comment.
+    if (trimmed.empty() || trimmed.starts_with("#version:")) {
       continue;
     }
 
@@ -766,7 +770,7 @@ void QwenTokenizer::split_text_for_bpe(const std::string & text, std::vector<std
       j = i + 1;
     }
     std::size_t k = j;
-    while (k < spans.size() && is_letter_or_mark(spans[k].codepoint)) {
+    while (k < spans.size() && (is_letter(spans[k].codepoint) || (marks_with_letters_ && is_mark(spans[k].codepoint)))) {
       ++k;
     }
     if (k > j) {
@@ -787,7 +791,7 @@ void QwenTokenizer::split_text_for_bpe(const std::string & text, std::vector<std
     }
     k = j;
     while (k < spans.size() && !is_space_any(spans[k].codepoint) && !is_letter(spans[k].codepoint) &&
-           !is_mark(spans[k].codepoint) && !is_digit(spans[k].codepoint)) {
+           !(marks_with_letters_ && is_mark(spans[k].codepoint)) && !is_digit(spans[k].codepoint)) {
       ++k;
     }
     if (k > j) {
@@ -799,15 +803,14 @@ void QwenTokenizer::split_text_for_bpe(const std::string & text, std::vector<std
       continue;
     }
 
-    j = i;
-    while (j < spans.size() && is_space_no_newline(spans[j].codepoint)) {
+    // Regex \s*[\r\n]+ consumes through the last newline, including
+    // indentation and any intervening whitespace/newlines.
+    j = i; k = i;
+    while (j < spans.size() && is_space_any(spans[j].codepoint)) {
+      if (is_newline(spans[j].codepoint)) k = j + 1;
       ++j;
     }
-    k = j;
-    while (k < spans.size() && is_newline(spans[k].codepoint)) {
-      ++k;
-    }
-    if (k > j) {
+    if (k > i) {
       emit_piece(i, k);
       i = k;
       continue;
@@ -818,6 +821,9 @@ void QwenTokenizer::split_text_for_bpe(const std::string & text, std::vector<std
       while (j < spans.size() && is_space_any(spans[j].codepoint)) {
         ++j;
       }
+      // \s+(?!\S) backtracks one character before non-whitespace. That
+      // remaining space can belong to the following word/punctuation token.
+      if (j < spans.size() && j - i > 1) --j;
       emit_piece(i, j);
       i = j;
       continue;
@@ -894,7 +900,15 @@ bool QwenTokenizer::encode_text_segment(
   }
 
   std::vector<std::string> pieces;
-  split_text_for_bpe(text, pieces);
+  // Both supported Qwen tokenizer profiles use NFC before regex splitting.
+  // Explicit length preserves embedded NULs; invalid UTF-8 fails explicitly.
+  utf8proc_uint8_t *buffer = nullptr;
+  const auto length = utf8proc_map(reinterpret_cast<const utf8proc_uint8_t *>(text.data()),
+      static_cast<utf8proc_ssize_t>(text.size()), &buffer,
+      static_cast<utf8proc_option_t>(UTF8PROC_STABLE | UTF8PROC_COMPOSE));
+  std::unique_ptr<utf8proc_uint8_t, decltype(&std::free)> normalized(buffer, &std::free);
+  if (length < 0) { error_message = utf8proc_errmsg(length); return false; }
+  split_text_for_bpe(std::string(reinterpret_cast<const char *>(buffer), static_cast<std::size_t>(length)), pieces);
 
   std::vector<std::string> bpe_parts;
   for (const auto & piece : pieces) {
@@ -954,6 +968,15 @@ bool QwenTokenizer::load_from_hf_directory(
   }
 
   QwenTokenizer tokenizer;
+  const auto tokenizer_path = root / "tokenizer.json";
+  if (fs::exists(tokenizer_path)) {
+    std::string metadata;
+    if (!read_text_file(tokenizer_path.string(), metadata, error_message)) return false;
+    const auto begin = metadata.find("\"pre_tokenizer\"");
+    const auto end = metadata.find("\"post_processor\"", begin);
+    if (begin != std::string::npos)
+      tokenizer.marks_with_letters_ = metadata.substr(begin, end == std::string::npos ? end : end - begin).find("\\\\p{M}") != std::string::npos;
+  }
   if (!parse_vocab_json(vocab_text, tokenizer.vocab_, tokenizer.id_to_token_, error_message)) {
     return false;
   }

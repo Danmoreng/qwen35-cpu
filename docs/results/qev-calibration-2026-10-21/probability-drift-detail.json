@@ -1,0 +1,59 @@
+{
+  "panel": "final",
+  "reference": "BF16, llama.cpp CUDA",
+  "metric": "Maximum absolute option-probability difference per question; percentage points",
+  "variants": {
+    "q8": {
+      "rows": 13601,
+      "mean_tv_percentage_points": 0.7900503383699294,
+      "mean_max_option_delta": 0.7533244234578834,
+      "median_max_option_delta": 0.4027909746493297,
+      "p90_max_option_delta": 1.847923214808611,
+      "p95_max_option_delta": 2.592972245307945,
+      "p99_max_option_delta": 4.984733992050405,
+      "max_option_delta": 19.057539259740018,
+      "rows_over_10pp": 15,
+      "rows_over_20pp": 0,
+      "argmax_flips": 159
+    },
+    "uncalibrated": {
+      "rows": 13601,
+      "mean_tv_percentage_points": 7.515754632408621,
+      "mean_max_option_delta": 7.1489956351907376,
+      "median_max_option_delta": 4.021500835877671,
+      "p90_max_option_delta": 17.637740686861335,
+      "p95_max_option_delta": 24.731097442852878,
+      "p99_max_option_delta": 45.690996412587594,
+      "max_option_delta": 90.61521404604233,
+      "rows_over_10pp": 3237,
+      "rows_over_20pp": 1040,
+      "argmax_flips": 1573
+    },
+    "pure": {
+      "rows": 13601,
+      "mean_tv_percentage_points": 5.574309475879968,
+      "mean_max_option_delta": 5.298470749299729,
+      "median_max_option_delta": 3.0223964997483757,
+      "p90_max_option_delta": 12.62954249893815,
+      "p95_max_option_delta": 17.765818742177984,
+      "p99_max_option_delta": 33.237600819654894,
+      "max_option_delta": 84.24042030041667,
+      "rows_over_10pp": 2123,
+      "rows_over_20pp": 527,
+      "argmax_flips": 1074
+    },
+    "mixed": {
+      "rows": 13601,
+      "mean_tv_percentage_points": 5.3398833689712895,
+      "mean_max_option_delta": 5.092929961997177,
+      "median_max_option_delta": 2.95673533607963,
+      "p90_max_option_delta": 12.57156734211623,
+      "p95_max_option_delta": 17.500076708875866,
+      "p99_max_option_delta": 30.745889518434865,
+      "max_option_delta": 79.11559710139534,
+      "rows_over_10pp": 2039,
+      "rows_over_20pp": 488,
+      "argmax_flips": 1138
+    }
+  }
+}

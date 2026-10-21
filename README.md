@@ -11,6 +11,13 @@ The HTTP server supports a **limited OpenAI-style `/v1/completions` API**:
 raw prompts, greedy or sampled decoding and non-streaming responses. Chat completions and
 SSE streaming are not implemented.
 
+The native server also supports **qev-0.8b decisions via `POST /v1/systemone`**
+with a separate calibrated [qev model](https://huggingface.co/danmoreng/qev-0.8b-H128-Q4-G32-DOT4).
+See the [decision API](docs/server.md#qev-decision-api),
+[decision quality study](docs/qev-calibration-2026-10-21.md) and
+[decision HTTP/concurrency measurements](docs/qev-systemone-api-2026-10-21.md).
+The Qwen chat/base-model benchmarks below remain separate from that fine-tune.
+
 ## CPU benchmarks: speed and quality
 
 The engine uses the **H128/Q4-G32-DOT4** checkpoint with a **424.9 MB

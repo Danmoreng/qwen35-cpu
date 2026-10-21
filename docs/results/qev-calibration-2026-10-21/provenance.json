@@ -1,0 +1,562 @@
+{
+  "created_utc": "2026-10-21T15:10:49.354193+00:00",
+  "llama_revision": "9b56ccf00d755b0bf780140f6352a67db1ac0378",
+  "llama_worktree_status": "",
+  "repo_revision": "2282b462644ad8590e6fc6dcbdaad25208ae8d29",
+  "files": {
+    "models/qev-0.8b/model-mse16.q35h": {
+      "bytes": 424964864,
+      "sha256": "b537edd592d48403fccabacbae627800aacebf5f4c9f55e46865aec217e97f6b"
+    },
+    "models/qev-0.8b/qev-0.8b-bf16.gguf": {
+      "bytes": 1516746912,
+      "sha256": "47a3e93109187add85f7905d507024ade0fc4c957a503183f3cc6106c68a9980"
+    },
+    "models/qev-0.8b/model.safetensors": {
+      "bytes": 1706035272,
+      "sha256": "d33a719c0eedc34a530879e3840ddf0a0769b5060a987aed24e84e1170b8beb5"
+    },
+    "build-linux/qev-native-study": {
+      "bytes": 970624,
+      "sha256": "ddfc85eb7b267886be0789584c24599e79110c50cc08083fac31f241021bcddc"
+    },
+    "build-qev-llama-current/bin/qev-llama-study": {
+      "bytes": 71640,
+      "sha256": "855cb8cc16d032ecf8178022599541b1b4cfba1016bf7254998754e6d7b5ebe3"
+    },
+    "build-qev-cuda-current/bin/qev-teacher-cuda": {
+      "bytes": 72456,
+      "sha256": "3fe06b6e81abe631667e74636517dd53be2a84198823094f89dd502f29a49982"
+    },
+    "build-qev-llama-current/bin/libggml.so.0.27.0": {
+      "bytes": 55520,
+      "sha256": "50ef1e6adb044fac1a186d973a5a515a807ea4c3459a6d2c230a22d069950821"
+    },
+    "build-qev-llama-current/bin/libggml-base.so.0.27.0": {
+      "bytes": 959480,
+      "sha256": "77e1a1732f7ddef7997635d462d124a61d2cfc84ee48c07f234c800a3911bdc7"
+    },
+    "build-qev-llama-current/bin/libggml-cpu.so.0.27.0": {
+      "bytes": 1583880,
+      "sha256": "8b93ded0f5b4e3356a8c4fcd2d98977ba64c093b8727e47dd69e7edd2e916ebb"
+    },
+    "build-qev-llama-current/bin/libllama.so.0.7.0": {
+      "bytes": 5205896,
+      "sha256": "070bc1717a2d591dab708845db1a45c22ab3a4c9a4879e518a4abc7df16fbe24"
+    },
+    "build-qev-cuda-current/bin/libggml.so.0.27.0": {
+      "bytes": 55312,
+      "sha256": "27923244fdc179e4f48c180d663ddad705d5eb382ab210eebc5bff53effba4e1"
+    },
+    "build-qev-cuda-current/bin/libggml-base.so.0.27.0": {
+      "bytes": 929352,
+      "sha256": "a0099ced7b5dedfe4bc86a04d297bf4e8a97f0682ff33f918cf3495e21bb2625"
+    },
+    "build-qev-cuda-current/bin/libggml-cpu.so.0.27.0": {
+      "bytes": 1612800,
+      "sha256": "2ccc71dffc4682217b115d11060fc2593fc743f524bd5f28760982f62f76debb"
+    },
+    "build-qev-cuda-current/bin/libggml-cuda.so.0.27.0": {
+      "bytes": 71862520,
+      "sha256": "e1ab14283fde668056c1951aaf96882fe25f892dcc95ced1fbdd2cef66843721"
+    },
+    "build-qev-cuda-current/bin/libllama.so.0.7.0": {
+      "bytes": 5174144,
+      "sha256": "7214e90321eba659bf4cf220931387d43475c5de786e7517a15e3df9994d26df"
+    },
+    "models/qev-0.8b/model-cal-256-diagonal.q35h": {
+      "bytes": 424964864,
+      "sha256": "bf08afa45ab0138212d0db8b2cc93b7bae37568e13c8e45b62f3d544db0aebd3"
+    },
+    "models/qev-0.8b/model-cal-256-block128.q35h": {
+      "bytes": 424964864,
+      "sha256": "e7eb20e1020059d5f6a4899aa54326c6c96f03bda369c08d23d6e6d14614b6aa"
+    },
+    "models/qev-0.8b/model-cal-1024-block128.q35h": {
+      "bytes": 424964864,
+      "sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69"
+    },
+    "models/qev-0.8b/model-cal-1024-block128-d0001.q35h": {
+      "bytes": 424964864,
+      "sha256": "1de764b396a87d28d749573794a5b745d850621fdd14587d4b416f09bef71601"
+    },
+    "models/qev-0.8b/model-cal-1024-block128-d0100.q35h": {
+      "bytes": 424964864,
+      "sha256": "c08d69de5c4ad79571f588d944af4d6de17f20b1cd93df7d68ede13e9593ca86"
+    },
+    "models/qev-0.8b/model-cal-1024-block128-d0100-q8-head.q35h": {
+      "bytes": 552104704,
+      "sha256": "b755d8639a48df3ef71285121dd817a63ab69e7519959101ebcf08ce6473256a"
+    },
+    "models/qev-0.8b/model-cal-1024-block128-d0100-q8-gates.q35h": {
+      "bytes": 425262272,
+      "sha256": "ca3318fd5769b33bf497642d08847d4f6305640eb80c86993a8fad6e2e305af8"
+    },
+    "models/qev-0.8b/model-cal-1024-block128-d0100-q8-head-gates.q35h": {
+      "bytes": 552402112,
+      "sha256": "f80bdc286471210ea7ea9050ac25601ec3455df78b840df29520281f31ec0c2d"
+    },
+    "models/qev-0.8b/model-cal-1024-block128-q8-head.q35h": {
+      "bytes": 552104704,
+      "sha256": "fd6c8970bdcc62a049a7afef8675656407088a7125ce9d5c7d31ef918e8d06da"
+    },
+    "models/qev-0.8b/model-cal-1024-block128-q8-gates.q35h": {
+      "bytes": 425262272,
+      "sha256": "0e385438172bb36de93d068b1aee3aed1f517d6dc2ae754f7a0c143e1c2e16a3"
+    },
+    "models/qev-0.8b/model-cal-1024-block128-q8-head-gates.q35h": {
+      "bytes": 552402112,
+      "sha256": "042df09103622e2d096cf327604160621a8263655fcc5296697bf209a656f6d9"
+    },
+    "build-linux/qwen35_cpu_pack": {
+      "bytes": 604704,
+      "sha256": "944247edb2b4820ffded04ff8886cce9a50c47a6fe14aa134a3d6e4d9315e9ad"
+    },
+    "models/qev-0.8b/qev-0.8b-Q8_0.gguf": {
+      "bytes": 811845792,
+      "sha256": "07856dd5d6c7d1e19a9579ef324e5377649890a6438f7735ea5ac8935f2b2140"
+    },
+    "benchmarks/qev-calibration-2026-10-21/selected-mixed-all.tsv": {
+      "bytes": 42597996,
+      "sha256": "0b900d93e0e0d08750f246fc70f7f424f2cf5d27e71cbd0d7cf3ddd4e343b23f"
+    },
+    "benchmarks/qev-calibration-2026-10-21/current-q8-gpu.tsv": {
+      "bytes": 42632728,
+      "sha256": "6aea93432c8f8415883edf80abca005e7ee1e485823cfd6034a2ffdda70c4b95"
+    },
+    "benchmarks/qev-calibration-2026-10-21/selected-pure-final.tsv": {
+      "bytes": 38233950,
+      "sha256": "a750575cbfa67e94a9e2d06c8fe1f0f9676e15609a442b26af186a532b16915f"
+    },
+    "benchmarks/qev-calibration-2026-10-21/selected-pure-all.tsv": {
+      "bytes": 42591524,
+      "sha256": "1386156bf3da384181b59d72f9331ae9d9ba855cb489fe74b04d5b402579e624"
+    },
+    "benchmarks/qev-calibration-2026-10-21/selected-mixed-final.tsv": {
+      "bytes": 38239416,
+      "sha256": "2424be19e3b391eac355e04221e6052c349819ebefce1fdd28d25031a5adef92"
+    },
+    "benchmarks/qev-calibration-2026-10-21/current-bf16-gpu.tsv": {
+      "bytes": 42626081,
+      "sha256": "206143041d9a4c68564bb0c286bc75b88cfba0c06dc886cbf999725878c7c6d5"
+    },
+    "benchmarks/qev-calibration-2026-10-21/uncalibrated-all.tsv": {
+      "bytes": 42633959,
+      "sha256": "3bfe817790c2dcfd38e9192b7867cdf6142de67203790c89fcd02bbf1a168bfd"
+    },
+    "build-linux/qwen35_cpu_bench": {
+      "bytes": 1009344,
+      "sha256": "ba361a2219401b0808b1d4c0ea4ccd1ac9306d5dbe58ccf0ad3014748832f21a"
+    },
+    "build-qev-llama-current/bin/llama-fixed-cpu-bench": {
+      "bytes": 71840,
+      "sha256": "62e2da349fcdee552f1e326886ca0d561d4fab7a69245f1ea6c4ea087d322a5d"
+    },
+    "benchmarks/qev-calibration-2026-10-21/current-smoke-q8.tsv": {
+      "bytes": 54301,
+      "sha256": "036a34b0d1a2e8dbe19e7552181baf0d16e8ba124264b18b93ad375a55823fcc"
+    },
+    "benchmarks/qev-calibration-2026-10-21/current-smoke-bf16.tsv": {
+      "bytes": 54287,
+      "sha256": "6eaa844607826ae01f5a2eea56911e89c8715f7a17a5f28c07938f4b689f3bd1"
+    },
+    "benchmarks/qev-calibration-2026-10-21/smoke-1024-block128.tsv": {
+      "bytes": 54217,
+      "sha256": "fb8638f0420fbf829f661d3c03a7a5d15322d97eec09c10ddbe81aaa029fce19"
+    },
+    "docs/results/qev-calibration-2026-10-21/pair-split-audit.json": {
+      "bytes": 209,
+      "sha256": "39d77c45cd3fcb015f0f8c452bb805712cd76ce6ff97480d4afe20c23fbd53ea"
+    },
+    "docs/results/qev-calibration-2026-10-21/worst-probability-drift.json": {
+      "bytes": 5999,
+      "sha256": "effd2e11c13b4f0eaf4938c16c9a9c0e6631dc15ca3d0400890aba3ccec53bd4"
+    },
+    "docs/results/qev-calibration-2026-10-21/study-plan.json": {
+      "bytes": 2023,
+      "sha256": "316814cf8a8a294cec8ba06bbf169940881bde1f625a25a875b9ec586aab5cbf"
+    },
+    "docs/results/qev-calibration-2026-10-21/evaluation-inputs.json": {
+      "bytes": 1199,
+      "sha256": "1c82f4b40dea2a3596e38d39ee09bf09f58b500a697b1dd72fa20dfbe3436fbf"
+    },
+    "docs/results/qev-calibration-2026-10-21/pure-artifact-audit.json": {
+      "bytes": 6425,
+      "sha256": "e7e9d373741bb8a9da7a5408f3373a6b4270ef0e5b8165f4c3a60a770c5bcfc4"
+    },
+    "docs/results/qev-calibration-2026-10-21/smoke-development.json": {
+      "bytes": 3220,
+      "sha256": "a5c3ea472984f9f4ba77ba5709350506567d8a01e456a7c148db26ee65230915"
+    },
+    "docs/results/qev-calibration-2026-10-21/standard-precision-inventory.json": {
+      "bytes": 172,
+      "sha256": "0c433f7581a5fc4c40e39433e4b0e6487b428162541defdbd21827618564367e"
+    },
+    "docs/results/qev-calibration-2026-10-21/per-skill-final.json": {
+      "bytes": 33594,
+      "sha256": "a6c67bd4d5637156d9c66a20505b94b3582de0ebbb91b5068dc04ee849deb33e"
+    },
+    "docs/results/qev-calibration-2026-10-21/reference-weights-audit.json": {
+      "bytes": 101419,
+      "sha256": "c193728d007eb008edab16c865f7c41f3e120641ccc48cc463e4741cfe7bd8ea"
+    },
+    "docs/results/qev-calibration-2026-10-21/converter-compatibility.json": {
+      "bytes": 196,
+      "sha256": "e08e9f3d016e9a3285ddea72031eeca1fa51a38558bbdf5b62919d91cf59e928"
+    },
+    "docs/results/qev-calibration-2026-10-21/calibration-selection.json": {
+      "bytes": 161679,
+      "sha256": "197f0130b169602cd37917e0d55b33144b8fec13fe7a0db56de49556ae447fcb"
+    },
+    "docs/results/qev-calibration-2026-10-21/precision-audits.json": {
+      "bytes": 7997,
+      "sha256": "f78869915c11984f17d4ea875e143fc4526d29a1c3960a0705c848d23a0e5db1"
+    },
+    "docs/results/qev-calibration-2026-10-21/source-revisions.json": {
+      "bytes": 801,
+      "sha256": "734817ef238c7304ab2b9b37e73247cd4d6c18c799c6cec16b1b41d7d24a7194"
+    },
+    "docs/results/qev-calibration-2026-10-21/capture-forward-validation.json": {
+      "bytes": 49,
+      "sha256": "7ed2321e735bef268deb6816564c980e6e5b61379603c47ec2de64ceb5805ca4"
+    },
+    "docs/results/qev-calibration-2026-10-21/reference-commands.json": {
+      "bytes": 9389,
+      "sha256": "8378488a47903ae161b72b04cf22d781501b55aa804c3eeaf3bc7ea6396357e3"
+    },
+    "docs/results/qev-calibration-2026-10-21/cpu-speed-matrix.json": {
+      "bytes": 5057,
+      "sha256": "920019873b71e02819971b279a1726dc1dba392d4acb02a5ab34d6793b48e5be"
+    },
+    "docs/results/qev-calibration-2026-10-21/selection.json": {
+      "bytes": 848,
+      "sha256": "beb9c9b83f75d7a121810c912425991ea8d5af11f87b7588a452810d96d22df1"
+    },
+    "docs/results/qev-calibration-2026-10-21/panels.json": {
+      "bytes": 575,
+      "sha256": "e15c12fa8ebc32488131218f46ebf38ec1d4571ee44c408177adc843db8cd64d"
+    },
+    "docs/results/qev-calibration-2026-10-21/cpu-gpu-validation.json": {
+      "bytes": 2065,
+      "sha256": "c1e4e106d8c72280cf6fbad2b54d8d5de9073290d69a81b783d3898b4b0422c2"
+    },
+    "docs/results/qev-calibration-2026-10-21/summary.json": {
+      "bytes": 12965,
+      "sha256": "5c1456f601929d1b93ef0f03b4e06a4408e801d33164a39d575cf1e06c6d4df8"
+    },
+    "docs/results/qev-calibration-2026-10-21/probability-drift-detail.json": {
+      "bytes": 2096,
+      "sha256": "27b67240c6f76e593682e73be225502bedd3e077dfb80cc1699ea8284ccc4c2c"
+    },
+    "docs/results/qev-calibration-2026-10-21/calibration-inputs.json": {
+      "bytes": 2382,
+      "sha256": "49c089e22afc2aee113497628e302f4360728e7f5d41c4bcd9bc83fe161306ac"
+    },
+    "docs/results/qev-calibration-2026-10-21/mixed-artifact-audit.json": {
+      "bytes": 73223,
+      "sha256": "c6f82b705e192d761d2dced2085a5b531521ea284720ac4a03e4cbb66ab878f9"
+    },
+    "docs/results/qev-calibration-2026-10-21/quality.csv": {
+      "bytes": 3074,
+      "sha256": "c21afb4acd1920a905fda4260ab1f428f72d4d83c882a83eeb41d3733379e525"
+    },
+    "docs/results/qev-calibration-2026-10-21/performance.csv": {
+      "bytes": 562,
+      "sha256": "e063a207fce043fdef72a072f1110c1303bfbcd99c137dd485f35d59276baa82"
+    },
+    "benchmarks/qev-calibration-2026-10-21/release-evidence/performance-raw.tar.gz": {
+      "bytes": 140764,
+      "sha256": "9f644f4ba04099082f2fb45b6d85ef0008eae475af9c7b54df31bace0364748b"
+    },
+    "benchmarks/qev-calibration-2026-10-21/release-evidence/study-sources.tar.gz": {
+      "bytes": 296947,
+      "sha256": "b5ef68271ab21403659b00ed4afbe13c857a512582d6640881a8320da37f6643"
+    }
+  },
+  "gpu": "NVIDIA GeForce RTX 5080 Laptop GPU, 16303 MiB, 615.71.09",
+  "cuda_compiler": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Tue_Sep_01_08:45:21_PDT_2026\nCuda compilation tools, release 13.4, V13.4.92\nBuild cuda_13.4.r13.4/compiler.38855100_0\n",
+  "completed_utc": "2026-10-21T17:02:39.779077+00:00",
+  "llama_worktree_status_final": "",
+  "sources": {
+    "AGENTS.md": "46f3941a6ffaf62b96532d30a36c1091bbefa0c18c4fd5416492e9b9d6103988",
+    "CMakeLists.txt": "2fcf4fa71ed3410c39a2a4e486b6d8337daebaa6b36954e39b547b9906d850ab",
+    "LICENSE": "19a1711e0d30cec987b0067005355f33be20ff48859b13690830e7458db88cdf",
+    "README.md": "2e348ee743b04ff0d70f40127565b3f99fa66de459529a9bf935e310c3782401",
+    "configs/arithmetic-regression.json": "bc024369280c7199a4facf414c59d733d9b261cf6d0440b77e61c64ad88da92d",
+    "configs/qwen3_5_0_8b_text_1024x512_tokens.csv": "c4918ac68ea3dc888649fbda93af858932d705a5650d753388961a2b35266495",
+    "configs/release-model.json": "7e5493a54264e86d1273de304c35f6165eef3c00d4b60544c8be6d1675917473",
+    "include/qwen35x/common/model_profile.h": "34240acff86ba3b357165903ca00882eeeb223e6bf44e2a960def5a8624c5009",
+    "include/qwen35x/compiler/compiler.h": "06e56cd6b61e94c77926dd0cc89f8396c6e3df4f285e64c0809a625e83e5d1e6",
+    "include/qwen35x/cpu/activation.h": "085ed9a011f3bda2fea60012eb6e02569fba68dbe23efd3d75248665f73e744d",
+    "include/qwen35x/cpu/delta_net.h": "98963a5d2ac6a31773a6cf967ea1983ee32c2a0ebbf440f664c1cefcd18b2eec",
+    "include/qwen35x/cpu/executor.h": "aeb9975ca880f0817f00faefb1a9b5864c1924d60a5edf8f9e5579ed992ffb43",
+    "include/qwen35x/cpu/full_attention.h": "1b97cca17ff26cd1528cbb3a9a05ed3fa0c244bf75b9ea4110e11e924ad96f9b",
+    "include/qwen35x/cpu/full_attention_tiled.h": "7ecc3633d20743eb1fafa3318b80dc5460b820acaa917fbf595eab626012f795",
+    "include/qwen35x/cpu/k_quant.h": "27e7ccd2d1b49edee40294779a709d12b082d4c3b7ffdaf8b8b5df9e6092e590",
+    "include/qwen35x/cpu/kv_pages.h": "7c73313a170930194d629aa209a0e2165cf16e5324eae5bb54fddfd5ab3e89a3",
+    "include/qwen35x/cpu/q4_0.h": "0778694bf05160225e156331407fc3622b1341b8a64f29dffbd98c196cdb3a98",
+    "include/qwen35x/cpu/q4_dot4.h": "a071ace34dafce977177983a53d48cc782f9276f32e21d2b48bb9467baac065d",
+    "include/qwen35x/cpu/q4_g16.h": "dc57d7486e00250c6abff6dbcdfac1dc4526348bdedaaa02330427f98019a2d6",
+    "include/qwen35x/cpu/q4_h128.h": "b49bf920bc02c3ec43debfa5c49e494cea856a1fa8eb0e2fb10fa981912e61bd",
+    "include/qwen35x/cpu/q4_quantizer.h": "d3fbf139bec9f33ebeff00551011a9cc642b13b45fc3b7c051359e2bb2703dee",
+    "include/qwen35x/cpu/q8_0.h": "d4d1690eb493b202790421d74c764682c452cc45572785796f561bfe130abe5a",
+    "include/qwen35x/runtime/cpu_engine.h": "a41845f13c78c8784dba7197e05396de2b9d38cb151427afd9863381487958fd",
+    "include/qwen35x/runtime/options.h": "cb17e4e3af36bb9ca6025484ba10b6f51d3dded8b6eb5d8bbf1112fab949949c",
+    "include/qwen35x/tokenizer/tokenizer.h": "49dc168a82ae48ed80952ebb44f27b9b87faacc157c82a38e461cf260d737bb4",
+    "include/qwen35x/weights/gguf.h": "0da1795d99064089e1c11a2b79bd9f3a6a4061e230514e3c558f0901055f608c",
+    "include/qwen35x/weights/q4_h128_artifact.h": "aa3cebeea0b5cfd7aa7b3343fea38b6323828eb9595c9f33dd757275981b9c4f",
+    "include/qwen35x/weights/safetensors.h": "63f82f89ff8980e28285621bc6bd3029b64fc9d9e4b4e2fab93220e869722b3a",
+    "scripts/archive-large-calibration-study.py": "5dedae5c0e12f5dd5848a62547ca059e83385792230ce91fb57d900b0c278201",
+    "scripts/audit-calibration-corpus.py": "0155bcdb81cdbd7b1d88c522ed7cfe6c23a96d5720cf9408a09fb4d2fab1366c",
+    "scripts/audit-g32-fit-artifact.py": "a183867b5bae57e52c567901114c095d709b5be346d21c8cf7cf69cb183a9f51",
+    "scripts/audit-head-artifact.py": "1e4a752b6eda1399779076e26c5150a1d8b8f1eabd24fdce49e7bcc526eca25c",
+    "scripts/audit-q8-artifact.py": "7996f9ac2efe4b78de69b1e3af6b80a85cb41278f4c9b8670663a2df9a98498c",
+    "scripts/benchmark-inference-seq.ps1": "c25e85c24a892eb3c1671c6b9255530b305d1b52ef725486cc09dc5926b1ca92",
+    "scripts/block_covariance_accumulator.py": "323fbc394c7e2c40750530d83a19795ddede984c9fdd28b3be4e85e5387a086a",
+    "scripts/build-llama-calibration-cuda.ps1": "4d3d71f1cdcc0ab7623299d48abc23082684a6105edc853224a78144671b450f",
+    "scripts/build-llama-comparison.ps1": "bc87af016f9f0da70cf34eed69c4be1d5623a4aead6a190f036467c162d0a1e1",
+    "scripts/build.ps1": "7e04e861a92b5dfb1aa1d9c83acb512eede94520a84ae7ed1e16416714e0db52",
+    "scripts/check-plan-arithmetic.py": "276248e5b33d90e5df6c9e21cd5277c4e6113f778fc943f4830852eee3d1d623",
+    "scripts/collect-diverse-calibration.py": "1f70738b50aeb904d85b35fe24325e1e0493b80f911b625c9c711d5d475b5a08",
+    "scripts/collect-quant-calibration.py": "71f7d08c2f966e125b2b9da726448b70249b7bb41082c93f7cf86109b6d7a843",
+    "scripts/collect-resident-calibration.py": "378003a8ead4902b0f3581b1a1465ebc15c59b93604c3f51833174528e49b47d",
+    "scripts/compact-calibration-captures.py": "2e8f65b6edbd3150d802610f8c9267232defecb95945dc7b69feae50d27ccb1c",
+    "scripts/compare-logit-dumps.py": "1bca3b6c7598268a6c635a6756207730ed171e80c591bd8dd0bd527a3f027950",
+    "scripts/compare-quality-pair.py": "fbab7a3e9f5b357851152b7eb3bc41e87467c6cd8fa509a0ff25d38790b60f1f",
+    "scripts/download-model.ps1": "f7853d7ff0516e1de84fa09ef650efa27a1e949d50764d9b22f3c4df49652b34",
+    "scripts/download-model.sh": "5e17f90a0cdb2ecfefb02ec04edc8e168f5523d1547e055256b1f3357bda16a5",
+    "scripts/evaluate-arithmetic-regression.py": "6590ebc8f405df23c1bf5cd574a816cc845c734d75bdc7a246770cc3e89e9084",
+    "scripts/evaluate-comparison-quality.py": "af96ce9bd0859270ad833735bdf237bfe2da3bd601f82f0676c3943293fa8804",
+    "scripts/evaluate-native-gguf.py": "a3c8e7c47ecbd62cfbe82c918f9208f03de7f1870d3eb67d8ece6cf139ecacb7",
+    "scripts/evaluation_common.py": "945c3d80c1eb6335bd328163144e2188f1a6d61fd8124eabf5318d9cc6820522",
+    "scripts/fit-block-covariance.py": "3c9ddacdf78103875aa240501c635ffcdc95dae3d4d5fa1d685a09ff5e5af387",
+    "scripts/fit-dot4-quant.py": "2acda04327b3e95078a356ba08a90779d84db8b7a6aaa8ecade1e1aa9bd2f50f",
+    "scripts/package-release.py": "08f891c4f92512184cb14a3a35a5633cbcc7162533d02bf3620f4d9157899854",
+    "scripts/prepare-calibrated-g16-benchmarks.py": "c632b2a24fd5b6c06106726f229478b0afcc27f8bec993f19e340c5014c8eb64",
+    "scripts/prepare-comparison-data.py": "3cfc9ad2f65ef142a8c846f786c795e2c1198418dff5de7623a32d9e499a331e",
+    "scripts/prepare-comparison-matrix.py": "745f37e2e1108cd8363b76261a895dfd3478fc3b66cf3f1d52fca700bef04c4d",
+    "scripts/prepare-diverse-calibration.py": "dde4479bd0559af78872d91e758336fafffb93dd5c722d0cdf474180b8c2c1a5",
+    "scripts/prepare-head-audit.py": "83d0754b8e31dda09831e1ab642cf77f7e4810d9b25fef9c632d139e20306d90",
+    "scripts/prepare-head-benchmarks.py": "d02ccbc91f96a2307bec848b3405a738a7b5811477fee14ade2d3be9b6b3a3c5",
+    "scripts/prepare-heldout-quality.py": "eeedd20bd4455a5dd720bc07cc07377ec57c183cf8017551f2cf2eb8a2a3a6d6",
+    "scripts/prepare-hf-package.py": "5e322454d80140eb014f7806e1160f22c6e1daca771587db785ed8ea7e26ccd1",
+    "scripts/prepare-plan-benchmarks.py": "861c8d4b09a916e0828b4efe1e43fe9890697b7e56482f1bf88564aa7d09c03c",
+    "scripts/prepare-q8-benchmarks.py": "13e661bdc2b909bdcb98e64b6301b979f09d0eafe969a1bb34f7590ca281324e",
+    "scripts/probe-captured-projections.py": "f59628bd1075909b3ccf07fb3b94bf9e07725e615542f0c62fce5a9aba8c7a3d",
+    "scripts/quality-report.py": "d8b1547f5de16dbdb5d4d66f8d6c912bbeaec79ce0223ac122dfb36cb3d7cf0e",
+    "scripts/record-comparison-inputs.py": "6186d0fda9c77508c5a9f99410b1530de6727dc4c89841fdda5eaab63695395d",
+    "scripts/remove-compacted-capture-raw.ps1": "8bf13c0d3b2a6ae0fb95f4fbe2ca8393a13d1aec665952dfa4defeaaf44c9673",
+    "scripts/run-large-calibration-study.py": "af1fd7bae5005e55af54bef0f78db887b53d4fc157a1d3642d5f1b1d0f903d48",
+    "scripts/run-q8-head-experiment.ps1": "24ca0e2035776b6ba17af402cbaac64bc6b5ddabf5848c84fde440f37bdaa686",
+    "scripts/summarize-bc256-readme-comparison.py": "14759d8cabc4ba9ef8c26c14e47bd54ef0b0960db1dd48ce5755f79af0285f10",
+    "scripts/summarize-comparison.py": "f2f0afb91d30abbd31f195fdafa505b9dc34337ea8d2d94624c0f42ecca72417",
+    "scripts/summarize-head-experiments.py": "3c08d7079479d5f797c9cac9daed5c85bcb3a4d9a879682c132b9902b16ca9af",
+    "scripts/summarize-native-gguf.py": "22e8c43301deb5105b10ca3404a2251f059f3b4c89553b94fa814f8ab2c2afdd",
+    "scripts/summarize-plan-results.py": "e16f29654525cc628f8e6de9d6111a888c49c5c0c4c0858c71894e450a3a3ec3",
+    "scripts/summarize-q8-experiment.py": "ed34e7f4050e1477b9448b1d2335caaf7900aaed43702023d1dda0262af72112",
+    "scripts/summarize-readme-comparison.py": "6ea770b7b2fb99dc4d65d98f85aae46aa618530b32c1986af52e5fea49d9350d",
+    "scripts/upload-hf-package.py": "fef76471a322628c96a01c7b93671030b2e5a024c5cc010ffb097218ddd986fe",
+    "scripts/validate-llama-batching.py": "dec1f51a0df83d8b1a4ac1808a7d13894c3615030138cf354ce772fb73029fcd",
+    "scripts/verify-release.py": "bfae7ec193ea22401eda07735cfb86eb0050cef95b651edb122cb9886482ecb7",
+    "src/compiler/profile_loader.cpp": "49f3f2bd9aed8ae0c4e826273001fd2cfe535fddd27940c374269322592f355d",
+    "src/cpu/activation.cpp": "ed713c0eee08f21c350e42e0b9cf199e1a873131d1cc108e3445b0fd315db8de",
+    "src/cpu/activation_avx2.cpp": "94c2f8787ae778aa359c1b4c979da2e836490deb87155ea937f75ad871be2d66",
+    "src/cpu/activation_avx512.cpp": "b1d486909e5ca644acce05bbb1c376de09e41d87ef553bcfbbcce3e20cf4c3f1",
+    "src/cpu/delta_net.cpp": "d6da89ee8f97cbfd8a2f3c5a31b6b8349d874cfb322bfac7a0f27727d088681a",
+    "src/cpu/delta_net_avx2.cpp": "463548404f819d26d80f4db1eab7e504928ef44e7af09a11794821c184c0462d",
+    "src/cpu/executor.cpp": "25d369169a78ef2f627e76e680f1405093f0c28aceabe2110b7d2c54f3dd6539",
+    "src/cpu/f16c_compat.h": "8a88073544013deb9eacad567687b0913eb90ce6dc5b1990c1044d8499d94fd6",
+    "src/cpu/full_attention.cpp": "c96aa8bcd6cd329a2a3757d407354ee21a38ebddeab401b63048a2e78e37ad1f",
+    "src/cpu/full_attention_avx2.cpp": "671b746965a7112a6c8cce35dc7a2ec0f77cc2505a14bfb35b84f494fa5b6251",
+    "src/cpu/full_attention_tiled.cpp": "fc4f93b26db5c6d8f6e7e75b5b1468dc790b50b9a80e740214f892546c364900",
+    "src/cpu/full_attention_tiled_avx2.cpp": "60bedba544003e987ee3d2afe04a34ef03d0c463f19792d9e96f6dee93993c09",
+    "src/cpu/full_attention_tiled_avx512.cpp": "3c2fc122b2657f4cf5044db832e7fd376c7222752e0c1b2228acfbe181ceca44",
+    "src/cpu/full_attention_tiled_simd.inl": "66c1d9528d15ceb7e21a26576f3bc13793510c13d43a0d764aa44612f3e77e0e",
+    "src/cpu/k_quant.cpp": "9f15bfb68c1ceaba28892cdf1682df6ab8a7ac26589d681645f4e2c4b57e7cad",
+    "src/cpu/k_quant_avx2.cpp": "9ea0581af634dd5aa9de71142e3fc4bd77949f180c45509fa1e0be1fc6e91ac3",
+    "src/cpu/k_quant_internal.h": "eb2deaf5567b8b2bf4d4315e80b6ce85626d755689222a73c820464cd7b4c0aa",
+    "src/cpu/q4_0.cpp": "8ec3695852b4b7e84168a62bfa922308883b0d40b4ca273f1281751530b3a995",
+    "src/cpu/q4_0_avx2.cpp": "31b17ff89d5666803456f02aa4089010ac2c4faf2667c353552b30814e405c8c",
+    "src/cpu/q4_0_avx512_vnni.cpp": "8ddb8ea4fecc8f191478a48db0c1d8e409ea2412b4301d597dbef40544052321",
+    "src/cpu/q4_0_evex_vnni.cpp": "8ed98574f0e35bdfdadd2a059f6c1e2e917d2f3c0b592f2d787307415e5dfacb",
+    "src/cpu/q4_0_internal.h": "0c64b28b4a32b815a19aeaafd419ac6d91422c8b8312e0d830f2e178375e5d78",
+    "src/cpu/q4_0_vnni.cpp": "066fb7919c20775cc97a4bb0961aa030ec58affe80610ee9325b9cf35cb36177",
+    "src/cpu/q4_0_vnni_impl.inl": "9be4bca5ea5a7a7ce3f4abb65b9a44a4bba361d3b8b0f1c4580740c283e69c10",
+    "src/cpu/q4_dot4.cpp": "cfce07108b77ad18c75b0cae5c3562b7674b17e8a6c57edf2d2d467aff8b88fb",
+    "src/cpu/q4_dot4_avx2.cpp": "5a13419052ba202991e5dcc2f5d3bf67bcfb4b359ce261407a2aedef3e00a0a2",
+    "src/cpu/q4_dot4_evex.cpp": "1f7cb9334c932423a8184d3d1e5f7bc9e325ec338d6e070941956790cd9e2ddc",
+    "src/cpu/q4_dot4_internal.h": "62d294399ec2225905c5418da570b5262bce9fee9ef481293e7b0a3e1a6f48d3",
+    "src/cpu/q4_dot4_prefill_avx512.cpp": "174ddc817f3932a23ae221160f13ccb94664123375c787bbd15159331afb797a",
+    "src/cpu/q4_dot4_simd.inl": "fc2a94e240fb7062054bc01f6c664d7fd647f751504491582b3efd76896577f8",
+    "src/cpu/q4_dot4_vex.cpp": "e3e292ca10a54d2b1fb6e47efe6bc8f98a13bf386b4f9cb4f35863a31e2f2db7",
+    "src/cpu/q4_g16.cpp": "fe11d5aa851d43da6aeab3563b3c710ae65b019ffc42c64386b6867b8f3fc9d5",
+    "src/cpu/q4_g16_avx2.cpp": "069adf153ab4f4c6995c50bb318be4b2635b1e4e7b1785d895ac5ea929ce61d7",
+    "src/cpu/q4_g16_batch_simd.inl": "af077972532fe5b9a381092dc7190272811576e3762caf8d03a7c28e067fe266",
+    "src/cpu/q4_g16_evex.cpp": "146ded1b981aaf74c3ee057a2b16309d31a22405b43ed0655b7ea0abc40408b7",
+    "src/cpu/q4_h128.cpp": "d0df5b589cfd4aa0418e8aa6d74cf1be901b6e47fb4bdc0c77c8ad458508ed27",
+    "src/cpu/q4_h128_avx2.cpp": "20c707aa3d766b2f87102ad1a3f5bd4609fbeb3fde182d0d07643d329ba995cd",
+    "src/cpu/q4_h128_avx512.cpp": "4a9ad7f459141bc510c14a68925eef1bf511d7932c49da9631f006e3ae6c2943",
+    "src/cpu/q4_h128_internal.h": "67826ea6c8ddff33492bdec4517b0560ab900bf0f4472c9a44acbf00a0566736",
+    "src/cpu/q4_quantizer.cpp": "17e573dd13402e63d76f58fa5100b0d0ff09e644020bc014366cbbfc595cdf54",
+    "src/cpu/q8_0.cpp": "8935ed62b54a65da68129a0d6903a35ea4e650f7b7373c1a5ccc42d806546100",
+    "src/cpu/q8_0_avx2.cpp": "da5ab6ee39cf51c96808ef89eb85de1fbe444c3e5af393e2f073ab81577fcf98",
+    "src/cpu/q8_0_internal.h": "4449372952e9993326df99b146783a9aaa62fefed883d71fd1f232b7c39926c0",
+    "src/cpu/q8_0_vnni.cpp": "a26421bc6993e9b6ca2ee475f849d1c3656a3b43b0a9da514f15360b31380563",
+    "src/cpu_engine_bench_main.cpp": "b203de5a20ac4e5bc45d4634a299304f2641ec60636ca63b22165cc16de29389",
+    "src/cpu_serving_bench.inl": "d31464f7fde290d508d0095fa53553139a5e59d275e997bbaad93d81b2de2e53",
+    "src/main.cpp": "1f07431c5daf64a2c816b3070e306e5a6cf61af55aa66c6e86b3a2cbde42a4e4",
+    "src/q4_h128_convert_main.cpp": "a58a3900bd61142a4a75aef36659726e5415486cfac1506a2bcbeb2e3b7d704f",
+    "src/runtime/cpu_engine.inl": "15ee8bc932900679938a5e6a0bc9d79af3d8d39d0ac62d6fcb89b418e1dbf417",
+    "src/runtime/cpu_engine_greedy.inl": "958bbc0ffff75334e04ed706aeb7a2269e78d3dc5146271183686db769d0162b",
+    "src/runtime/cpu_engine_prefix.inl": "3c9ee33d7eb7afa1bce431d61055dae6168276453675ccfa13bee0fecfd7202e",
+    "src/runtime/cpu_engine_scheduler.inl": "aa5bd962291261ccc97dd7bcc5260991a2e6ea01ea6694f37d53481c1f1d6abe",
+    "src/runtime/cpu_engine_singleflight.inl": "333c11f3dab4eac1c06751849407ded3a4713c5575c60b34ce29e40076bdc860",
+    "src/runtime/cpu_engine_state_batch.inl": "d80cdc56f8bbd316f6b123a20ac59fde2b8ad973aa62dc69fdf1d2f79d84452d",
+    "src/runtime/cpu_runtime.cpp": "8a20875a8f40de0a4ce4b8f2f296db468d3a5c78991dec7caee1d7e1adf6aac2",
+    "src/runtime/forward.inl": "f312dc45be7b9409484428e731ef57215d139cc058e1e981c830328f7ea58f5e",
+    "src/runtime/gguf_matrix.inl": "44e4a52d2e9b0af8946c470b27fb195549753e4379ac58149f4174a4bc4e5327",
+    "src/runtime/gguf_weights.inl": "96efcd40f032ed1e968395d591adb4e7a044a358329f3adbf1e9402d2e709f7a",
+    "src/runtime/layers.inl": "141882ef9ee50ec4d79b34e16d051243524e4223d905461215c3b53f89d50b71",
+    "src/runtime/prefill.inl": "ca21ee9b0c852168b4a08c79d22f2311bd0a18cd0a1b0055c38309dfefdf39c2",
+    "src/runtime/weights.inl": "73aea336b2368b0e3f40cc6cfcc7670353e5710c3e68752cb238da8412bd7130",
+    "src/server.cpp": "1adb45f9c62d9dd8efe8e656002b905f761c7296a9526c52b32e133031b2637c",
+    "src/tokenizer/tokenizer.cpp": "bd3543d72a4ad2338e3016e7c9dfcddf6a1bd1874012a3b785edbf29b91c0896",
+    "src/weights/gguf.cpp": "0e276952b844873a0e968301f7e64c2455d7e259d968d77fddf2eeb1c8a038ba",
+    "src/weights/q4_h128_artifact.cpp": "f48f445afcd59c54a9d5f877e7b0f139c07938c9a5d09f8bea0ea1459a8a4f16",
+    "src/weights/safetensors.cpp": "6381395bc3f0b2c6723d014007c4f0a66b79e46f7144bd78f4300466e8373649",
+    "tests/calibration_packer_model_test.py": "afbf2a81d09bd34ef226d63430efeffcea9147af8a2b5c05e52353d1d394deac",
+    "tests/calibration_test.py": "342e4ef11d68492dcffb2e6e6b78987b734ed9f95a78503a6a0ef374b2e975a0",
+    "tests/cpu_prefix_model_test.cpp": "3e6ce79182972e09dd4948c25c9c0e2a550a9e3a0cdca7e0410fc256a0daa0f2",
+    "tests/cpu_scheduler_model_test.cpp": "e77e067fb3277ce1e4556127c8b82dfa5061ece520183f3e90aab18e1070ef91",
+    "tests/delta_net_test.cpp": "d3740a564161d3f7776347b05577d6d203018b5f1d8c81b1fef0b4e6b4f1684b",
+    "tests/evaluation_test.py": "dd3651bf6cfea09677d44825e367ba464d4c702fea488618b0fb0afdd4e4eb75",
+    "tests/fixtures/k-quants/README.md": "0217227dbe184f5ee9844ff7fc68e8cdc264cd311b8d9225bf73cd07e50f2125",
+    "tests/fixtures/k-quants/q4_k.bin": "edc35a80be6d3723aa3675691a3c2c15e8f5b6c089a79bfb59ab5a109e65dee7",
+    "tests/fixtures/k-quants/q4_k.f32": "1fd9b7b20f101bd3751808e5ffc35eba91e51ed1656cf1e60b70c24cd9297ef3",
+    "tests/fixtures/k-quants/q5_k.bin": "e48b22bddb418d9d165b093e10205517d29aae859354fe63f90ba15741fb26fe",
+    "tests/fixtures/k-quants/q5_k.f32": "97fd5000cc124fdb94341a89933ab78be9ea794965fe1655f292eb376b3aa040",
+    "tests/fixtures/k-quants/q6_k.bin": "0025e6cecb4d3e01c0d55a7e964a9ed832b7d78876529bdc0b05833aa98273d8",
+    "tests/fixtures/k-quants/q6_k.f32": "8b025113f196131521044fd2873bd07ad563b5c360ca6157e024a95226909078",
+    "tests/fixtures/k-quants/q8_0.bin": "19219468ee5b15aa6e20062981cd7af09bbc906ef9f16a5eb72e9838deb51c12",
+    "tests/fixtures/k-quants/q8_0.f32": "cddfb789afa98b0816aedd21b4a781788aa75679841de6596aec893641adce1a",
+    "tests/full_attention_tiled_test.cpp": "8b0acef18aabb0feb47f4e13aa33ffded986098553063f7efdad0ae04b7fb028",
+    "tests/gguf_profile_test.cpp": "db6a059eb01fc5f4a87fdd737e320e7c91d19e7256519633555c5f29c20dafd2",
+    "tests/gguf_reader_test.cpp": "66ffebcb51e78e06763855752cbcb0fbdace76807b6067733d4b39cbf8207aab",
+    "tests/head_runtime_test.cpp": "6b5e978e5c0c09a27018bf4f4cb3b0b9e4fff95fe7608680b065b2ab9e0c58c6",
+    "tests/k_quant_test.cpp": "74805767a82ca09fc70d79bbc3cfc7f9ac4dbb67e58ed08acc724e46ace78146",
+    "tests/kv_pages_test.cpp": "8199a984790bbe03f8e537b116ca432529fc154d0a151eb9c1c070a7a8f41986",
+    "tests/mixed_q8_runtime_test.cpp": "22db6297c3c2eca2514ab42fdfcde1b66808a9360bab161a0dff49ad399046ec",
+    "tests/q4_0_test.cpp": "03e791edd5eec9e394998ffecf64f14d20b865e38731dd48982e35e72c2afdf4",
+    "tests/q4_dot4_test.cpp": "4d88f422e31dda0ae20867cb338ea86ae1d6f9fb1baa9db17de562be4e42b803",
+    "tests/q4_h128_artifact_test.cpp": "bb169b585754a053f96266a86225964f781addd9fa6e27534fb30d07a816293e",
+    "tests/q4_h128_test.cpp": "d1299c33c08e20bf459b86b614b1489100ce9d9ac147f4f2c355dda4c26f2559",
+    "tests/q4_quantizer_test.cpp": "de827ef3e3d4c420778334f9243cbb46bc97fa0ef1d41c02b844ce928aec7613",
+    "tests/q8_0_test.cpp": "3eecdecde770b5389641c24e21ee9ebf74814a01330277372174ff5dc7cf06e6",
+    "tests/server_smoke.py": "1424a84e6f3c4874be7fc5f674ef350f9bf863c1b3af122037e46b264a5728ed",
+    "tools/head_weight_screen.cpp": "ddc14e64e24c93fd0490a728e8179d91a1f002d581ebdfa20fed2fa33ee1fe3f",
+    "tools/ik-llama-comparison/CMakeLists.txt": "427010001323fb32f54d06815615bfd0900556e6f87b2dc338b78d066c0b3644",
+    "tools/ik-llama-comparison/patches/qwen35-multi-sequence-graph.patch": "d588d71da1f6460854350093291763df79d8db0344aefd691b1b4857359d1560",
+    "tools/llama-calibration-cuda/CMakeLists.txt": "b4b073fef554d03394b9f11c6771de716510af77e83f7f48984d16e5432d85a6",
+    "tools/llama-calibration-cuda/resident.cpp": "1964d57f645c5b37d0c153f8b9071b88516fe9189041c8595f472e663142f17a",
+    "tools/llama-comparison/CMakeLists.txt": "e798f699a350e6bd060a1f45c1837332b285f69a40b13d8c666265b0f6458bf2",
+    "tools/llama-comparison/capture-inputs.h": "0b6398a0b708befd73f89f2a58d30cc57081e5904b141f1f43821e74df18097e",
+    "tools/llama-comparison/main.cpp": "91c8eecbe68be12d4fa2788283ef33b4b3de1b1f74158745282609465694d664",
+    "tools/projection_probe.cpp": "feede36e025ab2dd243a5da7328705cc74ed710aa0c900482a59cecfcb1460a9",
+    "tools/qev-study-common.h": "d86eaf1ae19c17d81c3610bfe2ddcd3631d238e11dc0909359a8c6e902b0636a",
+    "tools/qev-native-study.cpp": "5d63c457cb7a16346a358e2f91998a11b52efc225afda0aeba126838d50ccdea",
+    "tools/llama-comparison/qev-study.cpp": "982eed7a91fb19f934bd06b637a259b6fd5cd9be95b5e453bac57b6b75ed2896",
+    "scripts/collect-qev-calibration.py": "1987685d62fe5ef0e81df8856530bb6f6abbc4b490ccbc30a0fa80ba89c75337",
+    "scripts/qev-cpu.py": "e85ab83b5d81bbe8455634fb1cad5207f0f657859025403a2eef45c7ecf50270",
+    "scripts/prepare-qev-calibration.py": "f4bc18b98b6e6128812d2cb89445eafee38056c9037ff8b994422680ddd734be",
+    "scripts/split-qev-study.py": "6d5813bed6999714ece4644539b7e9b785c80a1b2cebfac4df2cb6fee9a5ae2d",
+    "scripts/summarize-qev-study.py": "611db0e901c28691ceb2937aeba2e1f11dbb1b544e722725d680136da006bf9e",
+    "scripts/audit-qev-reference-weights.py": "d9ee0d33c753f23ae165edce0a3c364236c1dce5b4dd064aa66c78a2fb9c2396",
+    "scripts/qev-study.py": "56e63fe4af258acd5919e10fcc92801b6b861c100a032ce66b5214063f04d7b9",
+    "configs/qev-smoke.jsonl": "e66770c3ad2cfcd940db4a7229dda27002c647fab91b8afe1cb68126f7f07c7f",
+    "benchmarks/qev-calibration-2026-10-21/run-study.py": "0ebf213636b6cafb40d4460c4e3fe336251ebb4396def3f5d043527c348756f8",
+    "benchmarks/qev-calibration-2026-10-21/run-extended-study.py": "44f6a0f599107440a7f7344a1d88005098447fd32667a1e2832690502821d737",
+    "benchmarks/qev-calibration-2026-10-21/extend-mixed-search.py": "2494ef2fcabf9ec8fb4ffb74ad1a70e8b2b3ea19b0467aafc4f158fb880fd064",
+    "benchmarks/qev-calibration-2026-10-21/run-final-panels.py": "b924373b50cb316d733613dae4e5ea126bfaf347cc9106a031478ea035fb669a",
+    "benchmarks/qev-calibration-2026-10-21/run-smokes.py": "b923cbf6792952d334539e066ac94ec02dc350926a9c046d6c5014d1406b1fca",
+    "benchmarks/qev-calibration-2026-10-21/run-final-audits.py": "b8df41649ca92d058acf541f23a104879461e557523be1d306c5499de3798b22",
+    "benchmarks/qev-calibration-2026-10-21/run-final-speed.py": "f236be8506ee7b978d693549a3dbaaafd0431deca956a90fcbc79d97c06d4575",
+    "benchmarks/qev-calibration-2026-10-21/finish-reports.py": "7afab19dd58d2798854e728233f291162591adcc76ffb77e98452c0d5481d59a"
+  },
+  "build_flags": {
+    "build-linux": [
+      "DEFINES = -DQWEN35X_Q8_0_HAS_AVX2_TU=1 -DQWEN35X_Q8_0_HAS_AVX512_TU=1 -DQWEN35X_Q8_0_HAS_AVX512_VNNI_TU=1 -DQWEN35X_Q8_0_HAS_AVX_VNNI_TU=1",
+      "FLAGS = -O3 -DNDEBUG",
+      "FLAGS = -O3 -DNDEBUG -std=c++20",
+      "FLAGS = -O3 -DNDEBUG -std=c++20 -mavx2 -mavxvnni -mfma -mf16c",
+      "FLAGS = -O3 -DNDEBUG -std=c++20 -mavx2 -mfma -mf16c -mtune=skylake",
+      "FLAGS = -O3 -DNDEBUG -std=c++20 -mavx512f -mavx2 -mf16c -mfma",
+      "FLAGS = -O3 -DNDEBUG -std=c++20 -mavx512f -mavx512vl -mavx512vnni -mfma -mf16c"
+    ],
+    "build-qev-llama-current": [
+      "DEFINES = -DCPPHTTPLIB_FORM_URL_ENCODED_PAYLOAD_MAX_LENGTH=1048576 -DCPPHTTPLIB_LISTEN_BACKLOG=512 -DCPPHTTPLIB_REQUEST_URI_MAX_LENGTH=32768 -DCPPHTTPLIB_TCP_NODELAY=1",
+      "DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS",
+      "DEFINES = -DGGML_BACKEND_SHARED -DGGML_BUILD -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_EXPORTS",
+      "DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -DMTMD_VIDEO -Dmtmd_EXPORTS",
+      "DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS",
+      "DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_SHARED",
+      "DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_SHARED -DLLAMA_SUBPROCESS",
+      "DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_SHARED -DLLAMA_SUBPROCESS -Dllama_batched_bench_impl_EXPORTS",
+      "DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_SHARED -DLLAMA_SUBPROCESS -Dllama_bench_impl_EXPORTS",
+      "DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_SHARED -DLLAMA_SUBPROCESS -Dllama_common_EXPORTS",
+      "DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_SHARED -DLLAMA_SUBPROCESS -Dllama_completion_impl_EXPORTS",
+      "DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_SHARED -DLLAMA_SUBPROCESS -Dllama_fit_params_impl_EXPORTS",
+      "DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_SHARED -DLLAMA_SUBPROCESS -Dllama_perplexity_impl_EXPORTS",
+      "DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_SHARED -DLLAMA_SUBPROCESS -Dllama_quantize_impl_EXPORTS",
+      "DEFINES = -DGGML_BUILD -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_base_EXPORTS",
+      "FLAGS = -O3 -DNDEBUG",
+      "FLAGS = -O3 -DNDEBUG -fPIC -Wshadow -Wstrict-prototypes -Wpointer-arith -Wmissing-prototypes -Werror=implicit-int -Werror=implicit-function-declaration -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wdouble-promotion -w",
+      "FLAGS = -O3 -DNDEBUG -std=gnu++17",
+      "FLAGS = -O3 -DNDEBUG -std=gnu++17 -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi",
+      "FLAGS = -O3 -DNDEBUG -std=gnu++17 -fPIC -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi",
+      "FLAGS = -O3 -DNDEBUG -std=gnu++17 -fPIC -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi -Wno-cast-qual -Wno-maybe-uninitialized",
+      "FLAGS = -O3 -DNDEBUG -std=gnu++17 -fPIC -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi -march=native -fopenmp",
+      "FLAGS = -O3 -DNDEBUG -std=gnu++17 -fPIC -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi -w",
+      "FLAGS = -O3 -DNDEBUG -std=gnu++17 -fPIC -fvisibility=hidden -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi",
+      "FLAGS = -O3 -DNDEBUG -std=gnu++17 -fPIC -fvisibility=hidden -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi -fopenmp",
+      "FLAGS = -O3 -DNDEBUG -std=gnu11 -fPIC -Wshadow -Wstrict-prototypes -Wpointer-arith -Wmissing-prototypes -Werror=implicit-int -Werror=implicit-function-declaration -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wdouble-promotion -march=native -fopenmp",
+      "FLAGS = -O3 -DNDEBUG -std=gnu11 -fPIC -fvisibility=hidden -Wshadow -Wstrict-prototypes -Wpointer-arith -Wmissing-prototypes -Werror=implicit-int -Werror=implicit-function-declaration -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wdouble-promotion -fopenmp",
+      "FLAGS = -x c++ -O3 -DNDEBUG -std=gnu++17 -fPIC -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi -w"
+    ],
+    "build-qev-cuda-current": [
+      "DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_CUDA_FA_BF16_BF16=1 -DGGML_CUDA_FA_BF16_F16=0 -DGGML_CUDA_FA_BF16_Q4_0=0 -DGGML_CUDA_FA_BF16_Q4_1=0 -DGGML_CUDA_FA_BF16_Q5_0=0 -DGGML_CUDA_FA_BF16_Q5_1=0 -DGGML_CUDA_FA_BF16_Q8_0=0 -DGGML_CUDA_FA_F16_BF16=0 -DGGML_CUDA_FA_F16_F16=1 -DGGML_CUDA_FA_F16_Q4_0=0 -DGGML_CUDA_FA_F16_Q4_1=0 -DGGML_CUDA_FA_F16_Q5_0=0 -DGGML_CUDA_FA_F16_Q5_1=0 -DGGML_CUDA_FA_F16_Q8_0=0 -DGGML_CUDA_FA_Q4_0_BF16=0 -DGGML_CUDA_FA_Q4_0_F16=0 -DGGML_CUDA_FA_Q4_0_Q4_0=1 -DGGML_CUDA_FA_Q4_0_Q4_1=0 -DGGML_CUDA_FA_Q4_0_Q5_0=0 -DGGML_CUDA_FA_Q4_0_Q5_1=0 -DGGML_CUDA_FA_Q4_0_Q8_0=0 -DGGML_CUDA_FA_Q4_1_BF16=0 -DGGML_CUDA_FA_Q4_1_F16=0 -DGGML_CUDA_FA_Q4_1_Q4_0=0 -DGGML_CUDA_FA_Q4_1_Q4_1=0 -DGGML_CUDA_FA_Q4_1_Q5_0=0 -DGGML_CUDA_FA_Q4_1_Q5_1=0 -DGGML_CUDA_FA_Q4_1_Q8_0=0 -DGGML_CUDA_FA_Q5_0_BF16=0 -DGGML_CUDA_FA_Q5_0_F16=0 -DGGML_CUDA_FA_Q5_0_Q4_0=0 -DGGML_CUDA_FA_Q5_0_Q4_1=0 -DGGML_CUDA_FA_Q5_0_Q5_0=0 -DGGML_CUDA_FA_Q5_0_Q5_1=0 -DGGML_CUDA_FA_Q5_0_Q8_0=0 -DGGML_CUDA_FA_Q5_1_BF16=0 -DGGML_CUDA_FA_Q5_1_F16=0 -DGGML_CUDA_FA_Q5_1_Q4_0=0 -DGGML_CUDA_FA_Q5_1_Q4_1=0 -DGGML_CUDA_FA_Q5_1_Q5_0=0 -DGGML_CUDA_FA_Q5_1_Q5_1=0 -DGGML_CUDA_FA_Q5_1_Q8_0=0 -DGGML_CUDA_FA_Q8_0_BF16=0 -DGGML_CUDA_FA_Q8_0_F16=0 -DGGML_CUDA_FA_Q8_0_Q4_0=0 -DGGML_CUDA_FA_Q8_0_Q4_1=0 -DGGML_CUDA_FA_Q8_0_Q5_0=0 -DGGML_CUDA_FA_Q8_0_Q5_1=0 -DGGML_CUDA_FA_Q8_0_Q8_0=1 -DGGML_CUDA_FA_QUANTS=\\\"q4_0-q4_0,q8_0-q8_0,f16-f16,bf16-bf16\\\" -DGGML_CUDA_USE_GRAPHS -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cuda_EXPORTS",
+      "DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS",
+      "DEFINES = -DGGML_BACKEND_SHARED -DGGML_BUILD -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU -DGGML_USE_CUDA -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_EXPORTS",
+      "DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DGGML_USE_CUDA -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS",
+      "DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DGGML_USE_CUDA -DLLAMA_SHARED -DQWEN35_CALIBRATION_CUDA=1",
+      "DEFINES = -DGGML_BUILD -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_base_EXPORTS",
+      "FLAGS = -O3 -DNDEBUG",
+      "FLAGS = -O3 -DNDEBUG -fPIC -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi",
+      "FLAGS = -O3 -DNDEBUG -fPIC -Wshadow -Wstrict-prototypes -Wpointer-arith -Wmissing-prototypes -Werror=implicit-int -Werror=implicit-function-declaration -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wdouble-promotion -w",
+      "FLAGS = -O3 -DNDEBUG -std=c++17 \"--generate-code=arch=compute_120a,code=[compute_120a,sm_120a]\" -Xcompiler=-fPIC -use_fast_math -extended-lambda -compress-mode=size -Xcompiler \"-Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi -Wno-pedantic\"",
+      "FLAGS = -O3 -DNDEBUG -std=gnu++17 -fPIC -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi -march=native -fopenmp",
+      "FLAGS = -O3 -DNDEBUG -std=gnu++17 -fPIC -fvisibility=hidden -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi",
+      "FLAGS = -O3 -DNDEBUG -std=gnu++17 -fPIC -fvisibility=hidden -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi -fopenmp",
+      "FLAGS = -O3 -DNDEBUG -std=gnu11 -fPIC -Wshadow -Wstrict-prototypes -Wpointer-arith -Wmissing-prototypes -Werror=implicit-int -Werror=implicit-function-declaration -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wdouble-promotion -march=native -fopenmp",
+      "FLAGS = -O3 -DNDEBUG -std=gnu11 -fPIC -fvisibility=hidden -Wshadow -Wstrict-prototypes -Wpointer-arith -Wmissing-prototypes -Werror=implicit-int -Werror=implicit-function-declaration -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wdouble-promotion -fopenmp",
+      "FLAGS = -x c++ -O3 -DNDEBUG -fPIC -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi -w"
+    ]
+  },
+  "raw_root": "benchmarks/qev-calibration-2026-10-21",
+  "affinity": {
+    "native_quality_workers": [
+      "0-7",
+      "8-15"
+    ],
+    "threads_per_worker": 8,
+    "performance_comparison": false
+  },
+  "performance_completed_utc": "2026-10-21T17:03:26.355347+00:00",
+  "performance_protocol": {
+    "runner": "scripts/benchmark-inference-seq.ps1",
+    "runs": 3,
+    "warmups": 1,
+    "affinity": "0-7 (mask 255)",
+    "scope": "B1 first prompt forward, full vocabulary head, no decode forwards, loading/tokenization/postprocessing excluded",
+    "raw": "benchmarks/qev-calibration-2026-10-21/cpu-speed-current"
+  }
+}

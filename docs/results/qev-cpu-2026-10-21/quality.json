@@ -1,0 +1,32 @@
+[
+  {
+    "name": "BF16",
+    "backend": "llama.cpp",
+    "questions": 19,
+    "hand_authored_argmax_matches": 19,
+    "bf16_argmax_matches": 19,
+    "mean_option_kl_nats": 0.0,
+    "mean_option_total_variation": 0.0,
+    "max_option_probability_delta": 0.0
+  },
+  {
+    "name": "Q8_0",
+    "backend": "llama.cpp",
+    "questions": 19,
+    "hand_authored_argmax_matches": 19,
+    "bf16_argmax_matches": 19,
+    "mean_option_kl_nats": 3.662856884928635e-05,
+    "mean_option_total_variation": 0.00127313964541821,
+    "max_option_probability_delta": 0.010014973617458178
+  },
+  {
+    "name": "H128/Q4-G32-DOT4",
+    "backend": "native",
+    "questions": 19,
+    "hand_authored_argmax_matches": 19,
+    "bf16_argmax_matches": 19,
+    "mean_option_kl_nats": 0.010041402161794498,
+    "mean_option_total_variation": 0.021511956010578655,
+    "max_option_probability_delta": 0.26681286114538805
+  }
+]

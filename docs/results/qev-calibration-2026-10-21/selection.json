@@ -1,0 +1,20 @@
+{
+  "pure": {
+    "name": "1024-block128",
+    "weights": "models/qev-0.8b/model-cal-1024-block128.q35h",
+    "mean_kl": 0.025433404984189216,
+    "accuracy": 0.693,
+    "file_bytes": 424964864,
+    "sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69"
+  },
+  "mixed": {
+    "name": "1024-block128-d0100-q8-head",
+    "weights": "models/qev-0.8b/model-cal-1024-block128-d0100-q8-head.q35h",
+    "mean_kl": 0.022279135232573043,
+    "accuracy": 0.6933,
+    "file_bytes": 552104704,
+    "parent_weights": "models/qev-0.8b/model-cal-1024-block128-d0100.q35h",
+    "sha256": "b755d8639a48df3ef71285121dd817a63ab69e7519959101ebcf08ce6473256a"
+  },
+  "policy": "Two candidates frozen by development KL with a 0.5 percentage point accuracy guard to BF16, one pure Q4 and one selective Q8; no further changes after final results."
+}

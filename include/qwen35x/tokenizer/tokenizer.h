@@ -77,6 +77,7 @@ private:
   std::unordered_map<std::int32_t, std::string> added_token_id_to_content_;
   std::unordered_map<unsigned char, std::vector<std::string>> added_tokens_by_first_byte_;
   std::int32_t max_token_id_ = -1;
+  bool marks_with_letters_ = true;
 
   std::vector<std::string> byte_to_unicode_;
   std::unordered_map<std::uint32_t, std::uint8_t> unicode_to_byte_;

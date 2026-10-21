@@ -1,0 +1,127 @@
+{
+  "protocol": "First B1 HTTP decision after readiness; model loading excluded; same JSON request; fresh server per sample",
+  "runs": 3,
+  "warmups": 1,
+  "affinity": "0-7 (mask 255)",
+  "threads": 8,
+  "llama_revision": "9b56ccf00d755b0bf780140f6352a67db1ac0378",
+  "raw_root": "benchmarks/qev-api-2026-10-21/http-integrated",
+  "files": {
+    "build-linux/qwen35_cpu_server": {
+      "bytes": 4010056,
+      "sha256": "0acdf291a56177765a796637ede7a4896ccd01097110ec391b821bf26db61114"
+    },
+    "build-qev-server-current/bin/llama-server": {
+      "bytes": 15976,
+      "sha256": "0f26dd02b0b4bdf9a0d73fd14b658dbc8696920f09b28713d3a25ca032335fa0"
+    },
+    "models/qev-0.8b/model-cal-1024-block128.q35h": {
+      "bytes": 424964864,
+      "sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69"
+    },
+    "models/qev-0.8b/qev-0.8b-bf16.gguf": {
+      "bytes": 1516746912,
+      "sha256": "47a3e93109187add85f7905d507024ade0fc4c957a503183f3cc6106c68a9980"
+    },
+    "models/qev-0.8b/qev-0.8b-Q8_0.gguf": {
+      "bytes": 811845792,
+      "sha256": "07856dd5d6c7d1e19a9579ef324e5377649890a6438f7735ea5ac8935f2b2140"
+    },
+    "src/server.cpp": {
+      "bytes": 17679,
+      "sha256": "26145aa23c3281fb985634ee0fc98ce8891f878aba6de1a1e15f1568788fed7b"
+    },
+    "src/systemone.h": {
+      "bytes": 11517,
+      "sha256": "d0d44ffe78e3d30f95cdc822b60da92823e888ec0d4f773d3e0002c0c8e5ba97"
+    },
+    "scripts/benchmark-systemone-http.py": {
+      "bytes": 5128,
+      "sha256": "1557e3d9a27cd94cc39d4c7e95a8f2edc41b4b91a6ea26507a7d84286690c95b"
+    },
+    "tests/systemone_server_smoke.py": {
+      "bytes": 10824,
+      "sha256": "1f662ebce9995f6531f3f93689f020d85a98b2f2ead8815a0984b70bf02aed13"
+    },
+    "tests/systemone_protocol_test.cpp": {
+      "bytes": 2461,
+      "sha256": "6e69b5f04d254fe29e0f852a361ecc913bcaa5562fc545570fed3c1c6fb2c18c"
+    },
+    "benchmarks/qev-api-2026-10-21/short-request.json": {
+      "bytes": 390,
+      "sha256": "1bb5833036e0cbc6a38c2a031657942aecad6b8e6a05b2428527d28450c70faa"
+    },
+    "benchmarks/qev-api-2026-10-21/long-request.json": {
+      "bytes": 3584,
+      "sha256": "4ea4b8f8fb73224a7d31a90700ac63093ae645f2f2590e19d5a5c62d1a14ee3d"
+    },
+    "src/tokenizer/tokenizer.cpp": {
+      "bytes": 35398,
+      "sha256": "e44a65ef8af82f5e907cf99cf3cb138ef357f7ade80c876dcc4047a66c331572"
+    },
+    "tests/systemone_tokenizer_parity.py": {
+      "bytes": 1571,
+      "sha256": "4ca3b87db60030f064d8093dbeb928c2c94519123d2a5cb21dd6d631c997689e"
+    },
+    "docs/results/qev-api-2026-10-21/http-performance.csv": {
+      "bytes": 883,
+      "sha256": "99ace63be3cc893d45ed11d51e31b8705b594c572d08b0e6016442464e388f8f"
+    },
+    "docs/results/qev-api-2026-10-21/concurrency.csv": {
+      "bytes": 1160,
+      "sha256": "ee2c300479dab726d6c0311d53c1cace10cc1277487c6b5818ffab42dfdb2cdd"
+    },
+    "docs/results/qev-api-2026-10-21/http-matrix.json": {
+      "bytes": 7419,
+      "sha256": "b65384e2f0382efb640480bd6fa4a10bee369fce23fdfef077adc9b875bf0fc7"
+    },
+    "docs/results/qev-api-2026-10-21/full-tokenizer-parity.json": {
+      "bytes": 91,
+      "sha256": "13aaf91360ed3b0d7f6d3bfc3d93364651ed7defba534697534b0442d5bdc77b"
+    },
+    "src/runtime/prefill.inl": {
+      "bytes": 28563,
+      "sha256": "540dfdc16559d032543cdb23e2b13eabcc47efc3ddc72b66573a20e78c9b1a8e"
+    },
+    "src/runtime/cpu_engine.inl": {
+      "bytes": 28874,
+      "sha256": "83a7a8feb1a3404ae33606e665d96d6aa009b81403e5b11cf71f6dec84f14437"
+    },
+    "src/cpu/q4_dot4_prefill_avx512.cpp": {
+      "bytes": 5910,
+      "sha256": "aa09def7800745e99e6403743bacdcbbcf6c88167522d629bf532c6d147db8fa"
+    },
+    "src/cpu/q4_dot4.cpp": {
+      "bytes": 5386,
+      "sha256": "56b35f79e8679aa7e770042687952038ee26980c8d48270a7778a80d1faa47c7"
+    },
+    "CMakeLists.txt": {
+      "bytes": 13175,
+      "sha256": "6e361cf69db90dee519f3407d643786df12d6a044828f7451c6cb896d7a0b021"
+    },
+    "docs/results/qev-api-2026-10-21/equal-work-concurrency.csv": {
+      "bytes": 1139,
+      "sha256": "232af2f0be01bf18518ae27c62a8d336f4f46df5a630c081020dbd981c41d78b"
+    },
+    "docs/results/qev-api-2026-10-21/equal-work-matrix.json": {
+      "bytes": 4799,
+      "sha256": "0ac0610121e40cf24eb633bebaa2a356074d853bb8d739f4e39008e6c0d5875f"
+    }
+  },
+  "concurrency_protocol": "native only, distinct single-letter state prefixes; 1/4/8/16 concurrent requests; 8 inference threads; no cross-request prefill batching",
+  "engine_revision": "1f5a6e42ba2b37eb930c06b7f3315e1701c193ed",
+  "inherited_upstream_revision": "560847d021cd10a70a08d2a55ef7ca32af888415",
+  "equal_work_protocol": {
+    "total_requests": 16,
+    "client_concurrency": [
+      1,
+      4,
+      8,
+      16
+    ],
+    "runs": 3,
+    "warmups": 1,
+    "raw_root": "benchmarks/qev-api-2026-10-21/http-equal-work",
+    "note": "Same 16 distinct requests per sample, including serial control; no cross-request prefill batching"
+  }
+}

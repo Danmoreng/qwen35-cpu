@@ -1,0 +1,354 @@
+{
+  "selection": {
+    "pure": {
+      "name": "1024-block128",
+      "weights": "models/qev-0.8b/model-cal-1024-block128.q35h",
+      "mean_kl": 0.025433404984189216,
+      "accuracy": 0.693,
+      "file_bytes": 424964864,
+      "sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69"
+    },
+    "mixed": {
+      "name": "1024-block128-d0100-q8-head",
+      "weights": "models/qev-0.8b/model-cal-1024-block128-d0100-q8-head.q35h",
+      "mean_kl": 0.022279135232573043,
+      "accuracy": 0.6933,
+      "file_bytes": 552104704,
+      "parent_weights": "models/qev-0.8b/model-cal-1024-block128-d0100.q35h",
+      "sha256": "b755d8639a48df3ef71285121dd817a63ab69e7519959101ebcf08ce6473256a"
+    },
+    "policy": "Two candidates frozen by development KL with a 0.5 percentage point accuracy guard to BF16, one pure Q4 and one selective Q8; no further changes after final results."
+  },
+  "development_comparison": [
+    {
+      "name": "256-diagonal",
+      "weights": "models/qev-0.8b/model-cal-256-diagonal.q35h",
+      "mean_kl": 0.03831741984099472,
+      "accuracy": 0.6797,
+      "file_bytes": 424964864
+    },
+    {
+      "name": "256-block128",
+      "weights": "models/qev-0.8b/model-cal-256-block128.q35h",
+      "mean_kl": 0.02611255279550153,
+      "accuracy": 0.6956,
+      "file_bytes": 424964864
+    },
+    {
+      "name": "1024-block128",
+      "weights": "models/qev-0.8b/model-cal-1024-block128.q35h",
+      "mean_kl": 0.025433404984189216,
+      "accuracy": 0.693,
+      "file_bytes": 424964864
+    },
+    {
+      "name": "1024-block128-d0001",
+      "weights": "models/qev-0.8b/model-cal-1024-block128-d0001.q35h",
+      "mean_kl": 0.027781591208886004,
+      "accuracy": 0.6885,
+      "file_bytes": 424964864
+    },
+    {
+      "name": "1024-block128-d0100",
+      "weights": "models/qev-0.8b/model-cal-1024-block128-d0100.q35h",
+      "mean_kl": 0.023377274382109663,
+      "accuracy": 0.6835,
+      "file_bytes": 424964864
+    },
+    {
+      "name": "1024-block128-d0100-q8-head",
+      "weights": "models/qev-0.8b/model-cal-1024-block128-d0100-q8-head.q35h",
+      "mean_kl": 0.022279135232573043,
+      "accuracy": 0.6933,
+      "file_bytes": 552104704,
+      "parent_weights": "models/qev-0.8b/model-cal-1024-block128-d0100.q35h"
+    },
+    {
+      "name": "1024-block128-d0100-q8-gates",
+      "weights": "models/qev-0.8b/model-cal-1024-block128-d0100-q8-gates.q35h",
+      "mean_kl": 0.02361017234118563,
+      "accuracy": 0.6852,
+      "file_bytes": 425262272,
+      "parent_weights": "models/qev-0.8b/model-cal-1024-block128-d0100.q35h"
+    },
+    {
+      "name": "1024-block128-d0100-q8-head-gates",
+      "weights": "models/qev-0.8b/model-cal-1024-block128-d0100-q8-head-gates.q35h",
+      "mean_kl": 0.02265245954689265,
+      "accuracy": 0.6897,
+      "file_bytes": 552402112,
+      "parent_weights": "models/qev-0.8b/model-cal-1024-block128-d0100.q35h"
+    },
+    {
+      "name": "1024-block128-q8-head",
+      "weights": "models/qev-0.8b/model-cal-1024-block128-q8-head.q35h",
+      "mean_kl": 0.024077878596405602,
+      "accuracy": 0.6915,
+      "file_bytes": 552104704,
+      "parent_weights": "models/qev-0.8b/model-cal-1024-block128.q35h"
+    },
+    {
+      "name": "1024-block128-q8-gates",
+      "weights": "models/qev-0.8b/model-cal-1024-block128-q8-gates.q35h",
+      "mean_kl": 0.025090378212482462,
+      "accuracy": 0.689,
+      "file_bytes": 425262272,
+      "parent_weights": "models/qev-0.8b/model-cal-1024-block128.q35h"
+    },
+    {
+      "name": "1024-block128-q8-head-gates",
+      "weights": "models/qev-0.8b/model-cal-1024-block128-q8-head-gates.q35h",
+      "mean_kl": 0.02375178892139627,
+      "accuracy": 0.6974,
+      "file_bytes": 552402112,
+      "parent_weights": "models/qev-0.8b/model-cal-1024-block128.q35h"
+    }
+  ],
+  "final_outcomes": {
+    "pure": {
+      "selected": {
+        "name": "1024-block128",
+        "weights": "models/qev-0.8b/model-cal-1024-block128.q35h",
+        "mean_kl": 0.025433404984189216,
+        "accuracy": 0.693,
+        "file_bytes": 424964864,
+        "sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69"
+      },
+      "accuracy_gain_percentage_points": 1.1299999999999977,
+      "mean_kl_reduction_percent": 42.64141790886302,
+      "argmax_flips_before": 1573,
+      "argmax_flips_after": 1074,
+      "vs_uncalibrated": {
+        "method": "paired cluster bootstrap, grouped variants/requests; macro mean across scored skills",
+        "resamples": 1000,
+        "seed": 20261021,
+        "raw_accuracy_delta_percentage_points": 1.1333114144557288,
+        "accuracy_delta_percentage_points_ci95": [
+          0.4502301499894147,
+          1.7863445253558672
+        ],
+        "macro_brier_delta_ci95": [
+          -0.011160642086238005,
+          -0.002843701562599322
+        ]
+      },
+      "vs_bf16": {
+        "method": "paired cluster bootstrap, grouped variants/requests; macro mean across scored skills",
+        "resamples": 1000,
+        "seed": 20261021,
+        "raw_accuracy_delta_percentage_points": -0.1844261198710821,
+        "accuracy_delta_percentage_points_ci95": [
+          -0.7309879384893145,
+          0.38052904505653695
+        ],
+        "macro_brier_delta_ci95": [
+          -0.0002179390973773689,
+          0.005823607926160871
+        ]
+      },
+      "vs_q8": {
+        "method": "paired cluster bootstrap, grouped variants/requests; macro mean across scored skills",
+        "resamples": 1000,
+        "seed": 20261021,
+        "raw_accuracy_delta_percentage_points": -0.1359109286635568,
+        "accuracy_delta_percentage_points_ci95": [
+          -0.6841920566604353,
+          0.44710412809175604
+        ],
+        "macro_brier_delta_ci95": [
+          -2.255640170878486e-05,
+          0.00607784267337291
+        ]
+      }
+    },
+    "mixed": {
+      "selected": {
+        "name": "1024-block128-d0100-q8-head",
+        "weights": "models/qev-0.8b/model-cal-1024-block128-d0100-q8-head.q35h",
+        "mean_kl": 0.022279135232573043,
+        "accuracy": 0.6933,
+        "file_bytes": 552104704,
+        "parent_weights": "models/qev-0.8b/model-cal-1024-block128-d0100.q35h",
+        "sha256": "b755d8639a48df3ef71285121dd817a63ab69e7519959101ebcf08ce6473256a"
+      },
+      "accuracy_gain_percentage_points": 1.2599999999999945,
+      "mean_kl_reduction_percent": 49.24794893779361,
+      "argmax_flips_before": 1573,
+      "argmax_flips_after": 1138,
+      "vs_uncalibrated": {
+        "method": "paired cluster bootstrap, grouped variants/requests; macro mean across scored skills",
+        "resamples": 1000,
+        "seed": 20261021,
+        "raw_accuracy_delta_percentage_points": 1.2610008893983928,
+        "accuracy_delta_percentage_points_ci95": [
+          0.5999360363011316,
+          1.8438975166998852
+        ],
+        "macro_brier_delta_ci95": [
+          -0.011382185082437065,
+          -0.003446827000981952
+        ]
+      },
+      "vs_bf16": {
+        "method": "paired cluster bootstrap, grouped variants/requests; macro mean across scored skills",
+        "resamples": 1000,
+        "seed": 20261021,
+        "raw_accuracy_delta_percentage_points": -0.05673664492841773,
+        "accuracy_delta_percentage_points_ci95": [
+          -0.6370326630496066,
+          0.5089638700311032
+        ],
+        "macro_brier_delta_ci95": [
+          -0.0007094453031834224,
+          0.005330359954987777
+        ]
+      },
+      "vs_q8": {
+        "method": "paired cluster bootstrap, grouped variants/requests; macro mean across scored skills",
+        "resamples": 1000,
+        "seed": 20261021,
+        "raw_accuracy_delta_percentage_points": -0.008221453720892427,
+        "accuracy_delta_percentage_points_ci95": [
+          -0.5778767938211937,
+          0.5652269510558824
+        ],
+        "macro_brier_delta_ci95": [
+          -0.000556613759943061,
+          0.005651259100090458
+        ]
+      }
+    }
+  },
+  "panels": {
+    "seed": "qev-20261021-development-v1",
+    "per_skill": 45,
+    "group_policy": "same request, game question/state variants, missing/complete pairs stay together",
+    "selection": "stable SHA256 ordering, independent of labels/model outputs",
+    "development": {
+      "items": 1035,
+      "rows": 1553,
+      "tokens": 464693,
+      "ids_sha256": "13658445400bb579882712f75c9f4a07cc4a9fd803b06ec9332b498d52f48ad8"
+    },
+    "final": {
+      "items": 9133,
+      "rows": 13601,
+      "tokens": 4754610,
+      "ids_sha256": "5e1a40b2c63ab7f391db53fcdc2da5fb532d08a0a8f29bdd180cb239d7acfa65"
+    }
+  },
+  "study_plan": {
+    "upstream_revision": "9b56ccf00d755b0bf780140f6352a67db1ac0378",
+    "evaluation_revision": "fda80b2a75fca3fa3e5d3f6378acc2a6c04d4032",
+    "encoding": "per_question",
+    "fixed_temperatures": {
+      "choice": 1.7,
+      "noul": 0.9,
+      "score": 1.25
+    },
+    "variants": [
+      "uncalibrated",
+      "256-diagonal",
+      "256-block128",
+      "1024-block128"
+    ],
+    "evaluation_policy": "Adapt recipes using only the fixed development panel. Benchmark examples and labels never enter fitting. Freeze the lowest-KL pure-Q4 and mixed-precision candidates before final evaluation.",
+    "capture_policy": "One request at a time, compact exact H128-basis diagonal and block-128 second moments before discarding generated raw captures.",
+    "quality_metrics": [
+      "official per-skill accuracy/Brier/ECE/pick accuracy",
+      "option KL and TV to BF16",
+      "argmax flips by teacher margin",
+      "original smoke cases"
+    ],
+    "calibration_manifest": "calibration-final/manifest.json",
+    "calibration_tokens": 252138,
+    "calibration_256_tokens": 63800,
+    "reference_backend": "llama.cpp CUDA, validated against CPU on 225 rows",
+    "cpu_gpu_validation": "cpu-gpu-validation.json",
+    "native_evaluation": "Two independent resident CPU processes, eight threads each, affinity 0-7 and 8-15; quality only, no speed claims. Each job resets recurrent/KV state.",
+    "development_panel": "panels/development",
+    "final_panel": "panels/final",
+    "selection": "Adapted on development only: lowest option KL subject to macro accuracy no more than 0.5 percentage points below the development BF16 point estimate. Select pure Q4 and selective Q8 separately. This is a development guard, not a statistical equivalence claim. Final results do not tune recipes.",
+    "extended_search": "256 vs 1024 calibration requests; covariance damping 0.001, 0.01, 0.1; then Q8 tied head, Q8 recurrent a/b gates and both on the selected pure-Q4 recipe.; repeat all three Q8 ablations on the accuracy-guarded pure-Q4 recipe if different from the unconstrained KL winner."
+  },
+  "dataset_revision": "fda80b2a75fca3fa3e5d3f6378acc2a6c04d4032",
+  "cpu_gpu_validation": {
+    "rows": 225,
+    "mean_option_kl_cpu_to_gpu": 2.3474674427518467e-05,
+    "max_option_probability_delta": 0.017250223075854998,
+    "argmax_flips": [
+      {
+        "row": "row-002436",
+        "cpu": [
+          0.002580091743166814,
+          0.003269226089693874,
+          0.0014347340553112343,
+          0.0021768198904195115,
+          0.002713877415594458,
+          0.004115433526022513,
+          0.0035631154866152164,
+          0.0022778484476829453,
+          0.0023898506801812705,
+          0.002164352244312931,
+          0.30047801238480015,
+          0.0021909443041906234,
+          0.00295090233202683,
+          0.003222478699578634,
+          0.008118340613248662,
+          0.0019436795383146164,
+          0.0034413188992295112,
+          0.009744473222495805,
+          0.22784163778091468,
+          0.07821402606886917,
+          0.0034276788251297687,
+          0.02834296301502698,
+          0.29524553905011,
+          0.0012947975207019465,
+          0.0023732341238628515,
+          0.0039612910890872936,
+          0.0005233329534117906
+        ],
+        "gpu": [
+          0.0025969028820915225,
+          0.003282708126003282,
+          0.001446270912628045,
+          0.0021784435489600237,
+          0.0027380536897601056,
+          0.00415059449988267,
+          0.003587450499167234,
+          0.0022882739651866528,
+          0.002396546765325178,
+          0.0021755522016716146,
+          0.2968611980261852,
+          0.0022257473122664654,
+          0.0029618958159316686,
+          0.0032306295076703156,
+          0.008215746793444879,
+          0.0019610781999860696,
+          0.0033986327491532208,
+          0.009593705387499237,
+          0.22323233601069065,
+          0.0766644084791838,
+          0.003457549538391447,
+          0.028342153798426292,
+          0.3048426858112602,
+          0.0012940572779013492,
+          0.0023777925128670246,
+          0.003970967559841779,
+          0.0005286181286241097
+        ]
+      },
+      {
+        "row": "row-009530",
+        "cpu": [
+          0.5022001696227467,
+          0.49779983037725317
+        ],
+        "gpu": [
+          0.4982930698664466,
+          0.5017069301335534
+        ]
+      }
+    ]
+  }
+}

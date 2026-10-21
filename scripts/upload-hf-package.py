@@ -13,6 +13,15 @@ args = p.parse_args()
 expected = {'model.q35h', 'config.json', 'tokenizer.json', 'tokenizer_config.json',
             'vocab.json', 'merges.txt', 'chat_template.jinja', 'LICENSE', 'NOTICE',
             'README.md', 'quantization.json'}
+if (args.folder / 'qev_config.json').is_file():
+    # The qev package uses a plain decision prompt, without a chat template.
+    expected.remove('chat_template.jinja')
+    expected.add('qev_config.json')
+    import json
+    provenance = json.loads((args.folder / 'quantization.json').read_text())
+    if provenance.get('base_model') != 'labqoat/qev-0.8b' or provenance.get('artifact_sha256') != \
+        'e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69':
+        raise ValueError('Unexpected qev release candidate')
 if {x.name for x in args.folder.iterdir()} != expected | {'SHA256SUMS'}:
     raise ValueError('Package contains unexpected or missing files')
 manifest = {}
@@ -23,6 +32,8 @@ for line in (args.folder / 'SHA256SUMS').read_text().splitlines():
     manifest[name] = sha
 if manifest.keys() != expected:
     raise ValueError('Incomplete manifest')
+if 'qev_config.json' in expected and manifest['model.q35h'] != provenance['artifact_sha256']:
+    raise ValueError('qev artifact checksum differs from the evaluated candidate')
 for name, sha in manifest.items():
     h = hashlib.sha256()
     with (args.folder / name).open('rb') as source:

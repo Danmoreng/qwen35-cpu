@@ -1,0 +1,28 @@
+[
+  {
+    "provider": "Hugging Face",
+    "repository": "google/boolq",
+    "revision": "35b264d03638db9f4ce671b711558bf7ff0f80d5"
+  },
+  {
+    "provider": "Hugging Face",
+    "repository": "google-research-datasets/paws",
+    "revision": "161ece9501cf0a11f3e48bd356eaa82de46d6a09"
+  },
+  {
+    "provider": "Hugging Face",
+    "repository": "deepset/prompt-injections",
+    "revision": "4f61ecb038e9c3fb77e21034b22511b523772cdd"
+  },
+  {
+    "provider": "Hugging Face",
+    "repository": "HuggingFaceH4/ultrafeedback_binarized",
+    "revision": "3949bf5f8c17c394422ccfab0c31ea9c20bdeb85"
+  },
+  {
+    "provider": "GitHub",
+    "repository": "PolyAI-LDN/task-specific-datasets",
+    "revision": "57ec275d8078af65b7731c2a98be812d844a6d6b",
+    "purpose": "Banking77 train.csv and categories.json"
+  }
+]

@@ -1,0 +1,39 @@
+Test project /home/sebastian/Development/qwen35-cpu/build-linux
+      Start  1: systemone_protocol
+ 1/17 Test  #1: systemone_protocol ...............   Passed    0.00 sec
+      Start  2: full_attention_tiled
+ 2/17 Test  #2: full_attention_tiled .............   Passed   16.03 sec
+      Start  3: q4_dot4
+ 3/17 Test  #3: q4_dot4 ..........................   Passed    1.41 sec
+      Start  4: q4_0
+ 4/17 Test  #4: q4_0 .............................   Passed    0.00 sec
+      Start  5: q4_h128
+ 5/17 Test  #5: q4_h128 ..........................   Passed    0.01 sec
+      Start  6: q8_0
+ 6/17 Test  #6: q8_0 .............................   Passed    0.06 sec
+      Start  7: q4_h128_artifact
+ 7/17 Test  #7: q4_h128_artifact .................   Passed    0.00 sec
+      Start  8: delta_net
+ 8/17 Test  #8: delta_net ........................   Passed    0.01 sec
+      Start  9: kv_pages
+ 9/17 Test  #9: kv_pages .........................   Passed    0.03 sec
+      Start 10: k_quant
+10/17 Test #10: k_quant ..........................   Passed    0.00 sec
+      Start 11: gguf_reader
+11/17 Test #11: gguf_reader ......................   Passed    0.00 sec
+      Start 12: q4_quantizer
+12/17 Test #12: q4_quantizer .....................   Passed    0.11 sec
+      Start 13: evaluation_scripts
+13/17 Test #13: evaluation_scripts ...............   Passed    0.51 sec
+      Start 14: gguf_profile
+14/17 Test #14: gguf_profile .....................   Passed    0.02 sec
+      Start 15: calibration_basis
+15/17 Test #15: calibration_basis ................   Passed    0.07 sec
+      Start 16: mixed_q8_runtime
+16/17 Test #16: mixed_q8_runtime .................   Passed    0.00 sec
+      Start 17: head_runtime
+17/17 Test #17: head_runtime .....................   Passed    0.43 sec
+
+100% tests passed out of 17
+
+Total Test time (real) =  18.71 sec

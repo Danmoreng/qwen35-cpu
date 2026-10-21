@@ -1,0 +1,34 @@
+{
+  "upstream_revision": "9b56ccf00d755b0bf780140f6352a67db1ac0378",
+  "evaluation_revision": "fda80b2a75fca3fa3e5d3f6378acc2a6c04d4032",
+  "encoding": "per_question",
+  "fixed_temperatures": {
+    "choice": 1.7,
+    "noul": 0.9,
+    "score": 1.25
+  },
+  "variants": [
+    "uncalibrated",
+    "256-diagonal",
+    "256-block128",
+    "1024-block128"
+  ],
+  "evaluation_policy": "Adapt recipes using only the fixed development panel. Benchmark examples and labels never enter fitting. Freeze the lowest-KL pure-Q4 and mixed-precision candidates before final evaluation.",
+  "capture_policy": "One request at a time, compact exact H128-basis diagonal and block-128 second moments before discarding generated raw captures.",
+  "quality_metrics": [
+    "official per-skill accuracy/Brier/ECE/pick accuracy",
+    "option KL and TV to BF16",
+    "argmax flips by teacher margin",
+    "original smoke cases"
+  ],
+  "calibration_manifest": "calibration-final/manifest.json",
+  "calibration_tokens": 252138,
+  "calibration_256_tokens": 63800,
+  "reference_backend": "llama.cpp CUDA, validated against CPU on 225 rows",
+  "cpu_gpu_validation": "cpu-gpu-validation.json",
+  "native_evaluation": "Two independent resident CPU processes, eight threads each, affinity 0-7 and 8-15; quality only, no speed claims. Each job resets recurrent/KV state.",
+  "development_panel": "panels/development",
+  "final_panel": "panels/final",
+  "selection": "Adapted on development only: lowest option KL subject to macro accuracy no more than 0.5 percentage points below the development BF16 point estimate. Select pure Q4 and selective Q8 separately. This is a development guard, not a statistical equivalence claim. Final results do not tune recipes.",
+  "extended_search": "256 vs 1024 calibration requests; covariance damping 0.001, 0.01, 0.1; then Q8 tied head, Q8 recurrent a/b gates and both on the selected pure-Q4 recipe.; repeat all three Q8 ablations on the accuracy-guarded pure-Q4 recipe if different from the unconstrained KL winner."
+}

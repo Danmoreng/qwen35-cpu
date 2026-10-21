@@ -1,0 +1,22 @@
+{
+  "encoding": "per_question",
+  "items": 10168,
+  "rows": 15154,
+  "excluded": [],
+  "tokens": 5219303,
+  "max_tokens": 8603,
+  "tokenizer_sha256": "466f27fefa1f44a7bb82cb1b42163c761e01dc6f7f51fc4f3d0a499a5a9b4249",
+  "temperatures": {
+    "choice": 1.7,
+    "noul": 0.9,
+    "score": 1.25
+  },
+  "inputs": {
+    "benchmarks/qev-calibration-2026-10-21/upstream/data/agents.parquet": "fcfab0768e21869d1b72d7e62e517fcaa210269fd941629a3388f1f32857f596",
+    "benchmarks/qev-calibration-2026-10-21/upstream/data/games_spatial_jevspatial.parquet": "dbf1c7ac2077482e549a04965a8e719a7b5c667f413be381d515d40d6e86ba7b",
+    "benchmarks/qev-calibration-2026-10-21/upstream/data/games_spatial_other.parquet": "37b5ee9767ce858458233aedfe777ebe7e465a772918f8c51805f3649f95f214",
+    "benchmarks/qev-calibration-2026-10-21/upstream/data/judging.parquet": "f752ec5654e91e4a71fe55cbcc94b1cf2af635d32298d6a1535263c761ce7092",
+    "benchmarks/qev-calibration-2026-10-21/upstream/data/rules.parquet": "b4c20acfd9d658e869343cf830db9013c8ae659b14d6a20c90fb5912f1b7081a",
+    "benchmarks/qev-calibration-2026-10-21/upstream/data/safety.parquet": "9901e8b90dc90eb19e332c2ba3ededa3680122679258532eca364eb10ce2ac38"
+  }
+}
