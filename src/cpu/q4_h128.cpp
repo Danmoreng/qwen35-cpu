@@ -274,7 +274,11 @@ bool q4_h128_prepare_activation_1(
         signs ? signs[block].words[0] : detail::q4_h128_sign_word(block, 0, sign_seed),
         signs ? signs[block].words[1] : detail::q4_h128_sign_word(block, 1, sign_seed)};
       detail::q4_h128_transform_block_wasm_signed(input + block * q4_h128_transform_size, transformed, words);
+#if QWEN35X_HAS_WASM_Q8_SIMD
+      detail::q8_0_quantize_vector_1_wasm(transformed, destination, q4_h128_q4_blocks_per_transform);
+#else
       detail::q8_0_quantize_vector_1_scalar(transformed, destination, q4_h128_q4_blocks_per_transform);
+#endif
       for (std::size_t group = 0; group < q4_h128_q4_blocks_per_transform; ++group)
         destination[group].scales[0] *= q4_h128_inverse_sqrt_size;
       continue;

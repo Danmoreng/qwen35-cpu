@@ -357,6 +357,11 @@ void q8_0_quantize_vectors_4(
   const std::size_t vector_count,
   const std::size_t blocks_per_vector,
   const Q8_0Backend backend) noexcept {
+#if QWEN35X_HAS_WASM_Q8_SIMD
+  if (q8_0_resolve_backend(backend) == Q8_0Backend::wasm_simd) {
+    detail::q8_0_quantize_vectors_4_wasm(input, packed, vector_count, blocks_per_vector); return;
+  }
+#endif
 #if QWEN35X_Q8_0_HAS_AVX2_TU
   if (q8_0_backend_uses_avx2(backend)) {
     detail::q8_0_quantize_vectors_4_avx2(
@@ -375,6 +380,11 @@ void q8_0_quantize_vector_1(
   Q8_0BlockX1 * packed,
   const std::size_t blocks_per_vector,
   const Q8_0Backend backend) noexcept {
+#if QWEN35X_HAS_WASM_Q8_SIMD
+  if (q8_0_resolve_backend(backend) == Q8_0Backend::wasm_simd) {
+    detail::q8_0_quantize_vector_1_wasm(input, packed, blocks_per_vector); return;
+  }
+#endif
 #if QWEN35X_Q8_0_HAS_AVX2_TU
   if (q8_0_backend_uses_avx2(backend)) {
     detail::q8_0_quantize_vector_1_avx2(input, packed, blocks_per_vector);

@@ -54,9 +54,32 @@ Thresholds 128/32/16/8/1 were measured separately in an alternating grid with
 three process samples and one warmup. Threshold 32 was effectively neutral.
 An apparent advantage for threshold 1 correlated with first-trial position, so
 a separate fresh-browser A/B series was run. Fresh medians for 128 were
-157.40/157.62/1248.02 ms versus 155.93/156.00/1226.43 ms for 1 (see exact JSON).
+157.40/157.58/1247.95 ms versus 155.91/155.98/1226.38 ms for 1 (see exact JSON).
 This small difference does not establish the anticipated larger gain; retain
 128 as the product default. The explicit tuning control remains available.
 The 24-question candidate suite passed exact WASM bits and native probability
 gates. DeltaNet tests now require exact WASM state/output equality and cover
 1/3/7/8/16/31/32/33/128-token batches and split head ranges.
+
+## A: exact SIMD packed Q8 activation quantization
+
+A dedicated WASM SIMD translation unit quantizes X1 and X4 activation blocks.
+It preserves FP16 scale roundtrips, lane order, integer sums, and the scalar
+round-away-from-zero contract. Residual-based tie handling avoids an FP32
+addition rounding a value immediately below a half up to the tie. Exceptional
+nonfinite or reciprocal-overflow blocks use the existing scalar implementation.
+H128 normalization is still folded into the same prepared scales.
+
+Node and actual Chromium field tests cover zeros, signed zeros, half-neighbors,
+small/large magnitudes, nonfinite inputs, random blocks, multiple widths and
+sign seeds. The complete 24-question model suite has identical FP32 logit bits
+and answers; its pre-existing maximum native probability difference is 0.004.
+
+A fresh alternating comparison against the archived 27898c3 runtime used three
+measured processes plus one warmup, with unchanged eight-thread/chunk-32
+settings and ordinary Chromium flags. Compute medians were
+157.63/157.92/1247.61 ms before and 141.32/143.21/1155.91 ms after: about
+10.3%/9.3%/7.4% lower latency. Enable SIMD quantization in SIMD builds; scalar
+builds and native dispatch remain unchanged. Raw profiles contain binary hashes
+and the original baseline archive is retained. Compact results: `results/
+qev-pro-review-2026-10-21/A-packed-q8.json`.

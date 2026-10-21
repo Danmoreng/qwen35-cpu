@@ -24,12 +24,16 @@ case "$mode" in
 esac
 emcmake cmake -S . -B "build-wasm-$mode" -DCMAKE_BUILD_TYPE=Release \
   -DQWEN35_BUILD_WASM=ON -DQWEN35_WASM_SIMD="$simd" -DQWEN35_WASM_THREADS="$threads" \
-  -DQWEN35_WASM_RELAXED_DOT="$relaxed" -DQWEN35_WASM_RELAXED_FMA="$fma"
+  -DQWEN35_WASM_Q8_SIMD="${WASM_Q8_SIMD:-ON}" -DQWEN35_WASM_RELAXED_DOT="$relaxed" -DQWEN35_WASM_RELAXED_FMA="$fma"
 cmake --build "build-wasm-$mode" --parallel "${BUILD_JOBS:-4}"
 node "build-wasm-$mode/wasm_kernel_test.js"
 node "build-wasm-$mode/wasm_delta_test.js"
+node -e 'require(process.argv[1])()' "./build-wasm-$mode/wasm_quantization_test.js"
 mkdir -p "dist/wasm/$mode"
 cp "build-wasm-$mode/qev_wasm.js" "build-wasm-$mode/qev_wasm.wasm" "dist/wasm/$mode/"
+mkdir -p "dist/wasm/review/quantization/$mode"
+cp "build-wasm-$mode/wasm_quantization_test.js" "build-wasm-$mode/wasm_quantization_test.wasm" "dist/wasm/review/quantization/$mode/"
+cp tests/wasm_quantization_worker.js "dist/wasm/review/quantization/$mode/worker.js"
 cp web/* dist/wasm/
 mkdir -p dist/wasm/licenses
 cp "build-wasm-$mode/wasm-licenses/"* dist/wasm/licenses/

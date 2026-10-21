@@ -1,0 +1,24 @@
+{
+  "baseline": {
+    "compute_ms": [
+      157.625088,
+      157.91513600000002,
+      1247.610368
+    ]
+  },
+  "simd_packed_q8": {
+    "compute_ms": [
+      141.315328,
+      143.21024,
+      1155.9096319999999
+    ]
+  },
+  "quality": {
+    "questions": 24,
+    "max_reference_logit_delta": 0.054369449615478516,
+    "max_reference_probability_delta": 0.0040000000000000036,
+    "baseline_bit_mismatches": []
+  },
+  "raw_root": "benchmarks/qev-pro-review-2026-10-21",
+  "decision": "Enable exact SIMD Q8 preparation in SIMD builds; scalar fallback remains for exceptional blocks."
+}

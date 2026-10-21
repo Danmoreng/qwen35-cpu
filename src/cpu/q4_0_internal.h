@@ -5,6 +5,10 @@
 #include <cstddef>
 
 namespace qwen35x::cpu::detail {
+#if QWEN35X_HAS_WASM_Q8_SIMD
+void q8_0_quantize_vector_1_wasm(const float *, Q8_0BlockX1 *, std::size_t) noexcept;
+void q8_0_quantize_vectors_4_wasm(const float *, Q8_0BlockX4 *, std::size_t, std::size_t) noexcept;
+#endif
 
 void q4_0_dequantize_scalar(
   const Q4_0Block * input,
