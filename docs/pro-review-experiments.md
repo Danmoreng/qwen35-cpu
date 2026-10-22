@@ -5,6 +5,17 @@ All work remains local. Raw evidence is kept under
 `benchmarks/qev-pro-review-2026-10-21/`. README/model-card product tables are not
 changed by these experiments.
 
+## Completed review pass
+
+The bounded review experiments are complete at runtime source `416e0c8`.
+Accepted: exact SIMD Q8 activation preparation, fused multithreaded MLP
+preparation, shared-KV four-head FP32 WASM attention, and selected-option Decision
+head projection. Keep DeltaNet threshold 128, original executor spin budget,
+FP32 browser KV, eight threads and the existing 32-token WASM chunk default.
+Q4 instruction/tile variants, weighted rows, merged tails and native greedy T8
+remain disabled. The final fresh-process control does not confirm the resident
+grid's apparent chunk-64 win. Full evidence and limitations follow below.
+
 ## Measurement and numerical controls
 
 The starting native/browser series was repeated with the existing sequential
@@ -394,3 +405,73 @@ A fresh-browser comparison with extended per-session warmups is required before
 adopting a chunk size. These are Decision elapsed times including bounded
 worker yields; forward-call `prefill_ms` and worker/page times are retained
 separately. They exclude model loading.
+
+
+## Final independent comparison and decisions
+
+The final alternating sequential series uses one complete process warmup and
+three measured processes per case, with **three per-session passes over all
+three request shapes** in both engines. The additional untimed passes reduce
+warmup sensitivity; every raw warmup output is preserved. No diagnostic browser
+flags or operation timers are enabled. Ryzen 9 9955HX3D, eight physical cores
+0-7 (mask 255), Chromium 156.0.8078.4, unchanged H128/Q4-G32-DOT4 checkpoint.
+Both engines evaluate one fresh request at a time; zero decode forwards.
+
+Median Decision elapsed latency in milliseconds, excluding model loading:
+
+| Engine / chunk tokens | Short (74) | Snake (77) | Long (579) |
+|---|---:|---:|---:|
+| Original WASM / 32 | 153.08 | 152.16 | 1207.45 |
+| Accepted WASM / 32 | 122.68 | 122.04 | 960.73 |
+| Accepted WASM / 64 | 125.68 | 125.46 | 961.19 |
+| Accepted WASM / 128 | 125.27 | 125.72 | 941.33 |
+| Native / 32 | 34.43 | 34.14 | 239.21 |
+| Native / 64 | 31.08 | 31.45 | 209.83 |
+| Native / 128 | 26.44 | 27.04 | 187.31 |
+
+At unchanged chunk 32, accepted WASM lowers latency by 19.9%/19.8%/20.4%
+against the archived original in the same series. The full-head/selected-head
+and attention gains are included; model weights/calibration are unchanged.
+These are elapsed C ABI request times including tokenization and bounded worker
+yields. Raw forward-call, worker and page times are separate; stage/worker
+counters are not added together as wall time.
+
+Keep the WASM default at 32: chunk 64 has no confirmed fresh-process benefit,
+and chunk 128 gives only about 2% long-request improvement while short medians
+regress about 2-3%. This fails the intended balanced adoption criterion.
+The original grid and fresh series are both retained. Native benefits much
+more from chunk 128: about 23%/21%/22% lower latency than native chunk 32 in this
+series, with unchanged logits. It remains an explicit useful native setting;
+no global engine or server chunk default was changed by this study.
+
+With both engines at chunk 32, WASM/native ratios are 3.56/3.57/4.02.
+Against the faster native chunk-128 setting, the unchanged WASM default gives
+4.64/4.51/5.13. For matched chunk 128 the ratios are about 4.74/4.65/5.03.
+The faster native result must not be omitted when describing the remaining
+product gap. These compare the practical FP32-KV WASM and FP16-KV native paths,
+not a pure virtualization cost at identical cache precision.
+
+All seven WASM build variants pass DOT4, DeltaNet and quantization checks;
+actual Chromium quantization checks and all 17 native CTests pass. Complete
+18-request/24-question panels at one/eight threads and chunks 64/128 retain
+exact frozen WASM logit bits, prompt IDs, usage and answers, including protocol,
+cancellation/recovery and invalid-tuning checks. Maximum probability difference
+to the existing native reference remains 0.004. A separate functional native
+chunk-128 pass preserves every reference bit/answer on all 24 questions as well.
+No model task-accuracy improvement or larger-context accuracy guarantee follows
+from this regression panel; its longest prompt is 579 tokens. Longer-position
+kernel cases are unit tests, not full-model long-context evaluation.
+
+Conditional ideas were not pursued without their prerequisite: captured V8 code
+already emits VNNI, so no replacement integer-dot family was added; two failed
+narrowing variants ended that Q4 tile search. A new FP16 widening kernel cannot
+by itself remove the observed cache-precision drift that failed the quality
+gate. This pass does not establish a fundamental WASM speed limit or exhaust
+all possible future kernels, browsers and processors.
+
+Compact samples, ranges, hashes and gate results: `results/
+qev-pro-review-2026-10-21/complete.json`. Raw `complete-performance`,
+`complete-quality`, `complete-validation` and archived `complete-runtime` retain
+commands, source/binary/checkpoint hashes and environment evidence. Runtime
+source is committed locally; nothing was pushed, uploaded or published.
+The local demo serves the updated bundles after reload.
