@@ -1,0 +1,285 @@
+{
+  "http": [
+    {
+      "name": "llama.cpp Q8_0 long",
+      "runs": 3,
+      "decision_latency_ms": 828.7280949998603,
+      "decisions_per_second": 1.2066683946562335,
+      "mean_request_latency_ms": 828.7280949998603,
+      "prompt_tokens": 579.0,
+      "completed_requests": 1.0,
+      "concurrency": 1.0,
+      "latency_samples_ms": [
+        839.0849150000577,
+        828.7280949998603,
+        827.4094620001051
+      ]
+    },
+    {
+      "name": "llama.cpp BF16 long",
+      "runs": 3,
+      "decision_latency_ms": 541.1366959997395,
+      "decisions_per_second": 1.847961905729789,
+      "mean_request_latency_ms": 541.1366959997395,
+      "prompt_tokens": 579.0,
+      "completed_requests": 1.0,
+      "concurrency": 1.0,
+      "latency_samples_ms": [
+        543.0170519994135,
+        533.640629000729,
+        541.1366959997395
+      ]
+    },
+    {
+      "name": "Native selected chunk 128 long",
+      "runs": 3,
+      "decision_latency_ms": 204.40566299930651,
+      "decisions_per_second": 4.892232364439887,
+      "mean_request_latency_ms": 204.40566299930651,
+      "prompt_tokens": 579.0,
+      "completed_requests": 1.0,
+      "concurrency": 1.0,
+      "latency_samples_ms": [
+        202.91008900039742,
+        205.81917299932684,
+        204.40566299930651
+      ]
+    },
+    {
+      "name": "Native selected long",
+      "runs": 3,
+      "decision_latency_ms": 204.09251500041137,
+      "decisions_per_second": 4.89973872877202,
+      "mean_request_latency_ms": 204.09251500041137,
+      "prompt_tokens": 579.0,
+      "completed_requests": 1.0,
+      "concurrency": 1.0,
+      "latency_samples_ms": [
+        204.6775720000369,
+        204.09251500041137,
+        203.7142360004509
+      ]
+    },
+    {
+      "name": "Previous native long",
+      "runs": 3,
+      "decision_latency_ms": 206.57682399996702,
+      "decisions_per_second": 4.840814088613152,
+      "mean_request_latency_ms": 206.57682399996702,
+      "prompt_tokens": 579.0,
+      "completed_requests": 1.0,
+      "concurrency": 1.0,
+      "latency_samples_ms": [
+        207.28552299988223,
+        206.1416870001267,
+        206.57682399996702
+      ]
+    },
+    {
+      "name": "llama.cpp Q8_0 short",
+      "runs": 3,
+      "decision_latency_ms": 92.56040499985829,
+      "decisions_per_second": 10.803755666383816,
+      "mean_request_latency_ms": 92.56040499985829,
+      "prompt_tokens": 74.0,
+      "completed_requests": 1.0,
+      "concurrency": 1.0,
+      "latency_samples_ms": [
+        92.56040499985829,
+        92.1879870002158,
+        95.16719300063414
+      ]
+    },
+    {
+      "name": "llama.cpp BF16 short",
+      "runs": 3,
+      "decision_latency_ms": 77.04145499974402,
+      "decisions_per_second": 12.980024845108684,
+      "mean_request_latency_ms": 77.04145499974402,
+      "prompt_tokens": 74.0,
+      "completed_requests": 1.0,
+      "concurrency": 1.0,
+      "latency_samples_ms": [
+        77.73152900062996,
+        77.04145499974402,
+        75.61460899978556
+      ]
+    },
+    {
+      "name": "Native selected chunk 128 short",
+      "runs": 3,
+      "decision_latency_ms": 40.01543499998661,
+      "decisions_per_second": 24.990356846060394,
+      "mean_request_latency_ms": 40.01543499998661,
+      "prompt_tokens": 74.0,
+      "completed_requests": 1.0,
+      "concurrency": 1.0,
+      "latency_samples_ms": [
+        40.061953000076755,
+        40.01543499998661,
+        39.46602499945584
+      ]
+    },
+    {
+      "name": "Native selected short",
+      "runs": 3,
+      "decision_latency_ms": 44.37843600044289,
+      "decisions_per_second": 22.533466478855185,
+      "mean_request_latency_ms": 44.37843600044289,
+      "prompt_tokens": 74.0,
+      "completed_requests": 1.0,
+      "concurrency": 1.0,
+      "latency_samples_ms": [
+        44.37843600044289,
+        44.09407300045132,
+        45.50585000015417
+      ]
+    },
+    {
+      "name": "Previous native short",
+      "runs": 3,
+      "decision_latency_ms": 48.45595300048444,
+      "decisions_per_second": 20.637299198098578,
+      "mean_request_latency_ms": 48.45595300048444,
+      "prompt_tokens": 74.0,
+      "completed_requests": 1.0,
+      "concurrency": 1.0,
+      "latency_samples_ms": [
+        57.7162870004031,
+        48.45595300048444,
+        46.78849599986279
+      ]
+    }
+  ],
+  "concurrency": [
+    {
+      "name": "Native selected long C16 fixed16",
+      "runs": 3,
+      "decision_latency_ms": 3129.7023710003486,
+      "decisions_per_second": 5.112307211144142,
+      "mean_request_latency_ms": 2911.8505107499573,
+      "prompt_tokens": 581.0,
+      "completed_requests": 16.0,
+      "concurrency": 16.0,
+      "latency_samples_ms": [
+        3110.17928199999,
+        3129.7023710003486,
+        3134.9788239995178
+      ]
+    },
+    {
+      "name": "Native selected long C1 fixed16",
+      "runs": 3,
+      "decision_latency_ms": 3071.1574189999737,
+      "decisions_per_second": 5.209762254782075,
+      "mean_request_latency_ms": 191.89629849995526,
+      "prompt_tokens": 581.0,
+      "completed_requests": 16.0,
+      "concurrency": 1.0,
+      "latency_samples_ms": [
+        3064.8282620004466,
+        3071.1574189999737,
+        3095.5298620001486
+      ]
+    },
+    {
+      "name": "Previous native long C16 fixed16",
+      "runs": 3,
+      "decision_latency_ms": 3205.7866999994076,
+      "decisions_per_second": 4.9909746022724955,
+      "mean_request_latency_ms": 2965.7501402500657,
+      "prompt_tokens": 581.0,
+      "completed_requests": 16.0,
+      "concurrency": 16.0,
+      "latency_samples_ms": [
+        3152.4859330002073,
+        3205.7866999994076,
+        3210.5706210004428
+      ]
+    },
+    {
+      "name": "Previous native long C1 fixed16",
+      "runs": 3,
+      "decision_latency_ms": 3147.0326469998327,
+      "decisions_per_second": 5.084154438389228,
+      "mean_request_latency_ms": 196.63576018757567,
+      "prompt_tokens": 581.0,
+      "completed_requests": 16.0,
+      "concurrency": 1.0,
+      "latency_samples_ms": [
+        3127.9832760001227,
+        3231.4125330003662,
+        3147.0326469998327
+      ]
+    },
+    {
+      "name": "Native selected short C16 fixed16",
+      "runs": 3,
+      "decision_latency_ms": 551.1710420005329,
+      "decisions_per_second": 29.029101278482134,
+      "mean_request_latency_ms": 486.1595386250883,
+      "prompt_tokens": 76.0,
+      "completed_requests": 16.0,
+      "concurrency": 16.0,
+      "latency_samples_ms": [
+        551.1331809993862,
+        673.5990030001631,
+        551.1710420005329
+      ]
+    },
+    {
+      "name": "Native selected short C1 fixed16",
+      "runs": 3,
+      "decision_latency_ms": 514.8558949995277,
+      "decisions_per_second": 31.07665689642085,
+      "mean_request_latency_ms": 32.129342625182744,
+      "prompt_tokens": 76.0,
+      "completed_requests": 16.0,
+      "concurrency": 1.0,
+      "latency_samples_ms": [
+        509.3289119995461,
+        616.2363889998232,
+        514.8558949995277
+      ]
+    },
+    {
+      "name": "Previous native short C16 fixed16",
+      "runs": 3,
+      "decision_latency_ms": 595.4759309997826,
+      "decisions_per_second": 26.86926400725648,
+      "mean_request_latency_ms": 507.5701518127289,
+      "prompt_tokens": 76.0,
+      "completed_requests": 16.0,
+      "concurrency": 16.0,
+      "latency_samples_ms": [
+        595.2808239999285,
+        610.3843660002894,
+        595.4759309997826
+      ]
+    },
+    {
+      "name": "Previous native short C1 fixed16",
+      "runs": 3,
+      "decision_latency_ms": 557.1760619995985,
+      "decisions_per_second": 28.716237274406687,
+      "mean_request_latency_ms": 34.776225187499676,
+      "prompt_tokens": 76.0,
+      "completed_requests": 16.0,
+      "concurrency": 1.0,
+      "latency_samples_ms": [
+        547.5867810000636,
+        557.1760619995985,
+        559.7671510004147
+      ]
+    }
+  ],
+  "validation": {
+    "ctest_passed": 17,
+    "protocol_fixtures": 40,
+    "smoke_max_rounded_probability_delta": 0.0,
+    "wire_parity_fixtures_per_variant": 38,
+    "concurrent_parity_requests": 16,
+    "q8_head_full_fallback": true,
+    "fixed16_all_answers_and_usage_exact": true
+  }
+}

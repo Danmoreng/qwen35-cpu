@@ -1,0 +1,178 @@
+[
+  {
+    "name": "Previous native short C1 fixed16",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "benchmarks/qev-http-selected-2026-10-22/server-before",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--request",
+      "docs/results/qev-api-2026-10-21/short-request.json",
+      "--concurrency",
+      "1",
+      "--requests",
+      "16",
+      "--distinct-states"
+    ]
+  },
+  {
+    "name": "Previous native short C16 fixed16",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "benchmarks/qev-http-selected-2026-10-22/server-before",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--request",
+      "docs/results/qev-api-2026-10-21/short-request.json",
+      "--concurrency",
+      "16",
+      "--requests",
+      "16",
+      "--distinct-states"
+    ]
+  },
+  {
+    "name": "Native selected short C1 fixed16",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--request",
+      "docs/results/qev-api-2026-10-21/short-request.json",
+      "--concurrency",
+      "1",
+      "--requests",
+      "16",
+      "--distinct-states"
+    ]
+  },
+  {
+    "name": "Native selected short C16 fixed16",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--request",
+      "docs/results/qev-api-2026-10-21/short-request.json",
+      "--concurrency",
+      "16",
+      "--requests",
+      "16",
+      "--distinct-states"
+    ]
+  },
+  {
+    "name": "Previous native long C1 fixed16",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "benchmarks/qev-http-selected-2026-10-22/server-before",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--request",
+      "docs/results/qev-api-2026-10-21/long-request.json",
+      "--concurrency",
+      "1",
+      "--requests",
+      "16",
+      "--distinct-states"
+    ]
+  },
+  {
+    "name": "Previous native long C16 fixed16",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "benchmarks/qev-http-selected-2026-10-22/server-before",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--request",
+      "docs/results/qev-api-2026-10-21/long-request.json",
+      "--concurrency",
+      "16",
+      "--requests",
+      "16",
+      "--distinct-states"
+    ]
+  },
+  {
+    "name": "Native selected long C1 fixed16",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--request",
+      "docs/results/qev-api-2026-10-21/long-request.json",
+      "--concurrency",
+      "1",
+      "--requests",
+      "16",
+      "--distinct-states"
+    ]
+  },
+  {
+    "name": "Native selected long C16 fixed16",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--request",
+      "docs/results/qev-api-2026-10-21/long-request.json",
+      "--concurrency",
+      "16",
+      "--requests",
+      "16",
+      "--distinct-states"
+    ]
+  }
+]

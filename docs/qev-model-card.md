@@ -63,8 +63,11 @@ of the other questions. The compatibility default is `joint`; either encoding
 can be selected in the request or as the server default. In this implementation,
 joint questions evaluate separate causal prefixes, and per-question requests
 repeat the state. There is no decision prefix cache or single-pass multi-slot
-optimization. The native server currently computes the full vocabulary head
-and reads the option-letter logits from it, with no autoregressive continuation.
+optimization. The native server projects only the required option-letter logits for this
+checkpoint, with no autoregressive continuation. `--decision-head full` restores
+the full-vocabulary reference; other supported head formats use it automatically.
+The adaptive prefill chunk default is 64 tokens for short prompts and 128 for
+longer prompts. `--prefill-chunk 128` selects a fixed chunk explicitly.
 
 ## Format and calibration
 
@@ -128,16 +131,17 @@ from the quality scoring above.
 
 | Server / checkpoint | 74 input tokens | 579 input tokens |
 | --- | ---: | ---: |
-| **Native / calibrated H128/Q4-G32-DOT4** | **49.37 ms** | **211.11 ms** |
-| llama.cpp CPU / BF16 | 77.22 ms | 496.02 ms |
-| llama.cpp CPU / Q8_0 | 93.84 ms | 784.47 ms |
+| **Native / calibrated H128/Q4-G32-DOT4, adaptive chunk** | **44.38 ms** | **204.09 ms** |
+| Native / same checkpoint, chunk 128 | 40.02 ms | 204.41 ms |
+| llama.cpp CPU / BF16 | 77.04 ms | 541.14 ms |
+| llama.cpp CPU / Q8_0 | 92.56 ms | 828.73 ms |
 
 These are B1 first-request observations. A separate fixed-work comparison sends
 the same 16 distinct requests serially or concurrently to one running server
-(76/581 input tokens per request). Serial throughput is **29.14/5.04
-decisions/s**; with 16 simultaneous calls it is **26.91/5.01 decisions/s**.
-Mean HTTP latency rises from 34 to 505 ms for short requests and from 198 to
-2,948 ms for long requests. The current scheduler shows no useful throughput
+(76/581 input tokens per request). Serial throughput is **31.08/5.21
+decisions/s**; with 16 simultaneous calls it is **29.03/5.11 decisions/s**.
+Mean HTTP latency rises from 32 to 486 ms for short requests and from 192 to
+2,912 ms for long requests. The current scheduler shows no useful throughput
 gain from concurrency on this workload; it does not batch prefill across
 requests. These throughput measurements are separate from the cold B1 times.
 CPU results depend on prompt length, hardware and kernels; the BF16/Q8 ordering
@@ -155,4 +159,4 @@ the engine's notices and dependency licenses are included with its source.
 Full methods, unsuccessful candidates, per-skill results, probability tails,
 source revisions and reproducible commands:
 [quality study](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/qev-calibration-2026-10-21.md),
-[HTTP study](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/qev-systemone-api-2026-10-21.md).
+[current HTTP study](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/qev-http-selected-2026-10-22.md).

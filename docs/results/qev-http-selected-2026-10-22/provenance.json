@@ -1,0 +1,64 @@
+{
+  "engine_revision": "6cbfdf90cf6aa5d291251e1ee87cb60ed11dbc16",
+  "baseline_revision": "9967619f5da6cf9034c15adb5c56d6672d2e1fbf",
+  "cpu": "AMD Ryzen 9 9955HX3D",
+  "affinity": "cores 0-7, mask 255, inherited by child HTTP servers",
+  "threads": 8,
+  "runs": 3,
+  "warmup_runs": 1,
+  "llama_revision": "9b56ccf00d755b0bf780140f6352a67db1ac0378",
+  "native_chunk": "adaptive: 64 for <=128 prompt tokens, 128 otherwise; explicit 128 separate",
+  "kv": "FP16",
+  "protocol": "First B1 HTTP decision after readiness; loading excluded. Fixed16 compares the same 16 distinct requests at concurrency 1/16. No per-server warmup or prefix cache.",
+  "raw_root": "benchmarks/qev-http-selected-2026-10-22",
+  "files": {
+    "build-linux/qwen35_cpu_server": {
+      "sha256": "3f67a9efc23e80d3f7d4de806d4403709c1f55e43987eb40d2aa57c2bb9feccd",
+      "bytes": 4030288
+    },
+    "benchmarks/qev-http-selected-2026-10-22/server-before": {
+      "sha256": "bec40f627bd8d0b503fdbb97337306baa9f4cc3cc899aa4b95c92e3e7affec1e",
+      "bytes": 4025984
+    },
+    "build-qev-server-current/bin/llama-server": {
+      "sha256": "0f26dd02b0b4bdf9a0d73fd14b658dbc8696920f09b28713d3a25ca032335fa0",
+      "bytes": 15976
+    },
+    "dist/qev-h128-public-final/model.q35h": {
+      "sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69",
+      "bytes": 424964864
+    },
+    "models/qev-0.8b/qev-0.8b-bf16.gguf": {
+      "sha256": "47a3e93109187add85f7905d507024ade0fc4c957a503183f3cc6106c68a9980",
+      "bytes": 1516746912
+    },
+    "models/qev-0.8b/qev-0.8b-Q8_0.gguf": {
+      "sha256": "07856dd5d6c7d1e19a9579ef324e5377649890a6438f7735ea5ac8935f2b2140",
+      "bytes": 811845792
+    },
+    "src/server.cpp": {
+      "sha256": "f2262bac1fce7af76dfdf99be70d89a571f0d77bf0a647eb34b5415c6ad31cda",
+      "bytes": 19172
+    },
+    "src/runtime/cpu_engine.inl": {
+      "sha256": "d8499b6c6ef1b538a5cc108d5672b1110541cbb69cdd68b2b9cf15295df6e7d6",
+      "bytes": 30934
+    },
+    "scripts/benchmark-systemone-http.py": {
+      "sha256": "5050ef0bd9118d9a4c78e08e541ea1c0c0c967ca40b7c897676e09cbb809ae59",
+      "bytes": 5455
+    },
+    "tests/systemone_readout_parity.py": {
+      "sha256": "c14c1b585611df7a5aae12a3f3d98daedc7ac4a546f4fffe4b82010cd4fdcb03",
+      "bytes": 5756
+    },
+    "docs/results/qev-api-2026-10-21/short-request.json": {
+      "sha256": "1bb5833036e0cbc6a38c2a031657942aecad6b8e6a05b2428527d28450c70faa",
+      "bytes": 390
+    },
+    "docs/results/qev-api-2026-10-21/long-request.json": {
+      "sha256": "4ea4b8f8fb73224a7d31a90700ac63093ae645f2f2590e19d5a5c62d1a14ee3d",
+      "bytes": 3584
+    }
+  }
+}

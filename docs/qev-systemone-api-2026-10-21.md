@@ -1,5 +1,10 @@
 # qev native System One API and CPU serving
 
+This document preserves the 2026-10-21 full-vocabulary server measurements.
+The [current server readout and HTTP results](qev-http-selected-2026-10-22.md)
+supersede its performance tables; the original protocol/concurrency explanation
+and validation remain useful.
+
 The native HTTP server implements the text-only `POST /v1/systemone` protocol
 used by qev-0.8b and current llama.cpp. The evaluated release artifact is
 `model-cal-1024-block128.q35h`, SHA256
