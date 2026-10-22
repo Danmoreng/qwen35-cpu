@@ -61,7 +61,7 @@ with tempfile.TemporaryFile(mode='w+b') as log:
         request = {'prompt': 'The capital of France is', 'max_tokens': 12, 'temperature': 0}
         status, reference = call('/v1/completions', request)
         assert status == 200, reference
-        for patch in [{'stream': True}, {'temperature': -1}, {'max_tokens': -1},
+        for patch in [{'stream': 'yes'}, {'temperature': -1}, {'max_tokens': -1},
                       {'temperature': '0.7'}, {'top_p': 0}, {'top_p': 1.1},
                       {'top_k': -1}, {'top_k': 1.5}, {'top_k': 248321},
                       {'repetition_penalty': .9}, {'seed': -2}, {'seed': 4294967296},

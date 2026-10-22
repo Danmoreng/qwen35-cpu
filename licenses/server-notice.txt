@@ -1,0 +1,12 @@
+Server text processing attribution
+
+UTF-8 stream decoding and stop-sequence matching in src/server_text.h are adapted
+from Danmoreng/padra, revision ec909b64ce2a0caee67e0604ce8890a0674a35f5,
+src/text/decoder.cpp and src/text/stream.cpp (Apache-2.0).
+They have been modified for native Qwen token bytes and header-only ownership.
+The license is included as padra.txt.
+
+Padra's upstream notice attributes generic runtime/HTTP mechanisms to
+Danmoreng/gem16 (Apache-2.0), server reference revision
+c0a807afcbcd2528f304bada513afd11d1e9c979. Model arithmetic, GPU code, weights,
+and model-specific chat templates from those projects are not included.

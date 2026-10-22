@@ -1,5 +1,6 @@
 #pragma once
 #include "qwen35x/runtime/cpu_engine.h"
+#include "server_text.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <cmath>
@@ -16,6 +17,8 @@ struct Request {
   Api api = Api::completion;
   std::string prompt;
   CpuRequestSpec spec;
+  bool stream = false, include_usage = false;
+  std::vector<std::string> stops;
 };
 inline void require(bool ok, const std::string &message) {
   if (!ok) throw std::runtime_error(message);
@@ -129,17 +132,32 @@ inline Request parse(const std::string &body, std::size_t context, const std::st
   const auto j = Json::parse(body);
   if (api == Api::chat)
     fields(j, {"model", "messages", "max_tokens", "max_completion_tokens", "temperature", "stream", "n",
-               "prefix_tokens", "top_p", "top_k", "seed", "repetition_penalty"});
+               "prefix_tokens", "top_p", "top_k", "seed", "repetition_penalty", "stop", "stream_options"});
   else
     fields(j, {"model", "prompt", "max_tokens", "temperature", "stream", "n", "prefix_tokens",
-               "top_p", "top_k", "seed", "repetition_penalty"});
+               "top_p", "top_k", "seed", "repetition_penalty", "stop", "stream_options"});
   if (j.contains("model")) require(j.at("model").get<std::string>() == model, "Unknown model");
+  Request request; request.api = api;
   if (j.contains("stream") && !j["stream"].is_null()) {
     require(j["stream"].is_boolean(), "stream must be boolean");
-    require(!j["stream"].get<bool>(), "Streaming is not supported yet");
+    request.stream = j["stream"].get<bool>();
+  }
+  if (j.contains("stream_options") && !j["stream_options"].is_null()) {
+    require(request.stream, "stream_options requires stream=true");
+    fields(j["stream_options"], {"include_usage"});
+    if (j["stream_options"].contains("include_usage")) {
+      require(j["stream_options"]["include_usage"].is_boolean(), "include_usage must be boolean");
+      request.include_usage = j["stream_options"]["include_usage"].get<bool>();
+    }
+  }
+  if (j.contains("stop") && !j["stop"].is_null()) {
+    const auto &stop = j["stop"];
+    require(stop.is_string() || stop.is_array(), "stop must be text or an array of strings");
+    if (stop.is_string()) request.stops.push_back(stop.get<std::string>());
+    else for (const auto &value : stop) request.stops.push_back(value.get<std::string>());
+    (void)StopMatcher(request.stops, 8192);
   }
   require(integer(j, "n", 1) == 1, "Only n=1 is supported");
-  Request request; request.api = api;
   request.prompt = api == Api::chat ? chat_prompt(j.at("messages")) : j.at("prompt").get<std::string>();
   require(!request.prompt.empty() && request.prompt.size() <= 65536, "Prompt must contain 1..65536 bytes");
   require(!(j.contains("max_tokens") && !j["max_tokens"].is_null() && j.contains("max_completion_tokens") &&
@@ -171,5 +189,17 @@ inline Json completion(Api api, const std::string &model, CpuRequestId id, std::
     {"object", api == Api::chat ? "chat.completion" : "text_completion"}, {"created", created}, {"model", model},
     {"choices", Json::array({choice})}, {"usage", {{"prompt_tokens", prompt}, {"completion_tokens", output},
                                               {"total_tokens", prompt + output}}}};
+}
+inline Json chunk(Api api, const std::string &model, CpuRequestId id, std::time_t created,
+                  const std::string &text, bool begin, const Json &reason = nullptr) {
+  Json choice = {{"index", 0}, {"finish_reason", reason}, {"logprobs", nullptr}};
+  if (api == Api::chat) {
+    choice["delta"] = Json::object();
+    if (begin) choice["delta"]["role"] = "assistant";
+    if (reason.is_null()) choice["delta"]["content"] = text;
+  } else choice["text"] = text;
+  return {{"id", (api == Api::chat ? "chatcmpl-" : "cmpl-") + std::to_string(id)},
+          {"object", api == Api::chat ? "chat.completion.chunk" : "text_completion"},
+          {"created", created}, {"model", model}, {"choices", Json::array({choice})}};
 }
 } // namespace qwen35x::server

@@ -102,6 +102,8 @@ struct CpuRequestSpec {
 struct CpuRequestResult {
   CpuRequestStatus status = CpuRequestStatus::prefill;
   std::vector<std::int32_t> output_tokens;
+  // Sampled/forced tokens, including EOS or stop tokens withheld from output.
+  std::size_t generated_tokens = 0;
   std::size_t committed_tokens = 0;
   std::size_t prefill_tokens = 0, decode_forwards = 0;
   std::size_t cached_prefix_tokens = 0;

@@ -360,6 +360,7 @@ struct CpuEngine::Impl {
       error = "Invalid sampled token.";
       return false;
     }
+    ++s.result.generated_tokens;
     s.result.output_tokens.push_back(token);
     ++s.counts[token];
     s.pending_token = token;

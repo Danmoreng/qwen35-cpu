@@ -25,3 +25,11 @@ letter/mark/number categories, matching the supported Qwen tokenizer profiles.
 Its pinned source archive and checksum are in CMakeLists.txt; the MIT and Unicode
 data notices are installed as `licenses/utf8proc.txt`. No shared utf8proc library
 is required at runtime.
+
+The bounded stop matcher and incremental UTF-8 decoder in `src/server_text.h`
+are adapted from Padra at `ec909b64ce2a0caee67e0604ce8890a0674a35f5`, under
+Apache-2.0. See [the retained notice](licenses/server-notice.txt) and
+[license](licenses/padra.txt). Padra and gem16 at
+`c0a807afcbcd2528f304bada513afd11d1e9c979` also informed the separation of protocol
+adapters, generation events and transport lifecycle tests. The native Qwen
+model, tokenizer, CPU executor and hybrid state ownership remain this engine's.

@@ -4,6 +4,7 @@
 #include "httplib.h"
 #include "systemone.h"
 #include "server_protocol.h"
+#include "server_stream.h"
 #include <algorithm>
 #include <atomic>
 #include <cmath>
@@ -20,12 +21,26 @@ using namespace qwen35x;
 using Json = systemone::Json;
 namespace {
 const char *model_name = "Qwen3.5-0.8B-H128-Q4-G32-DOT4";
-struct Reply { int status; Json body; };
+using Reply = server::Reply;
 Reply failure(int status, const std::string &message) {
   return {status, {{"error", {{"message", message}, {"type", status < 500 ? "invalid_request_error" : "server_error"}, {"param", nullptr}, {"code", nullptr}}}}};
 }
 struct Job : server::Request {
-  std::promise<Reply> promise;
+  std::promise<Reply> promise, admitted;
+  bool admission_sent = false;
+  server::StreamQueue events;
+  server::Utf8Decoder utf8;
+  std::unique_ptr<server::StopMatcher> stop_matcher;
+  std::string text;
+  CpuRequestId id = 0;
+  std::time_t created = std::time(nullptr);
+  void accept(std::string_view value) {
+    text.append(value);
+    if (stream) events.push(std::string(value));
+  }
+  void ready(Reply reply) {
+    if (!admission_sent) { admitted.set_value(std::move(reply)); admission_sent = true; }
+  }
   std::atomic<bool> cancelled{false};
   std::size_t prompt_count = 0, limit = 0;
   std::optional<systemone::Request> decision;
@@ -86,6 +101,8 @@ class Service {
     return engine_->submit(std::move(spec), error);
   }
   void finish(const std::shared_ptr<Job> &job, Reply reply) {
+    job->ready(reply);
+    if (job->stream) job->events.finish(reply);
     job->promise.set_value(std::move(reply));
     std::lock_guard lock(mutex_); --outstanding_;
   }
@@ -116,12 +133,15 @@ class Service {
             finish(job, failure(400, error)); continue;
           }
           job->prompt_count = job->spec.prompt_tokens.size();
+          job->stop_matcher = std::make_unique<server::StopMatcher>(job->stops, 8192);
           job->limit = job->spec.max_new_tokens;
           for (const auto *token : {"<|im_end|>", "<|endoftext|>"})
             if (auto id = tokenizer_.token_to_id(token)) job->spec.stop_token_ids.push_back(*id);
           auto id = engine_->submit(std::move(job->spec), error);
           if (!id) { finish(job, failure(400, error)); continue; }
+          job->id = id;
           active.push_back({id, job, {}});
+          job->ready({200, Json::object()});
         } catch (const std::exception &e) { finish(job, failure(500, e.what())); }
       }
       for (auto &item : active)
@@ -136,11 +156,40 @@ class Service {
         active.clear();
       }
       for (auto it = active.begin(); it != active.end();) {
+        auto &job = it->job;
+        if (std::chrono::steady_clock::now() - job->started >= std::chrono::minutes(5)) {
+          engine_->cancel(it->id); engine_->release(it->id);
+          finish(job, failure(504, "Request deadline exceeded")); it = active.erase(it); continue;
+        }
+        if (job->cancelled || stopping) {
+          engine_->cancel(it->id); engine_->release(it->id);
+          finish(job, failure(499, "Request cancelled")); it = active.erase(it); continue;
+        }
+        if (job->stream && !job->events.room()) { ++it; continue; }
+        const auto previous = it->output.size();
         CpuRequestResult result;
-        if (!engine_->read_output(it->id, 256, it->output, error) ||
+        if (!engine_->read_output(it->id, 1, it->output, error) ||
             !engine_->result(it->id, result)) {
           engine_->cancel(it->id); engine_->release(it->id);
           finish(it->job, failure(500, error)); it = active.erase(it); continue;
+        }
+        if (!job->decision) {
+          try {
+            if (it->output.size() != previous) {
+              std::string bytes;
+              if (!tokenizer_.decode({it->output.back()}, bytes, error)) throw std::runtime_error(error);
+              job->accept(job->stop_matcher->Push(job->utf8.push(bytes)));
+            }
+            if (job->stop_matcher->stopped()) {
+              engine_->cancel(it->id);
+              result.status = CpuRequestStatus::complete;
+            } else if (result.status == CpuRequestStatus::complete && it->output.size() < result.output_tokens.size()) {
+              ++it; continue; // Drain remaining buffered tokens before finalizing.
+            }
+          } catch (const std::exception &e) {
+            engine_->cancel(it->id); engine_->release(it->id);
+            finish(job, failure(500, e.what())); it = active.erase(it); continue;
+          }
         }
         if (result.status == CpuRequestStatus::complete || result.status == CpuRequestStatus::failed ||
             result.status == CpuRequestStatus::cancelled) {
@@ -165,11 +214,13 @@ class Service {
                   {"usage", {{"input_tokens", decision.input_tokens}, {"output_tokens", 0}}}, {"latency_ms", elapsed}}};
               } catch (const std::exception &e) { reply = failure(500, e.what()); }
             } else {
-            std::string text;
-            if (!tokenizer_.decode(it->output, text, error)) reply = failure(500, error);
-            else reply = {200, server::completion(it->job->api, model_name, it->id,
-              std::time(nullptr), text, result.output_tokens.size() >= it->job->limit ? "length" : "stop",
-              it->job->prompt_count, result.output_tokens.size())};
+            try {
+              job->accept(job->stop_matcher->Push(job->utf8.push({}, true)));
+              job->accept(job->stop_matcher->Finish());
+              reply = {200, server::completion(job->api, model_name, it->id, job->created,
+                job->text, job->stop_matcher->stopped() || result.output_tokens.size() < job->limit ? "stop" : "length",
+                job->prompt_count, result.generated_tokens)};
+            } catch (const std::exception &e) { reply = failure(500, e.what()); }
             }
           }
           engine_->release(it->id);
@@ -177,6 +228,9 @@ class Service {
         } else ++it;
       }
       if (stopping && active.empty()) return;
+      if (!progressed && !active.empty()) {
+        std::unique_lock lock(mutex_); wake_.wait_for(lock, std::chrono::milliseconds(1));
+      }
     }
   }
 public:
@@ -292,7 +346,7 @@ int main(int argc, char **argv) try {
       {"data", Json::array({{{"id", model_name}, {"object", "model"}, {"owned_by", "local"}}})}}});
   });
   auto dispatch = [&](const std::shared_ptr<Job> &job, const httplib::Request &request, httplib::Response &response) {
-    auto result = job->promise.get_future();
+    auto result = job->stream ? job->admitted.get_future() : job->promise.get_future();
     if (!service.enqueue(job)) { send(response, failure(429, "Request capacity exhausted")); return; }
     const auto deadline = std::chrono::steady_clock::now() + std::chrono::minutes(5);
     while (result.wait_for(std::chrono::milliseconds(50)) != std::future_status::ready) {
@@ -301,7 +355,51 @@ int main(int argc, char **argv) try {
         job->cancelled = true; send(response, failure(504, "Request deadline exceeded")); return;
       }
     }
-    send(response, result.get());
+    const auto reply = result.get();
+    if (!job->stream || reply.status != 200) { send(response, reply); return; }
+    response.set_header("Cache-Control", "no-cache");
+    response.set_header("X-Accel-Buffering", "no");
+    response.set_chunked_content_provider("text/event-stream",
+      [job, closed = request.is_connection_closed](std::size_t, httplib::DataSink &sink) {
+        // Deferred providers execute after the route handler: contain every exception.
+        try {
+          auto write = [&](const Json &data) {
+            const auto wire = "data: " + data.dump() + "\n\n";
+            return sink.write(wire.data(), wire.size());
+          };
+          auto chunk = [&](const std::string &text, bool begin, const Json &reason = nullptr) {
+            auto data = server::chunk(job->api, model_name, job->id, job->created, text, begin, reason);
+            if (job->include_usage) data["usage"] = nullptr;
+            return data;
+          };
+          if (!write(chunk("", true))) { job->cancelled = true; return false; }
+          auto last_write = std::chrono::steady_clock::now();
+          for (;;) {
+            if (closed()) { job->cancelled = true; return false; }
+            std::string text; std::optional<Reply> terminal;
+            if (job->events.pop(text, terminal)) {
+              if (!write(chunk(text, false))) { job->cancelled = true; return false; }
+              last_write = std::chrono::steady_clock::now();
+            } else if (terminal) {
+              if (terminal->status != 200) {
+                const bool sent = write(terminal->body); sink.done(); return sent;
+              }
+              if (!write(chunk("", false, terminal->body["choices"][0]["finish_reason"]))) return false;
+              if (job->include_usage) {
+                auto usage = chunk("", false); usage["choices"] = Json::array();
+                usage["usage"] = terminal->body["usage"];
+                if (!write(usage)) return false;
+              }
+              if (!sink.write("data: [DONE]\n\n", 14)) return false;
+              sink.done(); return true;
+            }
+            if (std::chrono::steady_clock::now() - last_write >= std::chrono::seconds(10)) {
+              if (!sink.write(": heartbeat\n\n", 13)) { job->cancelled = true; return false; }
+              last_write = std::chrono::steady_clock::now();
+            }
+          }
+        } catch (...) { job->cancelled = true; return false; }
+      }, [job](bool success) { if (!success) job->cancelled = true; });
   };
   http.Post("/v1/completions", [&](const httplib::Request &request, httplib::Response &response) {
     if (!authorized(request, response)) return;

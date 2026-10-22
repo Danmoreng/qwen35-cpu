@@ -14,8 +14,8 @@ The process starts listening only after the model has loaded successfully.
 
 - `GET /health`: readiness (`{"status":"ok"}`).
 - `GET /v1/models`: the single supported model ID.
-- `POST /v1/completions`: JSON input, complete JSON response.
-- `POST /v1/chat/completions`: text messages, native Qwen formatting, complete JSON response.
+- `POST /v1/completions`: raw prompt, JSON or SSE response.
+- `POST /v1/chat/completions`: text messages, native Qwen formatting, JSON or SSE response.
 
 ```json
 {
@@ -42,8 +42,8 @@ same trust namespace and optional API key.
 
 Responses contain `id`, `object`, `created`, `model`, one text choice,
 `finish_reason` and token `usage`. Stop IDs come from the model tokenizer.
-Prompt text must already contain any desired chat template. Unsupported fields,
-multiple completions and streaming are rejected explicitly.
+Raw prompt text must already contain any desired chat template. Unsupported
+fields and multiple completions are rejected explicitly.
 The supported compatibility surface is documented below; it does not implement
 the entire OpenAI platform API.
 
@@ -63,7 +63,8 @@ messages, not already formatted prompts. The formatter does not execute model
 repository code or require Python/Jinja at runtime.
 
 Supported generation fields are `model`, `max_completion_tokens` (or `max_tokens`,
-but not both), `temperature`, `top_p`, `n=1`, `stream=false`, and the existing
+but not both), `temperature`, `top_p`, `n=1`, `stream`, `stream_options.include_usage`,
+`stop`, and the existing
 `top_k`, `seed`, `repetition_penalty`, `prefix_tokens` extensions. Output defaults
 to 128 tokens. Chat defaults to temperature 1, top_p 1 and top_k 0; raw
 completions retain the defaults above. Set temperature 0 for greedy decoding.
@@ -71,10 +72,36 @@ Optional numeric fields may be null to use their defaults.
 
 Responses use `object: "chat.completion"`, an assistant `message`, finish reason
 and token usage. Unsupported fields fail explicitly with an OpenAI-style error.
-Stop strings, streaming, structured output, tool calling and the Responses API
-are not supported yet. The OpenAI SDK works with a custom server `base_url` and
+Structured output, tool calling and the Responses API are not supported yet.
+The OpenAI SDK works with a custom server `base_url` and
 the actual model ID from `/v1/models`; API compatibility does not imply OpenAI
 model capabilities.
+
+## Streaming and stops
+
+Both completion routes accept `stream: true` and return `text/event-stream`.
+Chat streams start with the assistant role, followed by content deltas, a finish
+reason and `[DONE]`. Raw completions use `text` deltas. All chunks retain the same
+ID, model and creation timestamp. `stream_options: {"include_usage": true}` adds
+a final usage chunk with empty choices before `[DONE]`; intermediate usage is
+null. An interrupted/error stream does not promise a final usage event or `[DONE]`.
+
+`stop` accepts one string or up to four strings of 1..256 UTF-8 bytes on either
+route. Matches operate on decoded text, including across token boundaries;
+potential stop prefixes are withheld. The stop itself is excluded from visible
+output. A partial stop prefix is emitted when generation ends without a match.
+Usage counts sampled tokens, including EOS and tokens hidden by a matched stop.
+Prompt usage remains the full logical input, including any cached prefix.
+
+UTF-8 characters split across tokens are reassembled before JSON serialization.
+Malformed or unfinished generated UTF-8 is replaced with U+FFFD consistently for
+JSON and streaming output. Each request has at most 64 queued text events / 256
+KiB, plus the engine's bounded token buffer. A slow consumer pauses draining its
+own request; the inference owner never waits on a socket. Other requests continue.
+Disconnects cancel work; ten-second SSE comments keep an idle stream observable.
+The existing five-minute deadline includes preparation, queueing and generation.
+Validation errors precede SSE headers; later failures use an error event without
+a successful terminal sequence.
 
 ## qev decision API
 
@@ -177,8 +204,8 @@ API extensions, not standard OpenAI completions parameters.
 - Request body <=256 KiB; raw prompt <=64 KiB; context includes generated inputs.
 - Default context 8192, adjustable with `--max-context`; no automatic thread tuning.
 - Five-minute HTTP request deadline; disconnects and deadlines cancel engine work
-  at a scheduler boundary. Output is accumulated up to the requested token limit
-  because responses are non-streaming. Finished request records are released.
+  at a scheduler boundary. JSON responses accumulate output up to the requested
+  token limit; SSE delivers incremental text. Finished request records are released.
 - Process termination drops in-flight requests; there is no persistent queue or
   graceful rolling-restart protocol in this initial server.
 

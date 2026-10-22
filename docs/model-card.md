@@ -28,8 +28,8 @@ Transformers-loadable checkpoint**.
 ```
 
 Use `qwen35_cpu_server.exe` on Windows. The server supports raw completions at
-`http://localhost:8080/v1/completions`; render chat prompts before sending them.
-Streaming and a chat completions endpoint are not implemented. Follow the
+`http://localhost:8080/v1/completions` and native Qwen chat formatting at
+`/v1/chat/completions`; both offer JSON responses or SSE streaming. Follow the
 [engine README](@ENGINE_URL@/blob/@ENGINE_REVISION@/README.md) for pinned revision
 downloads and checksum verification. Pin an immutable model revision for
 reproducibility; prefix state must not be shared across different checkpoints.

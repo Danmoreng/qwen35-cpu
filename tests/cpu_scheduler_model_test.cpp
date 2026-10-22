@@ -133,7 +133,7 @@ int main(int argc, char **argv) try {
       break;
   }
   check(result.status == CpuRequestStatus::complete &&
-        output == std::vector<std::int32_t>{2});
+        output == std::vector<std::int32_t>{2} && result.generated_tokens == 3);
   engine->release(id);
   stop.stop_token_sequences = {{3, 4, 5}};
   check(engine->submit(stop, error) == 0);

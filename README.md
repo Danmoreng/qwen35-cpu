@@ -9,7 +9,7 @@ embeddable multi-request engine, CPU tests and comparison tools. It is an indepe
 extraction of the validated CPU implementation in qwen35x; see [provenance](PROVENANCE.md).
 The HTTP server supports **OpenAI-compatible text Chat Completions** with native
 Qwen prompt formatting, plus raw `/v1/completions`. Both support greedy or sampled
-decoding and complete JSON responses. SSE streaming and tool calls are not yet
+decoding, complete JSON responses and SSE streaming. Tool calls are not yet
 implemented; see the [supported API fields](docs/server.md#chat-completions).
 
 The native server also supports **qev-0.8b decisions via `POST /v1/systemone`**
