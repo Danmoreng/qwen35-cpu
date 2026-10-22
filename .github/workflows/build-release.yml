@@ -49,6 +49,8 @@ jobs:
         run: |
           node tests/demo_scenarios_test.mjs
           node tests/model_manifest_test.mjs
+          node tests/wasm_capabilities_test.mjs
+          node tests/wasm_logit_parity_test.mjs
       - name: Download pinned qev decision model
         run: python scripts/download-qev-model.py --output models/qev-ci
       - name: Decision HTTP readout parity

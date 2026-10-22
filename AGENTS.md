@@ -24,3 +24,11 @@
   binary/checkpoint hashes, CPU affinity and upstream revisions for published comparisons.
 - Do not equate quantization labels with quality, or compare batched throughput with
   a single-request baseline. Report quality and speed separately.
+- Keep `docs/README.md` as the documentation entry point. Put current usage in
+  guides and retained measurement reports in `docs/benchmarks/`. Superseded
+  studies belong in Git history with immutable links from `docs/history.md`.
+- Keep raw runs, logs and source snapshots under ignored `benchmarks/`; retain
+  compact evidence for published claims in `docs/results/`. Do not bundle that
+  evidence in runtime releases. Update links and packaging paths when moving docs.
+- Keep regression tests for supported code paths, even when the feature began as
+  an experiment. Document optional model/browser prerequisites in `docs/validation.md`.

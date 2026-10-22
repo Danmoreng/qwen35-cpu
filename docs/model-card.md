@@ -101,7 +101,7 @@ from the B16 speed measurement.
 Prefill uses one request. Decode uses 512 input / 128 output tokens and counts
 127 actual decode forwards per request. B16 is aggregate throughput across
 sixteen private requests. Loading, tokenization, HTTP and prefix-cache credit
-are excluded. IK B16 uses a [local graph-capacity correction](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/ik-batch16.md);
+are excluded. IK B16 uses a [local graph-capacity correction](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/benchmarks/ik-batch16.md);
 IK B1, prefill and quality use the stock fork. These measurements describe this
 CPU and workload.
 
@@ -136,12 +136,12 @@ The H128 checkpoint is calibrated on 256 mixed documents / 262,144 tokens.
 An independent mixed-language, code and math test scores 12.71898 PPL and
 0.064178 KL over 1,280 tokens; it is a separate corpus from the table above.
 
-[Measurement details and reproduction](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/current-cpu-comparison.md) ·
+[Measurement details and reproduction](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/benchmarks/cpu.md) ·
 [Performance CSV](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/results/current-cpu-2026-09-07/performance.csv) ·
 [B16 CSV](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/results/ik-batch16-2026-09-07/performance.csv) ·
 [Provenance](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/results/current-cpu-2026-09-07/manifest.json) ·
 [Quantization recipe](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/quantization.md) ·
-[Independent quality validation](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/g32-large-calibration-2026-09-07.md).
+[Independent quality validation](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/benchmarks/calibration.md).
 
 ## License
 

@@ -22,3 +22,7 @@ __pycache__/
 /docs/results/**/captures/
 /docs/results/**/runs/
 /docs/results/**/source/
+
+# Local JavaScript profiling and benchmark logs.
+/isolate-*-v8.log
+/docs/results/**/*.log

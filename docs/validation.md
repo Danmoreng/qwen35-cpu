@@ -1,51 +1,76 @@
-# Extraction validation — September 6, 2026
+# Validation
 
-Source: qwen35x `f766837`; standalone Windows/MSVC Release build on Ryzen 9
-9955HX3D. The CMake project enables C++ only, with no CUDA dependency or GPU
-runtime stubs. BF16 source parsing is retained for offline checkpoint conversion.
+Run checks from the repository root. Test sources and fixtures live in `tests/`;
+model weights, generated browser bundles and benchmark outputs are local inputs.
 
-The eight CTest cases cover Q4/DOT4/H128/Q8 kernels, tiled attention, DeltaNet,
-artifact serialization and KV pages. The optional real-model scheduler test
-with `--pages` passed, including full-logit parity, queueing, cancellation,
-backpressure, single-flight prefix reuse and independent paged branches.
+## Native build and unit tests
 
-An extraction regression ran both the frozen original `shared-pages.exe` and
-the new `qwen35_cpu_bench` through the sequential runner: P=512, N=16, eight
-threads, affinity `0xffff`, greedy decoding, repetition penalty 1. B=1 used
-cold contiguous state; B=4 used a registered 511-token prefix and shared pages.
-All output token arrays matched exactly. One run per configuration was used
-for regression checking; these timings are not published as performance evidence.
+```sh
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+ctest --test-dir build --output-on-failure
+```
 
-The text CLI also loaded successfully with only config/tokenizer files and the
-packed artifact, with no BF16 shards or safetensors index in its model directory.
-The text CLI generated output from a raw prompt. An eight-position teacher-forced
-dump contained all 248,320 vocabulary logits per position; self-comparison gave
-zero KL divergence and identical target NLL. This checks export/reader alignment,
-not accuracy against BF16 or another engine.
+On Windows, use `scripts/build.ps1` followed by the same CTest command.
+The default server build registers 15 C++ tests. If Python and NumPy are
+available at configure time, CTest also registers `evaluation_scripts` and
+`calibration_basis`. Use `ctest --test-dir build -N` to inspect the actual set.
 
-Validated artifact SHA-256:
-`e73de30bf646dee502dd5e519939221f7d2b60068ccbbe16dc1701597919c42f`.
-Model weights and disposable output/logit files remain ignored local assets.
-The subsequent [standalone comparison](comparison-2026-09-06.md) records fresh
-quantization quality, prefill, decode and static multi-request measurements,
-with their exact scope and limitations. The extraction checks above remain
-correctness evidence rather than performance measurements.
+Coverage includes Q4/DOT4/H128/Q8 and K-quant kernels, tiled attention,
+DeltaNet, artifact/GGUF readers, mixed-precision and head execution, KV pages,
+and the System One protocol. Q8 and head tests exercise retained runtime and
+packer features, including options used by decision calibration; they are not
+disposable benchmark output. The GGML-derived K-quant fixtures have their own
+[provenance](../tests/fixtures/k-quants/README.md).
 
-## Published server and release validation
+## Browser contracts without model downloads
 
-The [v0.1.0 release workflow](https://github.com/Danmoreng/qwen35-cpu/actions/runs/34033624187)
-passed on Windows Server 2022/MSVC and Ubuntu 22.04/GCC 12. Both platforms built
-the CPU targets, passed all eight CTest cases, downloaded the public Hugging Face
-model with checksum verification, passed the real-model scheduler test and tested
-HTTP authentication, input validation and concurrent greedy/prefix parity from
-the extracted release archives. The release job verified archive checksums before
-publishing the ZIP and tar.gz assets.
+```sh
+node tests/demo_scenarios_test.mjs
+node tests/model_manifest_test.mjs
+node tests/wasm_capabilities_test.mjs
+node tests/wasm_logit_parity_test.mjs
+```
 
-The public model revision is `cc7df08da7ef7ac15db62e80b4eda85e19a143da` in
-`danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4`. A local test also downloaded this exact
-revision and ran the GitHub-built Windows binary against it. Windows dependency
-inspection found only `KERNEL32.dll` and `WS2_32.dll` for the server executable.
+These check demo rules, model manifests, the fused-FMA capability guard and
+bitwise-logit comparison logic. They do not replace inference in a real browser.
 
-These are correctness and distribution checks, not new performance or quality
-measurements. The Intel i7-8750H laptop was unreachable during this release work;
-CI passing does not replace validation on that particular machine.
+## Model-backed checks
+
+The normal native build also produces `cpu_scheduler_model_test`,
+`cpu_prefix_model_test` and `cpu_batch_model_test`. They require matching model
+config/tokenizer files and a packed checkpoint. For the release scheduler check:
+
+```sh
+./build/cpu_scheduler_model_test models/qwen3.5-0.8b models/qwen3.5-0.8b/model.q35h --pages
+python tests/server_smoke.py --help
+python tests/systemone_readout_parity.py --help
+```
+
+`server_smoke.py` covers completion validation, concurrency and prefix behavior.
+`systemone_readout_parity.py` compares full and selected decision readouts and
+chunk sizes over HTTP. `systemone_server_smoke.py` and
+`systemone_tokenizer_parity.py` additionally accept prepared protocol/reference
+inputs; see their `--help` before running them.
+
+`calibration_packer_model_test.py` requires explicit `--packer`, `--model-dir`
+and `--calibration` inputs. It verifies malformed offline calibration data is
+rejected without leaving output artifacts.
+
+For WASM kernel, quantizer, UI and full-model parity checks, follow the
+[browser build guide](browser/build.md). Native browser-reference and
+selected-logit model targets are enabled with `-DQWEN35_BUILD_WASM=ON`.
+Browser integration scripts require a local served bundle, model and Playwright;
+they are deliberately separate from the dependency-free Node contract tests.
+
+## CI and release checks
+
+The [workflow](../.github/workflows/build-release.yml) builds on Windows/MSVC
+and Ubuntu/GCC, runs CTest and Node contracts, and verifies decision HTTP
+readout parity with the pinned public qev model. Base-model scheduler and
+extracted-package HTTP checks run when the pinned model variables are configured;
+release tags require those variables. See [publication](publishing.md).
+
+Passing correctness checks does not establish a new speed or quality score.
+Run timed comparisons separately through `scripts/benchmark-inference-seq.ps1`.
+Historical extraction and release reports remain in [Git history](history.md).

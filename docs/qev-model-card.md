@@ -169,5 +169,5 @@ the engine's notices and dependency licenses are included with its source.
 
 Full methods, unsuccessful candidates, per-skill results, probability tails,
 source revisions and reproducible commands:
-[quality study](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/qev-calibration-2026-10-21.md),
-[current HTTP study](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/qev-http-selected-2026-10-22.md).
+[quality study](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/benchmarks/decision-quality.md),
+[current HTTP study](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/benchmarks/decision-http.md).

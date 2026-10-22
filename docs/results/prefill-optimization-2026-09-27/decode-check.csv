@@ -1,3 +1,0 @@
-case,measured_runs,prefill_tokens_per_second_median,prefill_tokens_per_second_min,prefill_tokens_per_second_max,tokens_per_second_median,tokens_per_second_min,tokens_per_second_max
-baseline-p512-n512,3,1323.84261256,1270.95619662,1541.30763155,108.312326322,106.474885187,114.302612027
-guarded-p512-n512,3,1436.45397376,963.270412623,1447.82027999,110.127922519,94.125218198,110.307679051

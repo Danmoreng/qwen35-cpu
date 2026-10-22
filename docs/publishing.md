@@ -15,7 +15,7 @@ Preparation allows only the validated artifact hash. It copies a fixed file list
 records BF16 shard hashes and refuses an existing output directory. Test the
 prepared directory directly with the release server before upload. The original
 BF16 source revision was not retained; source hashes are recorded instead of
-inventing a revision. The model card reports the measured B+C 256-document
+inventing a revision. The model card reports the measured 256-document calibrated
 quality and speed separately, with corpus limitations. Quantization provenance
 includes converter, calibration and covariance sidecars, plus corpus provenance. The format is unchanged.
 
@@ -55,8 +55,8 @@ Test the prepared directory with `tests/systemone_server_smoke.py` and the nativ
 server before using the existing uploader with
 `--repo danmoreng/qev-0.8b-H128-Q4-G32-DOT4`. The uploader recognizes this exact
 qev package profile while preserving the original model's file allowlist.
-The model card pins the engine commit introducing the API; use that source
-revision until a subsequent binary release includes it. The base/chat HF model
+Use a current source build or a native release that includes the decision API
+(v0.2.0 or newer). The base/chat HF model
 and its existing published revision are unchanged.
 
 `.github/workflows/build-release.yml` runs on pushes, pull requests and manual
@@ -100,10 +100,14 @@ Sources: [Hugging Face upload guide](https://huggingface.co/docs/huggingface_hub
 Keep raw benchmark profiles, per-token dumps, activation manifests and archives
 under ignored `benchmarks/`. Commit only code, narrative reports and compact
 aggregate CSV/JSON results. Do not copy complete run directories into Git.
+The [evidence inventory](results/README.md) lists retained published data;
+[Git history](history.md) preserves superseded studies. Runtime archives contain
+Markdown guides and reports, excluding `docs/results/`; evidence links are for
+the matching source checkout on GitHub.
 
 ## Current model publication
 
-B+C 256 is published at immutable Hugging Face revision
+The standard H128/Q4-G32-DOT4 checkpoint is published at immutable Hugging Face revision
 `f6cb5cf04a9094670f9041578a3f4e44b94a1395`, with model SHA256
 `013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a`.
 The public package was downloaded through the documented checksum-verifying
@@ -121,8 +125,7 @@ available in [PR #1](https://github.com/Danmoreng/qwen35-cpu/pull/1).
 The anonymous public download passed every SHA256SUMS entry. Its artifact hash
 is `e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69`.
 This publication is separate from the existing base/chat model and does not
-change its CI model variables or existing binary releases. The new decision
-endpoint is available by building the pinned source revision.
+change its CI model variables or existing binary releases. The decision endpoint is included in native v0.2.0 and newer releases.
 
 ## Native v0.2.0 and current qev documentation
 
@@ -131,7 +134,7 @@ The tested native decision server is available in
 and Windows archives and SHA-256 files. Source tag: `eaf2425b56d11000ca2744e35e859d9381382a6b`.
 Linux and Windows release CI both passed, including full/selected HTTP parity.
 Current comparisons use separately confirmed llama.cpp batch tuning; see
-[the HTTP study](qev-http-selected-2026-10-22.md).
+[the HTTP study](benchmarks/decision-http.md).
 
 The qev model repository's metadata-only revision
 `eb167df11cbd6130513fedfcfdfb2ca11180b2de` updates README, serving evidence in
@@ -144,4 +147,4 @@ Development now validates locally and pushes finished work directly to `main`;
 pull requests are only used when explicitly requested. CI runs after each push
 and must succeed before publication. Force-push and deletion of `main` remain
 blocked. For the subsequent browser deployment, see
-[static Space packaging](huggingface-space.md).
+[static Space packaging](browser/hosting.md).

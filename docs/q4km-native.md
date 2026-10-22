@@ -1,7 +1,7 @@
 # Experimental native GGUF execution
 
 Source builds support the tested Qwen3.5-0.8B **Q4_0 `--pure`** and **Q4_K_M**
-GGUF files. Released v0.1.1 binaries predate this feature; build current source.
+GGUF files. Use a current source build when reproducing these paths.
 This remains a CPU-only engine for this one text architecture. It does not
 delegate inference to llama.cpp or require ggml libraries at runtime.
 
@@ -48,7 +48,7 @@ The comparison's pure file was created with the pinned llama.cpp quantizer:
 ./build-llama/bin/llama-quantize.exe --pure models/llama-comparison/Qwen3.5-0.8B-BF16.gguf models/llama-comparison/Qwen3.5-0.8B-Q4_0-pure.gguf Q4_0 12
 ```
 
-See the [original comparison](comparison-2026-09-06.md) for pinned BF16 source,
+See the [original comparison](https://github.com/Danmoreng/qwen35-cpu/blob/3680efb33bf6975ce6722d64d20c641cb7490b06/docs/comparison-2026-09-06.md) for pinned BF16 source,
 quantizer revision and setup. The downloaded mixed `Q4_0` is not interchangeable.
 
 ## Paused Q4_K_M experiment
@@ -70,13 +70,13 @@ measured H128 2,134.95/120.89, native Q4_K_M 372.83/88.80, and llama.cpp Q4_K_M
 
 ## Validation and measurements
 
-Ten CTest tests pass, including independent GGML dequantization fixtures,
+The CTest suite includes independent GGML dequantization fixtures,
 scalar/SIMD dots, batch/stride equivalence and malformed GGUF payloads. The
 existing model scheduler test passes with both native formats: private logits,
 queued requests, cancellation, backpressure, single-flight prefix builds and
 exact cold/restored branch logits.
 
-The [native Q4_0 report](native-q4_0-2026-09-06.md) records the bounded quality
+The [native Q4_0 report](https://github.com/Danmoreng/qwen35-cpu/blob/3680efb33bf6975ce6722d64d20c641cb7490b06/docs/native-q4_0-2026-09-06.md) records the bounded quality
 check, arithmetic regression, new sequential speed measurements and raw data.
 Repacking preserves weights, but activation quantization, accumulation order,
 normalization and recurrent/attention implementations can produce differences

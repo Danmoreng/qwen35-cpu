@@ -72,7 +72,7 @@ def main():
                   covariance_provenance=covariance, covariance_sidecar_sha256=digest(covariance_path),
                   calibration_documents=256, calibration_tokens=262144,
                   corpus_provenance=compact_corpus,
-                  validation_report=args.engine_url+'/blob/'+revision+'/docs/g32-large-calibration-2026-09-07.md')
+                  validation_report=args.engine_url+'/blob/'+revision+'/docs/benchmarks/calibration.md')
     (args.output / 'quantization.json').write_text(json.dumps(recipe, indent=2) + '\n', encoding='utf-8')
     notice = ('Derived from Qwen/Qwen3.5-0.8B by Qwen, licensed under Apache-2.0.\n'
               'Modifications: text-only extraction, H128/Q4-G32 quantization and CPU DOT4 packing.\n'

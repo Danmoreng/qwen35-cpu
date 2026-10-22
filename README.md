@@ -14,8 +14,8 @@ SSE streaming are not implemented.
 The native server also supports **qev-0.8b decisions via `POST /v1/systemone`**
 with a separate calibrated [qev model](https://huggingface.co/danmoreng/qev-0.8b-H128-Q4-G32-DOT4).
 See the [decision API](docs/server.md#qev-decision-api),
-[decision quality study](docs/qev-calibration-2026-10-21.md) and
-[current decision HTTP/concurrency measurements](docs/qev-http-selected-2026-10-22.md).
+[decision quality study](docs/benchmarks/decision-quality.md) and
+[current decision HTTP/concurrency measurements](docs/benchmarks/decision-http.md).
 The current native qev server projects only the needed option logits. Fresh
 HTTP B1 medians are **44.27 / 202.76 ms** for 74 / 579 input tokens with the
 adaptive chunk default, or **40.05 / 203.03 ms** with `--prefill-chunk 128`
@@ -26,7 +26,9 @@ The Qwen chat/base-model benchmarks below remain separate from that fine-tune.
 Try the [live CPU decision playground](https://huggingface.co/spaces/danmoreng/qev-0.8b-cpu-playground):
 seven interactive demos use this custom engine compiled to WASM. The initial
 model/config/tokenizer download is about 448 MB; inference runs on your browser's
-CPU. See [Space packaging and validation](docs/huggingface-space.md).
+CPU. See [Space packaging and validation](docs/browser/hosting.md).
+
+[Documentation](docs/README.md) · [Validation](docs/validation.md) · [Tooling](scripts/README.md)
 
 ## CPU benchmarks: speed and quality
 
@@ -70,7 +72,7 @@ from the B16 speed measurement.
 Prefill uses one request. Decode uses 512 input / 128 output tokens and counts
 127 actual decode forwards per request. B16 is aggregate throughput across
 sixteen private requests. Loading, tokenization, HTTP and prefix-cache credit
-are excluded. IK B16 uses a [local graph-capacity correction](docs/ik-batch16.md);
+are excluded. IK B16 uses a [local graph-capacity correction](docs/benchmarks/ik-batch16.md);
 IK B1, prefill and quality use the stock fork. These measurements describe this
 CPU and workload.
 
@@ -141,12 +143,12 @@ The H128 checkpoint is calibrated on 256 mixed documents / 262,144 tokens.
 An independent mixed-language, code and math test scores 12.71898 PPL and
 0.064178 KL over 1,280 tokens; it is a separate corpus from the table above.
 
-[Measurement details and reproduction](docs/current-cpu-comparison.md) ·
+[Measurement details and reproduction](docs/benchmarks/cpu.md) ·
 [Performance CSV](docs/results/current-cpu-2026-09-07/performance.csv) ·
 [B16 CSV](docs/results/ik-batch16-2026-09-07/performance.csv) ·
 [Provenance](docs/results/current-cpu-2026-09-07/manifest.json) ·
 [Quantization recipe](docs/quantization.md) ·
-[Independent quality validation](docs/g32-large-calibration-2026-09-07.md).
+[Independent quality validation](docs/benchmarks/calibration.md).
 
 ## Download and run
 
@@ -229,7 +231,8 @@ ctest --test-dir build --output-on-failure
 
 Windows/MSVC and Linux/GCC builds and kernel tests pass in GitHub CI.
 Real-model release tests are required on both platforms before a release tag
-publishes binaries; Intel i7-8750H hardware validation remains pending. ISA dispatch is designed for x86 portability, but
+publishes binaries. The Intel i7-8750H measurements above cover that AVX2
+system. ISA dispatch is designed for x86 portability, but
 this is not a claim of testing every x86 CPU. AVX2 or newer is the practical
 performance target; keep the portable core free of global `-march=native` flags.
 
@@ -280,7 +283,7 @@ serializes processes, records commands and binary hashes, alternates case order,
 and writes profiles plus a completed CSV. Three measured runs and one warmup
 are the default. Quality/logit-dump runs are separate from speed measurements.
 
-- CPU-only build and sixteen kernel/unit/evaluation tests: passed locally.
+- Native kernel, unit and evaluation checks: see the [validation guide](docs/validation.md).
 - Real-model scheduler/prefix/shared-page regression: passed.
 - AVX-512 prefill: bitwise full-model logit equivalence over 24 prompts, including
   chunk boundaries and a 4,096-token prompt.
@@ -292,10 +295,10 @@ are the default. Quality/logit-dump runs are separate from speed measurements.
 - Mixed 256-document calibration, error-compensated fitting and independent quality validation: passed.
 - Broader context-length and corpus validation remains ongoing.
 
-See [validation details](docs/validation.md) and the [bounded release plan](docs/comparison-plan.md).
+See [validation details](docs/validation.md) and the [publication workflow](docs/publishing.md).
 
-Calibrated MSE16 and block-128 error compensation run offline and preserves the DOT4 runtime and payload
-size. The standard download passes the free `2+2 = 4` regression. See the
-[calibration and benchmark report](docs/g32-large-calibration-2026-09-07.md)
-for quality scores, sequential speed measurements, reproduction and remaining
-plan stages.
+Calibrated MSE16 and block-128 error compensation run offline and preserve the
+DOT4 runtime and payload size. The standard download passes the free `2+2 = 4`
+regression. See the [calibration report](docs/benchmarks/calibration.md) for
+quality scores and reproduction, and the [documentation index](docs/README.md)
+for current guides.

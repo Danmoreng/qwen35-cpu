@@ -129,7 +129,7 @@ Weights are downloaded from the model repository and are not copied into this
 Space. Model license: Apache-2.0; code: MIT; dependency notices are in `licenses/`.
 
 [Engine source](https://github.com/Danmoreng/qwen35-cpu/tree/{source}) ·
-[Native benchmarks](https://github.com/Danmoreng/qwen35-cpu/blob/{source}/docs/qev-http-selected-2026-10-22.md)
+[Native benchmarks](https://github.com/Danmoreng/qwen35-cpu/blob/{source}/docs/benchmarks/decision-http.md)
 ''')
     package_files = {str(p.relative_to(args.output)): {'bytes': p.stat().st_size, 'sha256': sha(p)}
                      for p in sorted(args.output.rglob('*')) if p.is_file()}

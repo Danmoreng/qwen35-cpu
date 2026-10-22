@@ -34,7 +34,7 @@ The published recipe uses 256 independent selected documents / 262,144 tokens,
 with approximately 25% German, 25% English, 20% Python code, 20% rendered dialogs
 and 10% mathematics. A separate resident CUDA teacher collected activations;
 CPU inference requires no CUDA. Dataset revisions, selection hashes and held-out
-separation are recorded in the [study](g32-large-calibration-2026-09-07.md).
+separation are recorded in the [study](benchmarks/calibration.md).
 More data alone did not help MSE16, and the larger corpus is not better on every
 suite. The method and the resulting checkpoint were evaluated separately.
 
@@ -79,12 +79,12 @@ engine; older readers reject them. The packer writes a `.precision.json`
 sidecar identifying these choices. They do not alter the published standard.
 Both modes can be combined with `--covariance-dir`: promoted Q8 tensors bypass
 the Q4 fitting inputs, while the remaining Q4 tensors use the supplied diagonal
-and covariance statistics. See the [qev decision study](qev-calibration-2026-10-21.md)
+and covariance statistics. See the [qev decision study](benchmarks/decision-quality.md)
 for a model-specific comparison; results do not transfer automatically between
 the base/chat model and its decision fine-tune.
-See the [selective Q8 experiment](q8-experiments-2026-09-06.md) for measured
+See the [selective Q8 experiment](https://github.com/Danmoreng/qwen35-cpu/blob/3680efb33bf6975ce6722d64d20c641cb7490b06/docs/q8-experiments-2026-09-06.md) for measured
 gate results and format details. The subsequent
-[Q8 embedding/output experiment](q8-head-experiment-2026-09-06.md) measures the
+[Q8 embedding/output experiment](https://github.com/Danmoreng/qwen35-cpu/blob/3680efb33bf6975ce6722d64d20c641cb7490b06/docs/q8-head-experiment-2026-09-06.md) measures the
 large tied matrix separately, with the recurrent gates retained in Q4.
 
 ## Optional head experiments
@@ -94,6 +94,6 @@ own FP16 scale. `--head-basis h128` rotates that matrix locally and applies the
 inverse during embedding lookup. Both options default off. G16 requires the MSE16
 fitter and now accepts identity-basis `--importance-dir` calibration; rotating the
 head still rejects calibration inputs. See the
-[head experiment report](head-experiments-2026-09-06.md) for format contracts,
+[head experiment report](https://github.com/Danmoreng/qwen35-cpu/blob/3680efb33bf6975ce6722d64d20c641cb7490b06/docs/head-experiments-2026-09-06.md) for format contracts,
 quality tradeoffs and matched timing. These options do not change the published
 calibrated standard.

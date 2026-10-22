@@ -1,7 +1,0 @@
-case,measured_runs,prefill_tokens_per_second_median,prefill_tokens_per_second_min,prefill_tokens_per_second_max,tokens_per_second_median,tokens_per_second_min,tokens_per_second_max
-baseline-p64-serial8,3,1324.00488795,1113.41338081,1329.45843976,0,0,0
-fused-p64-serial8,3,1275.12555205,1206.78234873,1346.15958392,0,0,0
-baseline-p512-serial8,3,1514.36051252,1325.96028026,1562.47348234,0,0,0
-fused-p512-serial8,3,1620.10536199,1368.51933439,1641.68249424,0,0,0
-baseline-p4096-serial2,3,1275.17570744,1096.86295358,1289.98201426,0,0,0
-fused-p4096-serial2,3,1253.45041375,1069.4218509,1319.72765244,0,0,0

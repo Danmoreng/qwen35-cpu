@@ -183,7 +183,10 @@ install(FILES README.md LICENSE PROVENANCE.md DESTINATION .)
 install(FILES licenses/ggml.txt DESTINATION licenses)
 install(FILES licenses/decider-ai.txt DESTINATION licenses)
 install(FILES ${utf8proc_SOURCE_DIR}/LICENSE.md DESTINATION licenses RENAME utf8proc.txt)
-install(DIRECTORY docs/ DESTINATION docs)
+# Ship readable documentation; frozen benchmark evidence stays in the source tree.
+install(DIRECTORY docs/ DESTINATION docs
+  FILES_MATCHING PATTERN "*.md"
+  PATTERN "results" EXCLUDE)
 install(PROGRAMS scripts/download-model.sh DESTINATION .)
 install(FILES scripts/download-model.ps1 DESTINATION .)
 add_executable(qwen35_cpu_bench src/cpu_engine_bench_main.cpp)

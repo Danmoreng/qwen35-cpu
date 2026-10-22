@@ -6,9 +6,9 @@ import subprocess
 import tempfile
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--packer', type=Path, default=Path('benchmarks/plan-final-tools/qwen35_cpu_pack.exe'))
-parser.add_argument('--model-dir', default='models/qwen3.5-0.8b')
-parser.add_argument('--calibration', type=Path, default=Path('benchmarks/plan-calibration-fit'))
+parser.add_argument('--packer', type=Path, required=True)
+parser.add_argument('--model-dir', required=True)
+parser.add_argument('--calibration', type=Path, required=True)
 args = parser.parse_args()
 name = 'model.language_model.embed_tokens.weight.cal'
 original = (args.calibration/name).read_bytes()

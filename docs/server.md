@@ -109,7 +109,7 @@ default. Multiple decision
 requests share the existing bounded scheduler. Prefill chunks use one executor
 and are time-sliced between requests; there is no cross-request prefill batch.
 Decode batching therefore does not accelerate this workload. See the
-[HTTP and concurrency measurements](qev-systemone-api-2026-10-21.md).
+[HTTP and concurrency measurements](https://github.com/Danmoreng/qwen35-cpu/blob/3680efb33bf6975ce6722d64d20c641cb7490b06/docs/qev-systemone-api-2026-10-21.md).
 
 The existing body/context bounds apply. Rendered state <=64 KiB and evaluated
 input tokens <=131,072 per request; context overflow fails explicitly, without
