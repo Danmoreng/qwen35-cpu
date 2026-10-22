@@ -1,0 +1,147 @@
+{
+  "source": "Qwen3.5-0.8B tokenizer_config.json shipped with danmoreng/Qwen3.5-0.8B-H128-Q4-G32-DOT4 at f6cb5cf04a9094670f9041578a3f4e44b94a1395",
+  "template_sha256": "273d8e0e683b885071fb17e08d71e5f2a5ddfb5309756181681de4f5a1822d80",
+  "enable_thinking": false,
+  "cases": [
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hello"
+        }
+      ],
+      "prompt": "<|im_start|>user\nHello<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    },
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": " Answer briefly. "
+        },
+        {
+          "role": "user",
+          "content": " Hi!\n"
+        }
+      ],
+      "prompt": "<|im_start|>system\nAnswer briefly.<|im_end|>\n<|im_start|>user\nHi!<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "First"
+        },
+        {
+          "role": "assistant",
+          "content": "<think>Old reasoning</think>\n\nAnswer"
+        },
+        {
+          "role": "user",
+          "content": "Next"
+        }
+      ],
+      "prompt": "<|im_start|>user\nFirst<|im_end|>\n<|im_start|>assistant\nAnswer<|im_end|>\n<|im_start|>user\nNext<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "First"
+        },
+        {
+          "role": "assistant",
+          "content": " Answer ",
+          "reasoning_content": " Thought "
+        }
+      ],
+      "prompt": "<|im_start|>user\nFirst<|im_end|>\n<|im_start|>assistant\n<think>\nThought\n</think>\n\nAnswer<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "First"
+        },
+        {
+          "role": "assistant",
+          "content": null
+        }
+      ],
+      "prompt": "<|im_start|>user\nFirst<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Hello "
+            },
+            {
+              "type": "text",
+              "text": "world"
+            }
+          ]
+        }
+      ],
+      "prompt": "<|im_start|>user\nHello world<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    },
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": ""
+        },
+        {
+          "role": "user",
+          "content": "　Grüße 👋 "
+        }
+      ],
+      "prompt": "<|im_start|>system\n<|im_end|>\n<|im_start|>user\nGrüße 👋<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": ""
+        }
+      ],
+      "prompt": "<|im_start|>user\n<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "First"
+        },
+        {
+          "role": "assistant",
+          "content": "<think>\nThought\n</think>\n\nAnswer"
+        }
+      ],
+      "prompt": "<|im_start|>user\nFirst<|im_end|>\n<|im_start|>assistant\n<think>\nThought\n</think>\n\nAnswer<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": "First"
+        },
+        {
+          "role": "assistant",
+          "content": "A"
+        },
+        {
+          "role": "user",
+          "content": "Second"
+        },
+        {
+          "role": "assistant",
+          "content": "B"
+        }
+      ],
+      "prompt": "<|im_start|>user\nFirst<|im_end|>\n<|im_start|>assistant\nA<|im_end|>\n<|im_start|>user\nSecond<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nB<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    }
+  ]
+}

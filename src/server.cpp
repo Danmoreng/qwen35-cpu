@@ -3,6 +3,7 @@
 #include "qwen35x/tokenizer/tokenizer.h"
 #include "httplib.h"
 #include "systemone.h"
+#include "server_protocol.h"
 #include <algorithm>
 #include <atomic>
 #include <cmath>
@@ -21,11 +22,9 @@ namespace {
 const char *model_name = "Qwen3.5-0.8B-H128-Q4-G32-DOT4";
 struct Reply { int status; Json body; };
 Reply failure(int status, const std::string &message) {
-  return {status, {{"error", {{"message", message}, {"type", "request_error"}}}}};
+  return {status, {{"error", {{"message", message}, {"type", status < 500 ? "invalid_request_error" : "server_error"}, {"param", nullptr}, {"code", nullptr}}}}};
 }
-struct Job {
-  std::string prompt;
-  CpuRequestSpec spec;
+struct Job : server::Request {
   std::promise<Reply> promise;
   std::atomic<bool> cancelled{false};
   std::size_t prompt_count = 0, limit = 0;
@@ -168,14 +167,9 @@ class Service {
             } else {
             std::string text;
             if (!tokenizer_.decode(it->output, text, error)) reply = failure(500, error);
-            else reply = {200, {
-              {"id", "cmpl-" + std::to_string(it->id)}, {"object", "text_completion"},
-              {"created", std::time(nullptr)}, {"model", model_name},
-              {"choices", Json::array({{{"text", text}, {"index", 0}, {"logprobs", nullptr},
-                {"finish_reason", result.output_tokens.size() >= it->job->limit ? "length" : "stop"}}})},
-              {"usage", {{"prompt_tokens", it->job->prompt_count},
-                {"completion_tokens", result.output_tokens.size()},
-                {"total_tokens", it->job->prompt_count + result.output_tokens.size()}}}}};
+            else reply = {200, server::completion(it->job->api, model_name, it->id,
+              std::time(nullptr), text, result.output_tokens.size() >= it->job->limit ? "length" : "stop",
+              it->job->prompt_count, result.output_tokens.size())};
             }
           }
           engine_->release(it->id);
@@ -215,54 +209,9 @@ public:
   bool decisions_enabled() const { return decision_.has_value(); }
 };
 
-std::shared_ptr<Job> parse(const std::string &body, std::size_t context) {
-  const auto j = Json::parse(body);
-  if (!j.is_object()) throw std::runtime_error("Expected JSON object");
-  for (const auto &[key, value] : j.items())
-    if (key != "model" && key != "prompt" && key != "max_tokens" && key != "temperature" &&
-        key != "stream" && key != "n" && key != "prefix_tokens" && key != "top_p" &&
-        key != "top_k" && key != "seed" && key != "repetition_penalty")
-      throw std::runtime_error("Unsupported field: " + key);
-  if (j.contains("model") && j.at("model").get<std::string>() != model_name)
-    throw std::runtime_error("Unknown model");
-  if (j.value("stream", false)) throw std::runtime_error("Streaming is not supported yet");
-  if (j.contains("n") && j.at("n") != 1) throw std::runtime_error("Only n=1 is supported");
+std::shared_ptr<Job> parse(const std::string &body, std::size_t context, server::Api api) {
   auto job = std::make_shared<Job>();
-  job->prompt = j.at("prompt").get<std::string>();
-  if (job->prompt.empty() || job->prompt.size() > 65536) throw std::runtime_error("Prompt must contain 1..65536 bytes");
-  auto integer = [&](const char *name, std::int64_t fallback) {
-    if (!j.contains(name)) return fallback;
-    if (!j.at(name).is_number_integer()) throw std::runtime_error(std::string(name) + " must be an integer");
-    if (j.at(name).is_number_unsigned() && j.at(name).get<std::uint64_t>() >
-        static_cast<std::uint64_t>(std::numeric_limits<std::int64_t>::max()))
-      throw std::runtime_error(std::string(name) + " is out of range");
-    return j.at(name).get<std::int64_t>();
-  };
-  const auto max_tokens = integer("max_tokens", 128), prefix = integer("prefix_tokens", 0);
-  if (max_tokens < 1 || max_tokens > static_cast<std::int64_t>(context) || prefix < 0 || prefix > static_cast<std::int64_t>(context))
-    throw std::runtime_error("Token limit out of range");
-  job->spec.max_new_tokens = static_cast<std::size_t>(max_tokens);
-  job->spec.register_prefix_tokens = static_cast<std::size_t>(prefix);
-  job->spec.trust_namespace = "local-server";
-  auto real = [&](const char *name, float fallback) {
-    if (!j.contains(name)) return fallback;
-    if (!j.at(name).is_number()) throw std::runtime_error(std::string(name) + " must be a number");
-    const double value = j.at(name).get<double>();
-    if (!std::isfinite(value) || std::abs(value) > std::numeric_limits<float>::max())
-      throw std::runtime_error(std::string(name) + " must be finite and representable");
-    return static_cast<float>(value);
-  };
-  auto &sampling = job->spec.sampling;
-  sampling.temperature = real("temperature", 0);
-  sampling.top_p = real("top_p", 0.8f);
-  sampling.repetition_penalty = real("repetition_penalty", 1);
-  const auto top_k = integer("top_k", 20), seed = integer("seed", -1);
-  if (sampling.temperature < 0 || sampling.top_p <= 0 || sampling.top_p > 1 ||
-      sampling.repetition_penalty < 1 || top_k < 0 || top_k > 248320 ||
-      seed < -1 || seed > std::numeric_limits<std::uint32_t>::max())
-    throw std::runtime_error("Sampling parameter out of range");
-  sampling.top_k = static_cast<int>(top_k);
-  sampling.seed = seed;
+  static_cast<server::Request &>(*job) = server::parse(body, context, model_name, api);
   return job;
 }
 }
@@ -284,7 +233,7 @@ int main(int argc, char **argv) try {
         "[--host 127.0.0.1] [--port 8080] [--max-context 8192] [--residents 16]\n"
         "[--decision-encoding joint|per_question] (qev_config.json required)\n"
         "[--decision-head auto|full] [--prefill-chunk N] (1..2048; default adaptive)\n"
-        "GET /health, GET /v1/models, POST /v1/completions, POST /v1/systemone\n";
+        "GET /health, GET /v1/models, POST /v1/completions, POST /v1/chat/completions, POST /v1/systemone\n";
       return 0;
     }
     if (++i == argc) throw std::runtime_error("Missing value: " + key);
@@ -357,7 +306,14 @@ int main(int argc, char **argv) try {
   http.Post("/v1/completions", [&](const httplib::Request &request, httplib::Response &response) {
     if (!authorized(request, response)) return;
     std::shared_ptr<Job> job;
-    try { job = parse(request.body, config.max_context); }
+    try { job = parse(request.body, config.max_context, server::Api::completion); }
+    catch (const std::exception &e) { send(response, failure(400, e.what())); return; }
+    dispatch(job, request, response);
+  });
+  http.Post("/v1/chat/completions", [&](const httplib::Request &request, httplib::Response &response) {
+    if (!authorized(request, response)) return;
+    std::shared_ptr<Job> job;
+    try { job = parse(request.body, config.max_context, server::Api::chat); }
     catch (const std::exception &e) { send(response, failure(400, e.what())); return; }
     dispatch(job, request, response);
   });

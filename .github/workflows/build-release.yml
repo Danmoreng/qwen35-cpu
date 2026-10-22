@@ -88,6 +88,12 @@ jobs:
         shell: bash
         run: |
           ./build/cpu_scheduler_model_test${{ matrix.suffix }} models/qwen3.5-0.8b models/qwen3.5-0.8b/model.q35h --pages
+      - name: Chat API and official SDK conformance
+        if: vars.HF_MODEL_REPO != '' && vars.HF_MODEL_REVISION != ''
+        shell: bash
+        run: |
+          python -m pip install -r tests/requirements-server-sdk.txt
+          python tests/server_api_test.py --server build/qwen35_cpu_server${{ matrix.suffix }} --model-dir models/qwen3.5-0.8b --sdk
       - name: Package binaries
         shell: bash
         env:

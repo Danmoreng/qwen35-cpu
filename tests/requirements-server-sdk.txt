@@ -1,0 +1,2 @@
+# Optional HTTP protocol validation only; never a runtime server dependency.
+openai==3.36.1

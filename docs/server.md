@@ -15,6 +15,7 @@ The process starts listening only after the model has loaded successfully.
 - `GET /health`: readiness (`{"status":"ok"}`).
 - `GET /v1/models`: the single supported model ID.
 - `POST /v1/completions`: JSON input, complete JSON response.
+- `POST /v1/chat/completions`: text messages, native Qwen formatting, complete JSON response.
 
 ```json
 {
@@ -43,7 +44,37 @@ Responses contain `id`, `object`, `created`, `model`, one text choice,
 `finish_reason` and token `usage`. Stop IDs come from the model tokenizer.
 Prompt text must already contain any desired chat template. Unsupported fields,
 multiple completions and streaming are rejected explicitly.
-This is a limited completions API, not complete OpenAI API compatibility.
+The supported compatibility surface is documented below; it does not implement
+the entire OpenAI platform API.
+
+## Chat completions
+
+`POST /v1/chat/completions` accepts `messages` instead of `prompt`. Messages use
+`system`, `developer`, `user` or `assistant` roles, with string content or arrays
+of `{"type":"text","text":"..."}` parts. At least one user query is required.
+Leading system/developer messages are combined into the Qwen system turn with
+two newlines between them. Such instructions are rejected after the conversation
+has begun. Images, tool messages and unsupported message fields are rejected.
+
+The native formatter matches the pinned Qwen3.5 text chat template with thinking
+disabled for generation. Assistant history may contain `reasoning_content`;
+historical reasoning is handled according to that template. Clients supply
+messages, not already formatted prompts. The formatter does not execute model
+repository code or require Python/Jinja at runtime.
+
+Supported generation fields are `model`, `max_completion_tokens` (or `max_tokens`,
+but not both), `temperature`, `top_p`, `n=1`, `stream=false`, and the existing
+`top_k`, `seed`, `repetition_penalty`, `prefix_tokens` extensions. Output defaults
+to 128 tokens. Chat defaults to temperature 1, top_p 1 and top_k 0; raw
+completions retain the defaults above. Set temperature 0 for greedy decoding.
+Optional numeric fields may be null to use their defaults.
+
+Responses use `object: "chat.completion"`, an assistant `message`, finish reason
+and token usage. Unsupported fields fail explicitly with an OpenAI-style error.
+Stop strings, streaming, structured output, tool calling and the Responses API
+are not supported yet. The OpenAI SDK works with a custom server `base_url` and
+the actual model ID from `/v1/models`; API compatibility does not imply OpenAI
+model capabilities.
 
 ## qev decision API
 

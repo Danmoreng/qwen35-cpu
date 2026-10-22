@@ -7,9 +7,10 @@ general-purpose model framework is required.
 The project contains a native HTTP server, text-completion CLI, checkpoint packer,
 embeddable multi-request engine, CPU tests and comparison tools. It is an independent
 extraction of the validated CPU implementation in qwen35x; see [provenance](PROVENANCE.md).
-The HTTP server supports a **limited OpenAI-style `/v1/completions` API**:
-raw prompts, greedy or sampled decoding and non-streaming responses. Chat completions and
-SSE streaming are not implemented.
+The HTTP server supports **OpenAI-compatible text Chat Completions** with native
+Qwen prompt formatting, plus raw `/v1/completions`. Both support greedy or sampled
+decoding and complete JSON responses. SSE streaming and tool calls are not yet
+implemented; see the [supported API fields](docs/server.md#chat-completions).
 
 The native server also supports **qev-0.8b decisions via `POST /v1/systemone`**
 with a separate calibrated [qev model](https://huggingface.co/danmoreng/qev-0.8b-H128-Q4-G32-DOT4).
