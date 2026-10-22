@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {catalog, samples, createScenario, requestFor, useSample, snakeOutcome,
-  snakeDirections, stepSnake, editSnake, move2048, step2048} from '../web/scenarios.js';
+  snakeDirections, snakeMoveFacts, selectSnakeMove, stepSnake, editSnake, move2048, step2048} from '../web/scenarios.js';
 
 // Each tile merges at most once. Directions must not leak across row boundaries.
 const row = values => [...values, ...Array(12).fill(0)];
@@ -46,6 +46,32 @@ for (const {id} of catalog.filter(d => d.kind !== 'custom')) {
   for (const q of Object.values(request.questions)) assert.ok(['choice', 'noul', 'score'].includes(q.type));
   if (samples[id]) for (let i = 0; i < samples[id].length; i++) assert.ok(requestFor(useSample(state, i)).state);
 }
-assert.equal(requestFor(snake).questions.move.type, 'choice');
-assert.deepEqual(Object.keys(requestFor(snake).questions.move.criteria), snakeDirections(snake));
+// Route facts must account for obstacles, rather than just Manhattan distance.
+const detour = {...snake, size: 5, body: [[1, 2], [1, 3], [1, 4]], heading: 'up', food: [3, 2], walls: [[2, 0], [2, 1], [2, 2], [2, 3]]};
+const facts = snakeMoveFacts(detour);
+assert.match(facts.right, /dies/);
+assert.match(facts.left, /shortest open route, 7 steps/);
+assert.match(facts.up, /longer detour/);
+const enclosed = {...detour, walls: [...detour.walls, [2, 4]]};
+assert.match(snakeMoveFacts(enclosed).left, /no path.*body held fixed/);
+assert.match(snakeMoveFacts(eat).right, /eats the food safely/);
+assert.match(snakeMoveFacts(tail).left, /route|detour|no path/); // Vacating tail is a legal candidate.
+const snakeRequest = requestFor(snake);
+assert.deepEqual(Object.keys(snakeRequest.questions), snakeDirections(snake));
+assert.ok(Object.values(snakeRequest.questions).every(q => q.type === 'noul'));
+const scores = {up: {type: 'noul', noul: .9}, right: {type: 'noul', noul: .95}, down: {type: 'noul', noul: .1}};
+assert.equal(selectSnakeMove(snakeRequest, scores), 'right'); // Independent scores need not sum to one.
+assert.equal(selectSnakeMove(snakeRequest, {...scores, right: {type: 'noul', noul: NaN}}), null);
+assert.equal(selectSnakeMove(snakeRequest, {...scores, right: {type: 'noul', noul: 2}}), null);
+assert.equal(selectSnakeMove(snakeRequest, {up: scores.up}), null);
+assert.equal(selectSnakeMove(snakeRequest, {...scores, right: scores.up}), 'up'); // Stable tie order.
+// Repeated head positions alone are insufficient: compare body, heading and target too.
+let circle = {...createScenario('snake'), walls: [], food: [7, 7]};
+for (const d of ['right', 'down', 'left', 'up']) circle = stepSnake(circle, d);
+assert.equal(circle.looped, false);
+for (const d of ['right', 'down', 'left', 'up']) circle = stepSnake(circle, d);
+assert.equal(circle.looped, true);
+const retargeted = editSnake(circle, 0, 0, 'food');
+assert.equal(retargeted.looped, false); assert.deepEqual(retargeted.recentStates, []);
+assert.equal(eaten.looped, false); assert.equal(eaten.recentStates.length, 1);
 console.log('Demo scenarios: merge rules/directions, deterministic spawning, Snake collisions/tail/growth/editing, immutable previews and request contracts passed.');

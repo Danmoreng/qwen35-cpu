@@ -1,6 +1,6 @@
 import {simdAvailable, relaxedDotAvailable, fusedFmaAvailable} from './capabilities.js';
 import {catalog, samples, directions, arrows, createScenario, useSample, requestFor,
-  initialCustomRequest, snakeDirections, editSnake, stepSnake, step2048} from './scenarios.js';
+  initialCustomRequest, snakeDirections, selectSnakeMove, editSnake, stepSnake, step2048} from './scenarios.js';
 const $ = id => document.getElementById(id);
 let scenario = createScenario('snake'), revision = 0, worker, ready = false, busy = false;
 let pending, nextId = 0, autoRunning = false, autoTimer, remaining = 0, editMode = 'food';
@@ -72,15 +72,16 @@ function newWorker() {
       if (data.result.status === 'complete' && !job.discard && job.revision === revision) {
         renderResult(data.result, data.worker_ms, job);
         if (job.apply) {
-          const move = data.result.answers.move?.choice;
-          if (!Object.hasOwn(job.request.questions.move.criteria, move)) showError('The model did not return an available move.');
+          const move = scenario.id === 'snake' ? selectSnakeMove(job.request, data.result.answers) : data.result.answers.move?.choice;
+          const available = scenario.id === 'snake' ? Object.keys(job.request.questions) : Object.keys(job.request.questions.move.criteria);
+          if (!available.includes(move)) showError('The model did not return an available move.');
           else {
             const before = scenario.turns;
             scenario = scenario.id === 'snake' ? stepSnake(scenario, move) : step2048(scenario, move);
             revision++; renderScene(); syncRequest(); applied = scenario.turns !== before;
             if (!applied) $('scene-message').textContent = 'The model chose a move that changes nothing. Autoplay paused; try again or play manually.';
           }
-          if (scenario.over || !applied) stopAuto();
+          if (scenario.over || scenario.looped || !applied) stopAuto();
         } else applied = true;
         $('status').textContent = 'Ready';
       } else $('status').textContent = 'Cancelled';
@@ -142,7 +143,9 @@ function renderScene() {
   const restoreFocus = Boolean(document.activeElement?.closest('.game-surface'));
   scene.replaceChildren(); $('demo-title').textContent = demo.title;
   $('demo-kicker').textContent = isGame() ? 'LIVE GAME · REAL MODEL MOVES' : demo.kind === 'custom' ? 'YOUR OWN EXPERIMENT' : 'LIVE WORKFLOW';
-  $('demo-description').textContent = isGame() ? 'You control the state. The game computes each move’s consequences; qev chooses the move.' : demo.description;
+  $('demo-description').textContent = scenario.id === 'snake'
+    ? 'Path-assisted Snake: game code checks collisions and routes around obstacles; qev chooses each move.'
+    : isGame() ? 'You control the state. The game computes each move’s consequences; qev chooses the move.' : demo.description;
   $('demo-count').textContent = isGame() ? `TURN ${scenario.turns}` : '';
   $('new-scene').textContent = isGame() ? 'Reset game' : scenario.id === 'custom' ? 'Reset JSON' : 'Next sample';
   $('demo-run').firstChild.textContent = isGame() ? 'Let the model choose ' : scenario.id === 'custom' ? 'Run this request ' : 'Ask the model ';
@@ -220,6 +223,10 @@ function renderResult(result, workerMs, job) {
   lastResult = {revision, result, source: job.source}; $('answers').replaceChildren();
   const name = catalog.find(d => d.id === job.scenarioId).title;
   $('result-context').textContent = job.source === 'custom' ? 'Custom JSON request · no game action applied.' : job.apply ? `${name} · response for the state before turn ${job.turn + 1}.` : `${name} · real model response for the current text.`;
+  if (job.apply && job.scenarioId === 'snake') {
+    const move = selectSnakeMove(job.request, result.answers);
+    $('result-context').textContent += ` Selected ${move || 'no valid move'} by highest yes score. Each direction is an independent yes/no question; scores do not sum to 100%.`;
+  }
   for (const [id, answer] of Object.entries(result.answers)) {
     const section = document.createElement('div'); section.className = 'question';
     section.append(text('h3', answer.choice ? `${id} → ${answer.choice.replaceAll('_', ' ')}` : answer.type === 'noul' ? `${id} · ${(answer.noul * 100).toFixed(1)}% yes` : `${id} · score ${answer.score}`));

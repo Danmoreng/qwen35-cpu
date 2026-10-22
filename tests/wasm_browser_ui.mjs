@@ -37,7 +37,15 @@ try {
     assert.equal(await page.locator('#error').textContent(),'');
     results.push(result.answers); checks.push(demo);return result;
   }
-  await decide('snake','move');assert.equal(await page.locator('#demo-count').textContent(),'TURN 1');
+  await decide('snake','right');assert.equal(await page.locator('#demo-count').textContent(),'TURN 1');
+  assert.match(await page.locator('#result-context').textContent(), /independent yes\/no/);
+  for (let i = 1; i < 30; i++) {
+    await page.locator('#demo-run').click();
+    await page.locator('#demo-run:not([disabled])').waitFor();
+  }
+  assert.ok(Number((await page.locator('.game-topline strong').textContent()).split(' ')[0]) >= 30,
+    'Snake must collect food in a longer real-model rollout');
+  checks.push('Snake: 30 real-model turns collect at least three food items');
   await decide('2048','move');assert.equal(await page.locator('#demo-count').textContent(),'TURN 1');
   for(const [demo,key] of [['guardrails','injection'],['inbox','folder'],['triage','team'],['routing','tool'],['moderation','useful']])await decide(demo,key);
   await page.locator('[data-demo="snake"]').click();

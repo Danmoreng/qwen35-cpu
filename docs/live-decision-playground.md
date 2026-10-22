@@ -8,7 +8,7 @@ inference endpoints are embedded. Nothing was deployed or published.
 
 | Demo | Interaction | Model question |
 |---|---|---|
-| Snake | Manual arrow keys/buttons, move food, toggle walls, AI step, autoplay | Choose a direction from computed move consequences |
+| Snake | Manual arrow keys/buttons, move food, toggle walls, AI step, autoplay | Independent yes/no scores per direction, with computed path facts |
 | 2048 | Manual arrow keys/buttons, AI step, autoplay, reset | Choose a direction from legal movement/merge/space facts |
 | Guardrails | Edit untrusted text or switch samples | Probability of prompt injection |
 | Inbox | Edit sender, subject and body; switch samples | Choose an inbox folder |
@@ -19,16 +19,34 @@ inference endpoints are embedded. Nothing was deployed or published.
 One shared worker/model serves the selected demo. Games are playable manually
 without loading the model. Every AI step and autoplay turn waits for a real
 response from the browser's existing H128/Q4-G32-DOT4 WASM engine. Autoplay
-pauses on request, game over, an ineffective move or after 50 turns. It never
+pauses on request, game over, an ineffective move, a repeated full Snake state
+or after 50 turns. It never
 substitutes a heuristic move for an unsuitable model choice.
 
 As on the original page, the game computes action consequences before asking
-the model. Here each turn uses one `choice` question. The original Snake sheet
-shows separate yes/no questions per direction; this UI does not claim those
-independent probabilities are the same as a choice distribution. Snake facts
-describe immediate collisions and Manhattan food distance, not a path-search
-agent. 2048 facts describe deterministic slides/merges before the next random
-tile. Seeded spawning makes rule checks reproducible.
+the model. Snake asks one `noul` question for each of the three non-reversing
+directions and applies the highest yes score, with stable request-order ties.
+These independent scores are not normalized into a choice distribution. The
+response panel explains the selection and preserves the original model output.
+Missing, non-finite or out-of-range scores pause play instead of inventing a move.
+
+Snake is explicitly labeled **path-assisted**. A breadth-first grid search
+computes candidate path lengths around walls and the body after each candidate
+move. It supplies qualitative shortest-route/detour facts to the model, including
+immediate collisions and eating food. The body is held fixed for the path
+estimate: this is not a simulation of future tail motion, growth or survival.
+The shortest-route label compares the available candidates; it is not a claim
+about decreasing Manhattan distance. All three directions, including dangerous
+ones, remain model questions. No pathfinder or safety override replaces the
+model's selected move. This supplies more navigation help than the original
+immediate-consequence/Manhattan-only local version and is not an unaided
+spatial-reasoning benchmark or a promise to solve every board.
+
+2048 retains one `choice` question with deterministic slide/merge/space facts
+before the next random tile. Seeded spawning makes rule checks reproducible.
+Snake repetition detection compares heading, ordered body, target and walls;
+head-position revisits alone do not stop play. Food collection and board edits
+reset this history. A repeated state pauses autoplay without declaring death.
 
 The inspector shows the next generated request. Each completed response also
 retains its exact evaluated request, so a probability distribution for a
@@ -53,7 +71,9 @@ Focus a game board to use arrow keys. Browser caching remains optional.
 
 `node tests/demo_scenarios_test.mjs` checks directional 2048 merges, single-merge
 semantics, score/tile conservation, deterministic spawning, Snake collision,
-tail-vacating and growth rules, board edits, immutable previews and requests.
+tail-vacating and growth rules, board edits, immutable previews and requests,
+obstacle-aware route facts, disconnected targets, independent score selection,
+invalid responses and full-state loop detection/reset.
 Existing capability and FP32 parity-helper tests also pass.
 
 The real in-app browser loaded the unchanged checkpoint and completed all
@@ -73,3 +93,9 @@ validation used the actual in-app browser; the headless integration script was
 syntax-checked, not rerun in this pass. Screenshots and interactive results are
 saved locally under `benchmarks/qev-live-demos-2026-10-22/`.
 Displayed interactive timings are not controlled performance measurements.
+
+The subsequent [Snake policy regression study](snake-policy-2026-10-22.md)
+reproduced the corner loop and checked the corrected policy in longer native
+and actual in-app WASM runs. The integration script now also requires food
+collection over 30 real model moves; it was syntax-checked, with this pass's
+browser validation performed through the in-app browser.

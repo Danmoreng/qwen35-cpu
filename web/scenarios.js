@@ -79,6 +79,45 @@ export function snakeOutcome(s, direction) {
     text: hit ? `Hits a ${hit} and the game ends.` : eats ? 'Eats the food safely; score increases by 10.'
       : `Safe this turn; food distance ${distance} (was ${previous}, Manhattan distance).`};
 }
+// A static grid search supplies navigation facts, not an action. The body is
+// held fixed after the candidate move; later tail motion can open more paths.
+export function snakeMoveFacts(s) {
+  const outcomes = snakeDirections(s).map(direction => {
+    const outcome = snakeOutcome(s, direction);
+    let route = null;
+    if (!outcome.hit && !outcome.eats) {
+      const body = [outcome.next, ...s.body.slice(0, -1)];
+      const blocked = new Set([...s.walls, ...body.slice(1)].map(p => p.join(',')));
+      const queue = [[...outcome.next, 0]], seen = new Set([outcome.next.join(',')]);
+      for (let i = 0; i < queue.length; i++) {
+        const [x, y, distance] = queue[i];
+        if (equal([x, y], s.food)) { route = distance; break; }
+        for (const [dx, dy] of Object.values(delta)) {
+          const a = x + dx, b = y + dy, key = `${a},${b}`;
+          if (a >= 0 && b >= 0 && a < s.size && b < s.size && !blocked.has(key) && !seen.has(key)) {
+            seen.add(key); queue.push([a, b, distance + 1]);
+          }
+        }
+      }
+    }
+    return {direction, ...outcome, route};
+  });
+  const best = Math.min(...outcomes.filter(o => o.route !== null).map(o => o.route));
+  return Object.fromEntries(outcomes.map(o => [o.direction, o.hit ? `it hits the ${o.hit} and dies`
+    : o.eats ? 'it eats the food safely and earns 10 points'
+    : o.route === null ? 'it survives now but there is no path to the food with the current body held fixed'
+    : o.route === best ? `it moves closer to the food along a shortest open route, ${o.route} steps away around obstacles`
+    : `it takes a longer detour away from the food, ${o.route} steps away around obstacles`]));
+}
+// Independent yes/no scores are not a categorical probability distribution.
+// Apply the highest model score without filtering or replacing its decision.
+export function selectSnakeMove(request, answers) {
+  const moves = Object.keys(request.questions);
+  if (!moves.length || moves.some(d => !directions.includes(d) || answers[d]?.type !== 'noul'
+    || !Number.isFinite(answers[d].noul) || answers[d].noul < 0 || answers[d].noul > 1)) return null;
+  return moves.reduce((best, d) => answers[d].noul > answers[best].noul ? d : best);
+}
+const snakeKey = s => JSON.stringify([s.heading, s.body, s.food, s.walls]);
 export function stepSnake(s, direction) {
   if (s.over) return clone(s);
   if (!snakeDirections(s).includes(direction)) return {...clone(s), message: 'The snake cannot reverse direction.'};
@@ -95,7 +134,11 @@ export function stepSnake(s, direction) {
     if (!empty.length) return {...next, over: true, message: 'Board complete!'};
     next.food = empty[Math.floor(random(next) * empty.length)];
   }
-  next.message = outcome.eats ? 'Food collected. The model has a new target.' : `Moved ${direction}.`;
+  const key = snakeKey(next), previous = s.recentStates?.length ? s.recentStates : [snakeKey(s)];
+  next.looped = !outcome.eats && previous.includes(key);
+  next.recentStates = outcome.eats ? [key] : [...previous, key].slice(-512);
+  next.message = next.looped ? 'Repeated board state. Autoplay paused; move manually, move the food or reset.'
+    : outcome.eats ? 'Food collected. The model has a new target.' : `Moved ${direction}.`;
   return next;
 }
 export function editSnake(s, x, y, mode) {
@@ -105,6 +148,8 @@ export function editSnake(s, x, y, mode) {
     if (equal(s.food, [x, y])) return s;
     next.walls = s.walls.some(p => equal(p, [x, y])) ? s.walls.filter(p => !equal(p, [x, y])) : [...s.walls, [x, y]];
   } else if (!s.walls.some(p => equal(p, [x, y]))) next.food = [x, y];
+  next.recentStates = []; next.looped = false;
+  next.message = 'Board updated. Navigation facts will be recomputed for the next decision.';
   return next;
 }
 export function move2048(board, direction) {
@@ -139,9 +184,10 @@ const noul = instructions => ({type: 'noul', instructions});
 export function requestFor(s) {
   let state, questions;
   if (s.id === 'snake') {
-    state = {game: 'Snake', rules: 'Walls and body collisions end the game. Food gives points. Moving backward is not allowed.',
-      head: s.body[0], food: s.food, move_outcomes: Object.fromEntries(snakeDirections(s).map(d => [d, snakeOutcome(s, d).text]))};
-    questions = {move: choice('Which move should the snake choose? Avoid dying, then prefer reaching or getting closer to food.', Object.fromEntries(snakeDirections(s).map(d => [d, null])))};
+    const outcomes = snakeMoveFacts(s);
+    state = {game: 'snake', goal: 'Eat the food. Avoid dying.',
+      ...Object.fromEntries(Object.entries(outcomes).map(([d, consequence]) => [`if the snake moves ${d}`, consequence]))};
+    questions = Object.fromEntries(snakeDirections(s).map(d => [d, noul(`Is moving ${d} a good move to safely reach the food?`)]));
   } else if (s.id === '2048') {
     state = {game: '2048', rules: 'Slide all tiles. Equal adjacent tiles merge once per turn. A random tile appears after a valid move. Prefer useful merges and space; avoid moves that do nothing.',
       board_rows: Array.from({length: 4}, (_, y) => s.board.slice(y * 4, y * 4 + 4)),
