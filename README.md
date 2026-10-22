@@ -23,6 +23,11 @@ on the Ryzen CPU described below. These are decision latencies, not decode
 tokens/s; weights and calibration are unchanged.
 The Qwen chat/base-model benchmarks below remain separate from that fine-tune.
 
+Try the [live CPU decision playground](https://huggingface.co/spaces/danmoreng/qev-0.8b-cpu-playground):
+seven interactive demos use this custom engine compiled to WASM. The initial
+model/config/tokenizer download is about 448 MB; inference runs on your browser's
+CPU. See [Space packaging and validation](docs/huggingface-space.md).
+
 ## CPU benchmarks: speed and quality
 
 The engine uses the **H128/Q4-G32-DOT4** checkpoint with a **424.9 MB

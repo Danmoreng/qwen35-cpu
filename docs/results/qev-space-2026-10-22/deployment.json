@@ -1,0 +1,271 @@
+{
+  "date": "2026-10-22",
+  "functional_checks_only": true,
+  "publication": {
+    "repo": "danmoreng/qev-0.8b-cpu-playground",
+    "revision": "03b2d0c2f34e0d7118b4be63ec06e601bae50f68",
+    "url": "https://huggingface.co/spaces/danmoreng/qev-0.8b-cpu-playground",
+    "source_revision": "aa236e0b9f86b8e0f399db7b5fc486d4fc7d5a77",
+    "model_revision": "eb167df11cbd6130513fedfcfdfb2ca11180b2de"
+  },
+  "ci": {
+    "conclusion": "success",
+    "headSha": "aa236e0b9f86b8e0f399db7b5fc486d4fc7d5a77",
+    "status": "completed",
+    "url": "https://github.com/Danmoreng/qwen35-cpu/actions/runs/39754901466"
+  },
+  "package": {
+    "file_count": 40,
+    "bytes_excluding_build_info": 9691178,
+    "weights_bundled": false,
+    "model_sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69"
+  },
+  "public_host": "https://danmoreng-qev-0-8b-cpu-playground.static.hf.space",
+  "http": {
+    "/": {
+      "status": 200,
+      "headers": {
+        "Content-Type": "text/html",
+        "cross-origin-resource-policy": "cross-origin",
+        "cross-origin-opener-policy": "same-origin",
+        "cross-origin-embedder-policy": "require-corp"
+      },
+      "bytes": 6377,
+      "sha256": "41b2f7f6f152c10f002905f53967a34062faf8a143c37142c71d93b965a6ce4a",
+      "matches_package": false
+    },
+    "model/manifest.json": {
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "cross-origin-opener-policy": "same-origin",
+        "cross-origin-embedder-policy": "require-corp",
+        "cross-origin-resource-policy": "cross-origin"
+      },
+      "bytes": 2269,
+      "sha256": "bd184aad0b93ff400271611af5d0593f0a782114365459748f93dfa3bb34482c",
+      "matches_package": true
+    },
+    "build-info.json": {
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8",
+        "cross-origin-opener-policy": "same-origin",
+        "cross-origin-embedder-policy": "require-corp",
+        "cross-origin-resource-policy": "cross-origin"
+      },
+      "bytes": 5742,
+      "sha256": "4547c6554bab54baae293f6e72b090cab2aaf80b62467f39f7c6d5e23df304f1",
+      "matches_package": true
+    }
+  },
+  "html_difference": "Hugging Face adds creator metadata and social-preview tags; model manifest and build-info match staged bytes.",
+  "browser": "Desktop Chromium via Codex in-app browser, embedded Hugging Face Space",
+  "engine": "H128/Q4-G32-DOT4 \u00b7 fma-threads \u00b7 wasm-simd128-dot4-bounded-relaxed+fma\nModel SHA-256 e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69",
+  "demos": [
+    {
+      "demo": "snake",
+      "answers": {
+        "up": {
+          "type": "noul",
+          "noul": 0.0215
+        },
+        "right": {
+          "type": "noul",
+          "noul": 0.9988
+        },
+        "down": {
+          "type": "noul",
+          "noul": 0.0254
+        }
+      },
+      "usage": {
+        "input_tokens": 387,
+        "output_tokens": 0
+      },
+      "decode_forwards": 0,
+      "error": ""
+    },
+    {
+      "demo": "2048",
+      "answers": {
+        "move": {
+          "type": "choice",
+          "confidence": 0.3876,
+          "x_p_max": 0.5407,
+          "certainty": 0.1511,
+          "probabilities": {
+            "up": 0.1347,
+            "right": 0.5407,
+            "down": 0.1118,
+            "left": 0.2127
+          },
+          "choice": "right"
+        }
+      },
+      "usage": {
+        "input_tokens": 254,
+        "output_tokens": 0
+      },
+      "decode_forwards": 0,
+      "error": ""
+    },
+    {
+      "demo": "guardrails",
+      "answers": {
+        "injection": {
+          "type": "noul",
+          "noul": 0.9997
+        }
+      },
+      "usage": {
+        "input_tokens": 91,
+        "output_tokens": 0
+      },
+      "decode_forwards": 0,
+      "error": ""
+    },
+    {
+      "demo": "inbox",
+      "answers": {
+        "folder": {
+          "type": "choice",
+          "confidence": 0.941,
+          "x_p_max": 0.9528,
+          "certainty": 0.8422,
+          "probabilities": {
+            "reply_today": 0.9528,
+            "receipts": 0.0172,
+            "newsletters": 0.0105,
+            "security": 0.0099,
+            "spam": 0.0097
+          },
+          "choice": "reply_today"
+        }
+      },
+      "usage": {
+        "input_tokens": 136,
+        "output_tokens": 0
+      },
+      "decode_forwards": 0,
+      "error": ""
+    },
+    {
+      "demo": "triage",
+      "answers": {
+        "team": {
+          "type": "choice",
+          "confidence": 0.9633,
+          "x_p_max": 0.9725,
+          "certainty": 0.8877,
+          "probabilities": {
+            "billing": 0.9725,
+            "account": 0.0092,
+            "bugs": 0.0069,
+            "sales": 0.0115
+          },
+          "choice": "billing"
+        },
+        "urgent": {
+          "type": "noul",
+          "noul": 0.2744
+        },
+        "mood": {
+          "type": "score",
+          "confidence": 0.4183,
+          "x_p_max": 0.6413,
+          "certainty": 0.314,
+          "probabilities": {
+            "0": 0.0291,
+            "1": 0.3296,
+            "2": 0.6413
+          },
+          "score": 1.61,
+          "legend": {
+            "0": "calm",
+            "1": "annoyed",
+            "2": "angry"
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 224,
+        "output_tokens": 0
+      },
+      "decode_forwards": 0,
+      "error": ""
+    },
+    {
+      "demo": "routing",
+      "answers": {
+        "tool": {
+          "type": "choice",
+          "confidence": 0.8886,
+          "x_p_max": 0.9165,
+          "certainty": 0.7621,
+          "probabilities": {
+            "web_search": 0.0061,
+            "calculator": 0.9165,
+            "calendar": 0.0058,
+            "none": 0.0716
+          },
+          "choice": "calculator"
+        }
+      },
+      "usage": {
+        "input_tokens": 96,
+        "output_tokens": 0
+      },
+      "decode_forwards": 0,
+      "error": ""
+    },
+    {
+      "demo": "moderation",
+      "answers": {
+        "bait": {
+          "type": "noul",
+          "noul": 0.003
+        },
+        "buzz": {
+          "type": "noul",
+          "noul": 0.0032
+        },
+        "useful": {
+          "type": "noul",
+          "noul": 0.9624
+        }
+      },
+      "usage": {
+        "input_tokens": 257,
+        "output_tokens": 0
+      },
+      "decode_forwards": 0,
+      "error": ""
+    }
+  ],
+  "snake_autoplay": {
+    "turns": 50,
+    "points": 70,
+    "food_collected": 7,
+    "status": "Ready",
+    "error": ""
+  },
+  "reload": {
+    "cache_checkbox_enabled": true,
+    "ready": true,
+    "subsequent_request_complete": true,
+    "turn_after_request": "TURN 51",
+    "cache_hits_and_network_transfer_not_instrumented": true
+  },
+  "local_preview": {
+    "single_thread_simd_complete": true,
+    "cancel_status": "Cancelled",
+    "subsequent_request_complete": true
+  },
+  "public_console_errors_or_warnings": [],
+  "limitations": [
+    "No new performance benchmark or task-accuracy evaluation.",
+    "Desktop Chromium tested; other browser and mobile capability sets are not certified.",
+    "Single-thread SIMD and cancellation checks used the local staged package."
+  ]
+}

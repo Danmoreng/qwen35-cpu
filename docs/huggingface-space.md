@@ -71,3 +71,33 @@ also run in release CI. The full seven-variant build runs DOT4, DeltaNet and
 activation-quantization kernel tests before copying each runtime. Actual
 browser checks must additionally cover remote model loading, live inference,
 cache reuse, cancellation, capabilities and the public Space headers.
+
+## Published deployment, 2026-10-22
+
+The public [CPU playground](https://huggingface.co/spaces/danmoreng/qev-0.8b-cpu-playground)
+was built from committed source `aa236e0b9f86b8e0f399db7b5fc486d4fc7d5a77`,
+after its Linux and Windows CI passed. The deployed package contains 40 files,
+about 9.7 MB, without model weights. The separate model revision is
+`eb167df11cbd6130513fedfcfdfb2ca11180b2de`; runtime weights are unchanged from
+the published native checkpoint.
+
+Actual desktop Chromium checks used the Hugging Face page's embedded app,
+not only the direct app host. The app loaded the remote model and selected
+`fma-threads` with eight CPU threads. All seven demos completed with zero output
+tokens and zero decode forwards. The hosted manifest and build provenance match
+the staged files exactly. The host adds its own metadata scripts/tags to HTML;
+the resulting HTML hash therefore differs from the staged source. Public HTML,
+manifest and build metadata all return COOP `same-origin`, COEP `require-corp`
+and CORP `cross-origin`.
+
+Public Snake autoplay completed 50 turns, collected seven food items (70 points)
+and stopped at its configured limit without an error. Unload/reload with browser
+caching enabled returned to eight-thread readiness and completed another Snake
+decision. Cache-hit counts and network transfer on that reload were not
+instrumented. No warnings or errors were captured in the public page console.
+
+The local static-package preview additionally completed a single-thread SIMD
+inference, cancellation and a successful subsequent request. These are
+functional deployment checks, not new performance or task-accuracy benchmarks.
+Publication provenance and browser results are recorded in
+[the deployment report](results/qev-space-2026-10-22/deployment.json).
