@@ -118,12 +118,18 @@ void q4_dot4_matmul_avx512(const Q4_0BlockX8 * matrix, const Q8_0BlockX4 * vecto
                           float * output, std::size_t rows, std::size_t count,
                           std::size_t blocks, std::size_t stride) noexcept {
   // Pair two existing eight-row blocks in ZMM lanes without changing storage.
-  // Eight tokens reuse the unpacked weights while limiting register pressure.
+  // Large prefill batches reuse unpacked weights across sixteen tokens.
+  // Keep eight-token tiles for small batches: wider tiles regress decode.
   // Finish all token tiles for a row pair while its weights remain cache-hot.
   // Each output keeps the same block traversal and FMA order.
   std::size_t row = 0;
   for (; row + 16 <= rows; row += 16) {
     std::size_t token = 0;
+    if (count >= 64) {
+      for (; token + 16 <= count; token += 16)
+        tile(matrix + (row / 8) * blocks, vectors + (token / 4) * blocks,
+             output + token * stride + row, blocks, stride, std::make_index_sequence<16>{});
+    }
     for (; token + 8 <= count; token += 8)
       tile(matrix + (row / 8) * blocks, vectors + (token / 4) * blocks,
            output + token * stride + row, blocks, stride, std::make_index_sequence<8>{});

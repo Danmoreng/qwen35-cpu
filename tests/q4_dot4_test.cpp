@@ -47,7 +47,7 @@ int main() {
         q4_0_packed_dequantize_row(legacy.data(), rows-1, expected_embedding.data(), blocks);
         if (embedding != expected_embedding) return 2;
 
-        for (std::size_t tokens : {4U, 8U, 12U, 16U, 20U, 24U, 28U, 32U, 36U, 128U}) {
+        for (std::size_t tokens : {4U, 8U, 12U, 16U, 20U, 24U, 28U, 32U, 36U, 60U, 64U, 68U, 124U, 128U, 132U}) {
           std::vector<Q8_0BlockX4> batch((tokens/4)*blocks);
           for (auto & a : batch) for (int t = 0; t < 4; ++t) {
             a.scales[t] = 0.001F * static_cast<float>(1 + random()%31);
