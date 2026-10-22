@@ -67,6 +67,7 @@ void publish_prefix(Sequence &s, std::vector<float> hidden) {
       prefix_bytes += handle->size_bytes();
       s.spec.prefix = std::move(handle);
       ++stats.prefix_builds;
+      s.result.prefix_written_tokens = count - s.result.cached_prefix_tokens;
       published = true;
     } catch (const std::bad_alloc &) {
       // Caching is optional; already computed private state remains valid.

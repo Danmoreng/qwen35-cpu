@@ -12,7 +12,7 @@
 // HTTP shape and model prompt formatting are independent of inference ownership.
 namespace qwen35x::server {
 using Json = nlohmann::ordered_json;
-enum class Api { completion, chat };
+enum class Api { completion, chat, messages };
 struct Request {
   Api api = Api::completion;
   std::string prompt, prefix_prompt;

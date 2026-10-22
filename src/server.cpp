@@ -4,6 +4,7 @@
 #include "httplib.h"
 #include "systemone.h"
 #include "server_protocol.h"
+#include "server_anthropic.h"
 #include "server_stream.h"
 #include <algorithm>
 #include <atomic>
@@ -27,7 +28,7 @@ Reply failure(int status, const std::string &message) {
 }
 struct Job : server::Request {
   std::promise<Reply> promise, admitted;
-  bool admission_sent = false;
+  bool admission_sent = false, count_only = false;
   server::StreamQueue events;
   server::Utf8Decoder utf8;
   std::unique_ptr<server::StopMatcher> stop_matcher;
@@ -163,6 +164,9 @@ class Service {
             finish(job, failure(400, error)); continue;
           }
           job->prompt_count = job->spec.prompt_tokens.size();
+          if (job->count_only) {
+            finish(job, {200, {{"input_tokens", job->prompt_count}}}); continue;
+          }
           job->stop_matcher = std::make_unique<server::StopMatcher>(job->stops, 8192);
           job->limit = job->spec.max_new_tokens;
           if (job->automatic_prefix) {
@@ -263,7 +267,14 @@ class Service {
               reply = {200, server::completion(job->api, model_name, it->id, job->created,
                 job->text, job->stop_matcher->stopped() || result.output_tokens.size() < job->limit ? "stop" : "length",
                 job->prompt_count, result.generated_tokens)};
-              reply.body["usage"]["prompt_tokens_details"] = {{"cached_tokens", result.cached_prefix_tokens}};
+              if (job->api == server::Api::messages) {
+                const auto &stop = job->stop_matcher->matched();
+                const auto reason = !stop.empty() ? "stop_sequence" :
+                  result.output_tokens.size() < job->limit ? "end_turn" : "max_tokens";
+                reply.body = server::message_response(model_name, it->id, job->text, reason,
+                  stop.empty() ? Json(nullptr) : Json(stop), server::messages_usage(job->prompt_count,
+                    result.generated_tokens, result.cached_prefix_tokens, result.prefix_written_tokens));
+              } else reply.body["usage"]["prompt_tokens_details"] = {{"cached_tokens", result.cached_prefix_tokens}};
             } catch (const std::exception &e) { reply = failure(500, e.what()); }
             }
           }
@@ -336,7 +347,7 @@ int main(int argc, char **argv) try {
         "[--decision-head auto|full] [--prefill-chunk N] (1..2048; default adaptive)\n"
         "[--prefix-cache auto|off] [--prefix-cache-mib 256]\n"
         "GET /health, GET /v1/models, GET /v1/cache\n"
-        "POST /v1/completions, POST /v1/chat/completions, POST /v1/systemone\n";
+        "POST /v1/completions, POST /v1/chat/completions, POST /v1/systemone\nPOST /v1/messages, POST /v1/messages/count_tokens\n";
       return 0;
     }
     if (++i == argc) throw std::runtime_error("Missing value: " + key);
@@ -389,12 +400,14 @@ int main(int argc, char **argv) try {
   http.new_task_queue = [] { return new httplib::ThreadPool(32, 32, 64); };
   http.set_payload_max_length(262144);
   http.set_read_timeout(10, 0); http.set_write_timeout(10, 0); http.set_keep_alive_max_count(1);
-  auto send = [](httplib::Response &response, const Reply &reply) {
-    response.status = reply.status; response.set_content(reply.body.dump(), "application/json");
+  auto send = [](httplib::Response &response, const Reply &reply, bool messages = false) {
+    response.status = reply.status;
+    response.set_content((messages && reply.status != 200 ? server::messages_error(reply.status, reply.body) : reply.body).dump(), "application/json");
   };
-  auto authorized = [&](const httplib::Request &request, httplib::Response &response) {
-    if (api_key.empty() || request.get_header_value("Authorization") == "Bearer " + api_key) return true;
-    send(response, failure(401, "Unauthorized")); return false;
+  auto authorized = [&](const httplib::Request &request, httplib::Response &response, bool messages = false) {
+    if (api_key.empty() || request.get_header_value("Authorization") == "Bearer " + api_key ||
+        (messages && request.get_header_value("x-api-key") == api_key)) return true;
+    send(response, failure(401, "Unauthorized"), messages); return false;
   };
   http.Get("/health", [&](const auto &request, auto &response) {
     if (authorized(request, response)) send(response, {200, {{"status", "ok"}}});
@@ -407,23 +420,26 @@ int main(int argc, char **argv) try {
     if (authorized(request, response)) send(response, {200, service.cache_status()});
   });
   auto dispatch = [&](const std::shared_ptr<Job> &job, const httplib::Request &request, httplib::Response &response) {
+    const bool messages = job->api == server::Api::messages;
     auto result = job->stream ? job->admitted.get_future() : job->promise.get_future();
-    if (!service.enqueue(job)) { send(response, failure(429, "Request capacity exhausted")); return; }
+    if (!service.enqueue(job)) { send(response, failure(429, "Request capacity exhausted"), messages); return; }
     const auto deadline = std::chrono::steady_clock::now() + std::chrono::minutes(5);
     while (result.wait_for(std::chrono::milliseconds(50)) != std::future_status::ready) {
       if (request.is_connection_closed()) { job->cancelled = true; return; }
       if (std::chrono::steady_clock::now() >= deadline) {
-        job->cancelled = true; send(response, failure(504, "Request deadline exceeded")); return;
+        job->cancelled = true; send(response, failure(504, "Request deadline exceeded"), messages); return;
       }
     }
     const auto reply = result.get();
-    if (!job->stream || reply.status != 200) { send(response, reply); return; }
+    if (!job->stream || reply.status != 200) { send(response, reply, messages); return; }
     response.set_header("Cache-Control", "no-cache");
     response.set_header("X-Accel-Buffering", "no");
     response.set_chunked_content_provider("text/event-stream",
       [job, closed = request.is_connection_closed](std::size_t, httplib::DataSink &sink) {
         // Deferred providers execute after the route handler: contain every exception.
         try {
+          const bool messages = job->api == server::Api::messages;
+          auto wire_write = [&](const std::string &wire) { return sink.write(wire.data(), wire.size()); };
           auto write = [&](const Json &data) {
             const auto wire = "data: " + data.dump() + "\n\n";
             return sink.write(wire.data(), wire.size());
@@ -433,17 +449,22 @@ int main(int argc, char **argv) try {
             if (job->include_usage) data["usage"] = nullptr;
             return data;
           };
-          if (!write(chunk("", true))) { job->cancelled = true; return false; }
+          if (!(messages ? wire_write(server::message_start(model_name, job->id)) : write(chunk("", true)))) { job->cancelled = true; return false; }
           auto last_write = std::chrono::steady_clock::now();
           for (;;) {
             if (closed()) { job->cancelled = true; return false; }
             std::string text; std::optional<Reply> terminal;
             if (job->events.pop(text, terminal)) {
-              if (!write(chunk(text, false))) { job->cancelled = true; return false; }
+              if (!(messages ? wire_write(server::message_delta(text)) : write(chunk(text, false)))) { job->cancelled = true; return false; }
               last_write = std::chrono::steady_clock::now();
             } else if (terminal) {
               if (terminal->status != 200) {
-                const bool sent = write(terminal->body); sink.done(); return sent;
+                const bool sent = messages ? wire_write(server::message_event(server::messages_error(terminal->status, terminal->body))) : write(terminal->body);
+                sink.done(); return sent;
+              }
+              if (messages) {
+                if (!wire_write(server::message_end(terminal->body))) return false;
+                sink.done(); return true;
               }
               if (!write(chunk("", false, terminal->body["choices"][0]["finish_reason"]))) return false;
               if (job->include_usage) {
@@ -475,6 +496,30 @@ int main(int argc, char **argv) try {
     try { job = parse(request.body, config.max_context, server::Api::chat); }
     catch (const std::exception &e) { send(response, failure(400, e.what())); return; }
     dispatch(job, request, response);
+  });
+  auto messages_route = [&](const httplib::Request &request, httplib::Response &response, bool count_only) {
+    if (!authorized(request, response, true)) return;
+    const auto version = request.get_header_value("anthropic-version");
+    if ((version != "2023-06-01" && version != "2026-10-21") || request.has_header("anthropic-beta")) {
+      send(response, failure(400, "Require anthropic-version: 2023-06-01 or 2026-10-21; beta features are unsupported"), true); return;
+    }
+    auto job = std::make_shared<Job>();
+    try {
+      if (version == "2026-10-21") {
+        const auto body = Json::parse(request.body);
+        for (const auto *key : {"temperature", "top_p", "top_k"})
+          server::require(!body.contains(key), std::string(key) + " was removed in API version 2026-10-21");
+      }
+      static_cast<server::Request &>(*job) = server::parse_messages(request.body, config.max_context, model_name, count_only);
+      job->count_only = count_only;
+    } catch (const std::exception &e) { send(response, failure(400, e.what()), true); return; }
+    dispatch(job, request, response);
+  };
+  http.Post("/v1/messages", [&](const httplib::Request &request, httplib::Response &response) {
+    messages_route(request, response, false);
+  });
+  http.Post("/v1/messages/count_tokens", [&](const httplib::Request &request, httplib::Response &response) {
+    messages_route(request, response, true);
   });
   http.Post("/v1/systemone", [&](const httplib::Request &request, httplib::Response &response) {
     if (!authorized(request, response)) return;

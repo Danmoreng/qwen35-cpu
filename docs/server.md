@@ -17,6 +17,8 @@ The process starts listening only after the model has loaded successfully.
 - `GET /v1/cache`: prefix-cache counters and bounded storage usage.
 - `POST /v1/completions`: raw prompt, JSON or SSE response.
 - `POST /v1/chat/completions`: text messages, native Qwen formatting, JSON or SSE response.
+- `POST /v1/messages`: Anthropic-compatible text Messages, JSON or SSE response.
+- `POST /v1/messages/count_tokens`: logical token count using the native formatter/tokenizer.
 
 ```json
 {
@@ -101,6 +103,50 @@ Disconnects cancel work; ten-second SSE comments keep an idle stream observable.
 The existing five-minute deadline includes preparation, queueing and generation.
 Validation errors precede SSE headers; later failures use an error event without
 a successful terminal sequence.
+
+## Anthropic Messages
+
+The text subset of `POST /v1/messages` accepts the actual `model` ID, required
+`max_tokens`, `messages` with user/assistant roles and string or text-block
+content, and optional separate `system` text or text blocks. Consecutive messages
+with the same role are combined with two newlines. The final turn must be a user
+turn; assistant prefilling is rejected. Generation uses the same Qwen template,
+disabled thinking and engine as Chat Completions.
+
+Use the official Anthropic client with the server root as `base_url`,
+`anthropic-version: 2023-06-01` or `2026-10-21`, and `x-api-key: <QWEN35_API_KEY>` when configured.
+Bearer authentication also works. Unsupported versions and beta headers are
+rejected. This is a Messages adapter, not a Claude model or full Anthropic API.
+The models endpoint retains the OpenAI shape.
+The pinned Anthropic Python SDK 2.1.0 no longer exposes sampling keywords;
+for deterministic local decoding, use `default_headers={"anthropic-version":
+"2023-06-01"}` on the client and `extra_body={"temperature": 0}` on the request.
+The current version rejects sampling fields, matching the
+[upstream version contract](https://platform.claude.com/docs/en/api/versioning).
+
+Version 2023-06-01 accepts `temperature` (0..1, default 1), `top_p`, `top_k`.
+Both versions accept
+`stop_sequences` (up to four strings), `stream`, `thinking: {"type":"disabled"}`,
+and the local `cache_prompt`/`prompt_cache_key` extensions. Images, extended
+thinking, tools, cloud cache-control/TTL hints and unknown fields are rejected.
+Responses contain text blocks, `end_turn`, `max_tokens` or `stop_sequence`, and
+the exact matched stop string when applicable. Errors use the Messages error
+envelope, including authentication and capacity failures.
+
+Streams use named `message_start`, `content_block_start`, `content_block_delta`,
+`content_block_stop`, `message_delta` and `message_stop` events, without `[DONE]`.
+They share the same UTF-8 handling, bounded queues, cancellation and deadlines
+as OpenAI streams. Initial usage is provisional (zero); the final message delta
+supplies authoritative cumulative usage, which the official SDK merges into the
+final Message. Post-header failures use an `error` event.
+
+Messages usage partitions the logical prompt into `input_tokens` (uncached),
+`cache_read_input_tokens` and `cache_creation_input_tokens`. Creation counts only
+newly computed tokens successfully retained; extending a restored prefix does
+not count restored tokens twice. These describe the local bounded cache, not
+cloud billing or persistence. `output_tokens` includes withheld stop/EOS tokens.
+`POST /v1/messages/count_tokens` accepts `model`, `messages` and optional `system`;
+it returns the full formatted input count without inference or cache mutation.
 
 ## Automatic prefix cache
 

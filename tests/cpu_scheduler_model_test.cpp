@@ -267,6 +267,7 @@ int main(int argc, char **argv) try {
     check(growing->result(extended[r], result) && result.status == CpuRequestStatus::complete);
     check(extension_cold == extension_warm[r]);
     check(result.cached_prefix_tokens == (r == 0 ? 128U : 257U));
+    check(result.prefix_written_tokens == (r == 0 ? 129U : 0U));
     growing->release(extended[r]);
   }
   check(growing->stats().prefix_builds == 1);

@@ -15,7 +15,7 @@ p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--server', type=Path, required=True)
 p.add_argument('--model-dir', type=Path, required=True)
 p.add_argument('--threads', default='2')
-p.add_argument('--sdk', action='store_true', help='Also require the official OpenAI Python SDK')
+p.add_argument('--sdk', action='store_true', help='Also require the official OpenAI and Anthropic Python SDKs')
 args = p.parse_args()
 with socket.socket() as s:
     s.bind(('127.0.0.1', 0))
@@ -159,6 +159,78 @@ with tempfile.TemporaryFile(mode='w+b') as log:
                 else:
                     raise AssertionError('SDK did not receive a typed bad-request error')
                 print(f'OpenAI SDK {openai.__version__}: text chat, SSE and error conformance passed')
+            import anthropic
+            with anthropic.Anthropic(api_key=key, base_url=base, max_retries=0) as latest:
+                current = latest.messages.create(model=model, max_tokens=4,
+                    messages=[{'role': 'user', 'content': 'Hello'}])
+                assert current.type == 'message' and current.usage.output_tokens > 0
+                try:
+                    latest.messages.create(model=model, max_tokens=4, messages=[{'role': 'user', 'content': 'Hi'}],
+                        extra_body={'temperature': 0})
+                except anthropic.BadRequestError:
+                    pass
+                else:
+                    raise AssertionError('Removed sampling field accepted on 2026-10-21')
+            with anthropic.Anthropic(api_key=key, base_url=base, max_retries=0,
+                    default_headers={'anthropic-version': '2023-06-01'}) as client:
+                msg_request = dict(model=model, system='Answer briefly.', messages=[
+                    {'role': 'user', 'content': [{'type': 'text', 'text': 'What is two plus two?'}]}],
+                    max_tokens=12, extra_body={'temperature': 0})
+                answer = client.messages.create(**msg_request)
+                assert answer.type == 'message' and answer.role == 'assistant'
+                _, equivalent = call('/v1/chat/completions', dict(model=model,
+                    messages=[{'role': 'system', 'content': msg_request['system']}] + msg_request['messages'],
+                    max_tokens=12, temperature=0))
+                assert answer.content[0].text == equivalent['choices'][0]['message']['content']
+                with client.messages.stream(**msg_request) as stream:
+                    text = ''.join(stream.text_stream)
+                    final = stream.get_final_message()
+                assert text == answer.content[0].text == final.content[0].text
+                assert final.stop_reason == answer.stop_reason and final.usage.output_tokens == answer.usage.output_tokens
+                count = client.messages.count_tokens(model=model, system=msg_request['system'], messages=msg_request['messages'])
+                assert count.input_tokens == equivalent['usage']['prompt_tokens']
+                assert final.usage.input_tokens + final.usage.cache_read_input_tokens + final.usage.cache_creation_input_tokens == count.input_tokens
+                marker = text[:1]
+                assert marker
+                stopped = client.messages.create(**msg_request, stop_sequences=[marker])
+                assert stopped.stop_reason == 'stop_sequence' and stopped.stop_sequence == marker
+                assert stopped.content[0].text == text[:text.index(marker)]
+                with client.messages.stream(**msg_request, stop_sequences=[marker]) as stream:
+                    stop_text = ''.join(stream.text_stream)
+                    final = stream.get_final_message()
+                assert stop_text == stopped.content[0].text and final.stop_sequence == marker
+                assert final.usage.output_tokens == stopped.usage.output_tokens
+                # Local cache accounting must partition the same logical Qwen prompt.
+                long_request = {**msg_request, 'system': 'An Anthropic cache accounting fixture. ' * 16}
+                first = client.messages.create(**long_request)
+                warm = client.messages.create(**long_request)
+                count = client.messages.count_tokens(model=model, system=long_request['system'], messages=long_request['messages'])
+                assert first.usage.cache_creation_input_tokens > 0 and first.usage.cache_read_input_tokens == 0
+                assert warm.usage.cache_read_input_tokens == first.usage.cache_creation_input_tokens
+                assert warm.usage.cache_creation_input_tokens == 0
+                for value in [first, warm]:
+                    assert value.usage.input_tokens + value.usage.cache_creation_input_tokens + value.usage.cache_read_input_tokens == count.input_tokens
+                assert first.content == warm.content
+                for extra in [{'model': 'missing'}, {'max_tokens': 1024, 'stream': True}]:
+                    try:
+                        client.messages.create(**{**msg_request, **extra})
+                    except anthropic.BadRequestError as e:
+                        assert e.body['type'] == 'error' and e.body['error']['type'] == 'invalid_request_error'
+                    else:
+                        raise AssertionError('Messages SDK did not receive a typed error')
+                for headers in [{'anthropic-version': 'invalid'}, {'x-api-key': 'invalid', 'Authorization': 'Bearer invalid'}]:
+                    try:
+                        client.messages.create(**msg_request, extra_headers=headers)
+                    except (anthropic.BadRequestError, anthropic.AuthenticationError):
+                        pass
+                    else:
+                        raise AssertionError('Messages invalid headers accepted')
+                raw_headers = {'x-api-key': key, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json'}
+                req = urllib.request.Request(base + '/v1/messages/count_tokens', headers=raw_headers,
+                    data=json.dumps(dict(model=model, messages=msg_request['messages'], system=msg_request['system'])).encode())
+                with urllib.request.urlopen(req, timeout=120) as response:
+                    assert json.load(response)['input_tokens'] == equivalent['usage']['prompt_tokens']
+                print(f'Anthropic SDK {anthropic.__version__}: Messages, SSE, stops, cache usage, counting and errors passed')
         print('Real-model template, buffered/streamed output, stops, usage, disconnect and validation checks passed')
     except BaseException:
         log.seek(0)

@@ -9,7 +9,9 @@ embeddable multi-request engine, CPU tests and comparison tools. It is an indepe
 extraction of the validated CPU implementation in qwen35x; see [provenance](PROVENANCE.md).
 The HTTP server supports **OpenAI-compatible text Chat Completions** with native
 Qwen prompt formatting, plus raw `/v1/completions`. Both support greedy or sampled
-decoding, complete JSON responses and SSE streaming. Tool calls are not yet
+decoding, complete JSON responses and SSE streaming. An
+[Anthropic Messages adapter](docs/server.md#anthropic-messages) provides text
+messages, streaming and token counting through the same engine. Tool calls are not yet
 implemented; see the [supported API fields](docs/server.md#chat-completions).
 Automatic bounded prefix caching reuses exact system/history and qev prefixes;
 responses report restored tokens separately from logical prompt usage.

@@ -108,6 +108,8 @@ struct CpuRequestResult {
   std::size_t committed_tokens = 0;
   std::size_t prefill_tokens = 0, decode_forwards = 0;
   std::size_t cached_prefix_tokens = 0;
+  // Newly computed tokens successfully published in a prefix snapshot.
+  std::size_t prefix_written_tokens = 0;
   double prefix_restore_ms = 0;
   double queue_ms = 0;
   // Forward-call time only; aggregate serving timing must also include sampling

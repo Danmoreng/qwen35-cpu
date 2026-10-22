@@ -1,5 +1,6 @@
 #include "server_protocol.h"
 #include "server_stream.h"
+#include "server_anthropic.h"
 #include <fstream>
 #include <iostream>
 using namespace qwen35x::server;
@@ -44,6 +45,30 @@ int main(int argc, char **argv) try {
   check(reply["object"] == "chat.completion" && reply["choices"][0]["message"]["role"] == "assistant" &&
         reply["usage"]["total_tokens"] == 12, "Chat response contract differs");
   const auto legacy = parse(R"({"prompt":"Hello"})", 256, "test", Api::completion);
+  const Json messages_base = {{"model", "test"}, {"messages", base["messages"]}, {"max_tokens", 16}, {"temperature", 0}};
+  const auto messages_request = parse_messages(messages_base.dump(), 256, "test");
+  check(messages_request.prompt == request.prompt && messages_request.api == Api::messages,
+        "Messages adapter changed Qwen input");
+  for (const auto &patch : std::vector<Json>{
+      {{"max_tokens", nullptr}}, {{"model", "wrong"}}, {{"temperature", 1.1}},
+      {{"stop_sequences", "x"}}, {{"thinking", {{"type", "enabled"}}}},
+      {{"messages", Json::array({{{"role", "system"}, {"content", "x"}}})}},
+      {{"system", Json::array({{{"type", "image"}, {"source", "x"}}})}}}) {
+    auto j = messages_base; j.update(patch);
+    rejects([&] { parse_messages(j.dump(), 256, "test"); });
+  }
+  auto consecutive = messages_base;
+  consecutive["messages"].push_back({{"role", "user"}, {"content", "Second"}});
+  check(parse_messages(consecutive.dump(), 256, "test").prompt.find("Hello\n\nSecond") != std::string::npos,
+        "Consecutive Messages turns not combined");
+  const auto usage = messages_usage(100, 12, 30, 20);
+  check(usage["input_tokens"] == 50 && usage["cache_creation_input_tokens"] == 20 &&
+        usage["cache_read_input_tokens"] == 30, "Cache counts overlap");
+  rejects([&] { messages_usage(10, 1, 9, 2); });
+  const auto message = message_response("test", 4, "Hi", "end_turn", nullptr, usage);
+  check(message["content"][0]["text"] == "Hi" && message["stop_sequence"].is_null() &&
+        message_start("test", 4).starts_with("event: message_start\n") &&
+        message_end(message).find("event: message_stop\n") != std::string::npos, "Messages event contract differs");
   check(legacy.spec.sampling.temperature == 0 && legacy.spec.sampling.top_k == 20 &&
         legacy.spec.sampling.top_p == .8f, "Legacy sampling defaults changed");
   // Every possible byte split, including within UTF-8 and stop markers.
@@ -61,7 +86,7 @@ int main(int argc, char **argv) try {
   StopMatcher partial({"STOP"}, 64);
   check(partial.Push("hello ST") == "hello " && partial.Finish() == "ST", "Partial stop discarded at length limit");
   StopMatcher overlap({"abc", "bc"}, 64);
-  check(overlap.Push("xabctail") == "x" && overlap.stopped(), "Earliest stop not selected");
+  check(overlap.Push("xabctail") == "x" && overlap.stopped() && overlap.matched() == "abc", "Earliest stop not selected");
   StreamQueue queue;
   std::size_t queued = 0;
   while (queue.room()) { queue.push("payload"); ++queued; }

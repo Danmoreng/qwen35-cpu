@@ -82,8 +82,10 @@ class StopMatcher {
   std::size_t max_chunk_;
   std::string pending_, output_;
   bool stopped_ = false;
+  std::string matched_;
 public:
   bool stopped() const { return stopped_; }
+  const std::string &matched() const { return matched_; }
 std::size_t HeldSuffix(std::string_view text, std::string_view pattern) {
   for (std::size_t n = std::min(text.size(), pattern.size() - 1); n > 0; --n)
     if (text.substr(text.size() - n) == pattern.substr(0, n))
@@ -111,8 +113,10 @@ std::string_view Push(std::string_view text) {
     throw std::length_error("decoded chunk exceeds admitted maximum");
   pending_.append(text);
   std::size_t first = std::string::npos;
-  for (const auto &stop : stops_)
-    first = std::min(first, pending_.find(stop));
+  for (const auto &stop : stops_) {
+    const auto position = pending_.find(stop);
+    if (position < first) { first = position; matched_ = stop; }
+  }
   if (first != std::string::npos) {
     output_.assign(pending_, 0, first);
     pending_.clear();
