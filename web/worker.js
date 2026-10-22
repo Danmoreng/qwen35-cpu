@@ -30,7 +30,7 @@ const call = (name, types = [], args = []) => {
   return result;
 };
 async function getFile(file, cache, progress) {
-  const url = `/model/${file.name}?sha256=${file.sha256}`;
+  const url = file.url || `/model/${file.name}?sha256=${file.sha256}`;
   const key = `${file.sha256}-${file.name}`;
   let blob, response, cached = false;
   if (cache?.kind === 'opfs') try {
@@ -98,8 +98,8 @@ onmessage = async ({data}) => {
         printErr: text => send('log', {text})});
       const response = await fetch('/model/manifest.json');
       if (!response.ok) throw new Error('Local model manifest is unavailable');
-      const manifest = await response.json();
-      if (manifest.format !== 'qev-local-wasm/1') throw new Error('Unsupported local manifest');
+      const {validateModelManifest} = await import('./model-manifest.js');
+      const manifest = validateModelManifest(await response.json());
       let cache;
       if (data.cache) cache = await openModelCache();
       const blobs = []; let loaded = 0, lastProgress = 0;

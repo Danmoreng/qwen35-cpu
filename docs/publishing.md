@@ -123,3 +123,25 @@ is `e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69`.
 This publication is separate from the existing base/chat model and does not
 change its CI model variables or existing binary releases. The new decision
 endpoint is available by building the pinned source revision.
+
+## Native v0.2.0 and current qev documentation
+
+The tested native decision server is available in
+[v0.2.0](https://github.com/Danmoreng/qwen35-cpu/releases/tag/v0.2.0), with Linux
+and Windows archives and SHA-256 files. Source tag: `eaf2425b56d11000ca2744e35e859d9381382a6b`.
+Linux and Windows release CI both passed, including full/selected HTTP parity.
+Current comparisons use separately confirmed llama.cpp batch tuning; see
+[the HTTP study](qev-http-selected-2026-10-22.md).
+
+The qev model repository's metadata-only revision
+`eb167df11cbd6130513fedfcfdfb2ca11180b2de` updates README, serving evidence in
+`quantization.json`, and their checksum entries. The checkpoint, tokenizer,
+calibration and decision configuration are unchanged from the earlier immutable
+revision. Anonymous download checks verified the new metadata checksums and
+unchanged model SHA-256. The model card pins source `0b48efc1aee5a793048822aacffe4ae76d595118`.
+
+Development now validates locally and pushes finished work directly to `main`;
+pull requests are only used when explicitly requested. CI runs after each push
+and must succeed before publication. Force-push and deletion of `main` remain
+blocked. For the subsequent browser deployment, see
+[static Space packaging](huggingface-space.md).

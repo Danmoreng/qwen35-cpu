@@ -44,6 +44,11 @@ jobs:
         run: |
           ./build/qwen35_cpu${{ matrix.suffix }} --help
           ./build/qwen35_cpu_server${{ matrix.suffix }} --help
+      - name: Browser scenario and manifest contracts
+        shell: bash
+        run: |
+          node tests/demo_scenarios_test.mjs
+          node tests/model_manifest_test.mjs
       - name: Download pinned qev decision model
         run: python scripts/download-qev-model.py --output models/qev-ci
       - name: Decision HTTP readout parity
