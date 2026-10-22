@@ -99,8 +99,13 @@ decision prefixes. Joint `usage.input_tokens` counts the full logical prompt
 once; per-question usage sums the independent rows. Computed tokens can exceed
 logical joint usage because of the separate prefix evaluations.
 
-The native path computes full-vocabulary logits and selects option-letter
-logits from them; it performs **zero decode forwards**. Multiple decision
+The native path projects only the required option-letter logits for supported
+Q4 DOT4 output weights; it performs **zero decode forwards**. Other supported
+head formats retain full-vocabulary projection. `--decision-head full` forces
+the original readout for comparison; the default is `auto`. Completion requests
+keep their existing vocabulary/sampling behavior. `--prefill-chunk N` selects
+an explicit 1..2048-token chunk; omit it to retain the adaptive 64/128-token
+default. Multiple decision
 requests share the existing bounded scheduler. Prefill chunks use one executor
 and are time-sliced between requests; there is no cross-request prefill batch.
 Decode batching therefore does not accelerate this workload. See the

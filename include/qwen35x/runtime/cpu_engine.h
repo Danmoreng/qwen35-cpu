@@ -15,6 +15,8 @@ public:
   ~CpuModel();
   const char* weight_format() const noexcept;
   const char* head_weight_format() const noexcept;
+  // Whether the loaded output matrix supports the restricted option readout.
+  bool supports_selected_logits() const noexcept;
 
 private:
   struct Impl;

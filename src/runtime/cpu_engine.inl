@@ -8,6 +8,11 @@ struct CpuModel::Impl {
 };
 CpuModel::CpuModel(std::shared_ptr<const Impl> impl) : impl_(std::move(impl)) {}
 CpuModel::~CpuModel() = default;
+bool CpuModel::supports_selected_logits() const noexcept {
+  const auto &head = impl_->weights.embed_tokens;
+  return head.is_q4_0() && head.q4_dot4 && !head.packed_q4_0_blocks.empty() &&
+      !head.q8_gate_rows && head.g16_tiles.empty() && head.gguf_parts.empty();
+}
 const char* CpuModel::head_weight_format() const noexcept {
   const auto& head=impl_->weights.embed_tokens;
   if(!head.g16_tiles.empty()) return head.uses_q4_h128_transform?"h128-q4-g16-dot4":"identity-q4-g16-dot4";
@@ -526,12 +531,10 @@ CpuRequestId CpuEngine::submit(CpuRequestSpec spec, std::string &error) {
     return 0;
   }
   const bool selected=!spec.selected_logit_tokens.empty() || spec.selected_logits_callback;
-  const auto &head=impl_->model->impl_->weights.embed_tokens;
   if(selected && (spec.selected_logit_tokens.empty() || !spec.selected_logits_callback ||
       spec.logits_callback || spec.max_new_tokens!=1 || spec.forced_output_tokens.size()!=1 ||
       !std::all_of(spec.selected_logit_tokens.begin(),spec.selected_logit_tokens.end(),valid_token) ||
-      !head.is_q4_0() || !head.q4_dot4 || head.packed_q4_0_blocks.empty() || head.q8_gate_rows ||
-      !head.g16_tiles.empty() || !head.gguf_parts.empty())) {
+      !impl_->model->supports_selected_logits())) {
     error="Selected readout requires a Q4 DOT4 head, valid token IDs, its own callback and one forced token.";
     return 0;
   }

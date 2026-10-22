@@ -3,6 +3,7 @@
 #include "qwen35x/tokenizer/tokenizer.h"
 #include "httplib.h"
 #include "systemone.h"
+#include <algorithm>
 #include <atomic>
 #include <cmath>
 #include <limits>
@@ -42,6 +43,16 @@ struct Job {
     }
     return true;
   }
+  static bool capture_selected(void *opaque, std::size_t, std::int32_t,
+      const float *values, std::size_t n, std::string &error) {
+    auto &job = *static_cast<Job *>(opaque);
+    if (n != job.readout_ids.size() ||
+        !std::all_of(values, values + n, [](float value) { return std::isfinite(value); })) {
+      error = "Invalid selected decision logits"; return false;
+    }
+    job.option_logits.assign(values, values + n);
+    return true;
+  }
 };
 
 // Only this worker touches the tokenizer and CpuEngine. HTTP workers wait on
@@ -52,6 +63,7 @@ class Service {
   std::unique_ptr<CpuEngine> engine_;
   std::optional<systemone::Config> decision_;
   std::size_t max_context_;
+  bool selected_decision_head_ = false;
   std::mutex mutex_;
   std::condition_variable wake_;
   std::deque<std::shared_ptr<Job>> pending_;
@@ -65,7 +77,13 @@ class Service {
     CpuRequestSpec spec;
     spec.prompt_tokens = job->decision->rows[job->question]; spec.max_new_tokens = 1;
     spec.forced_output_tokens = {decision_->ids.front()};
-    spec.logits_callback = Job::capture; spec.logits_callback_context = job.get();
+    if (selected_decision_head_) {
+      spec.selected_logit_tokens = job->readout_ids;
+      spec.selected_logits_callback = Job::capture_selected;
+      spec.selected_logits_callback_context = job.get();
+    } else {
+      spec.logits_callback = Job::capture; spec.logits_callback_context = job.get();
+    }
     return engine_->submit(std::move(spec), error);
   }
   void finish(const std::shared_ptr<Job> &job, Reply reply) {
@@ -168,7 +186,7 @@ class Service {
     }
   }
 public:
-  Service(const CpuLoadOptions &load, const CpuEngineConfig &config) : max_context_(config.max_context) {
+  Service(const CpuLoadOptions &load, const CpuEngineConfig &config, bool auto_decision_head) : max_context_(config.max_context) {
     std::string error;
     if (!QwenTokenizer::load_from_hf_directory(load.model_dir, tokenizer_, error)) throw std::runtime_error(error);
     decision_ = systemone::Config::load(load.model_dir, tokenizer_);
@@ -179,6 +197,8 @@ public:
     if (std::string(model->weight_format()).starts_with("gguf-"))
       model_name = "Qwen3.5-0.8B-GGUF";
     if (decision_) model_name = "qev-0.8b-H128-Q4-G32-DOT4";
+    selected_decision_head_ = auto_decision_head && model->supports_selected_logits();
+    if (decision_) std::cout << "System One readout: " << (selected_decision_head_ ? "selected" : "full") << '\n';
     engine_ = CpuEngine::create(model, config, error);
     if (!engine_) throw std::runtime_error(error);
     worker_ = std::thread([this] { run(); });
@@ -255,6 +275,7 @@ int main(int argc, char **argv) try {
   config.max_decode_batch_size = 16; config.shared_kv_pages = true;
   std::string host = "127.0.0.1";
   std::string decision_encoding = "joint";
+  bool auto_decision_head = true;
   int port = 8080;
   for (int i = 1; i < argc; ++i) {
     const std::string key = argv[i];
@@ -262,6 +283,7 @@ int main(int argc, char **argv) try {
       std::cout << "Qwen3.5 CPU HTTP server\n--model-dir DIR [--weights FILE] [--threads N]\n"
         "[--host 127.0.0.1] [--port 8080] [--max-context 8192] [--residents 16]\n"
         "[--decision-encoding joint|per_question] (qev_config.json required)\n"
+        "[--decision-head auto|full] [--prefill-chunk N] (1..2048; default adaptive)\n"
         "GET /health, GET /v1/models, POST /v1/completions, POST /v1/systemone\n";
       return 0;
     }
@@ -281,6 +303,14 @@ int main(int argc, char **argv) try {
       if (value != "joint" && value != "per_question") throw std::runtime_error("Invalid decision encoding");
       decision_encoding = value;
     }
+    else if (key == "--decision-head") {
+      if (value != "auto" && value != "full") throw std::runtime_error("Invalid decision head");
+      auto_decision_head = value == "auto";
+    }
+    else if (key == "--prefill-chunk") {
+      config.prefill_chunk_size = number();
+      if (config.prefill_chunk_size > 2048) throw std::runtime_error("Prefill chunk must be <=2048");
+    }
     else if (key == "--max-context") config.max_context = number();
     else if (key == "--residents") {
       config.max_resident_requests = number();
@@ -293,7 +323,7 @@ int main(int argc, char **argv) try {
   const std::string api_key = key_env ? key_env : "";
   if (host != "127.0.0.1" && host != "::1" && host != "localhost" && api_key.empty())
     throw std::runtime_error("Set QWEN35_API_KEY before binding a non-loopback interface");
-  Service service(load, config);
+  Service service(load, config, auto_decision_head);
   httplib::Server http;
   http.new_task_queue = [] { return new httplib::ThreadPool(32, 32, 64); };
   http.set_payload_max_length(262144);

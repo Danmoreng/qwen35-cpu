@@ -24,6 +24,8 @@ def main():
     p.add_argument('--weights', type=Path, required=True)
     p.add_argument('--request', type=Path, required=True)
     p.add_argument('--threads', type=int, default=8)
+    p.add_argument('--decision-head', choices=['auto', 'full'])
+    p.add_argument('--prefill-chunk', type=int, default=0)
     p.add_argument('--concurrency', type=int, default=1)
     p.add_argument('--requests', type=int, help='Total requests in the sample; defaults to concurrency')
     p.add_argument('--distinct-states', action='store_true')
@@ -39,6 +41,8 @@ def main():
     if args.backend=='native':
         cmd+=['--model-dir',str(args.model_dir),'--weights',str(args.weights),'--threads',str(args.threads),
               '--residents',str(args.concurrency),'--max-context','8192','--port',str(port)]
+        if args.decision_head:cmd+=['--decision-head',args.decision_head]
+        if args.prefill_chunk:cmd+=['--prefill-chunk',str(args.prefill_chunk)]
     else:
         cmd+=['--model',str(args.weights),'--n-gpu-layers','0','--threads',str(args.threads),
               '--threads-batch',str(args.threads),'--parallel',str(args.concurrency),'--ctx-size',str(8192*args.concurrency),
@@ -81,6 +85,7 @@ def main():
                 concurrency=args.concurrency,completed_requests=len(results),
                 request_latencies_ms=times,mean_request_latency_ms=sum(times)/len(times),
                 max_request_latency_ms=max(times),
+                responses=[x[1] for x in results],
                 scope='First B1 HTTP decision after readiness; no warmup inside server; loading excluded'),indent=2)+'\n')
         finally:
             child.terminate()

@@ -44,6 +44,14 @@ jobs:
         run: |
           ./build/qwen35_cpu${{ matrix.suffix }} --help
           ./build/qwen35_cpu_server${{ matrix.suffix }} --help
+      - name: Download pinned qev decision model
+        run: python scripts/download-qev-model.py --output models/qev-ci
+      - name: Decision HTTP readout parity
+        run: >-
+          python tests/systemone_readout_parity.py
+          --server build/qwen35_cpu_server${{ matrix.suffix }}
+          --model-dir models/qev-ci --weights models/qev-ci/model.q35h
+          --output decision-http-checks.json
       - name: Require pinned model for releases
         if: startsWith(github.ref, 'refs/tags/')
         shell: bash
