@@ -334,6 +334,9 @@ struct CpuEngine::Impl {
   }
   bool select(Sequence &s, int greedy_token, std::string &error) {
     const auto index = s.result.output_tokens.size();
+    if(s.spec.selected_logits_callback &&
+       !s.spec.selected_logits_callback(s.spec.selected_logits_callback_context,index,
+         s.spec.forced_output_tokens[index],s.logits.data(),s.logits.size(),error))return false;
     if (s.spec.logits_callback &&
         !s.spec.logits_callback(s.spec.logits_callback_context, index,
                                 s.spec.forced_output_tokens.empty()
@@ -379,6 +382,7 @@ struct CpuEngine::Impl {
     const auto &d = model->impl_->dims;
     const auto &w = model->impl_->weights;
     const bool prefill = s.result.status == CpuRequestStatus::prefill;
+    const bool selected=!s.spec.selected_logit_tokens.empty();
     const bool greedy = s.spec.sampling.temperature <= 1e-6F &&
                         s.spec.forced_output_tokens.empty() &&
                         !s.spec.logits_callback;
@@ -390,7 +394,10 @@ struct CpuEngine::Impl {
       // A complete hit still performs private head selection; a cached sample
       // must never substitute for this request's penalties or RNG state.
       const auto &hidden = s.spec.prefix->impl_->final_hidden;
-      if (greedy)
+      if(selected)
+        ok=compute_selected_logits_from_embedding(context.get(),w.embed_tokens,hidden,
+          s.spec.selected_logit_tokens,s.logits,error);
+      else if (greedy)
         ok = greedy_q4_token(context.get(), w.embed_tokens, hidden, s.counts,
                              s.spec.sampling.repetition_penalty,
                              sampling.next_token, error);
@@ -418,9 +425,12 @@ struct CpuEngine::Impl {
       ok = run_forward_cpu_q8_batch(
           context.get(), w, d, s.state,
           s.spec.prompt_tokens.data() + s.result.committed_tokens, count,
-          static_cast<int>(s.result.committed_tokens), predict, s.logits,
+          static_cast<int>(s.result.committed_tokens), predict && !selected, s.logits,
           greedy ? &sampling : nullptr, nullptr, error,
-          publish ? &prefix_hidden : nullptr);
+          (publish || (selected && predict)) ? &prefix_hidden : nullptr);
+      if(ok && selected && predict)
+        ok=compute_selected_logits_from_embedding(context.get(),w.embed_tokens,prefix_hidden,
+          s.spec.selected_logit_tokens,s.logits,error);
       if (ok) {
         s.result.committed_tokens += count;
         s.result.prefill_tokens += count;
@@ -513,6 +523,16 @@ CpuRequestId CpuEngine::submit(CpuRequestSpec spec, std::string &error) {
       !std::isfinite(spec.sampling.repetition_penalty) ||
       spec.sampling.repetition_penalty < 1) {
     error = "Invalid request or resident/context limit reached.";
+    return 0;
+  }
+  const bool selected=!spec.selected_logit_tokens.empty() || spec.selected_logits_callback;
+  const auto &head=impl_->model->impl_->weights.embed_tokens;
+  if(selected && (spec.selected_logit_tokens.empty() || !spec.selected_logits_callback ||
+      spec.logits_callback || spec.max_new_tokens!=1 || spec.forced_output_tokens.size()!=1 ||
+      !std::all_of(spec.selected_logit_tokens.begin(),spec.selected_logit_tokens.end(),valid_token) ||
+      !head.is_q4_0() || !head.q4_dot4 || head.packed_q4_0_blocks.empty() || head.q8_gate_rows ||
+      !head.g16_tiles.empty() || !head.gguf_parts.empty())) {
+    error="Selected readout requires a Q4 DOT4 head, valid token IDs, its own callback and one forced token.";
     return 0;
   }
   if (impl_->config.max_queued_requests) {

@@ -303,7 +303,7 @@ The accepted minimum batch size is eight tokens; zero disables the experiment.
 The rotating three-candidate grid gives control 129.07/132.24/1072.66 ms,
 minimum eight 126.82/130.00/982.14 ms and minimum 32
 127.12/131.11/986.64 ms. A separate fresh-browser A/B confirms control
-130.85/131.01/1068.05 versus 128.26/128.75/982.99 ms (compute latency,
+130.85/131.02/1066.85 versus 128.26/128.75/981.77 ms (compute latency,
 three measured runs and one warmup). Adopt minimum eight: approximately 8%
 lower long-request latency, with no short-request regression.
 
@@ -316,3 +316,33 @@ An instrumented diagnostic retains separate worker sums for packing, QK,
 softmax, PV and gating; these sums are not wall latency or additive stage times.
 Raw evidence: P7-quality, P7-performance, P7-fresh and P7-diagnostic.
 Compact samples: results/qev-pro-review-2026-10-21/P7.json.
+
+
+## P8: selected option output projection
+
+The Decision C ABI now requests only the needed option token logits. The engine
+prepares the normalized final hidden vector once and evaluates unique eight-row
+DOT4 tiles, restoring the caller's token order and duplicates. The restricted
+API has a separate callback, requires exactly one forced output slot and rejects
+unsupported heads or invalid token IDs. Full-vocabulary callbacks and general
+sampling keep their existing contract. Complete and partial prefix hits are
+covered. `selected_option_head:0` restores the full projection for comparison.
+
+Three measured runs plus one warmup give these median compute latencies (ms):
+
+| Engine | Full head: short / Snake / long | Selected head: short / Snake / long |
+|---|---:|---:|
+| WASM | 129.01 / 129.15 / 980.09 | 125.16 / 126.65 / 980.92 |
+| Native | 38.39 / 37.03 / 239.69 | 33.98 / 34.62 / 236.60 |
+
+The benefit is concentrated in short requests: about 3% for the first WASM
+request, and 6-11% for the native short requests in this series. No measurable
+long-request WASM benefit is established. Adopt the selected Decision readout;
+this does not change HTTP server code or claim a server-level speed gain.
+
+All 24 browser questions retain exact option bits and answers. Native full and
+selected outputs match bitwise on all three measured prompts. A real-model API
+test covers eight prompt lengths, four prefix lengths, vocabulary endpoints,
+unsorted/duplicate IDs, seven rejected contracts and recovery; all 17 native
+CTest checks pass. Weights and probability calibration are unchanged.
+Raw P8-quality/P8-performance, compact results/P8.json under the study folders.

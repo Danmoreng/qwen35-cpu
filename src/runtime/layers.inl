@@ -374,6 +374,51 @@ bool compute_next_logits_from_embedding(CpuExecutionContext *cpu_context,
   return true;
 }
 
+bool compute_selected_logits_from_embedding(CpuExecutionContext *context,
+    const TensorData &embed,const std::vector<float> &hidden,
+    std::span<const std::int32_t> tokens,std::vector<float> &out,std::string &error) {
+  if(!context || embed.shape.size()!=2 || !embed.is_q4_0() || !embed.q4_dot4 ||
+     embed.q8_gate_rows || !embed.g16_tiles.empty() || !embed.gguf_parts.empty() ||
+     embed.packed_q4_0_blocks.empty() || tokens.empty()) {
+    error="Selected readout requires a packed Q4 DOT4 head and token IDs.";return false;
+  }
+  const auto rows=static_cast<std::size_t>(embed.shape[0]),cols=static_cast<std::size_t>(embed.shape[1]);
+  if(!cols || cols%32 || rows%8 || hidden.size()!=cols ||
+     embed.packed_q4_0_blocks.size()!=rows/8*(cols/32)) {
+    error="Selected head shape mismatch.";return false;
+  }
+  std::vector<std::pair<std::size_t,std::size_t>> order;
+  order.reserve(tokens.size());
+  for(std::size_t i=0;i<tokens.size();++i) {
+    if(tokens[i]<0 || static_cast<std::size_t>(tokens[i])>=rows) {
+      error="Selected token outside vocabulary.";return false;
+    }
+    order.emplace_back(static_cast<std::size_t>(tokens[i])/8,i);
+  }
+  std::sort(order.begin(),order.end());
+  std::size_t tiles=0;
+  for(std::size_t i=0;i<order.size();++i)tiles+=!i || order[i].first!=order[i-1].first;
+  CpuDecodeProbe probe(context,"q4-selected-head",tiles*8,cols);
+  auto &prepared=context->prepared_q4_input;
+  prepared.resize(cols/32);
+  if(!prepare_q4_decode_activation(embed,hidden.data(),cols,prepared.data(),error))return false;
+  out.resize(tokens.size());probe.prepared();
+  if(probe.sink)probe.timing.participants=1;
+  alignas(64) float values[8];
+  for(std::size_t begin=0;begin<order.size();) {
+    const auto tile=order[begin].first;
+    cpu::q4_dot4_matvec(embed.packed_q4_0_blocks.data()+tile*(cols/32),
+      prepared.data(),values,8,cols/32,embed.q8_0_backend);
+    auto end=begin;
+    while(end<order.size() && order[end].first==tile) {
+      const auto original=order[end].second;
+      out[original]=values[static_cast<std::size_t>(tokens[original])%8];++end;
+    }
+    begin=end;
+  }
+  return true;
+}
+
 int argmax_index(const std::vector<float> & values) {
   int best_idx = 0;
   float best_value = -std::numeric_limits<float>::infinity();

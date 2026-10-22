@@ -83,6 +83,12 @@ struct CpuRequestSpec {
   // not reenter this engine. The callback context must outlive the request.
   ReferenceLogitsCallback logits_callback = nullptr;
   void *logits_callback_context = nullptr;
+  // Optional restricted H128/DOT4 readout. Values follow these token IDs,
+  // including duplicates, rather than vocabulary indexing. Requires its own
+  // callback, no full callback, and exactly one forced output token.
+  std::vector<std::int32_t> selected_logit_tokens;
+  ReferenceLogitsCallback selected_logits_callback = nullptr;
+  void *selected_logits_callback_context = nullptr;
   std::shared_ptr<const CpuPrefix> prefix;
   std::string trust_namespace;
   // Serving mode only: build these leading tokens once for concurrent requests

@@ -41,15 +41,28 @@ struct Session {
     }
     return true;
   }
+  static bool capture_selected(void *opaque,std::size_t,std::int32_t,
+      const float *values,std::size_t size,std::string &error) {
+    auto &s=*static_cast<Session *>(opaque);
+    if(size!=s.request->questions[s.question].names.size() ||
+       !std::all_of(values,values+size,[](float x){return std::isfinite(x);})) {
+      error="Invalid selected decision logits";return false;
+    }
+    s.logits.assign(values,values+size);return true;
+  }
   void cancel() {
     if (active) { engine->cancel(active); engine->release(active); active = 0; }
     request.reset();
   }
-  void submit() {
+  void submit(bool selected_head) {
     CpuRequestSpec spec;
     spec.prompt_tokens = request->rows[question]; spec.max_new_tokens = 1;
     spec.forced_output_tokens = {protocol.ids.front()};
-    spec.logits_callback = capture; spec.logits_callback_context = this;
+    if(selected_head) {
+      spec.selected_logit_tokens.assign(protocol.ids.begin(),
+        protocol.ids.begin()+request->questions[question].names.size());
+      spec.selected_logits_callback=capture_selected;spec.selected_logits_callback_context=this;
+    } else { spec.logits_callback = capture; spec.logits_callback_context = this; }
     std::string error; active = engine->submit(std::move(spec), error);
     systemone::require(active != 0, error);
   }
@@ -80,14 +93,14 @@ const char *qev_tune(const char *body) try {
   auto options = Json::parse(body);
   systemone::require(options.is_object(), "Tuning must be an object");
   for (const auto &[key, value] : options.items()) {
-    systemone::require(key == "linear_prepare_min_tokens" || key == "executor_spin_count" || key == "mlp_prepare_min_tokens" || key == "kv_cache_bits" || key == "balance_attention_rows" || key == "merge_tail_jobs" || key == "gqa4_min_tokens", "Unknown tuning option: " + key);
+    systemone::require(key == "linear_prepare_min_tokens" || key == "executor_spin_count" || key == "mlp_prepare_min_tokens" || key == "kv_cache_bits" || key == "balance_attention_rows" || key == "merge_tail_jobs" || key == "gqa4_min_tokens" || key == "selected_option_head", "Unknown tuning option: " + key);
     systemone::require(value.is_number_unsigned() && value.get<std::size_t>() <= 67108864, "Invalid tuning value");
   }
   if (options.contains("kv_cache_bits")) {
     const auto bits = options["kv_cache_bits"].get<std::size_t>();
     systemone::require(bits == 0 || bits == 16 || bits == 32, "kv_cache_bits must be 0, 16 or 32");
   }
-  for (const auto *key : {"balance_attention_rows", "merge_tail_jobs"})
+  for (const auto *key : {"balance_attention_rows", "merge_tail_jobs", "selected_option_head"})
     systemone::require(!options.contains(key) || options[key].get<std::size_t>() <= 1,
                        std::string(key) + " must be 0 or 1");
   tuning = std::move(options);
@@ -153,7 +166,7 @@ const char *qev_begin(const char *body) try {
   s.request = std::move(request); s.question = s.steps = s.evaluated = s.decode = 0;
   s.prefill_ms = 0; s.debug = {{"prompt_tokens", s.request->rows}, {"option_logits", Json::array()}, {"option_logit_bits", Json::array()}};
   s.operations.clear(); s.stages.clear();
-  s.started = started; s.submit();
+  s.started = started; s.submit(tuning.value("selected_option_head",std::size_t{1})!=0);
   return reply({{"status", "running"}, {"questions", s.request->questions.size()}, {"input_tokens", s.request->input_tokens}});
 } catch (const std::exception &e) { return failure(e); }
 const char *qev_step() try {
@@ -173,7 +186,7 @@ const char *qev_step() try {
   s.evaluated += result.prefill_tokens; s.prefill_ms += result.prefill_ms; s.decode += result.decode_forwards;
   s.engine->release(s.active); s.active = 0;
   if (++s.question < s.request->questions.size()) {
-    s.submit(); return reply({{"status", "running"}, {"question", s.question}});
+    s.submit(tuning.value("selected_option_head",std::size_t{1})!=0); return reply({{"status", "running"}, {"question", s.question}});
   }
   const auto ms = std::chrono::duration<double, std::milli>(Clock::now() - s.started).count();
   Json answer = {{"status", "complete"}, {"model", "qev-0.8b-H128-Q4-G32-DOT4"},
@@ -191,6 +204,7 @@ const char *qev_cancel() {
 const char *qev_debug() {
   if (!session) return reply(Json::object());
   auto diagnostic = session->debug;
+  diagnostic["head_readout"]=tuning.value("selected_option_head",std::size_t{1})?"selected":"full";
   const auto bits = session->config.kv_cache_bits;
   diagnostic["kv_cache_bits"] = bits ? bits :
     (cpu::q8_0_backend_uses_avx2(cpu::Q8_0Backend::auto_select) ? 16 : 32);

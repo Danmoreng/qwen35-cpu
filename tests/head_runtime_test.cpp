@@ -87,6 +87,14 @@ int main() {
         std::vector<float> one(x.begin()+t*cols,x.begin()+(t+1)*cols),single;
         if(!matvec_2d(ctx.get(),w,one,single,error)) return 11;
         for(std::size_t r=0;r<rows;++r) if(std::abs(single[r]-out[t*rows+r])>1e-3) return 12;
+        if(!g16) {
+          const std::vector<std::int32_t> ids{263,0,8,7,8,17,262,1};std::vector<float> selected;
+          if(!compute_selected_logits_from_embedding(ctx.get(),w,one,ids,selected,error))return 27;
+          for(std::size_t i=0;i<ids.size();++i)
+            if(std::memcmp(&selected[i],&single[ids[i]],sizeof(float)))return 28;
+          const std::vector<std::int32_t> bad{-1};
+          if(compute_selected_logits_from_embedding(ctx.get(),w,one,bad,selected,error))return 29;
+        }
         std::vector<int> counts(rows,1);int token=-1;
         if(!greedy_q4_token(ctx.get(),w,one,counts,1.05F,token,error)) return 13;
         for(auto& v:single) v=v>0?v/1.05F:v*1.05F;
