@@ -11,6 +11,8 @@ The HTTP server supports **OpenAI-compatible text Chat Completions** with native
 Qwen prompt formatting, plus raw `/v1/completions`. Both support greedy or sampled
 decoding, complete JSON responses and SSE streaming. Tool calls are not yet
 implemented; see the [supported API fields](docs/server.md#chat-completions).
+Automatic bounded prefix caching reuses exact system/history and qev prefixes;
+responses report restored tokens separately from logical prompt usage.
 
 The native server also supports **qev-0.8b decisions via `POST /v1/systemone`**
 with a separate calibrated [qev model](https://huggingface.co/danmoreng/qev-0.8b-H128-Q4-G32-DOT4).

@@ -98,6 +98,7 @@ struct CpuEngine::Impl {
          it != prefixes.end();) {
       if (it->use_count() == 1) {
         prefix_bytes -= (*it)->size_bytes();
+        ++stats.prefix_evictions;
         it = prefixes.erase(it);
       } else
         ++it;
@@ -110,8 +111,10 @@ struct CpuEngine::Impl {
   }
   bool adopt_prefix(const std::shared_ptr<const CpuPrefix> &prefix,
                     std::string &error) {
-    if (std::find(prefixes.begin(), prefixes.end(), prefix) != prefixes.end())
+    if (const auto it = std::find(prefixes.begin(), prefixes.end(), prefix); it != prefixes.end()) {
+      std::rotate(it, it + 1, prefixes.end());
       return true;
+    }
     if (!prefix_room(prefix->size_bytes(), error))
       return false;
     prefixes.push_back(prefix);
@@ -303,6 +306,8 @@ struct CpuEngine::Impl {
       }
       s.result.prefix_restore_ms = elapsed_ms(start);
       s.result.cached_prefix_tokens = count;
+      ++stats.prefix_hits;
+      stats.prefix_cached_tokens += count;
       s.result.committed_tokens = count;
       if (!adopt_prefix(s.spec.prefix, error)) return false;
     }
@@ -422,7 +427,7 @@ struct CpuEngine::Impl {
           std::min(chunk - s.result.committed_tokens % chunk,
                    s.spec.prompt_tokens.size() - s.result.committed_tokens);
       const auto boundary = s.spec.register_prefix_tokens;
-      const bool building = boundary && !s.spec.prefix;
+      const bool building = boundary && s.result.committed_tokens < boundary;
       if (building) count = std::min(count, boundary - s.result.committed_tokens);
       const bool publish = building && s.result.committed_tokens + count == boundary;
       std::vector<float> prefix_hidden;
@@ -550,7 +555,8 @@ CpuRequestId CpuEngine::submit(CpuRequestSpec spec, std::string &error) {
     }
   }
   if (spec.register_prefix_tokens &&
-      (!impl_->config.max_queued_requests || spec.prefix || spec.trust_namespace.empty() ||
+      (!impl_->config.max_queued_requests ||
+       (spec.prefix && spec.prefix->token_count() >= spec.register_prefix_tokens) || spec.trust_namespace.empty() ||
        spec.register_prefix_tokens > spec.prompt_tokens.size())) {
     error = "Automatic prefix builds require serving mode, a namespace and a valid prefix length.";
     return 0;
@@ -665,6 +671,8 @@ bool CpuEngine::advance_batch(std::span<const CpuRequestId> ids,
 }
 CpuEngineStats CpuEngine::stats() const {
   auto stats = impl_->stats;
+  stats.prefix_entries = impl_->prefixes.size();
+  stats.prefix_bytes = impl_->prefix_bytes;
   std::unordered_set<const void*> pages;
   auto count_state=[&](const auto &state) {
     stats.physical_kv_bytes+=(state.k_cache.size()+state.v_cache.size())*sizeof(float)+

@@ -61,6 +61,12 @@ disconnect recovery and pre-stream validation errors. Host tests cover every
 byte split of a Unicode/stop fixture, partial UTF-8, overlapping stops and bounded
 event queues with a separate terminal lane. The scheduler model test verifies
 that generated-token accounting includes stop tokens withheld from output.
+Automatic-cache checks cover cold/warm response parity, cache-key isolation,
+concurrent single-flight reuse and growing chat history. Model scheduler tests
+compare full-vocabulary logits while extending a cached prefix, check longest
+exact matches and namespace separation, and force LRU eviction under a small
+budget. Decision HTTP checks can compare against `--reference-server` to verify
+answers and usage against an uncached prior build.
 `systemone_readout_parity.py` compares full and selected decision readouts and
 chunk sizes over HTTP. `systemone_server_smoke.py` and
 `systemone_tokenizer_parity.py` additionally accept prepared protocol/reference

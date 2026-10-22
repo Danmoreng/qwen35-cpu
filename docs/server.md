@@ -14,6 +14,7 @@ The process starts listening only after the model has loaded successfully.
 
 - `GET /health`: readiness (`{"status":"ok"}`).
 - `GET /v1/models`: the single supported model ID.
+- `GET /v1/cache`: prefix-cache counters and bounded storage usage.
 - `POST /v1/completions`: raw prompt, JSON or SSE response.
 - `POST /v1/chat/completions`: text messages, native Qwen formatting, JSON or SSE response.
 
@@ -28,17 +29,14 @@ The process starts listening only after the model has loaded successfully.
   "repetition_penalty": 1,
   "seed": -1,
   "stream": false,
-  "n": 1,
-  "prefix_tokens": 0
+  "n": 1
 }
 ```
 
 Only `prompt` is required. Model name is optional; if supplied it must match.
-The other fields use the defaults above. `prefix_tokens` is a custom extension:
-it requests automatic single-flight reuse of that many leading prompt tokens.
-Matching is by exact token IDs, with private recurrent state per request and
-shared immutable KV pages. The server is single-tenant; all requests share the
-same trust namespace and optional API key.
+The other fields use the defaults above. Automatic prefix reuse is enabled by
+default. The server is single-tenant, with one optional API key; the cache does
+not provide a separate authentication boundary between clients.
 
 Responses contain `id`, `object`, `created`, `model`, one text choice,
 `finish_reason` and token `usage`. Stop IDs come from the model tokenizer.
@@ -65,7 +63,8 @@ repository code or require Python/Jinja at runtime.
 Supported generation fields are `model`, `max_completion_tokens` (or `max_tokens`,
 but not both), `temperature`, `top_p`, `n=1`, `stream`, `stream_options.include_usage`,
 `stop`, and the existing
-`top_k`, `seed`, `repetition_penalty`, `prefix_tokens` extensions. Output defaults
+`top_k`, `seed`, `repetition_penalty`, `prefix_tokens`, `cache_prompt` extensions,
+plus optional `prompt_cache_key`. Output defaults
 to 128 tokens. Chat defaults to temperature 1, top_p 1 and top_k 0; raw
 completions retain the defaults above. Set temperature 0 for greedy decoding.
 Optional numeric fields may be null to use their defaults.
@@ -102,6 +101,38 @@ Disconnects cancel work; ten-second SSE comments keep an idle stream observable.
 The existing five-minute deadline includes preparation, queueing and generation.
 Validation errors precede SSE headers; later failures use an error event without
 a successful terminal sequence.
+
+## Automatic prefix cache
+
+`--prefix-cache auto` is the default; `--prefix-cache off` disables automatic
+lookup/builds. `--prefix-cache-mib N` bounds retained hybrid snapshots (default
+256 MiB, range 1..4096). This is a cache budget, not a total process-memory limit.
+Least recently used unpinned entries are evicted; active requests pin their
+snapshots. A full budget falls back to ordinary processing.
+
+Matching uses exact token IDs, model identity, prefill configuration and namespace.
+The server restores the longest retained match. Raw completions may retain the
+full prompt. Chat builds a system prefix or the conversation preceding the last
+user turn; single-turn requests without system instructions retain that user
+turn. A later turn can reuse an existing snapshot and publish a longer one.
+Automatic builds require at least 32 tokens. Concurrent matching builds share
+one leader. Snapshots retain FP16 KV, private FP32 recurrent/convolution state
+and the final hidden state; a cached sampled answer is never reused.
+
+On completion routes, `cache_prompt: false` bypasses automatic reuse/builds for
+that request. `prefix_tokens` remains an explicit override: a positive value
+requests exactly that prefix length, and zero disables caching for the request.
+The explicit override remains available when automatic caching is off.
+`prompt_cache_key` optionally partitions completion caches using a 1..64-byte
+UTF-8 string; different keys cannot share snapshots. Keys are optimization
+namespaces, not access credentials. qev has a separate namespace.
+
+`usage.prompt_tokens_details.cached_tokens` reports actual restored tokens;
+`prompt_tokens` still counts the full logical prompt. SSE includes these details
+in its optional final usage chunk. `/v1/cache` reports the last completed
+request's aggregate snapshot: entries, bytes, budget, hits, restored tokens,
+builds, evictions and budget fallbacks. This authenticated endpoint contains no
+prompt text. Cache entries are process-local and disappear on restart.
 
 ## qev decision API
 
@@ -151,9 +182,12 @@ Encoding defaults to **`joint`** for compatibility; `--decision-encoding
 per_question` changes that default. `per_question` matches the published Q4
 evaluation and gives every question its own independent state/question prompt.
 `joint` includes previous question/answer-slot prefixes, without inserting
-predicted letters. This initial native implementation evaluates each causal
-prefix separately. It does not read multiple slots in one forward or reuse
-decision prefixes. Joint `usage.input_tokens` counts the full logical prompt
+predicted letters. Each answer slot is evaluated separately, with automatic
+reuse of the exact common token prefix of the request's prepared rows when it
+meets the cache threshold. Matching snapshots can also serve subsequent requests.
+This does not read multiple slots in one forward. `cache.read_tokens` reports
+the sum of actual prefix restores across the questions.
+Joint `usage.input_tokens` counts the full logical prompt
 once; per-question usage sums the independent rows. Computed tokens can exceed
 logical joint usage because of the separate prefix evaluations.
 

@@ -228,6 +228,67 @@ int main(int argc, char **argv) try {
     check(shared->stats().prefix_build_fallbacks == (scenario == 2 ? 1U : 0U));
     check(cached == (scenario == 0 ? 514U : scenario == 1 ? 257U : 0U));
   }
+  // Extend an existing snapshot and deduplicate concurrent extension builders.
+  config.max_prefix_bytes = 256 * 1024 * 1024;
+  auto growing = CpuEngine::create(model, config, error);
+  check(bool(growing));
+  CpuRequestSpec extension;
+  extension.prompt_tokens.assign(258, 1);
+  extension.max_new_tokens = 4;
+  extension.forced_output_tokens = {19, 13, 198, 18};
+  extension.trust_namespace = "growing";
+  std::vector<float> extension_cold, extension_warm[2];
+  extension.logits_callback = capture;
+  extension.logits_callback_context = &extension_cold;
+  const auto cold_id = reference->submit(extension, error);
+  check(cold_id != 0);
+  do {
+    check(reference->advance(cold_id, error)); check(reference->result(cold_id, result));
+  } while (!terminal(result.status));
+  reference->release(cold_id);
+  auto initial = growing->register_prefix(std::span(extension.prompt_tokens).first(128), "growing", error);
+  check(bool(initial)); initial.reset();
+  CpuRequestId extended[2];
+  for (int r = 0; r < 2; ++r) {
+    extension.prefix = growing->find_prefix(extension.prompt_tokens, "growing");
+    check(extension.prefix && extension.prefix->token_count() == 128);
+    extension.register_prefix_tokens = 257;
+    extension.logits_callback_context = &extension_warm[r];
+    extended[r] = growing->submit(extension, error); check(extended[r] != 0);
+  }
+  extension.prefix.reset();
+  for (int tick = 0; tick < 100; ++tick) {
+    check(growing->step(progressed, error));
+    bool complete = true;
+    for (auto id : extended) { check(growing->result(id, result)); complete &= terminal(result.status); }
+    if (complete) break;
+  }
+  for (int r = 0; r < 2; ++r) {
+    check(growing->result(extended[r], result) && result.status == CpuRequestStatus::complete);
+    check(extension_cold == extension_warm[r]);
+    check(result.cached_prefix_tokens == (r == 0 ? 128U : 257U));
+    growing->release(extended[r]);
+  }
+  check(growing->stats().prefix_builds == 1);
+  check(growing->find_prefix(extension.prompt_tokens, "growing")->token_count() == 257);
+  check(!growing->find_prefix(extension.prompt_tokens, "other-tenant"));
+  auto changed = extension.prompt_tokens; changed[200] = 2;
+  check(growing->find_prefix(changed, "growing")->token_count() == 128);
+  changed[0] = 2;
+  check(!growing->find_prefix(changed, "growing"));
+  // LRU eviction retains the touched entry and respects the configured budget.
+  const std::vector<std::int32_t> prefix_a(32, 1), prefix_b(32, 2), prefix_c(32, 3);
+  auto sizing = growing->register_prefix(prefix_a, "sizing", error); check(bool(sizing));
+  config.max_prefix_bytes = 2 * sizing->size_bytes() + 1024;
+  auto lru = CpuEngine::create(model, config, error); check(bool(lru));
+  { auto p = lru->register_prefix(prefix_a, "lru", error); check(bool(p)); }
+  { auto p = lru->register_prefix(prefix_b, "lru", error); check(bool(p)); }
+  { auto p = lru->find_prefix(prefix_a, "lru"); check(bool(p)); }
+  { auto p = lru->register_prefix(prefix_c, "lru", error); check(bool(p)); }
+  check(lru->stats().prefix_entries == 2 && lru->stats().prefix_evictions == 1);
+  check(lru->stats().prefix_bytes <= config.max_prefix_bytes);
+  check(!lru->find_prefix(prefix_b, "lru") && lru->find_prefix(prefix_a, "lru"));
+  std::cout << "Longest-prefix lookup, namespace isolation, extension parity and LRU eviction passed\n";
   std::cout << "Single-flight builds, leader cancellation, budget fallback and "
                "exact branch logits passed\n";
   std::cout

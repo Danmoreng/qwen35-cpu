@@ -74,7 +74,9 @@ with tempfile.TemporaryFile(mode='w+b') as log:
         for status, answer in answers:
             assert status == 200, answer
             assert answer['choices'] == reference['choices'], (reference, answer)
-            assert answer['usage'] == reference['usage']
+            for metric in ['prompt_tokens', 'completion_tokens', 'total_tokens']:
+                assert answer['usage'][metric] == reference['usage'][metric]
+        assert any(answer['usage']['prompt_tokens_details']['cached_tokens'] > 0 for _, answer in answers)
         assert call('/v1/completions', request)[1]['choices'] == reference['choices']
         # top_k=1 exercises the full-logits sampler but must retain greedy output.
         assert call('/v1/completions', {**request, 'temperature': .7, 'top_k': 1,

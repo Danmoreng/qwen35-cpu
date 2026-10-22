@@ -8,6 +8,23 @@ std::size_t CpuPrefix::token_count() const {
 std::size_t CpuPrefix::size_bytes() const { return impl_->bytes; }
 
 std::shared_ptr<const CpuPrefix>
+CpuEngine::find_prefix(std::span<const std::int32_t> tokens, const std::string &trust_namespace) {
+  auto &prefixes = impl_->prefixes;
+  auto best = prefixes.end();
+  for (auto it = prefixes.begin(); it != prefixes.end(); ++it) {
+    const auto &prefix = **it;
+    if (prefix.impl_->trust_namespace == trust_namespace && prefix.token_count() <= tokens.size() &&
+        (best == prefixes.end() || prefix.token_count() > (*best)->token_count()) &&
+        std::equal(prefix.impl_->snapshot.prefix_tokens.begin(), prefix.impl_->snapshot.prefix_tokens.end(), tokens.begin()))
+      best = it;
+  }
+  if (best == prefixes.end()) return {};
+  auto result = *best;
+  std::rotate(best, best + 1, prefixes.end());
+  return result;
+}
+
+std::shared_ptr<const CpuPrefix>
 CpuEngine::register_prefix(std::span<const std::int32_t> tokens,
                            std::string trust_namespace, std::string &error) {
   error.clear();

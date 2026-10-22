@@ -1,5 +1,6 @@
 """Real-model protocol checks; optional official SDK conformance, no speed claims."""
 import argparse
+import concurrent.futures
 import json
 import os
 from pathlib import Path
@@ -107,6 +108,40 @@ with tempfile.TemporaryFile(mode='w+b') as log:
         # Validation failures must retain a JSON error status, not start an SSE stream.
         status, bad = call('/v1/chat/completions', {**request, 'stream': True, 'max_completion_tokens': 1024})
         assert status == 400 and 'error' in bad, bad
+        # Automatic reuse is exact, private to its key, and optional per request.
+        long_system = 'You are concise. Answer with a short fact. ' * 12
+        cached_request = dict(model=model, messages=[{'role': 'system', 'content': long_system},
+            {'role': 'user', 'content': 'What is two plus two?'}], max_tokens=12, temperature=0,
+            prompt_cache_key='cache-contract')
+        status, cold = call('/v1/chat/completions', {**cached_request, 'cache_prompt': False})
+        assert status == 200, cold
+        status, first = call('/v1/chat/completions', cached_request)
+        assert status == 200, first
+        status, warm = call('/v1/chat/completions', cached_request)
+        assert status == 200, warm
+        assert cold['choices'] == first['choices'] == warm['choices']
+        assert cold['usage']['prompt_tokens_details']['cached_tokens'] == 0
+        assert first['usage']['prompt_tokens_details']['cached_tokens'] == 0
+        assert warm['usage']['prompt_tokens_details']['cached_tokens'] >= 32
+        status, isolated = call('/v1/chat/completions', {**cached_request, 'prompt_cache_key': 'other-key'})
+        assert status == 200 and isolated['usage']['prompt_tokens_details']['cached_tokens'] == 0
+        assert isolated['choices'] == cold['choices']
+        concurrent_request = {**cached_request, 'prompt_cache_key': 'concurrent-key'}
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+            parallel = list(pool.map(lambda _: call('/v1/chat/completions', concurrent_request), range(4)))
+        assert all(status == 200 and value['choices'] == cold['choices'] for status, value in parallel)
+        assert sum(value['usage']['prompt_tokens_details']['cached_tokens'] > 0 for _, value in parallel) == 3
+        # The next turn can restore the system prefix and publish a longer history.
+        history = {**cached_request, 'messages': cached_request['messages'] + [
+            {'role': 'assistant', 'content': warm['choices'][0]['message']['content']},
+            {'role': 'user', 'content': 'And three plus three?'}]}
+        _, history_cold = call('/v1/chat/completions', {**history, 'cache_prompt': False})
+        _, history_first = call('/v1/chat/completions', history)
+        _, history_warm = call('/v1/chat/completions', history)
+        assert history_cold['choices'] == history_first['choices'] == history_warm['choices']
+        assert history_warm['usage']['prompt_tokens_details']['cached_tokens'] > warm['usage']['prompt_tokens_details']['cached_tokens']
+        _, metrics = call('/v1/cache')
+        assert metrics['hits'] > 0 and metrics['builds'] > 0 and metrics['bytes'] <= metrics['budget_bytes']
         if args.sdk:
             import openai
             with openai.OpenAI(api_key=key, base_url=base + '/v1', max_retries=0) as client:

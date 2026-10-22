@@ -15,9 +15,10 @@ using Json = nlohmann::ordered_json;
 enum class Api { completion, chat };
 struct Request {
   Api api = Api::completion;
-  std::string prompt;
+  std::string prompt, prefix_prompt;
   CpuRequestSpec spec;
   bool stream = false, include_usage = false;
+  bool automatic_prefix = true;
   std::vector<std::string> stops;
 };
 inline void require(bool ok, const std::string &message) {
@@ -76,7 +77,7 @@ inline std::string content(const Json &value, bool nullable = false) {
   }
   return out;
 }
-inline std::string chat_prompt(const Json &messages) {
+inline std::string chat_prompt(const Json &messages, std::string *prefix_prompt = nullptr) {
   require(messages.is_array() && !messages.empty() && messages.size() <= 1024,
           "messages must contain 1..1024 messages");
   struct Message { std::string role, text, reasoning; };
@@ -119,23 +120,27 @@ inline std::string chat_prompt(const Json &messages) {
   }
   require(has_user, "At least one user query is required");
   std::string prompt = has_system ? "<|im_start|>system\n" + system + "<|im_end|>\n" : "";
+  if (prefix_prompt) *prefix_prompt = prompt;
   for (std::size_t i = 0; i < rows.size(); ++i) {
+    if (prefix_prompt && i == last_user && i > 0) *prefix_prompt = prompt;
     const auto &m = rows[i];
     prompt += "<|im_start|>" + m.role + "\n";
     if (m.role == "assistant" && i > last_user)
       prompt += "<think>\n" + m.reasoning + "\n</think>\n\n";
     prompt += m.text + "<|im_end|>\n";
   }
+  if (prefix_prompt && prefix_prompt->empty()) *prefix_prompt = prompt;
   return prompt + "<|im_start|>assistant\n<think>\n\n</think>\n\n";
 }
 inline Request parse(const std::string &body, std::size_t context, const std::string &model, Api api) {
   const auto j = Json::parse(body);
   if (api == Api::chat)
     fields(j, {"model", "messages", "max_tokens", "max_completion_tokens", "temperature", "stream", "n",
-               "prefix_tokens", "top_p", "top_k", "seed", "repetition_penalty", "stop", "stream_options"});
+               "prefix_tokens", "top_p", "top_k", "seed", "repetition_penalty", "stop", "stream_options",
+               "cache_prompt", "prompt_cache_key"});
   else
     fields(j, {"model", "prompt", "max_tokens", "temperature", "stream", "n", "prefix_tokens",
-               "top_p", "top_k", "seed", "repetition_penalty", "stop", "stream_options"});
+               "top_p", "top_k", "seed", "repetition_penalty", "stop", "stream_options", "cache_prompt", "prompt_cache_key"});
   if (j.contains("model")) require(j.at("model").get<std::string>() == model, "Unknown model");
   Request request; request.api = api;
   if (j.contains("stream") && !j["stream"].is_null()) {
@@ -158,7 +163,7 @@ inline Request parse(const std::string &body, std::size_t context, const std::st
     (void)StopMatcher(request.stops, 8192);
   }
   require(integer(j, "n", 1) == 1, "Only n=1 is supported");
-  request.prompt = api == Api::chat ? chat_prompt(j.at("messages")) : j.at("prompt").get<std::string>();
+  request.prompt = api == Api::chat ? chat_prompt(j.at("messages"), &request.prefix_prompt) : j.at("prompt").get<std::string>();
   require(!request.prompt.empty() && request.prompt.size() <= 65536, "Prompt must contain 1..65536 bytes");
   require(!(j.contains("max_tokens") && !j["max_tokens"].is_null() && j.contains("max_completion_tokens") &&
             !j["max_completion_tokens"].is_null()), "Specify only one output token limit");
@@ -169,6 +174,16 @@ inline Request parse(const std::string &body, std::size_t context, const std::st
   request.spec.max_new_tokens = static_cast<std::size_t>(limit);
   request.spec.register_prefix_tokens = static_cast<std::size_t>(prefix);
   request.spec.trust_namespace = "local-server";
+  if (j.contains("cache_prompt")) {
+    require(j["cache_prompt"].is_boolean(), "cache_prompt must be boolean");
+    request.automatic_prefix = j["cache_prompt"].get<bool>();
+  }
+  if (j.contains("prefix_tokens")) request.automatic_prefix = false;
+  if (j.contains("prompt_cache_key") && !j["prompt_cache_key"].is_null()) {
+    const auto key = j["prompt_cache_key"].get<std::string>();
+    require(!key.empty() && key.size() <= 64, "prompt_cache_key must contain 1..64 UTF-8 bytes");
+    request.spec.trust_namespace += "\n" + key;
+  }
   auto &s = request.spec.sampling;
   s.temperature = real(j, "temperature", api == Api::chat ? 1.0f : 0.0f);
   s.top_p = real(j, "top_p", api == Api::chat ? 1.0f : 0.8f);

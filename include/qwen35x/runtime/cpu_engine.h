@@ -96,7 +96,8 @@ struct CpuRequestSpec {
   std::shared_ptr<const CpuPrefix> prefix;
   std::string trust_namespace;
   // Serving mode only: build these leading tokens once for concurrent requests
-  // in the same namespace. Zero disables automatic single-flight registration.
+  // in the same namespace. May extend an attached shorter prefix. Zero disables
+  // automatic single-flight registration.
   std::size_t register_prefix_tokens = 0;
 };
 struct CpuRequestResult {
@@ -122,6 +123,8 @@ struct CpuEngineStats {
   std::uint64_t state_batches = 0;
   std::size_t queued_requests = 0, resident_requests = 0;
   std::uint64_t prefix_builds = 0, prefix_build_fallbacks = 0;
+  std::uint64_t prefix_hits = 0, prefix_cached_tokens = 0, prefix_evictions = 0;
+  std::size_t prefix_entries = 0, prefix_bytes = 0;
   std::size_t physical_kv_bytes = 0;
 };
 
@@ -142,6 +145,10 @@ public:
   std::shared_ptr<const CpuPrefix>
   register_prefix(std::span<const std::int32_t> tokens,
                   std::string trust_namespace, std::string &error);
+  // Longest retained exact match in this engine/namespace; updates LRU order.
+  // Does not build state or run inference. The returned handle pins its storage.
+  std::shared_ptr<const CpuPrefix>
+  find_prefix(std::span<const std::int32_t> tokens, const std::string &trust_namespace);
   // One bounded prefill chunk or one decode forward; no background work.
   bool advance(CpuRequestId id, std::string &error);
   // One decode row per distinct active request, in the supplied row order.

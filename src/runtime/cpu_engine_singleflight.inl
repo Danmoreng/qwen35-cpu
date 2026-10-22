@@ -9,7 +9,7 @@ static bool same_build(const CpuRequestSpec &a, const CpuRequestSpec &b) {
 }
 bool prefix_admissible(Sequence &s) {
   const auto count = s.spec.register_prefix_tokens;
-  if (!count || s.spec.prefix)
+  if (!count)
     return true;
   for (const auto &prefix : prefixes)
     if (prefix->token_count() == count &&
@@ -22,7 +22,7 @@ bool prefix_admissible(Sequence &s) {
     }
   for (const auto &[id, other] : requests)
     if (other.get() != &s && other->resident && !terminal(*other) &&
-        !other->spec.prefix && same_build(s.spec, other->spec))
+        other->result.committed_tokens < count && same_build(s.spec, other->spec))
       return false;
   return true;
 }

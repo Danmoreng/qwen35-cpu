@@ -73,6 +73,14 @@ construction: matching followers wait for one leader to build the shared prefix.
 Cache-budget failure falls back to cold processing. Explicitly isolate unrelated
 clients using separate namespaces; this is a caller-enforced trust boundary.
 
+`find_prefix(tokens, trust_namespace)` returns the longest retained exact match
+without running inference and updates its LRU position. An attached prefix may
+be extended with a larger `register_prefix_tokens` boundary; concurrent matching
+extensions retain single-flight behavior. Byte budgets evict unpinned entries.
+`stats()` exposes retained entries/bytes, restore hits/tokens, builds, evictions
+and budget fallbacks. The HTTP server uses these mechanisms for automatic chat,
+raw-completion and qev prefix reuse.
+
 Set `shared_kv_pages = true` for immutable 256-token FP16 pages with copy-on-write
 at a partial tail. Recurrent and convolution state remain private to branches.
 `physical_kv_bytes` deduplicates KV page payload; it is not total process memory.
