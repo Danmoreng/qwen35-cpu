@@ -6,9 +6,10 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
-| `current-cpu-2026-09-07`, `ik-batch16-2026-09-07` | README CPU speeds and [methodology](../benchmarks/cpu.md) |
-| `readme-bc256-2026-09-07`, `ik-linux-2026-09-07` | README/model-card quality and comparator provenance |
-| `linux-i7-8750h-2026-09-08` | README second-CPU comparison |
+| `cpu-refresh-2026-10-22` | Current README/model-card speed and quality; [methodology](../benchmarks/cpu.md) |
+| `current-cpu-2026-09-07`, `ik-batch16-2026-09-07` | September CPU speed baseline and earlier B16 validation |
+| `readme-bc256-2026-09-07`, `ik-linux-2026-09-07` | September quality baseline and comparator provenance |
+| `linux-i7-8750h-2026-09-08` | [Earlier second-CPU comparison](../benchmarks/cpu.md#earlier-second-cpu-comparison) |
 | `g32-large-calibration-2026-09-07` | [Standard calibration](../benchmarks/calibration.md) |
 | `qev-calibration-2026-10-21`, `qev-api-2026-10-21` | [Decision quality](../benchmarks/decision-quality.md), model-package provenance |
 | `qev-http-selected-2026-10-22` | [Decision HTTP latency](../benchmarks/decision-http.md) |

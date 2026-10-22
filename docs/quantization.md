@@ -60,8 +60,10 @@ inputs, not runtime dependencies. The complete file is 424,964,864 bytes with
 424,934,656 tensor bytes, unchanged from the earlier Q4 recipe.
 
 The independent mixed final set measures PPL **12.71898** and teacher KL
-**0.064178**; the English 8,192-position regression subset measures **15.80467**
-and **0.060190**. These are different test sets and must not be compared directly.
+**0.064178**; the original calibration study's English 8,192-position regression
+subset measured **15.80467** and **0.060190**. These are different test sets and
+must not be compared directly. The [current CPU comparison](benchmarks/cpu.md)
+reports the separately refreshed engine measurements.
 See the [README](../README.md) for the matched llama.cpp/Unsloth comparison.
 
 The previous four-document MSE16 artifact remains at Hugging Face revision

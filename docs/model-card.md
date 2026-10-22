@@ -61,87 +61,101 @@ hashes and calibration provenance. [SHA256SUMS](SHA256SUMS) covers the package.
 
 ## CPU benchmarks: speed and quality
 
-The engine uses the **H128/Q4-G32-DOT4** checkpoint with a **424.9 MB
-tensor payload**. It is generated using activation-weighted MSE16 fitting and
-error compensation within 128-channel blocks, calibrated on 256 mixed documents
-/ 262,144 tokens. See the [quantization recipe](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/quantization.md).
-Speed and quantization quality are measured separately.
+The standard **H128/Q4-G32-DOT4** checkpoint has a **424.9 MB tensor payload**.
+It uses activation-weighted MSE16 fitting and error compensation within
+128-channel blocks, calibrated on 256 mixed documents / 262,144 tokens.
+The checkpoint and comparator GGUF files are unchanged from the earlier comparison.
+
+Measured **October 22, 2026**, using these exact engine revisions:
+
+- Native engine: [`6d38cca33e54`](https://github.com/Danmoreng/qwen35-cpu/commit/6d38cca33e548aaeda2dd27b21fef689d47c7d79).
+- llama.cpp **b11815**: [`7170cad4d02f`](https://github.com/ggml-org/llama.cpp/commit/7170cad4d02f7907517613931840cbb2367399a3).
+- ik_llama.cpp: [`98aca8692ae3`](https://github.com/ikawrakow/ik_llama.cpp/commit/98aca8692ae334e6e23e4d39ac43ce0d21029c35).
 
 ### Speed, size and quality
 
-**AMD Ryzen 9 9955HX3D · Arch Linux · eight physical V-Cache cores · GCC 16.2.1
-Release · AVX-512/VNNI.** Values are median **tokens/s** from three measured
-runs after one warmup. All candidates use identical fixed tokens, FP16 KV and
-full-vocabulary logits. Codex is minimized, XFCE compositing disabled, and the
-display runs at 2560×1600 / 240 Hz. IK uses runtime tensor repacking.
+**AMD Ryzen 9 9955HX3D · Arch Linux / kernel 7.2.9 · eight physical V-Cache cores
+(0–7, affinity `0xff`) · GCC 16.2.1 Release · AVX-512/VNNI.** The laptop platform
+profile is `max-power`; the separate Linux CPU settings are `amd-pstate-epp`
+active mode, governor `powersave`, EPP `balance_performance`. These are the
+recorded settings, not a claim of fixed CPU clocks or a low-power laptop profile.
+Codex is minimized, XFCE compositing disabled, and the display runs at
+2560×1600 / 240 Hz.
 
-Sorted by **single-request decode speed**, fastest first. All speed columns are
-tokens/s; bold speed values mark the best result in each column. MB is tensor
-payload (decimal), not RAM usage. **↑ higher is better · ↓ lower is better.**
+Median **tokens/s** from three measured runs after one warmup, executed
+sequentially with alternating case order. All candidates use identical fixed
+tokens, FP16 KV and full-vocabulary logits. IK uses runtime tensor repacking.
+Sorted by **single-request decode speed**, fastest first. Bold speeds mark the
+best result in each column. MB is tensor payload (decimal), not RAM usage.
+**↑ higher is better · ↓ lower is better.**
 
 | Engine / checkpoint | Decode B=1 ↑ | Decode B=16 ↑ | Prefill 512 ↑ | Prefill 4,096 ↑ | MB | PPL ↓ | KL ↓ |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| ik_llama.cpp IQ4_KS_R4 | **129.21** | 455.14 | 2,060.38 | 1,841.85 | 401.4 | 15.90097 | 0.090599 |
-| **This engine, H128/Q4-G32-DOT4** | 122.94 | **642.08** | 2,758.49 | 2,464.28 | 424.9 | 15.80467 | 0.060190 |
-| ik_llama.cpp Q4_0 | 122.22 | 423.79 | **2,860.45** | **2,517.56** | 424.9 | 18.08595 | 0.145799 |
-| ik_llama.cpp IQ4_K_R4 | 117.83 | 433.81 | 1,992.59 | 1,802.06 | 424.9 | 15.78482 | 0.073289 |
-| llama.cpp Q4_0 | 108.64 | 488.26 | 1,105.29 | 994.72 | 424.9 | 18.02588 | 0.144522 |
-| ik_llama.cpp Unsloth IQ4_XS | 107.68 | 408.20 | 1,957.50 | 1,774.74 | 481.6 | 15.16145† | 0.050539† |
-| ik_llama.cpp Unsloth Q4_0 | 104.00 | 420.00 | 2,730.89 | 2,409.68 | 496.2 | 15.58088† | 0.068388† |
-| ik_llama.cpp Unsloth Q4_K_M | 98.63 | 395.87 | 1,984.34 | 1,794.75 | 521.6 | 14.75290† | 0.034693† |
-| llama.cpp Unsloth IQ4_XS | 94.12 | 336.28 | 940.31 | 887.65 | 481.6 | 15.16145 | 0.050539 |
-| llama.cpp Unsloth Q4_0 | 93.73 | 372.75 | 953.59 | 843.96 | 496.2 | 15.58088 | 0.068388 |
-| llama.cpp Unsloth Q4_K_M | 88.41 | 325.93 | 663.21 | 695.11 | 521.6 | 14.75290 | 0.034693 |
+| ik_llama.cpp IQ4_KS_R4 | **129.59** | 433.68 | **3,689.22** | 3,177.90 | 401.4 | 15.86784 | 0.084944 |
+| ik_llama.cpp Q4_0 | 122.34 | 419.26 | 3,142.75 | 2,756.00 | 424.9 | 18.06313 | 0.145489 |
+| ik_llama.cpp IQ4_K_R4 | 122.04 | 415.26 | 3,633.49 | 3,159.75 | 424.9 | 15.77716 | 0.068812 |
+| **This engine, H128/Q4-G32-DOT4** | 118.33 | **616.18** | 2,946.40 | 2,565.35 | 424.9 | 15.79649 | 0.060100 |
+| llama.cpp Q4_0 | 109.20 | 494.79 | 1,124.87 | 977.58 | 424.9 | 18.03403 | 0.144830 |
+| ik_llama.cpp Unsloth IQ4_XS | 107.64 | 400.87 | 3,631.78 | **3,179.94** | 481.6 | 15.21385 | 0.050634 |
+| ik_llama.cpp Unsloth Q4_0 | 104.33 | 413.16 | 3,126.61 | 2,751.60 | 496.2 | 15.58460 | 0.068085 |
+| ik_llama.cpp Unsloth Q4_K_M | 99.03 | 387.90 | 3,403.18 | 3,047.68 | 521.6 | 14.77376 | 0.034637 |
+| llama.cpp Unsloth IQ4_XS | 95.02 | 418.35 | 1,265.10 | 1,130.56 | 481.6 | 15.14159 | 0.050441 |
+| llama.cpp Unsloth Q4_0 | 94.54 | 442.39 | 1,006.55 | 1,052.35 | 496.2 | 15.58211 | 0.068394 |
+| llama.cpp Unsloth Q4_K_M | 88.66 | 419.22 | 1,146.78 | 1,019.74 | 521.6 | 14.77209 | 0.034894 |
 
-PPL and KL use the quality evaluation described below; KL is in nats to the BF16
-teacher. † Quality measured with **llama.cpp on the identical GGUF**, not with
-IK; all other quality values use the named backend. Quality scores are separate
-from the B16 speed measurement.
+**IK B16 uses the documented graph-capacity patch on the revision above.**
+Stock pure-Q4_0 B16 still aborts; IK B1, prefill and quality use unmodified upstream.
+See [IK batch validation](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/benchmarks/ik-batch16.md).
 
 Prefill uses one request. Decode uses 512 input / 128 output tokens and counts
 127 actual decode forwards per request. B16 is aggregate throughput across
 sixteen private requests. Loading, tokenization, HTTP and prefix-cache credit
-are excluded. IK B16 uses a [local graph-capacity correction](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/benchmarks/ik-batch16.md);
-IK B1, prefill and quality use the stock fork. These measurements describe this
-CPU and workload.
+are excluded. Native prefill reports model-forward time; comparator prefill
+reports synchronized `llama_decode` time, both including final full-vocabulary
+logits. Quality scores are measured separately at B1 with the named engine.
 
 ### Perplexity and KL divergence
 
 **8,192 scored tokens from 16 WikiText-2 test article windows**, with identical
-prompts and scoring masks and a common BF16 teacher. This is an English-prose
-subset, not full-corpus WikiText perplexity. **Lower PPL and KL are better.**
-Each row identifies the backend used for scoring. Sorted by **tensor size,
-largest first**, then by lower PPL and lower KL for equal sizes. The BF16 teacher
-is the reference; the remaining rows are quantized checkpoints.
+prompts and scoring masks and the original frozen BF16 teacher logits. All
+quantized rows were rescored with the engine revisions above. The BF16 reference
+was retained to keep the comparison anchored to the same teacher.
+This is an English-prose subset, not full-corpus WikiText perplexity.
+**Lower PPL and KL are better.** KL is in nats. Sorted by tensor size, largest
+first, then lower PPL and lower KL. Each row names its actual scoring backend;
+IK scores are measured directly, including the three Unsloth checkpoints.
 
 | Engine / checkpoint | Tensor MB ↓ | PPL ↓ | KL to BF16 ↓ |
 | --- | ---: | ---: | ---: |
-| BF16 teacher | 1,505.8 | 14.38556 | 0 |
-| llama.cpp Unsloth Q4_K_M | 521.6 | 14.75290 | 0.034693 |
-| llama.cpp Unsloth Q4_0 | 496.2 | 15.58088 | 0.068388 |
-| llama.cpp Unsloth IQ4_XS | 481.6 | 15.16145 | 0.050539 |
-| ik_llama.cpp IQ4_K_R4 | 424.9 | 15.78482 | 0.073289 |
-| **This engine, H128/Q4-G32-DOT4** | 424.9 | 15.80467 | 0.060190 |
-| llama.cpp Q4_0 | 424.9 | 18.02588 | 0.144522 |
-| ik_llama.cpp Q4_0 | 424.9 | 18.08595 | 0.145799 |
-| ik_llama.cpp IQ4_KS_R4 | 401.4 | 15.90097 | 0.090599 |
+| BF16 teacher (frozen reference) | 1,505.8 | 14.38556 | 0 |
+| llama.cpp Unsloth Q4_K_M | 521.6 | 14.77209 | 0.034894 |
+| ik_llama.cpp Unsloth Q4_K_M | 521.6 | 14.77376 | 0.034637 |
+| llama.cpp Unsloth Q4_0 | 496.2 | 15.58211 | 0.068394 |
+| ik_llama.cpp Unsloth Q4_0 | 496.2 | 15.58460 | 0.068085 |
+| llama.cpp Unsloth IQ4_XS | 481.6 | 15.14159 | 0.050441 |
+| ik_llama.cpp Unsloth IQ4_XS | 481.6 | 15.21385 | 0.050634 |
+| ik_llama.cpp IQ4_K_R4 | 424.9 | 15.77716 | 0.068812 |
+| **This engine, H128/Q4-G32-DOT4** | 424.9 | 15.79649 | 0.060100 |
+| llama.cpp Q4_0 | 424.9 | 18.03403 | 0.144830 |
+| ik_llama.cpp Q4_0 | 424.9 | 18.06313 | 0.145489 |
+| ik_llama.cpp IQ4_KS_R4 | 401.4 | 15.86784 | 0.084944 |
 
 H128 and pure Q4_0 / IQ4_K_R4 share a **424,934,656-byte tensor budget**.
-The smaller IQ4_KS_R4 trades some quality for size and decode speed. Tensor
-payload is not RAM usage: IK's loaded model tensors include additional storage;
-KV and compute buffers also require memory. Quantization labels alone do not
-establish equal quality.
+Storage is not total resident memory: runtime repacking, KV and compute buffers
+require additional memory. Quantization labels alone do not establish equal quality.
 
-The H128 checkpoint is calibrated on 256 mixed documents / 262,144 tokens.
-An independent mixed-language, code and math test scores 12.71898 PPL and
-0.064178 KL over 1,280 tokens; it is a separate corpus from the table above.
+The independent mixed-language, code and math calibration validation remains a
+separate corpus: 12.71898 PPL and 0.064178 KL over 1,280 tokens. It was not rerun
+as part of this English benchmark refresh.
 
 [Measurement details and reproduction](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/benchmarks/cpu.md) ·
-[Performance CSV](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/results/current-cpu-2026-09-07/performance.csv) ·
-[B16 CSV](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/results/ik-batch16-2026-09-07/performance.csv) ·
-[Provenance](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/results/current-cpu-2026-09-07/manifest.json) ·
-[Quantization recipe](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/quantization.md) ·
-[Independent quality validation](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/benchmarks/calibration.md).
+[Performance CSV](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/results/cpu-refresh-2026-10-22/performance.csv) ·
+[Quality CSV](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/results/cpu-refresh-2026-10-22/quality.csv) ·
+[Revisions and provenance](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/results/cpu-refresh-2026-10-22/manifest.json) ·
+[Quantization recipe](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/quantization.md).
+
+The earlier [Intel i7-8750H comparison](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/benchmarks/cpu.md#earlier-second-cpu-comparison)
+uses older engine revisions and was not rerun on this machine.
 
 ## License
 
