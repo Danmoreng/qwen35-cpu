@@ -20,6 +20,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 
 - [Current CPU comparison](benchmarks/cpu.md), [IK prefill analysis](benchmarks/cpu.md#why-ik-iq4_ks_r4-prefill-changed)
   and [IK batch-16 methodology](benchmarks/ik-batch16.md).
+- [Native prefill optimization](benchmarks/native-prefill.md): paired measurements and bitwise quality checks.
 - [Standard model calibration](benchmarks/calibration.md).
 - [Decision quality](benchmarks/decision-quality.md) and [HTTP latency](benchmarks/decision-http.md).
 - [Browser comparison](benchmarks/browser.md), [WASM FMA](benchmarks/wasm-fma.md)

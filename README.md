@@ -39,7 +39,7 @@ The checkpoint and comparator GGUF files are unchanged from the earlier comparis
 
 Measured **October 22, 2026**, using these exact engine revisions:
 
-- Native engine: [`6d38cca33e54`](https://github.com/Danmoreng/qwen35-cpu/commit/6d38cca33e548aaeda2dd27b21fef689d47c7d79).
+- Native engine: [`f928eec37ab3`](https://github.com/Danmoreng/qwen35-cpu/commit/f928eec37ab34739e03d4fa3d37fe34d44ff7229).
 - llama.cpp **b11815**: [`7170cad4d02f`](https://github.com/ggml-org/llama.cpp/commit/7170cad4d02f7907517613931840cbb2367399a3).
 - ik_llama.cpp: [`98aca8692ae3`](https://github.com/ikawrakow/ik_llama.cpp/commit/98aca8692ae334e6e23e4d39ac43ce0d21029c35).
 
@@ -56,6 +56,12 @@ Codex is minimized, XFCE compositing disabled, and the display runs at
 Median **tokens/s** from three measured runs after one warmup, executed
 sequentially with alternating case order. All candidates use identical fixed
 tokens, FP16 KV and full-vocabulary logits. IK uses runtime tensor repacking.
+The native row uses the later [paired prefill measurement](docs/benchmarks/native-prefill.md)
+on the same day; comparator rows retain the full-engine comparison. The paired
+native baseline confirms **+4.59% P512 / +3.62% P4096 prefill**, with unchanged
+B1/B16 decode. Absolute differences between the two series can include clock
+and thermal variation; small cross-engine gaps are not a definitive ranking.
+
 Sorted by **single-request decode speed**, fastest first. Bold speeds mark the
 best result in each column. MB is tensor payload (decimal), not RAM usage.
 **↑ higher is better · ↓ lower is better.**
@@ -63,9 +69,9 @@ best result in each column. MB is tensor payload (decimal), not RAM usage.
 | Engine / checkpoint | Decode B=1 ↑ | Decode B=16 ↑ | Prefill 512 ↑ | Prefill 4,096 ↑ | MB | PPL ↓ | KL ↓ |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | ik_llama.cpp IQ4_KS_R4 | **129.59** | 433.68 | **3,689.22** | 3,177.90 | 401.4 | 15.86784 | 0.084944 |
+| **This engine, H128/Q4-G32-DOT4** | 123.03 | **639.63** | 3,052.57 | 2,683.16 | 424.9 | 15.79649 | 0.060100 |
 | ik_llama.cpp Q4_0 | 122.34 | 419.26 | 3,142.75 | 2,756.00 | 424.9 | 18.06313 | 0.145489 |
 | ik_llama.cpp IQ4_K_R4 | 122.04 | 415.26 | 3,633.49 | 3,159.75 | 424.9 | 15.77716 | 0.068812 |
-| **This engine, H128/Q4-G32-DOT4** | 118.33 | **616.18** | 2,946.40 | 2,565.35 | 424.9 | 15.79649 | 0.060100 |
 | llama.cpp Q4_0 | 109.20 | 494.79 | 1,124.87 | 977.58 | 424.9 | 18.03403 | 0.144830 |
 | ik_llama.cpp Unsloth IQ4_XS | 107.64 | 400.87 | 3,631.78 | **3,179.94** | 481.6 | 15.21385 | 0.050634 |
 | ik_llama.cpp Unsloth Q4_0 | 104.33 | 413.16 | 3,126.61 | 2,751.60 | 496.2 | 15.58460 | 0.068085 |
@@ -88,9 +94,10 @@ logits. Quality scores are measured separately at B1 with the named engine.
 ### Perplexity and KL divergence
 
 **8,192 scored tokens from 16 WikiText-2 test article windows**, with identical
-prompts and scoring masks and the original frozen BF16 teacher logits. All
-quantized rows were rescored with the engine revisions above. The BF16 reference
-was retained to keep the comparison anchored to the same teacher.
+prompts and scoring masks and the original frozen BF16 teacher logits. Comparator
+rows were rescored with the revisions above. The optimized native revision
+produces bit-identical logits to the native scoring run at all 8,192 positions,
+so its PPL/KL are unchanged. The BF16 reference anchors both measurements.
 This is an English-prose subset, not full-corpus WikiText perplexity.
 **Lower PPL and KL are better.** KL is in nats. Sorted by tensor size, largest
 first, then lower PPL and lower KL. Each row names its actual scoring backend;
@@ -120,7 +127,8 @@ separate corpus: 12.71898 PPL and 0.064178 KL over 1,280 tokens. It was not reru
 as part of this English benchmark refresh.
 
 [Measurement details and reproduction](docs/benchmarks/cpu.md) ·
-[Performance CSV](docs/results/cpu-refresh-2026-10-22/performance.csv) ·
+[Comparator series CSV](docs/results/cpu-refresh-2026-10-22/performance.csv) ·
+[Native paired series CSV](docs/results/native-prefill-reuse-2026-10-22/performance.csv) ·
 [Quality CSV](docs/results/cpu-refresh-2026-10-22/quality.csv) ·
 [Revisions and provenance](docs/results/cpu-refresh-2026-10-22/manifest.json) ·
 [Quantization recipe](docs/quantization.md).

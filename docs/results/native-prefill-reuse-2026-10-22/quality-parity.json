@@ -1,0 +1,200 @@
+[
+  {
+    "suite": "quality",
+    "case": 0,
+    "quality_only": true,
+    "sha256": "726770f9530400d0a6c50fe134fc1097c12212d1eaf01b93ad61aa84f420dc28",
+    "records": 512,
+    "vocab": 248320,
+    "float_values": 127139840,
+    "expected_sha256": "726770f9530400d0a6c50fe134fc1097c12212d1eaf01b93ad61aa84f420dc28",
+    "bitwise_match": true
+  },
+  {
+    "suite": "quality",
+    "case": 1,
+    "quality_only": true,
+    "sha256": "aa48c46854241b55095a64c4d0bba2f2f1c830e12252b215165bbcf5700f4d5a",
+    "records": 512,
+    "vocab": 248320,
+    "float_values": 127139840,
+    "expected_sha256": "aa48c46854241b55095a64c4d0bba2f2f1c830e12252b215165bbcf5700f4d5a",
+    "bitwise_match": true
+  },
+  {
+    "suite": "quality",
+    "case": 2,
+    "quality_only": true,
+    "sha256": "639c02bc01459730d95f566e3377fb1bd24a68d700bfd841ea39309399a299a4",
+    "records": 512,
+    "vocab": 248320,
+    "float_values": 127139840,
+    "expected_sha256": "639c02bc01459730d95f566e3377fb1bd24a68d700bfd841ea39309399a299a4",
+    "bitwise_match": true
+  },
+  {
+    "suite": "quality",
+    "case": 3,
+    "quality_only": true,
+    "sha256": "40d6277911fd9340c5bd0dd5910210446f98f638203977fa85e0ee4a264b2020",
+    "records": 512,
+    "vocab": 248320,
+    "float_values": 127139840,
+    "expected_sha256": "40d6277911fd9340c5bd0dd5910210446f98f638203977fa85e0ee4a264b2020",
+    "bitwise_match": true
+  },
+  {
+    "suite": "quality",
+    "case": 4,
+    "quality_only": true,
+    "sha256": "0e09c7ace376f1fc971830b853b5bf98b5d9c633668266bc24ea7190939f2879",
+    "records": 512,
+    "vocab": 248320,
+    "float_values": 127139840,
+    "expected_sha256": "0e09c7ace376f1fc971830b853b5bf98b5d9c633668266bc24ea7190939f2879",
+    "bitwise_match": true
+  },
+  {
+    "suite": "quality",
+    "case": 5,
+    "quality_only": true,
+    "sha256": "2b4b6f10d1b1b621c108b4da2a3afb68db0906f95749a580640870a924b0f973",
+    "records": 512,
+    "vocab": 248320,
+    "float_values": 127139840,
+    "expected_sha256": "2b4b6f10d1b1b621c108b4da2a3afb68db0906f95749a580640870a924b0f973",
+    "bitwise_match": true
+  },
+  {
+    "suite": "quality",
+    "case": 6,
+    "quality_only": true,
+    "sha256": "931104a708a748b558feab97acc9f3045a48d0c980c3d4669d1bc02ee2cd54c0",
+    "records": 512,
+    "vocab": 248320,
+    "float_values": 127139840,
+    "expected_sha256": "931104a708a748b558feab97acc9f3045a48d0c980c3d4669d1bc02ee2cd54c0",
+    "bitwise_match": true
+  },
+  {
+    "suite": "quality",
+    "case": 7,
+    "quality_only": true,
+    "sha256": "6d9424fc22a627b8e5d33cf506b3f0e1a95a5a12f62b9edfc1ff68cdc7a7fabe",
+    "records": 512,
+    "vocab": 248320,
+    "float_values": 127139840,
+    "expected_sha256": "6d9424fc22a627b8e5d33cf506b3f0e1a95a5a12f62b9edfc1ff68cdc7a7fabe",
+    "bitwise_match": true
+  },
+  {
+    "suite": "quality",
+    "case": 8,
+    "quality_only": true,
+    "sha256": "6e9bba24b970620e8fff77d3c0df6ca8ab3b3057c9746c86c98f1e185d349749",
+    "records": 512,
+    "vocab": 248320,
+    "float_values": 127139840,
+    "expected_sha256": "6e9bba24b970620e8fff77d3c0df6ca8ab3b3057c9746c86c98f1e185d349749",
+    "bitwise_match": true
+  },
+  {
+    "suite": "quality",
+    "case": 9,
+    "quality_only": true,
+    "sha256": "9693fc1a96db661e62e4f8ba1e417fae606e3b3cb7ec4898634327945675429e",
+    "records": 512,
+    "vocab": 248320,
+    "float_values": 127139840,
+    "expected_sha256": "9693fc1a96db661e62e4f8ba1e417fae606e3b3cb7ec4898634327945675429e",
+    "bitwise_match": true
+  },
+  {
+    "suite": "quality",
+    "case": 10,
+    "quality_only": true,
+    "sha256": "25b526c4193fffc337cd619b5ee279c7c788d66a8c77ee90a5f5f07097d3d951",
+    "records": 512,
+    "vocab": 248320,
+    "float_values": 127139840,
+    "expected_sha256": "25b526c4193fffc337cd619b5ee279c7c788d66a8c77ee90a5f5f07097d3d951",
+    "bitwise_match": true
+  },
+  {
+    "suite": "quality",
+    "case": 11,
+    "quality_only": true,
+    "sha256": "508739765ea2d6f33764b150e7d0e2fbc523d21bf25199c9dccbf78f02374cf3",
+    "records": 512,
+    "vocab": 248320,
+    "float_values": 127139840,
+    "expected_sha256": "508739765ea2d6f33764b150e7d0e2fbc523d21bf25199c9dccbf78f02374cf3",
+    "bitwise_match": true
+  },
+  {
+    "suite": "quality",
+    "case": 12,
+    "quality_only": true,
+    "sha256": "a2af5113dfc7cc2d01491cc5325a4a0ba159606cbc557c81c260d2fffe36f62a",
+    "records": 512,
+    "vocab": 248320,
+    "float_values": 127139840,
+    "expected_sha256": "a2af5113dfc7cc2d01491cc5325a4a0ba159606cbc557c81c260d2fffe36f62a",
+    "bitwise_match": true
+  },
+  {
+    "suite": "quality",
+    "case": 13,
+    "quality_only": true,
+    "sha256": "540338be78c0478e5d8bad8368a813f7ec4416ace8b0925463ded43bd73a579c",
+    "records": 512,
+    "vocab": 248320,
+    "float_values": 127139840,
+    "expected_sha256": "540338be78c0478e5d8bad8368a813f7ec4416ace8b0925463ded43bd73a579c",
+    "bitwise_match": true
+  },
+  {
+    "suite": "quality",
+    "case": 14,
+    "quality_only": true,
+    "sha256": "5ccfdfb6f8c0259eb577a79bdb3efcc1484760a18bb51b127826046437edb479",
+    "records": 512,
+    "vocab": 248320,
+    "float_values": 127139840,
+    "expected_sha256": "5ccfdfb6f8c0259eb577a79bdb3efcc1484760a18bb51b127826046437edb479",
+    "bitwise_match": true
+  },
+  {
+    "suite": "quality",
+    "case": 15,
+    "quality_only": true,
+    "sha256": "589946e125d774549b710910cf0bdc7e9da6eab2a42d2bee95472795c6fd6ae4",
+    "records": 512,
+    "vocab": 248320,
+    "float_values": 127139840,
+    "expected_sha256": "589946e125d774549b710910cf0bdc7e9da6eab2a42d2bee95472795c6fd6ae4",
+    "bitwise_match": true
+  },
+  {
+    "suite": "long-selected",
+    "case": 0,
+    "quality_only": true,
+    "sha256": "89f39d76cdd5821d1462f519387e347ae45eacf139b6ac4e5f36eb755fb89523",
+    "records": 16,
+    "vocab": 248320,
+    "float_values": 3973120,
+    "expected_sha256": "89f39d76cdd5821d1462f519387e347ae45eacf139b6ac4e5f36eb755fb89523",
+    "bitwise_match": true
+  },
+  {
+    "suite": "long-selected",
+    "case": 1,
+    "quality_only": true,
+    "sha256": "ffae9a392fb2f62954f044366706830c903a778ad206c16eb0567b33378a3547",
+    "records": 16,
+    "vocab": 248320,
+    "float_values": 3973120,
+    "expected_sha256": "ffae9a392fb2f62954f044366706830c903a778ad206c16eb0567b33378a3547",
+    "bitwise_match": true
+  }
+]

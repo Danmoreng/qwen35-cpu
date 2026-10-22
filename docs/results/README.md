@@ -6,7 +6,8 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
-| `cpu-refresh-2026-10-22` | Current README/model-card speed and quality; [methodology](../benchmarks/cpu.md) |
+| `native-prefill-reuse-2026-10-22` | Current native README/model-card speed, paired baseline and quality parity; [methodology](../benchmarks/native-prefill.md) |
+| `cpu-refresh-2026-10-22` | Comparator README/model-card speed, all quality scores and preceding native baseline; [methodology](../benchmarks/cpu.md) |
 | `current-cpu-2026-09-07`, `ik-batch16-2026-09-07` | September CPU speed baseline and earlier B16 validation |
 | `readme-bc256-2026-09-07`, `ik-linux-2026-09-07` | September quality baseline and comparator provenance |
 | `linux-i7-8750h-2026-09-08` | [Earlier second-CPU comparison](../benchmarks/cpu.md#earlier-second-cpu-comparison) |

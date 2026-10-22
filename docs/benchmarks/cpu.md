@@ -2,20 +2,27 @@
 
 Measured on October 22, 2026. The README compares the calibrated
 H128/Q4-G32-DOT4 engine with four llama.cpp GGUFs and six ik_llama.cpp GGUFs.
-All eleven candidates share one sequential performance series; all eleven are
-also scored independently against the same frozen BF16 reference.
+The initial eleven-candidate comparison shares one sequential performance
+series and scores all candidates independently against the same frozen BF16
+reference. The README now supplements that series with the later
+[native prefill optimization](native-prefill.md), measured against the unchanged
+native baseline on the same day. Comparator rows retain the original series.
+Use the paired native results to quantify that optimization, rather than
+attributing differences between series to code alone.
 
 ## Source revisions
 
 | Engine | Measured revision | Local changes |
 | --- | --- | --- |
-| Native | [`6d38cca33e54`](https://github.com/Danmoreng/qwen35-cpu/commit/6d38cca33e548aaeda2dd27b21fef689d47c7d79) | None |
+| Native, current README supplement | [`f928eec37ab3`](https://github.com/Danmoreng/qwen35-cpu/commit/f928eec37ab34739e03d4fa3d37fe34d44ff7229) | None; sixteen-token prefill reuse committed in this revision |
+| Native, initial full comparison | [`6d38cca33e54`](https://github.com/Danmoreng/qwen35-cpu/commit/6d38cca33e548aaeda2dd27b21fef689d47c7d79) | None |
 | llama.cpp b11815 | [`7170cad4d02f`](https://github.com/ggml-org/llama.cpp/commit/7170cad4d02f7907517613931840cbb2367399a3) | None |
 | ik_llama.cpp | [`98aca8692ae3`](https://github.com/ikawrakow/ik_llama.cpp/commit/98aca8692ae334e6e23e4d39ac43ce0d21029c35) | None for B1, prefill and quality; existing graph-capacity patch for B16 only |
 
 The two comparator revisions were fetched from their upstream default branches
 for this measurement. They are frozen identifiers, not a promise to track future
-upstream changes automatically. Native engine code was not modified for this benchmark refresh.
+upstream changes automatically. Native engine code was unchanged in the initial
+refresh; the subsequent optimization and its evidence are documented separately.
 
 ## Performance contract
 
@@ -28,7 +35,8 @@ upstream changes automatically. Native engine code was not modified for this ben
 - Codex minimized, XFCE compositing disabled, display unchanged at
   2560×1600 / 240 Hz. The local wrapper restores the desktop afterward.
 - One warmup and three measured runs, alternating case order, through
-  `scripts/benchmark-inference-seq.ps1`: 33 cases and 132 raw profiles.
+  `scripts/benchmark-inference-seq.ps1`: 33 cases and 132 raw profiles in the
+  initial full comparison; 18 cases and 72 profiles in the native confirmation.
   No concurrent inference or compilation during performance measurements.
 - Identical fixed tokens, full-vocabulary logits, FP16 KV, maximum context 16,384.
 - B1/P512/N128, B1/P4096/N2 and B16/P512/N128 for every candidate.
@@ -47,8 +55,13 @@ upstream changes automatically. Native engine code was not modified for this ben
 
 The [performance CSV](../results/cpu-refresh-2026-10-22/performance.csv)
 contains medians and min/max; [individual samples](../results/cpu-refresh-2026-10-22/performance-samples.csv)
-retain the warmup and every measured run. Native P512 prefill is 2,946.40 tokens/s,
-about 174 ms of model-forward work. IK IQ4_KS_R4 reaches 3,689.22 tokens/s.
+retain the warmup and every measured run. In that initial series, native P512
+prefill is 2,946.40 tokens/s, about 174 ms of model-forward work, and IK IQ4_KS_R4
+reaches 3,689.22 tokens/s. The later [native paired series](native-prefill.md)
+measures 2,918.72 baseline versus 3,052.57 optimized tokens/s (+4.59%, about
+175 ms versus 168 ms). Its B1/B16 decode is unchanged; absolute values differ
+between series even for the same binary, so small cross-engine gaps should not
+be treated as a definitive ranking.
 
 Stock IK pure-Q4_0 B16 still aborts. Only the B16 comparator uses the existing
 seven-line graph-capacity correction; its scope and fresh numerical validation
@@ -76,6 +89,11 @@ three shared Unsloth files. [Window metrics](../results/cpu-refresh-2026-10-22/q
 and [input identities](../results/cpu-refresh-2026-10-22/quality-inputs.json)
 preserve scoring provenance. Backend outputs need not be bitwise identical.
 
+The later native revision reproduces the original native capture hashes at all
+8,192 positions, including every vocabulary logit. Its reported PPL and KL
+therefore remain exactly the same on this corpus. See the
+[native parity evidence](../results/native-prefill-reuse-2026-10-22/quality-parity.json).
+
 All seven model/checkpoint files match the September comparison by SHA-256.
 H128 comes from model revision `f6cb5cf04a9094670f9041578a3f4e44b94a1395`;
 Unsloth from `6ab461498e2023f6e3c1baea90a8f0fe38ab64d0`. The IK-specific pure
@@ -95,6 +113,10 @@ Build the native engine with:
 cmake -S . -B build-linux -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build-linux -j 8
 ```
+
+Use native revision `6d38cca` for the initial full-comparison matrix below.
+Use `f928eec` and the separate [native matrix](../results/native-prefill-reuse-2026-10-22/matrix.json)
+to reproduce the optimized supplement and its paired baseline.
 
 Prepare clean upstream checkouts at the exact revisions above, then build the
 fixed-token comparators from this repository:
@@ -140,7 +162,8 @@ The model hashes and workloads are unchanged, but kernel 7.2.2 became 7.2.9 and
 the recorded governor/EPP changed from `performance`/`performance` to
 `powersave`/`balance_performance`. Both runs used platform profile `max-power`.
 Historical speed differences therefore cannot be attributed solely to upstream
-code changes. The current table compares engines within the same new series.
+code changes. The initial October table compares engines within one new series;
+the current native row is explicitly identified as a later paired supplement.
 
 ## Why IK IQ4_KS_R4 prefill changed
 
@@ -217,27 +240,18 @@ the stock engine with its conversion enabled.
 
 ### Transfer to the native engine
 
-The [native DOT4 prefill kernel](../../src/cpu/q4_dot4_prefill_avx512.cpp)
-already uses AVX-512 VNNI, sixteen output rows, eight-token tiles and reuse of
-unpacked weights inside each tile. Adding VNNI alone is therefore not a new
-optimization opportunity. Its inner block traversal reloads and unpacks weights
-for each eight-token tile; the default 128-token prefill chunk repeats that work.
+The baseline native DOT4 prefill kernel already used AVX-512 VNNI, sixteen
+output rows and eight-token weight reuse. The follow-up
+[native experiment](native-prefill.md) tested temporary expanded weight tiles
+and wider token tiles. The selected implementation reuses unpacked weights
+across sixteen tokens for calls with at least 64 activation rows, without an
+additional weight buffer. Smaller calls retain the old path to protect decode.
 
-A focused candidate is temporary, thread-local expansion of a small Q4 weight
-tile once per matrix call, reused across more activation rows. Preserve the
-existing 32-element group scales and integer values first, retaining the
-current floating-point accumulation order. Unlike IK's scale-merging conversion,
-this can be designed without adding a new quantization error. Keep the current
-path for small batches and single-token decode, where conversion overhead is
-harder to amortize.
-
-The tradeoff is larger scratch storage and additional cache loads. Native Q4
-unpacking is also simpler than IK's nonuniform lookup and scale handling, so
-IK's gain is not a forecast for this engine. Select a threshold from measured
-P512/P4096 results, check small prompts and B1/B16 for regressions, and compare
-full-vocabulary logits before adopting a candidate. ISA-specific code should
-remain in its isolated translation unit with runtime dispatch. No native kernel
-change is included in this measurement refresh.
+The paired result is +4.59% P512 and +3.62% P4096 prefill, with unchanged B1/B16
+decode and bit-identical quality captures. Native Q4 unpacking is simpler than
+IK's nonuniform lookup and scale handling, so IK's roughly 79% gain does not
+transfer directly. The selected kernel preserves group scales, integer values
+and accumulation order in the existing isolated AVX-512 translation unit.
 
 ## Earlier second-CPU comparison
 
