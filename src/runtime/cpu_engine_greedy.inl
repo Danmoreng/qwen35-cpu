@@ -7,6 +7,7 @@ struct GreedyBatchJob {
   Sequence *const *sequences;
   cpu::Q4_0ArgmaxResult *results;
   std::size_t count, blocks, row_tiles, workers;
+  bool use_t8;
 };
 static void greedy_batch_rows(void *opaque, std::size_t begin,
                               std::size_t end) noexcept {
@@ -23,7 +24,8 @@ static void greedy_batch_rows(void *opaque, std::size_t begin,
           job.weight->packed_q4_0_blocks.data() + tile * job.blocks;
       for (std::size_t r = 0; r < job.count;) {
         const std::size_t remaining = job.count - r;
-        const std::size_t vectors = remaining >= 16  ? 16
+        const std::size_t vectors = remaining >= 16 ? 16
+                                    : job.use_t8 && remaining >= 8 ? 8
                                     : remaining >= 4 ? 4
                                                      : 1;
         if (vectors == 1) {
@@ -87,6 +89,9 @@ bool greedy_batch(std::span<Sequence *> rows, std::string &error) {
   batch.greedy_results.assign(
       workers * count,
       cpu::Q4_0ArgmaxResult{-std::numeric_limits<float>::infinity(), 0});
+  const bool use_t8=config.greedy_head_t8 && weight.q4_dot4 &&
+      cpu::q8_0_resolve_backend(weight.q8_0_backend)==cpu::Q8_0Backend::avx512_vnni;
+  if(use_t8 && count%16>=8) ++stats.greedy_t8_head_batches;
   GreedyBatchJob job{&weight,
                      packed.data(),
                      tail.data(),
@@ -96,7 +101,7 @@ bool greedy_batch(std::span<Sequence *> rows, std::string &error) {
                      blocks,
                      static_cast<std::size_t>(model->impl_->dims.vocab_size) /
                          8,
-                     workers};
+                     workers, use_t8};
   if (context->executor->parallel_for_rows(workers, greedy_batch_rows, &job) !=
       cpu::CpuExecutorStatus::ok) {
     error = "Batched greedy executor failed.";

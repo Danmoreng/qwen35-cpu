@@ -9,6 +9,8 @@ const args = Object.fromEntries(process.argv.slice(2).reduce((out, x, i, all) =>
 }, []));
 for (const key of ['profile-json', 'playwright-module', 'inputs-file', 'dtype', 'provider'])
   if (!args[key]) throw new Error(`Missing --${key}`);
+const warmupPasses=Number(args['session-warmup-passes'] || 1);
+if(!Number.isInteger(warmupPasses) || warmupPasses<1 || warmupPasses>10)throw new Error('Warmup passes must be 1..10');
 const inputs = JSON.parse(fs.readFileSync(args['inputs-file'], 'utf8'));
 const launchArgs = args['gpu-flags'] === 'true'
   ? ['--enable-unsafe-webgpu', '--enable-features=Vulkan', '--use-angle=vulkan'] : [];
@@ -18,7 +20,7 @@ const browser = await chromium.launch({headless: args.headless !== 'false', args
 const sha = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const resources = [], logs = [], errors = [];
 const engine = args.engine || 'transformers.js';
-const profile = {engine, provider: args.provider, dtype: args.dtype,
+const profile = {session_warmup_passes:warmupPasses,engine, provider: args.provider, dtype: args.dtype,
   threads: Number(args.threads || 8), browser: browser.version(), launch_args: launchArgs,
   headless: args.headless !== 'false', input_sha256: sha(args['inputs-file']), outputs: [],
   ort_build: args['ort-build'] || 'asyncify',
@@ -37,7 +39,7 @@ try {
   page.on('console', e => logs.push({type: e.type(), message: e.text()}));
   page.on('pageerror', e => errors.push(e.message));
   await page.goto(args.url || `http://127.0.0.1:8765/${engine === 'llama.cpp' ? 'llama-bench/' : 'onnx-bench/'}`);
-  const result = await page.evaluate(async ({provider, dtype, threads, inputs, warmup, ortBuild, engine, weights, ubatch, flashAttn, mode, chunk, profileOps, tuning, runtimePath, tuningGrid, reverseTrials, gridOrder, trialOffset}) => {
+  const result = await page.evaluate(async ({provider, dtype, threads, inputs, warmup, warmupPasses, ortBuild, engine, weights, ubatch, flashAttn, mode, chunk, profileOps, tuning, runtimePath, tuningGrid, reverseTrials, gridOrder, trialOffset}) => {
     const worker = new Worker(engine === 'custom' ? '../worker.js' : './worker.js',
       engine === 'transformers.js' ? {type: 'module'} : {});
     const events = [];
@@ -73,7 +75,7 @@ try {
           await rpc({type: 'tune', tuning: trial.tuning});
           const retuneMs = performance.now() - start;
           const warmupOutputs = [];
-          if (warmup) for (const input of inputs) warmupOutputs.push(await decide(input));
+          if (warmup) for(let pass=0;pass<warmupPasses;++pass) for (const input of inputs) warmupOutputs.push(await decide(input));
           const outputs = [], pageRoundtripMs = [];
           for (const input of inputs) {
             const begin = performance.now(); outputs.push(await decide(input)); pageRoundtripMs.push(performance.now() - begin);
@@ -83,7 +85,7 @@ try {
         return {ready, outputs: trials[0].outputs, trials, events, load_worker_ms: loadWorkerMs};
       }
       const warmupOutputs = [];
-      if (warmup) for (const input of inputs) warmupOutputs.push(await decide(input));
+      if (warmup) for(let pass=0;pass<warmupPasses;++pass) for (const input of inputs) warmupOutputs.push(await decide(input));
       const outputs = [], pageRoundtripMs = [];
       for (const input of inputs) {
         const start = performance.now(); outputs.push(await decide(input)); pageRoundtripMs.push(performance.now() - start);
@@ -91,7 +93,7 @@ try {
       return {ready, outputs, events, warmup_outputs: warmupOutputs, page_roundtrip_ms: pageRoundtripMs, load_worker_ms: loadWorkerMs};
     } finally { worker.terminate(); }
   }, {provider: args.provider, dtype: args.dtype, threads: profile.threads, inputs,
-    warmup: profile.session_warmup, ortBuild: profile.ort_build, engine,
+    warmup: profile.session_warmup, warmupPasses, ortBuild: profile.ort_build, engine,
     weights: args.weights ? path.basename(args.weights) : null, ubatch: Number(args.ubatch || 512),
     flashAttn: {auto: -1, off: 0, on: 1}[profile.flash_attn],
     mode: profile.custom_mode, chunk: profile.chunk, profileOps: profile.profile_ops, tuning: profile.tuning, runtimePath: profile.runtime_path,

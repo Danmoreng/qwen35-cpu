@@ -13,6 +13,7 @@ int main(int argc, char **argv) {
   int chunk = 32, context = 2048, profile_ops = 0;
   std::string tuning;
   bool warm_all = false;
+  int warmup_passes=1;
   for (int i = 3; i < argc; i += 2) {
     if (i + 1 == argc) return 2;
     const std::string option = argv[i];
@@ -20,6 +21,7 @@ int main(int argc, char **argv) {
     else if (option == "--chunk") chunk = std::stoi(argv[i + 1]);
     else if (option == "--context") context = std::stoi(argv[i + 1]);
     else if (option == "--profile-ops") profile_ops = std::string(argv[i + 1]) == "true";
+    else if(option=="--session-warmup-passes") { warmup_passes=std::stoi(argv[i+1]);if(warmup_passes<1 || warmup_passes>10)return 2; }
     else if (option == "--tuning") tuning = argv[i + 1];
     else if (option == "--profile-json") profile = argv[i + 1];
     else if (option == "--session-warmup") {
@@ -52,8 +54,10 @@ int main(int argc, char **argv) {
     return record;
   };
   if (!profile.empty() && !requests.empty()) {
-    if (warm_all) for (const auto &line : requests) run(line);
-    else run(requests.front());
+    for(int pass=0;pass<warmup_passes;++pass) {
+      if (warm_all) for (const auto &line : requests) run(line);
+      else run(requests.front());
+    }
   }
   Json outputs = Json::array();
   for (const auto &line : requests) {
@@ -64,7 +68,7 @@ int main(int argc, char **argv) {
   }
   if (!profile.empty()) {
     Json report = {{"engine", "native-cpu-c-abi"}, {"threads", threads}, {"requests", requests.size()},
-      {"session_warmup", true}, {"session_warmup_shapes", warm_all ? "all" : "first"},
+      {"session_warmup", true}, {"session_warmup_passes",warmup_passes}, {"session_warmup_shapes", warm_all ? "all" : "first"},
       {"ready", Json::parse(loaded)}, {"outputs", outputs}};
     for (std::size_t i = 0; i < outputs.size(); ++i) report["request_" + std::to_string(i) + "_ms"] = outputs[i]["worker_ms"];
     std::ofstream file(profile); if (!file) return 2;

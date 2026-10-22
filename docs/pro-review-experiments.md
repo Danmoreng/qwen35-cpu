@@ -346,3 +346,51 @@ test covers eight prompt lengths, four prefix lengths, vocabulary endpoints,
 unsorted/duplicate IDs, seven rejected contracts and recovery; all 17 native
 CTest checks pass. Weights and probability calibration are unchanged.
 Raw P8-quality/P8-performance, compact results/P8.json under the study folders.
+
+
+## P9: true native greedy eight-row output tiles
+
+An opt-in `greedy_head_t8` dispatch uses 16/8/4/1 vectors for eligible native
+AVX512 VNNI DOT4 heads, instead of 16/4/1. Actual unforced greedy generation
+matches a full-logits reference at B1/4/8/12/16, including private repetition
+penalties and 16 decode forwards per request. Instrumentation confirms 16 T8
+head batches at B8/B12 and zero at B1/B4/B16. All three measured runs also
+preserve identical legacy/T8 token sequences. Forced-output tests were not used
+as proof of dispatch.
+
+Three runs plus one process warmup give these median decode batch-step
+latencies in ms (prefill excluded, same batch size per comparison):
+
+| Batch size | Legacy | T8 candidate |
+|---|---:|---:|
+| 1 | 9.247 | 9.185 |
+| 4 | 12.351 | 12.060 |
+| 8 | 15.596 | 15.695 |
+| 12 | 19.754 | 20.410 |
+| 16 | 23.837 | 23.581 |
+
+No benefit is established at the affected batch sizes; keep the flag false.
+Differences in unchanged paths illustrate process variation. Raw profiles
+include aggregate throughput and output tokens, but no batched rate is compared
+with single-request Decision latency. This synthetic decode workload is a
+runtime regression check, not a generative model-quality benchmark.
+Raw P9-validation/P9-performance; compact results/P9.json under the study.
+
+## Thread and chunk retuning
+
+All 16 combinations of 1/2/4/8 threads and 16/32/64/128-token chunks were
+measured after the accepted kernels, with three process samples, one process
+warmup and per-shape warmups. Idle tuning recreates executor/workspaces while
+retaining immutable weights. Actual thread/chunk settings are captured in each
+request's debug record; invalid settings are rejected before changing tuning.
+All combinations preserve frozen prompt IDs, usage, exact option bits and
+answers on the three performance fixtures.
+
+Eight threads clearly win on this CPU. The rotating/reversing resident grid
+suggests chunk 64 (118.92/117.93/918.67 ms), versus chunk 32
+(124.25/127.93/982.01 ms). Chunk 128 shows substantial short-request variation,
+including when first after load. No cause is established from ordering alone.
+A fresh-browser comparison with extended per-session warmups is required before
+adopting a chunk size. These are Decision elapsed times including bounded
+worker yields; forward-call `prefill_ms` and worker/page times are retained
+separately. They exclude model loading.

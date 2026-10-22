@@ -60,6 +60,8 @@ struct CpuEngineConfig {
   // Shared vocabulary-tile reduction for all-greedy batches. False preserves
   // the full-logits reference. General sampling/callbacks always use logits.
   bool batch_greedy = true;
+  // Experimental eight-row greedy head tile on native AVX512 VNNI.
+  bool greedy_head_t8 = false;
   // Dispatch private state rows jointly when B >= executor thread count.
   bool parallel_state_batches = true;
   std::size_t max_prefix_bytes = 256 * 1024 * 1024;
@@ -112,7 +114,7 @@ struct CpuRequestResult {
 struct CpuEngineStats {
   std::uint64_t batch_ticks = 0, batch_rows = 0;
   std::uint64_t projection_batches = 0, lm_head_batches = 0;
-  std::uint64_t greedy_lm_head_batches = 0;
+  std::uint64_t greedy_lm_head_batches = 0, greedy_t8_head_batches = 0;
   std::uint64_t state_batches = 0;
   std::size_t queued_requests = 0, resident_requests = 0;
   std::uint64_t prefix_builds = 0, prefix_build_fallbacks = 0;

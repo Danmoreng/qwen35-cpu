@@ -62,13 +62,13 @@ try {
           if (!rejected) throw new Error('Invalid request was accepted');
         }
         checksPassed.push('malformed request', 'invalid encoding', 'context overflow');
-        for (const tuning of [{kv_cache_bits: 8}, {kv_cache_bits: -16},
+        for (const tuning of [{threads:0},{threads:9},{prefill_chunk_size:15},{prefill_chunk_size:0},{selected_option_head:2},{gqa4_min_tokens:-1},{kv_cache_bits: 8}, {kv_cache_bits: -16},
                               {kv_cache_bits: true}, {unknown_option: 0}]) {
           let rejected = false;
           try { await rpc({type: 'tune', tuning}); } catch { rejected = true; }
           if (!rejected) throw new Error('Invalid tuning was accepted');
         }
-        checksPassed.push('invalid KV widths/types and unknown tuning rejected');
+        checksPassed.push('invalid thread/chunk/head/KV settings and unknown tuning rejected');
         const cancelled = rpc({type: 'decide', request: requests.at(-1)});
         worker.postMessage({type: 'cancel'});
         if ((await cancelled).result.status !== 'cancelled') throw new Error('Cancel did not stop inference');

@@ -22,6 +22,7 @@ struct Session {
   std::optional<systemone::Request> request;
   CpuRequestId active = 0;
   std::size_t context = 2048, question = 0, steps = 0, evaluated = 0, decode = 0;
+  int loaded_threads = 1;
   double prefill_ms = 0;
   std::vector<float> logits;
   std::vector<CpuDecodeStage> operations;
@@ -77,7 +78,9 @@ const char *failure(const std::exception &e) {
   if (session) session->cancel();
   return reply({{"error", e.what()}});
 }
-void apply_tuning(CpuEngineConfig &config) {
+void apply_tuning(CpuEngineConfig &config, int loaded_threads) {
+  config.threads=tuning.value("threads",loaded_threads);
+  config.prefill_chunk_size=tuning.value("prefill_chunk_size",static_cast<std::size_t>(chunk_size));
   config.linear_prepare_min_tokens = tuning.value("linear_prepare_min_tokens", std::size_t{128});
   config.mlp_prepare_min_tokens = tuning.value("mlp_prepare_min_tokens", std::size_t{8});
   config.balance_attention_rows = tuning.value("balance_attention_rows", std::size_t{0}) != 0;
@@ -93,8 +96,19 @@ const char *qev_tune(const char *body) try {
   auto options = Json::parse(body);
   systemone::require(options.is_object(), "Tuning must be an object");
   for (const auto &[key, value] : options.items()) {
-    systemone::require(key == "linear_prepare_min_tokens" || key == "executor_spin_count" || key == "mlp_prepare_min_tokens" || key == "kv_cache_bits" || key == "balance_attention_rows" || key == "merge_tail_jobs" || key == "gqa4_min_tokens" || key == "selected_option_head", "Unknown tuning option: " + key);
+    systemone::require(key == "linear_prepare_min_tokens" || key == "executor_spin_count" || key == "mlp_prepare_min_tokens" || key == "kv_cache_bits" || key == "balance_attention_rows" || key == "merge_tail_jobs" || key == "gqa4_min_tokens" || key == "selected_option_head" || key == "threads" || key == "prefill_chunk_size", "Unknown tuning option: " + key);
     systemone::require(value.is_number_unsigned() && value.get<std::size_t>() <= 67108864, "Invalid tuning value");
+  }
+  if(options.contains("threads")) {
+    const auto n=options["threads"].get<std::size_t>();
+    systemone::require(n>=1 && n<=8,"threads must be 1..8");
+#if defined(__EMSCRIPTEN__) && !defined(__EMSCRIPTEN_PTHREADS__)
+    systemone::require(n==1,"This build supports one thread");
+#endif
+  }
+  if(options.contains("prefill_chunk_size")) {
+    const auto n=options["prefill_chunk_size"].get<std::size_t>();
+    systemone::require(n>=4 && n<=1024 && n%4==0,"chunk must be a multiple of 4 in 4..1024");
   }
   if (options.contains("kv_cache_bits")) {
     const auto bits = options["kv_cache_bits"].get<std::size_t>();
@@ -107,7 +121,7 @@ const char *qev_tune(const char *body) try {
   if (session) {
     // Recreate only the idle executor/workspaces, retaining immutable weights.
     // Destroy the old pool first so the fixed WASM pthread pool can be reused.
-    session->engine.reset(); apply_tuning(session->config);
+    session->engine.reset(); apply_tuning(session->config,session->loaded_threads);
     std::string error;
     session->engine = CpuEngine::create(session->model, session->config, error);
     systemone::require(bool(session->engine), error);
@@ -130,7 +144,7 @@ const char *qev_load(const char *directory, int threads, int context) try {
 #endif
   systemone::require(context >= 128 && context <= 8192, "context must be 128..8192");
   // Release the old model before loading a new one to bound peak memory.
-  session.reset(); auto s = std::make_unique<Session>(); s->context = context;
+  session.reset(); auto s = std::make_unique<Session>(); s->context = context; s->loaded_threads=threads;
   std::string error;
   systemone::require(QwenTokenizer::load_from_hf_directory(directory, s->tokenizer, error), error);
   auto cfg = systemone::Config::load(directory, s->tokenizer);
@@ -142,14 +156,14 @@ const char *qev_load(const char *directory, int threads, int context) try {
   systemone::require(std::string(model->weight_format()) == "h128-q4-dot4", "Expected H128/Q4-G32-DOT4 weights");
   CpuEngineConfig config; config.threads = threads; config.max_context = context;
   config.max_resident_requests = 1; config.prefill_chunk_size = chunk_size;
-  apply_tuning(config);
+  apply_tuning(config,threads);
   if (profiling) { config.operation_profile = &s->operations; config.prefill_profile = &s->stages; }
   config.max_prefix_bytes = 0;
   s->model = model; s->config = config;
   s->engine = CpuEngine::create(model, config, error); systemone::require(bool(s->engine), error);
   session = std::move(s);
-  Json info = {{"status", "ready"}, {"threads", threads}, {"max_context", context},
-                {"format", "H128/Q4-G32-DOT4"}, {"chunk", chunk_size}, {"profiling", profiling},
+  Json info = {{"status", "ready"}, {"threads", config.threads}, {"max_context", context},
+                {"format", "H128/Q4-G32-DOT4"}, {"chunk", config.prefill_chunk_size}, {"profiling", profiling},
                 {"tuning", tuning}, {"kv_type", (config.kv_cache_bits == 16 || (!config.kv_cache_bits && cpu::q8_0_backend_uses_avx2(cpu::Q8_0Backend::auto_select))) ? "f16" : "f32"},
                 {"backend", cpu::q8_0_backend_name(cpu::q8_0_resolve_backend(cpu::Q8_0Backend::auto_select))}};
 #ifdef __EMSCRIPTEN__
@@ -204,6 +218,8 @@ const char *qev_cancel() {
 const char *qev_debug() {
   if (!session) return reply(Json::object());
   auto diagnostic = session->debug;
+  diagnostic["threads"]=session->config.threads;
+  diagnostic["chunk"]=session->config.prefill_chunk_size;
   diagnostic["head_readout"]=tuning.value("selected_option_head",std::size_t{1})?"selected":"full";
   const auto bits = session->config.kv_cache_bits;
   diagnostic["kv_cache_bits"] = bits ? bits :
