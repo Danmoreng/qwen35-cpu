@@ -54,7 +54,8 @@ the entire OpenAI platform API.
 of `{"type":"text","text":"..."}` parts. At least one user query is required.
 Leading system/developer messages are combined into the Qwen system turn with
 two newlines between them. Such instructions are rejected after the conversation
-has begun. Images, tool messages and unsupported message fields are rejected.
+has begun. Tool messages follow the structured-tool contract below. Images and
+unsupported message fields are rejected.
 
 The native formatter matches the pinned Qwen3.5 text chat template with thinking
 disabled for generation. Assistant history may contain `reasoning_content`;
@@ -73,7 +74,7 @@ Optional numeric fields may be null to use their defaults.
 
 Responses use `object: "chat.completion"`, an assistant `message`, finish reason
 and token usage. Unsupported fields fail explicitly with an OpenAI-style error.
-Structured output, tool calling and the Responses API are not supported yet.
+Structured output and tool fields are described below. The Responses API is not implemented.
 The OpenAI SDK works with a custom server `base_url` and
 the actual model ID from `/v1/models`; API compatibility does not imply OpenAI
 model capabilities.
@@ -128,7 +129,8 @@ Version 2023-06-01 accepts `temperature` (0..1, default 1), `top_p`, `top_k`.
 Both versions accept
 `stop_sequences` (up to four strings), `stream`, `thinking: {"type":"disabled"}`,
 and the local `cache_prompt`/`prompt_cache_key` extensions. Images, extended
-thinking, tools, cloud cache-control/TTL hints and unknown fields are rejected.
+thinking, cloud cache-control/TTL hints and unknown fields are rejected.
+Structured output and tools use the additional fields described below.
 Responses contain text blocks, `end_turn`, `max_tokens` or `stop_sequence`, and
 the exact matched stop string when applicable. Errors use the Messages error
 envelope, including authentication and capacity failures.
@@ -145,8 +147,82 @@ Messages usage partitions the logical prompt into `input_tokens` (uncached),
 newly computed tokens successfully retained; extending a restored prefix does
 not count restored tokens twice. These describe the local bounded cache, not
 cloud billing or persistence. `output_tokens` includes withheld stop/EOS tokens.
-`POST /v1/messages/count_tokens` accepts `model`, `messages` and optional `system`;
-it returns the full formatted input count without inference or cache mutation.
+`POST /v1/messages/count_tokens` accepts `model`, `messages`, optional `system`
+and `tools`; the local `tool_choice` and `output_config` extensions let clients
+count exactly the same formatting as generation. Supply the same values when
+using tools or a schema (through SDK `extra_body` where needed). It returns the
+full formatted input count without inference or cache mutation.
+
+## Structured output and tools
+
+Chat and raw Completions accept `response_format` with `type: "json_object"`,
+`"json_schema"` or `"text"`. JSON Schema mode also requires
+`json_schema: {"name":"response","strict":true,"schema":{...}}`; description
+and strict are optional. Messages accepts
+`output_config: {"format":{"type":"json_schema","schema":{...}}}`.
+The schema is enforced even when `strict` is false. Chat/Messages add a formatting
+instruction to the Qwen system turn. Raw prompts retain their supplied formatting.
+
+The engine masks tokens before greedy or probabilistic sampling and accepts EOS
+only after a complete JSON value. This includes tokens spanning several grammar
+symbols, split UTF-8 and escaped Unicode surrogate pairs. Plain text generation
+keeps its existing optimized path; constrained requests require full logits.
+No Python or grammar service is needed at runtime. Text stop sequences cannot be
+combined with constrained output. A length-limited JSON response can be incomplete;
+check the finish reason before parsing it. Constraints guarantee structure, not
+the factual correctness of generated values.
+
+The supported JSON Schema subset is deliberately explicit:
+
+- Types: `object`, `array`, `string`, `integer`, `number`, `boolean`, `null`.
+- Objects require `properties` and `additionalProperties: false`; `required`
+  names must be unique and defined. Optional properties may be omitted. Generated
+  property order follows the schema. At most 32 properties per object.
+- Arrays require an `items` schema. `minItems` defaults to 0 and `maxItems` to 64;
+  both must be integers in 0..64.
+- Scalar `enum` (1..64 values) and `const` must match the declared type. `anyOf`
+  supports 1..16 alternatives, including explicit nullability. `title` and
+  `description` are accepted text annotations.
+- Limits: 32 KiB schema, 256 schema nodes, depth 12, 128-byte property names and
+  1024-byte enum literals. Generated numbers have at most 18 integer digits,
+  18 fractional digits and a two-digit exponent, keeping them representable by
+  ordinary JSON clients. Enum numeric literals use their explicit JSON spelling.
+- Unknown keywords are rejected, including `$ref`, regex patterns, numeric
+  ranges, string-length constraints, `allOf`, `oneOf` and arbitrary properties.
+  General `json_object` mode supports nested JSON containers up to eight levels.
+
+Chat tools use `tools: [{"type":"function","function":{"name":...,"description":...,
+"parameters":...}}]`. Parameters require an object schema from the subset above.
+Optional `strict` must be boolean. Tool choice supports `auto`, `none`, `required`
+or `{"type":"function","function":{"name":"..."}}`. At most eight uniquely named
+tools are accepted; names use 1..64 ASCII letters, digits, underscores or hyphens.
+The server returns at most one call per turn. An explicit `parallel_tool_calls`
+must be false.
+
+Messages uses `tools: [{"name":...,"description":...,"input_schema":...}]` and
+`tool_choice` types `auto`, `none`, `any`, or `tool` with a name. The optional
+`disable_parallel_tool_use` boolean is accepted; this engine always emits at
+most one call. Tool mode cannot be combined with a separate output schema.
+
+Tool turns use a server-defined JSON envelope inside the native Qwen text
+template. The server constrains the offered name and argument schema, then maps
+the validated result to OpenAI `tool_calls` with JSON-string arguments or
+Anthropic `tool_use` blocks with object input. `required`/`any` and named choices
+force a call; `auto` also allows a text-answer envelope. Choosing the useful tool
+and filling meaningful free-text arguments remain model tasks.
+
+Return the assistant call in history followed by OpenAI `role: "tool"` with its
+`tool_call_id`, or an Anthropic user `tool_result` block with `tool_use_id` and
+text content. Anthropic `is_error` is preserved in the model-visible result.
+Unknown, duplicate and unanswered call IDs are rejected. Calls execute in the
+client; the server never executes a function.
+
+Tool-mode streams buffer the bounded generated envelope until it validates,
+then emit text or one complete argument delta in the appropriate SDK format.
+Heartbeats and cancellation remain active during generation. A truncated tool
+envelope returns `length`/`max_tokens` with no callable tool; internal envelope
+fragments never leak as assistant text. Ordinary text and JSON-mode streams
+continue to emit incrementally.
 
 ## Automatic prefix cache
 

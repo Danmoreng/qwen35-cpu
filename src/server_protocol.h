@@ -13,6 +13,7 @@
 namespace qwen35x::server {
 using Json = nlohmann::ordered_json;
 enum class Api { completion, chat, messages };
+class ByteGrammar;
 struct Request {
   Api api = Api::completion;
   std::string prompt, prefix_prompt;
@@ -20,6 +21,8 @@ struct Request {
   bool stream = false, include_usage = false;
   bool automatic_prefix = true;
   std::vector<std::string> stops;
+  std::shared_ptr<const ByteGrammar> grammar;
+  bool tool_mode = false;
 };
 inline void require(bool ok, const std::string &message) {
   if (!ok) throw std::runtime_error(message);

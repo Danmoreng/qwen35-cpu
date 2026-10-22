@@ -44,6 +44,14 @@ projections and the vocabulary head. Remove terminal requests before the next
 batch. Full-logit callbacks and non-greedy sampling retain the full-head path.
 The optimized greedy reduction applies to eligible batches.
 
+`CpuRequestSpec::sampling_constraint` optionally retains a request-local
+`CpuSamplingConstraint`. Its `apply()` masks raw logits before penalties and
+sampling; `accept()` advances the constraint after each selected token. Both run
+on the owner and must report failure when no finite candidate remains. A
+constraint disables greedy head shortcuts and cannot be combined with forced
+tokens or selected readout. The HTTP server uses this for native JSON grammars;
+unconstrained requests retain the existing path.
+
 ## Bounded serving
 
 Set `max_queued_requests` nonzero and configure `max_resident_requests`,
@@ -77,6 +85,8 @@ clients using separate namespaces; this is a caller-enforced trust boundary.
 without running inference and updates its LRU position. An attached prefix may
 be extended with a larger `register_prefix_tokens` boundary; concurrent matching
 extensions retain single-flight behavior. Byte budgets evict unpinned entries.
+Results distinguish `cached_prefix_tokens` from `prefix_written_tokens` (new
+tokens successfully published, excluding a restored portion of an extension).
 `stats()` exposes retained entries/bytes, restore hits/tokens, builds, evictions
 and budget fallbacks. The HTTP server uses these mechanisms for automatic chat,
 raw-completion and qev prefix reuse.

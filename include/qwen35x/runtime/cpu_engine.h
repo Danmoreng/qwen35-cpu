@@ -76,6 +76,15 @@ struct CpuEngineConfig {
   // Opt-in FP16 shared prefix pages; contiguous caches remain the reference.
   bool shared_kv_pages = false;
 };
+// Request-local sampling restriction. Called only by the engine owner, never
+// concurrently. apply masks disallowed logits; accept advances after selection.
+// Implementations must return an error if no finite candidate remains.
+class CpuSamplingConstraint {
+public:
+  virtual ~CpuSamplingConstraint() = default;
+  virtual bool apply(float *logits, std::size_t count, std::string &error) = 0;
+  virtual bool accept(std::int32_t token, std::string &error) = 0;
+};
 struct CpuRequestSpec {
   std::vector<std::int32_t> prompt_tokens;
   std::vector<std::int32_t> forced_output_tokens;
@@ -87,6 +96,7 @@ struct CpuRequestSpec {
   // not reenter this engine. The callback context must outlive the request.
   ReferenceLogitsCallback logits_callback = nullptr;
   void *logits_callback_context = nullptr;
+  std::shared_ptr<CpuSamplingConstraint> sampling_constraint;
   // Optional restricted H128/DOT4 readout. Values follow these token IDs,
   // including duplicates, rather than vocabulary indexing. Requires its own
   // callback, no full callback, and exactly one forced output token.

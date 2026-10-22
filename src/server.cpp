@@ -5,6 +5,7 @@
 #include "systemone.h"
 #include "server_protocol.h"
 #include "server_anthropic.h"
+#include "server_constraint.h"
 #include "server_stream.h"
 #include <algorithm>
 #include <atomic>
@@ -31,13 +32,14 @@ struct Job : server::Request {
   bool admission_sent = false, count_only = false;
   server::StreamQueue events;
   server::Utf8Decoder utf8;
+  std::shared_ptr<server::JsonConstraint> constraint;
   std::unique_ptr<server::StopMatcher> stop_matcher;
   std::string text;
   CpuRequestId id = 0;
   std::time_t created = std::time(nullptr);
   void accept(std::string_view value) {
     text.append(value);
-    if (stream) events.push(std::string(value));
+    if (stream && !tool_mode) events.push(std::string(value));
   }
   void ready(Reply reply) {
     if (!admission_sent) { admitted.set_value(std::move(reply)); admission_sent = true; }
@@ -76,6 +78,7 @@ struct Job : server::Request {
 class Service {
   struct Active { CpuRequestId id; std::shared_ptr<Job> job; std::vector<int32_t> output; };
   QwenTokenizer tokenizer_;
+  std::shared_ptr<const server::TokenVocabulary> vocabulary_;
   std::unique_ptr<CpuEngine> engine_;
   std::optional<systemone::Config> decision_;
   std::size_t max_context_;
@@ -182,6 +185,12 @@ class Service {
           }
           for (const auto *token : {"<|im_end|>", "<|endoftext|>"})
             if (auto id = tokenizer_.token_to_id(token)) job->spec.stop_token_ids.push_back(*id);
+          if (job->grammar) {
+            if (!vocabulary_) vocabulary_ = std::make_shared<server::TokenVocabulary>(tokenizer_);
+            job->constraint = std::make_shared<server::JsonConstraint>(job->grammar, vocabulary_,
+              job->spec.sampling.temperature <= 1e-6F && job->spec.sampling.repetition_penalty == 1);
+            job->spec.sampling_constraint = job->constraint;
+          }
           auto id = engine_->submit(std::move(job->spec), error);
           if (!id) { finish(job, failure(400, error)); continue; }
           job->id = id;
@@ -275,6 +284,9 @@ class Service {
                   stop.empty() ? Json(nullptr) : Json(stop), server::messages_usage(job->prompt_count,
                     result.generated_tokens, result.cached_prefix_tokens, result.prefix_written_tokens));
               } else reply.body["usage"]["prompt_tokens_details"] = {{"cached_tokens", result.cached_prefix_tokens}};
+              if (job->constraint && job->constraint->complete())
+                server::require(Json::accept(job->text), "Constrained output is not valid JSON");
+              if (job->tool_mode) server::apply_tool_response(reply.body, job->api, job->text, it->id, job->constraint->complete());
             } catch (const std::exception &e) { reply = failure(500, e.what()); }
             }
           }
@@ -323,7 +335,7 @@ public:
 
 std::shared_ptr<Job> parse(const std::string &body, std::size_t context, server::Api api) {
   auto job = std::make_shared<Job>();
-  static_cast<server::Request &>(*job) = server::parse(body, context, model_name, api);
+  static_cast<server::Request &>(*job) = server::parse_openai(body, context, model_name, api);
   return job;
 }
 }
@@ -449,7 +461,7 @@ int main(int argc, char **argv) try {
             if (job->include_usage) data["usage"] = nullptr;
             return data;
           };
-          if (!(messages ? wire_write(server::message_start(model_name, job->id)) : write(chunk("", true)))) { job->cancelled = true; return false; }
+          if (!(messages ? wire_write(server::message_start(model_name, job->id, !job->tool_mode)) : write(chunk("", true)))) { job->cancelled = true; return false; }
           auto last_write = std::chrono::steady_clock::now();
           for (;;) {
             if (closed()) { job->cancelled = true; return false; }
@@ -463,8 +475,20 @@ int main(int argc, char **argv) try {
                 sink.done(); return sent;
               }
               if (messages) {
-                if (!wire_write(server::message_end(terminal->body))) return false;
+                if (job->tool_mode && !wire_write(server::message_tool_events(terminal->body))) return false;
+                if (!wire_write(server::message_end(terminal->body, !job->tool_mode))) return false;
                 sink.done(); return true;
+              }
+              if (job->tool_mode) {
+                const auto &message = terminal->body["choices"][0]["message"];
+                auto data = chunk("", false);
+                if (message.contains("tool_calls")) {
+                  auto calls = message["tool_calls"]; calls[0]["index"] = 0;
+                  data["choices"][0]["delta"] = {{"tool_calls", calls}};
+                  if (!write(data)) return false;
+                } else if (!message["content"].is_null()) {
+                  if (!write(chunk(message["content"].get<std::string>(), false))) return false;
+                }
               }
               if (!write(chunk("", false, terminal->body["choices"][0]["finish_reason"]))) return false;
               if (job->include_usage) {

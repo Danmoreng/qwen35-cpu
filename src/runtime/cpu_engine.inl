@@ -229,7 +229,7 @@ struct CpuEngine::Impl {
         std::all_of(rows.begin(), rows.end(), [](const auto *s) {
           return s->spec.sampling.temperature <= 1e-6F &&
                  s->spec.forced_output_tokens.empty() &&
-                 !s->spec.logits_callback;
+                 !s->spec.logits_callback && !s->spec.sampling_constraint;
         });
     b.greedy_tokens.clear();
     if (greedy) {
@@ -354,6 +354,8 @@ struct CpuEngine::Impl {
                                     : s.spec.forced_output_tokens[index],
                                 s.logits.data(), s.logits.size(), error))
       return false;
+    if (s.spec.sampling_constraint &&
+        !s.spec.sampling_constraint->apply(s.logits.data(), s.logits.size(), error)) return false;
     int token = greedy_token;
     if (!s.spec.forced_output_tokens.empty())
       token = s.spec.forced_output_tokens[index];
@@ -365,6 +367,7 @@ struct CpuEngine::Impl {
       error = "Invalid sampled token.";
       return false;
     }
+    if (s.spec.sampling_constraint && !s.spec.sampling_constraint->accept(token, error)) return false;
     ++s.result.generated_tokens;
     s.result.output_tokens.push_back(token);
     ++s.counts[token];
@@ -396,7 +399,7 @@ struct CpuEngine::Impl {
     const bool selected=!s.spec.selected_logit_tokens.empty();
     const bool greedy = s.spec.sampling.temperature <= 1e-6F &&
                         s.spec.forced_output_tokens.empty() &&
-                        !s.spec.logits_callback;
+                        !s.spec.logits_callback && !s.spec.sampling_constraint;
     CpuGreedySamplingState sampling{
         &s.counts, s.spec.sampling.repetition_penalty, -1, greedy};
     bool predict = true, ok;
@@ -537,6 +540,10 @@ CpuRequestId CpuEngine::submit(CpuRequestSpec spec, std::string &error) {
     return 0;
   }
   const bool selected=!spec.selected_logit_tokens.empty() || spec.selected_logits_callback;
+  if (spec.sampling_constraint && (selected || !spec.forced_output_tokens.empty())) {
+    error = "Sampling constraints cannot be combined with forced or selected readout.";
+    return 0;
+  }
   if(selected && (spec.selected_logit_tokens.empty() || !spec.selected_logits_callback ||
       spec.logits_callback || spec.max_new_tokens!=1 || spec.forced_output_tokens.size()!=1 ||
       !std::all_of(spec.selected_logit_tokens.begin(),spec.selected_logit_tokens.end(),valid_token) ||

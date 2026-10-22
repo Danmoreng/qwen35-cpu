@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstring>
 #include <iostream>
+#include <limits>
 #include <stdexcept>
 using namespace qwen35x;
 namespace {
@@ -17,6 +18,20 @@ bool terminal(CpuRequestStatus status) {
          status == CpuRequestStatus::cancelled ||
          status == CpuRequestStatus::failed;
 }
+struct TokenConstraint final : CpuSamplingConstraint {
+  std::vector<std::int32_t> tokens;
+  std::size_t next = 0;
+  bool apply(float *logits, std::size_t count, std::string &error) override {
+    if (next >= tokens.size() || std::size_t(tokens[next]) >= count) { error = "Constraint index"; return false; }
+    const auto value = logits[tokens[next]];
+    std::fill(logits, logits + count, -std::numeric_limits<float>::infinity());
+    logits[tokens[next]] = value; return true;
+  }
+  bool accept(std::int32_t token, std::string &error) override {
+    if (next >= tokens.size() || token != tokens[next]) { error = "Unmasked token selected"; return false; }
+    ++next; return true;
+  }
+};
 } // namespace
 int main(int argc, char **argv) try {
   if (argc != 3 && argc != 4)
@@ -289,6 +304,34 @@ int main(int argc, char **argv) try {
   check(lru->stats().prefix_entries == 2 && lru->stats().prefix_evictions == 1);
   check(lru->stats().prefix_bytes <= config.max_prefix_bytes);
   check(!lru->find_prefix(prefix_b, "lru") && lru->find_prefix(prefix_a, "lru"));
+  // Sampling restrictions must apply to both the single-row greedy shortcut
+  // and the batched projection path, with request-private acceptance state.
+  config.max_buffered_tokens = 16;
+  auto constrained = CpuEngine::create(model, config, error); check(bool(constrained));
+  for (int rows : {1, 2}) {
+    std::vector<CpuRequestId> requests;
+    std::vector<std::shared_ptr<TokenConstraint>> constraints;
+    for (int r = 0; r < rows; ++r) {
+      auto filter = std::make_shared<TokenConstraint>();
+      filter->tokens = {19 + r, 13 + r, 198 + r};
+      CpuRequestSpec spec; spec.prompt_tokens = {1, 2, 3}; spec.max_new_tokens = 3;
+      spec.sampling.temperature = 0; spec.sampling_constraint = filter;
+      auto id = constrained->submit(spec, error); check(id != 0);
+      constraints.push_back(filter); requests.push_back(id);
+    }
+    for (int tick = 0; tick < 16; ++tick) {
+      check(constrained->step(progressed, error));
+      bool done = true;
+      for (auto id : requests) { check(constrained->result(id, result)); done &= terminal(result.status); }
+      if (done) break;
+    }
+    for (std::size_t r = 0; r < requests.size(); ++r) {
+      check(constrained->result(requests[r], result) && result.status == CpuRequestStatus::complete);
+      check(result.output_tokens == constraints[r]->tokens && constraints[r]->next == 3);
+      constrained->release(requests[r]);
+    }
+  }
+  std::cout << "Single/batched greedy sampling constraints and private state passed\n";
   std::cout << "Longest-prefix lookup, namespace isolation, extension parity and LRU eviction passed\n";
   std::cout << "Single-flight builds, leader cancellation, budget fallback and "
                "exact branch logits passed\n";

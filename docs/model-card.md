@@ -31,6 +31,8 @@ Use `qwen35_cpu_server.exe` on Windows. The server supports raw completions at
 `http://localhost:8080/v1/completions` and native Qwen chat formatting at
 `/v1/chat/completions`; both offer JSON responses or SSE streaming. Text Messages
 at `/v1/messages` also support the Anthropic SDK, streaming and token counting.
+Both chat APIs provide constrained JSON output and one structured tool call per
+turn; the engine guide documents the supported schema subset and limits.
 Follow the
 [engine README](@ENGINE_URL@/blob/@ENGINE_REVISION@/README.md) for pinned revision
 downloads and checksum verification. Pin an immutable model revision for

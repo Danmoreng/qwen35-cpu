@@ -142,6 +142,54 @@ with tempfile.TemporaryFile(mode='w+b') as log:
         assert history_warm['usage']['prompt_tokens_details']['cached_tokens'] > warm['usage']['prompt_tokens_details']['cached_tokens']
         _, metrics = call('/v1/cache')
         assert metrics['hits'] > 0 and metrics['builds'] > 0 and metrics['bytes'] <= metrics['budget_bytes']
+        structured_schema = {'type': 'object', 'properties': {
+            'answer': {'type': 'integer', 'enum': [4]},
+            'city': {'type': 'string', 'enum': ['Berlin']},
+            'flags': {'type': 'array', 'items': {'type': 'boolean'}, 'minItems': 1, 'maxItems': 2}},
+            'required': ['answer', 'city', 'flags'], 'additionalProperties': False}
+        structured_request = dict(model=model, messages=[{'role': 'user', 'content': 'Two plus two, city Berlin, and one true flag.'}],
+            temperature=0, max_tokens=96, response_format={'type': 'json_schema',
+                'json_schema': {'name': 'answer', 'strict': True, 'schema': structured_schema}})
+        status, structured = call('/v1/chat/completions', structured_request)
+        assert status == 200, structured
+        assert structured['choices'][0]['finish_reason'] == 'stop', structured
+        structured_value = json.loads(structured['choices'][0]['message']['content'])
+        assert structured_value['answer'] == 4 and structured_value['city'] == 'Berlin' and 1 <= len(structured_value['flags']) <= 2
+        assert all(type(flag) is bool for flag in structured_value['flags'])
+        text, usage, reason = stream_call('/v1/chat/completions', structured_request)
+        assert json.loads(text) == structured_value and reason == 'stop'
+        status, generic = call('/v1/chat/completions', dict(model=model, temperature=0, max_tokens=64,
+            messages=[{'role': 'user', 'content': 'Reply exactly with the object {"ok":true}.'}],
+            response_format={'type': 'json_object'}))
+        assert status == 200 and isinstance(json.loads(generic['choices'][0]['message']['content']), dict), generic
+        sampled_schema = {'type': 'object', 'properties': {'letter': {'type': 'string', 'enum': ['A', 'B']}},
+            'required': ['letter'], 'additionalProperties': False}
+        status, sampled = call('/v1/chat/completions', {**structured_request, 'temperature': .7, 'top_k': 20, 'seed': 17,
+            'response_format': {'type': 'json_schema', 'json_schema': {'name': 'letter', 'schema': sampled_schema}}})
+        assert status == 200 and json.loads(sampled['choices'][0]['message']['content'])['letter'] in ['A', 'B'], sampled
+        bad_schema = {**structured_schema, 'unknown_rule': True}
+        status, invalid = call('/v1/chat/completions', {**structured_request, 'stream': True,
+            'response_format': {'type': 'json_schema', 'json_schema': {'name': 'bad', 'schema': bad_schema}}})
+        assert status == 400 and 'error' in invalid, invalid
+        tool_schema = {'type': 'object', 'properties': {'city': {'type': 'string', 'enum': ['Berlin']}},
+            'required': ['city'], 'additionalProperties': False}
+        offered_tools = [{'type': 'function', 'function': {'name': 'weather', 'description': 'Get weather for a city.',
+            'parameters': tool_schema, 'strict': True}}]
+        tool_request = dict(model=model, messages=[{'role': 'user', 'content': 'Get the weather in Berlin.'}],
+            temperature=0, max_tokens=96, tools=offered_tools, tool_choice='required', parallel_tool_calls=False)
+        status, tool_reply = call('/v1/chat/completions', tool_request)
+        assert status == 200, tool_reply
+        choice = tool_reply['choices'][0]
+        assert choice['finish_reason'] == 'tool_calls' and choice['message']['content'] is None, tool_reply
+        selected = choice['message']['tool_calls'][0]
+        assert selected['function']['name'] == 'weather' and json.loads(selected['function']['arguments']) == {'city': 'Berlin'}
+        status, roundtrip = call('/v1/chat/completions', {**tool_request, 'tool_choice': 'none',
+            'messages': tool_request['messages'] + [choice['message'],
+                {'role': 'tool', 'tool_call_id': selected['id'], 'content': 'Sunny, 18 degrees Celsius.'}]})
+        assert status == 200 and isinstance(roundtrip['choices'][0]['message']['content'], str), roundtrip
+        status, truncated = call('/v1/chat/completions', {**tool_request, 'max_tokens': 1})
+        assert status == 200 and truncated['choices'][0]['finish_reason'] == 'length'
+        assert 'tool_calls' not in truncated['choices'][0]['message']
         if args.sdk:
             import openai
             with openai.OpenAI(api_key=key, base_url=base + '/v1', max_retries=0) as client:
@@ -158,7 +206,16 @@ with tempfile.TemporaryFile(mode='w+b') as log:
                     assert e.body['type'] == 'invalid_request_error'
                 else:
                     raise AssertionError('SDK did not receive a typed bad-request error')
-                print(f'OpenAI SDK {openai.__version__}: text chat, SSE and error conformance passed')
+                named_request = {**tool_request, 'tool_choice': {'type': 'function', 'function': {'name': 'weather'}}}
+                with client.chat.completions.create(**named_request, stream=True) as stream:
+                    chunks = list(stream)
+                deltas = [c.choices[0].delta for c in chunks if c.choices]
+                calls = [call for d in deltas for call in (d.tool_calls or [])]
+                assert calls and calls[0].id and calls[0].function.name == 'weather'
+                assert json.loads(''.join(c.function.arguments or '' for c in calls)) == {'city': 'Berlin'}
+                assert chunks[-1].choices[0].finish_reason == 'tool_calls'
+                assert all(not d.content for d in deltas), 'Internal tool envelope leaked into text'
+                print(f'OpenAI SDK {openai.__version__}: text chat, SSE, constrained JSON, tools and errors passed')
             import anthropic
             with anthropic.Anthropic(api_key=key, base_url=base, max_retries=0) as latest:
                 current = latest.messages.create(model=model, max_tokens=4,
@@ -230,7 +287,33 @@ with tempfile.TemporaryFile(mode='w+b') as log:
                     data=json.dumps(dict(model=model, messages=msg_request['messages'], system=msg_request['system'])).encode())
                 with urllib.request.urlopen(req, timeout=120) as response:
                     assert json.load(response)['input_tokens'] == equivalent['usage']['prompt_tokens']
-                print(f'Anthropic SDK {anthropic.__version__}: Messages, SSE, stops, cache usage, counting and errors passed')
+                structured_args = dict(model=model, messages=structured_request['messages'], max_tokens=96,
+                    extra_body={'temperature': 0}, output_config={'format': {'type': 'json_schema', 'schema': structured_schema}})
+                with client.messages.stream(**structured_args) as stream:
+                    text = ''.join(stream.text_stream)
+                    structured_final = stream.get_final_message()
+                assert json.loads(text) == structured_value and structured_final.stop_reason == 'end_turn'
+                anthropic_tools = [{'name': 'weather', 'description': 'Get weather for a city.', 'input_schema': tool_schema}]
+                tool_args = dict(model=model, messages=tool_request['messages'], max_tokens=96,
+                    tools=anthropic_tools, tool_choice={'type': 'tool', 'name': 'weather'}, extra_body={'temperature': 0})
+                with client.messages.stream(**tool_args) as stream:
+                    events = list(stream)
+                    tool_final = stream.get_final_message()
+                assert tool_final.stop_reason == 'tool_use' and len(tool_final.content) == 1
+                tool = tool_final.content[0]
+                assert tool.type == 'tool_use' and tool.name == 'weather' and tool.input == {'city': 'Berlin'}
+                counted_tool = client.messages.count_tokens(model=model, messages=tool_request['messages'], tools=anthropic_tools,
+                    extra_body={'tool_choice': {'type': 'tool', 'name': 'weather'}})
+                assert counted_tool.input_tokens == tool_final.usage.input_tokens + tool_final.usage.cache_creation_input_tokens + tool_final.usage.cache_read_input_tokens
+                assert any(e.type == 'content_block_delta' and e.delta.type == 'input_json_delta' for e in events)
+                history = tool_request['messages'] + [
+                    {'role': 'assistant', 'content': [{'type': 'tool_use', 'id': tool.id, 'name': tool.name, 'input': tool.input}]},
+                    {'role': 'user', 'content': [{'type': 'tool_result', 'tool_use_id': tool.id, 'content': 'Sunny, 18 degrees Celsius.'}]}]
+                follow = client.messages.create(**{**tool_args, 'messages': history, 'tool_choice': {'type': 'none'}})
+                assert follow.content[0].type == 'text' and follow.stop_reason in ['end_turn', 'max_tokens']
+                partial = client.messages.create(**{**tool_args, 'max_tokens': 1})
+                assert partial.stop_reason == 'max_tokens' and partial.content == []
+                print(f'Anthropic SDK {anthropic.__version__}: Messages, SSE, tools/results, JSON, stops, cache usage, counting and errors passed')
         print('Real-model template, buffered/streamed output, stops, usage, disconnect and validation checks passed')
     except BaseException:
         log.seek(0)

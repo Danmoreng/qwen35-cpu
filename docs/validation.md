@@ -12,7 +12,7 @@ ctest --test-dir build --output-on-failure
 ```
 
 On Windows, use `scripts/build.ps1` followed by the same CTest command.
-The default server build registers 16 C++ tests. If Python and NumPy are
+The default server build registers 17 C++ tests. If Python and NumPy are
 available at configure time, CTest also registers `evaluation_scripts` and
 `calibration_basis`. Use `ctest --test-dir build -N` to inspect the actual set.
 
@@ -62,6 +62,12 @@ disconnect recovery and pre-stream validation errors. Host tests cover every
 byte split of a Unicode/stop fixture, partial UTF-8, overlapping stops and bounded
 event queues with a separate terminal lane. The scheduler model test verifies
 that generated-token accounting includes stop tokens withheld from output.
+Structured-output tests cover JSON syntax, UTF-8 and surrogate escapes, schema
+requirements/bounds, invalid keywords, EOS masking and all-masked failures.
+Real-model checks exercise greedy and sampled schema output, JSON/SSE parity,
+required/named tool choice, SDK argument deltas, tool-result history and truncated
+calls through both APIs. The scheduler verifies constraint acceptance on single
+and batched greedy paths with independent per-request state.
 Automatic-cache checks cover cold/warm response parity, cache-key isolation,
 concurrent single-flight reuse and growing chat history. Model scheduler tests
 compare full-vocabulary logits while extending a cached prefix, check longest
