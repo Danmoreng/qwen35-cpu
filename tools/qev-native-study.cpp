@@ -12,6 +12,7 @@ struct Capture {
 int main(int argc, char **argv) try {
   CpuLoadOptions load; CpuEngineConfig config; config.max_resident_requests=1;
   std::string jobs_path, letters_path, output;
+  bool selected_head = false;
   for (int i=1;i<argc;++i) {
     std::string arg=argv[i]; if (++i>=argc) throw std::runtime_error("Missing value"); std::string value=argv[i];
     if(arg=="--model-dir") load.model_dir=value;
@@ -21,6 +22,11 @@ int main(int argc, char **argv) try {
     else if(arg=="--output") output=value;
     else if(arg=="--threads") config.threads=std::stoi(value);
     else if(arg=="--max-context") config.max_context=std::stoul(value);
+    else if(arg=="--prefill-chunk") config.prefill_chunk_size=std::stoul(value);
+    else if(arg=="--selected-head") {
+      if(value!="true" && value!="false")throw std::runtime_error("Invalid selected-head value");
+      selected_head=value=="true";
+    }
     else throw std::runtime_error("Unknown argument: "+arg);
   }
   auto jobs=qev_study::jobs(jobs_path); auto letters=qev_study::tokens(letters_path);
@@ -33,13 +39,18 @@ int main(int argc, char **argv) try {
   for(const auto &job:jobs) {
     Capture capture; CpuRequestSpec request; request.prompt_tokens=qev_study::tokens(job.path);
     request.max_new_tokens=1;request.forced_output_tokens={letters.front()};
-    request.logits_callback=Capture::record;request.logits_callback_context=&capture;
+    if(selected_head) {
+      request.selected_logit_tokens=letters;
+      request.selected_logits_callback=Capture::record;request.selected_logits_callback_context=&capture;
+    } else {request.logits_callback=Capture::record;request.logits_callback_context=&capture;}
     auto id=engine->submit(std::move(request),error);check(id!=0);CpuRequestResult result;
     for(;;) {check(engine->result(id,result));if(result.status==CpuRequestStatus::complete)break;
       if(result.status==CpuRequestStatus::failed)throw std::runtime_error(result.error);
       check(engine->advance(id,error));}
-    if(capture.logits.size()!=std::size_t(profile->text.vocab_size))throw std::runtime_error("Missing full logits");
-    qev_study::write(out,job.id,capture.logits.data(),capture.logits.size(),letters);
+    if(capture.logits.size()!=(selected_head?letters.size():std::size_t(profile->text.vocab_size)))throw std::runtime_error("Missing logits");
+    auto indices=letters;
+    if(selected_head)for(std::size_t i=0;i<indices.size();++i)indices[i]=static_cast<std::int32_t>(i);
+    qev_study::write(out,job.id,capture.logits.data(),capture.logits.size(),indices);
     check(engine->release(id));std::cout<<"DONE\t"<<job.id<<std::endl;
   }
   return 0;

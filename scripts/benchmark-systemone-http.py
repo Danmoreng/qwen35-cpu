@@ -26,6 +26,8 @@ def main():
     p.add_argument('--threads', type=int, default=8)
     p.add_argument('--decision-head', choices=['auto', 'full'])
     p.add_argument('--prefill-chunk', type=int, default=0)
+    p.add_argument('--batch-size', type=int)
+    p.add_argument('--ubatch-size', type=int)
     p.add_argument('--concurrency', type=int, default=1)
     p.add_argument('--requests', type=int, help='Total requests in the sample; defaults to concurrency')
     p.add_argument('--distinct-states', action='store_true')
@@ -47,6 +49,8 @@ def main():
         cmd+=['--model',str(args.weights),'--n-gpu-layers','0','--threads',str(args.threads),
               '--threads-batch',str(args.threads),'--parallel',str(args.concurrency),'--ctx-size',str(8192*args.concurrency),
               '--no-warmup','--cache-ram','0','--host','127.0.0.1','--port',str(port)]
+        if args.batch_size:cmd+=['--batch-size',str(args.batch_size)]
+        if args.ubatch_size:cmd+=['--ubatch-size',str(args.ubatch_size)]
     body=args.request.read_bytes()
     # Concurrency matrices use a different state per request, including B1,
     # so identical prefixes/results cannot turn the test into a cache benchmark.
