@@ -434,20 +434,63 @@ bool run_full_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
   // those token positions in a larger cold-prefill tile.
   const bool tiled = runtime && runtime->tiled_attention &&
     (!runtime->automatic_attention || position_start + batch_size > 128);
-  if(runtime && runtime->attention_kernel_result &&
-     ((tiled && !runtime->attention_tiles_used) || (!tiled && !runtime->attention_rows_used))) {
-    runtime->attention_tiles_used |= tiled;
-    runtime->attention_rows_used |= !tiled;
-    *runtime->attention_kernel_result = runtime->attention_tiles_used ?
-      std::string(runtime->attention_rows_used ? "mixed:rows+" : "") + cpu::tiled_attention_kernel(runtime->attention_backend) : "rows";
+  const bool gqa4=runtime && runtime->gqa4_min_tokens &&
+    batch_size>=runtime->gqa4_min_tokens && batch_size>=4 && dims.head_dim==256 &&
+    dims.n_heads==4*dims.n_kv_heads && !state.k_cache.empty() && !state.pages.width() &&
+    runtime->attention_backend==cpu::Q8_0Backend::wasm_simd;
+  if(runtime && runtime->attention_kernel_result) {
+    const bool rows=!tiled&&!gqa4;
+    const bool changed=(rows&&!runtime->attention_rows_used) ||
+      (tiled&&!runtime->attention_tiles_used) || (gqa4&&!runtime->attention_gqa4_used);
+    runtime->attention_rows_used|=rows;runtime->attention_tiles_used|=tiled;
+    runtime->attention_gqa4_used|=gqa4;
+    if(changed) {
+      std::string kernels;
+      if(runtime->attention_rows_used)kernels="rows";
+      if(runtime->attention_tiles_used) {
+        if(!kernels.empty())kernels+="+";
+        kernels+=cpu::tiled_attention_kernel(runtime->attention_backend);
+      }
+      if(runtime->attention_gqa4_used) {
+        if(!kernels.empty())kernels+="+";
+        kernels+="wasm-gqa4-f32";
+      }
+      *runtime->attention_kernel_result=(kernels.find('+')!=std::string::npos?"mixed:":"")+kernels;
+    }
   }
   if(fine) {
     stage.prepare_ms=elapsed_ms(mark);mark=std::chrono::steady_clock::now();
     stage.position=position_start;
     stage.query_key_pairs=static_cast<std::uint64_t>(dims.n_heads)*batch_size*(2ULL*position_start+batch_size+1)/2;
-    stage.kernel=tiled ? cpu::tiled_attention_kernel(runtime->attention_backend) : "rows";
+    stage.kernel=gqa4?"wasm-gqa4-f32":tiled ? cpu::tiled_attention_kernel(runtime->attention_backend) : "rows";
   }
-  if (tiled) {
+  if(gqa4) {
+    const auto groups=batch_size*static_cast<std::size_t>(dims.n_kv_heads);
+    const auto partitions=runtime->executor?std::min(groups,runtime->executor->thread_count()):1;
+    const auto stride=static_cast<std::size_t>(position_start)+batch_size;
+    scratch.scores.resize(partitions*4*stride);
+    if(fine)scratch.gqa_times.assign(partitions,{});
+    Gqa4AttentionCpuJob job{{query_batch.data(),gate_batch.data(),state.k_cache.data(),
+      state.v_cache.data(),scratch.scores.data(),attention.data(),batch_size,
+      static_cast<std::size_t>(dims.n_kv_heads),static_cast<std::size_t>(position_start),
+      stride,attention_scale},partitions,groups,runtime->attention_backend,
+      fine?scratch.gqa_times.data():nullptr};
+    if(runtime->executor) {
+      if(runtime->executor->parallel_for_rows(partitions,run_gqa4_attention_cpu,&job)!=cpu::CpuExecutorStatus::ok) {
+        error_message="GQA4 attention executor failed.";return false;
+      }
+    } else run_gqa4_attention_cpu(&job,0,partitions);
+    if(job.failed.load(std::memory_order_relaxed)) {
+      error_message="GQA4 attention geometry or backend rejected.";return false;
+    }
+    if(fine) {
+      stage.participants=partitions;stage.shared_gqa=true;stage.query_tile=1;
+      for(const auto &t:scratch.gqa_times) {
+        stage.pack_worker_ms+=t.pack_ms;stage.qk_worker_ms+=t.qk_ms;
+        stage.softmax_worker_ms+=t.softmax_ms;stage.pv_worker_ms+=t.pv_ms;stage.post_ms+=t.gate_ms;
+      }
+    }
+  } else if (tiled) {
     cpu::TiledAttention args{
       query_batch.data(), gate_batch.data(), state.k_cache.data(), state.v_cache.data(),
       state.k_cache_f16.empty() ? nullptr : state.k_cache_f16.data(),

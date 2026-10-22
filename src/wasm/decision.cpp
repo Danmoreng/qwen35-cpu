@@ -69,6 +69,7 @@ void apply_tuning(CpuEngineConfig &config) {
   config.mlp_prepare_min_tokens = tuning.value("mlp_prepare_min_tokens", std::size_t{8});
   config.balance_attention_rows = tuning.value("balance_attention_rows", std::size_t{0}) != 0;
   config.merge_tail_jobs = tuning.value("merge_tail_jobs", std::size_t{0}) != 0;
+  config.gqa4_min_tokens = tuning.value("gqa4_min_tokens",std::size_t{8});
   config.kv_cache_bits = tuning.value("kv_cache_bits", std::size_t{0});
   config.executor_spin_count = tuning.value("executor_spin_count", std::size_t{1024U * 128U * 50U});
 }
@@ -79,7 +80,7 @@ const char *qev_tune(const char *body) try {
   auto options = Json::parse(body);
   systemone::require(options.is_object(), "Tuning must be an object");
   for (const auto &[key, value] : options.items()) {
-    systemone::require(key == "linear_prepare_min_tokens" || key == "executor_spin_count" || key == "mlp_prepare_min_tokens" || key == "kv_cache_bits" || key == "balance_attention_rows" || key == "merge_tail_jobs", "Unknown tuning option: " + key);
+    systemone::require(key == "linear_prepare_min_tokens" || key == "executor_spin_count" || key == "mlp_prepare_min_tokens" || key == "kv_cache_bits" || key == "balance_attention_rows" || key == "merge_tail_jobs" || key == "gqa4_min_tokens", "Unknown tuning option: " + key);
     systemone::require(value.is_number_unsigned() && value.get<std::size_t>() <= 67108864, "Invalid tuning value");
   }
   if (options.contains("kv_cache_bits")) {
@@ -204,7 +205,9 @@ const char *qev_debug() {
         {"participants", x.participants}, {"position", x.position}, {"query_key_pairs", x.query_key_pairs},
         {"query_tile", x.query_tile}, {"kv_tile", x.kv_tile}, {"shared_gqa", x.shared_gqa},
         {"projection_ms", x.projection_ms}, {"prepare_ms", x.prepare_ms},
-        {"attention_wall_ms", x.attention_wall_ms}, {"output_ms", x.output_ms}});
+        {"attention_wall_ms", x.attention_wall_ms}, {"output_ms", x.output_ms},
+        {"pack_worker_ms",x.pack_worker_ms},{"qk_worker_ms",x.qk_worker_ms},
+        {"softmax_worker_ms",x.softmax_worker_ms},{"pv_worker_ms",x.pv_worker_ms}});
     for (std::size_t i=0; i<session->stages.size(); ++i) {
       const auto &x=session->stages[i]; auto &j=diagnostic["stages"][i];
       j["conv_ms"]=x.conv_ms; j["head_prepare_ms"]=x.head_prepare_ms;

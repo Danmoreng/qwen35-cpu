@@ -56,6 +56,23 @@ void causal_attention_batch_rows(
   bool reuse_score_row = false,
   const AttentionKvRows *pages = nullptr) noexcept;
 
+// Experimental Qwen FP32 GQA specialization: four query heads per KV head,
+// head width 256. Scores holds 4*context_stride floats private to this call.
+struct Gqa4Attention {
+  const float *queries, *gates, *keys, *values;
+  float *scores, *output;
+  std::size_t tokens, kv_heads, position, context_stride;
+  float scale;
+};
+struct Gqa4AttentionTimes {
+  double pack_ms=0, qk_ms=0, softmax_ms=0, pv_ms=0, gate_ms=0;
+};
+// Returns false without writes on unsupported backends or invalid geometry.
+bool causal_attention_gqa4_rows(const Gqa4Attention &args,
+  std::size_t group_begin, std::size_t group_end,
+  Q8_0Backend backend=Q8_0Backend::auto_select,
+  Gqa4AttentionTimes *times=nullptr) noexcept;
+
 // Decode-only GQA path that evaluates two query heads sharing one KV head
 // together. pair_begin/pair_end address adjacent query-head pairs.
 void causal_attention_decode_gqa_pairs(

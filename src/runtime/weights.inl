@@ -30,6 +30,7 @@ struct CpuPrefillWorkspace {
     std::vector<float> projected, attention, query_batch, gate_batch;
     std::vector<float> q, q_normed, k_normed, scores, tiled_scratch;
     std::vector<cpu::AttentionTileTimes> tile_times;
+    std::vector<cpu::Gqa4AttentionTimes> gqa_times;
   } full;
 };
 
@@ -37,12 +38,13 @@ struct CpuExecutionContext {
   std::vector<CpuDecodeStage> *decode_stages = nullptr;
   std::vector<CpuPrefillStage> *stages = nullptr;
   bool tiled_attention = false, attention_gqa = false, automatic_attention = false;
-  bool attention_rows_used = false, attention_tiles_used = false;
+  bool attention_rows_used = false, attention_tiles_used = false, attention_gqa4_used = false;
   std::string *attention_kernel_result = nullptr;
   cpu::Q8_0Backend attention_backend = cpu::Q8_0Backend::auto_select;
   int query_tile = 8, kv_tile = 64;
   std::size_t linear_prepare_min_tokens = 128;
   std::size_t mlp_prepare_min_tokens = 8;
+  std::size_t gqa4_min_tokens = 8;
   bool balance_attention_rows = false, merge_tail_jobs = false;
   CpuDecodeWorkspace decode;
   CpuPrefillWorkspace prefill;
@@ -549,6 +551,24 @@ void run_tiled_attention_cpu(void *opaque, std::size_t begin, std::size_t end) n
     // Cyclic tiles distribute the triangular workload across participants.
     for(std::size_t t=p;t<job.tasks;t+=job.partitions)
       cpu::causal_attention_tiled(job.args,t,job.scratch+p*job.scratch_stride,job.backend,job.times ? job.times+p : nullptr);
+  }
+}
+
+struct Gqa4AttentionCpuJob {
+  cpu::Gqa4Attention args;
+  std::size_t partitions, groups;
+  cpu::Q8_0Backend backend;
+  cpu::Gqa4AttentionTimes *times;
+  std::atomic<bool> failed{false};
+};
+void run_gqa4_attention_cpu(void *opaque,std::size_t begin,std::size_t end) noexcept {
+  auto &job=*static_cast<Gqa4AttentionCpuJob *>(opaque);
+  for(auto p=begin;p<end;++p) {
+    auto args=job.args;
+    args.scores+=p*4*args.context_stride;
+    if(!cpu::causal_attention_gqa4_rows(args,
+      job.groups*p/job.partitions,job.groups*(p+1)/job.partitions,
+      job.backend,job.times?job.times+p:nullptr))job.failed.store(true,std::memory_order_relaxed);
   }
 }
 

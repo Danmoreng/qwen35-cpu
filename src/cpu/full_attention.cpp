@@ -11,6 +11,9 @@
 namespace qwen35x::cpu {
 
 namespace detail {
+#if QWEN35X_HAS_WASM_SIMD_TU
+void causal_attention_gqa4_rows_wasm(const Gqa4Attention &,std::size_t,std::size_t,Gqa4AttentionTimes *) noexcept;
+#endif
 
 [[nodiscard]] std::uint16_t attention_float_to_half(const float value) noexcept {
   const std::uint32_t bits = std::bit_cast<std::uint32_t>(value);
@@ -175,6 +178,23 @@ void causal_attention_decode_gqa_pairs_avx2(
 #endif
 
 } // namespace detail
+
+bool causal_attention_gqa4_rows(const Gqa4Attention &a,
+    std::size_t begin,std::size_t end,Q8_0Backend backend,Gqa4AttentionTimes *times) noexcept {
+  if(!a.queries || !a.gates || !a.keys || !a.values || !a.scores || !a.output ||
+     !a.tokens || !a.kv_heads || a.kv_heads>std::numeric_limits<std::size_t>::max()/1024 ||
+     a.tokens>std::numeric_limits<std::size_t>::max()/a.kv_heads ||
+     a.position>a.context_stride || a.tokens>a.context_stride-a.position ||
+     begin>end || end>a.tokens*a.kv_heads) return false;
+#if QWEN35X_HAS_WASM_SIMD_TU
+  if(q8_0_resolve_backend(backend)==Q8_0Backend::wasm_simd) {
+    detail::causal_attention_gqa4_rows_wasm(a,begin,end,times);return true;
+  }
+#else
+  static_cast<void>(backend);static_cast<void>(times);
+#endif
+  return false;
+}
 
 void attention_cache_store_f16(
   const float * input,

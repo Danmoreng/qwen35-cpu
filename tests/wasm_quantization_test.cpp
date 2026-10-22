@@ -100,5 +100,33 @@ int main() {
         0,count*heads,Q8_0Backend::scalar,true);
       if(std::memcmp(a.data(),b.data(),a.size()*sizeof(float)))return 8;
     }
-  std::cout<<"WASM Q8 exact scalar parity: rounding neighbours, exceptional inputs, X1/X4, H128 widths/seeds fused SiLU fields and FP16 KV widening passed\n";
+  if(q8_0_resolve_backend(Q8_0Backend::auto_select)==Q8_0Backend::wasm_simd)
+    for(int pattern=0;pattern<3;++pattern)
+      for(std::size_t count:{1U,3U,7U,8U,31U,32U,33U})
+        for(std::size_t position:{0U,37U,1024U}) {
+          const auto length=count+position;
+          constexpr std::size_t heads=8,kv=2,dim=256,qw=heads*dim,kw=kv*dim;
+          std::vector<float> q(count*qw),g(q.size()),k(length*kw),v(k.size());
+          for(auto *xs:{&q,&g,&k,&v})for(auto &x:*xs)x=(static_cast<int>(rng()%20001)-10000)*.0001F;
+          const float magnitude=pattern==0?0.F:pattern==1?1e-5F:20.F;
+          for(auto &x:q)x*=magnitude;for(auto &x:k)x*=magnitude;
+          std::vector<float> expected(q.size()+2,-999),actual(expected),split(expected);
+          std::vector<float> scratch(length*4),reference_scratch(length);
+          causal_attention_batch_rows(q.data(),g.data(),k.data(),v.data(),nullptr,nullptr,
+            reference_scratch.data(),expected.data()+1,length,qw,kw,position,heads,kv,dim,
+            1.F/16,0,count*heads,Q8_0Backend::scalar,true);
+          Gqa4Attention args{q.data(),g.data(),k.data(),v.data(),scratch.data(),actual.data()+1,count,kv,position,length,1.F/16};
+          if(!causal_attention_gqa4_rows(args,0,count*kv))return 10;
+          args.output=split.data()+1;
+          if(!causal_attention_gqa4_rows(args,0,count*kv/2) ||
+             !causal_attention_gqa4_rows(args,count*kv/2,count*kv))return 11;
+          if(std::memcmp(actual.data(),expected.data(),actual.size()*sizeof(float)) ||
+             std::memcmp(split.data(),expected.data(),split.size()*sizeof(float))) {
+            for(std::size_t i=0;i<actual.size();++i)if(std::bit_cast<std::uint32_t>(actual[i])!=std::bit_cast<std::uint32_t>(expected[i])) {
+              std::cerr<<"GQA4 mismatch pattern="<<pattern<<" count="<<count<<" position="<<position<<" element="<<i<<" expected="<<expected[i]<<" actual="<<actual[i]<<"\n";break;
+            }
+            return 12;
+          }
+        }
+  std::cout<<"WASM Q8 exact scalar parity: rounding neighbours, exceptional inputs, X1/X4, H128 widths/seeds fused SiLU fields and FP16 KV widening and GQA4 attention bits passed\n";
 }

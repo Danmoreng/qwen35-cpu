@@ -120,7 +120,7 @@ try {
     'dist/wasm/llama-bench/runtime/upstream.txt'] : ['web/worker.js', 'web/capabilities.js',
     'src/cpu/wasm_fma.h', 'src/cpu/wasm_half.h', 'src/cpu/q4_dot4_wasm.cpp', 'src/cpu/delta_net_wasm.cpp',
     'src/wasm/decision.cpp', 'cmake/Wasm.cmake', 'src/cpu/q8_packed_wasm.cpp',
-    'src/cpu/q4_h128.cpp', 'src/runtime/weights.inl', 'src/runtime/prefill.inl',
+    'src/cpu/full_attention_wasm.cpp', 'src/cpu/full_attention.cpp', 'include/qwen35x/cpu/full_attention.h', 'src/cpu/q4_h128.cpp', 'src/runtime/weights.inl', 'src/runtime/prefill.inl',
     'src/runtime/cpu_engine.inl', 'include/qwen35x/runtime/cpu_engine.h', 'src/runtime/attention_partition.h',
     `dist/wasm/${profile.runtime_path}/qev_wasm.js`, `dist/wasm/${profile.runtime_path}/qev_wasm.wasm`];
   artifacts.push('scripts/benchmark-browser-decision.mjs');

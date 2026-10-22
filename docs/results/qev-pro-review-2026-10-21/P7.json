@@ -1,0 +1,58 @@
+{
+  "0": {
+    "samples_compute_ms": [
+      [
+        130.854912,
+        130.994944,
+        1066.849792
+      ],
+      [
+        133.844992,
+        132.979968,
+        1070.639872
+      ],
+      [
+        130.125056,
+        131.020032,
+        1063.589632
+      ]
+    ],
+    "median_compute_ms": [
+      130.854912,
+      131.020032,
+      1066.849792
+    ]
+  },
+  "8": {
+    "samples_compute_ms": [
+      [
+        128.260096,
+        129.629952,
+        981.774848
+      ],
+      [
+        127.73504,
+        128.365056,
+        989.355008
+      ],
+      [
+        128.489984,
+        128.745216,
+        976.96512
+      ]
+    ],
+    "median_compute_ms": [
+      128.260096,
+      128.745216,
+      981.774848
+    ]
+  },
+  "quality": {
+    "questions": 24,
+    "baseline_bit_mismatches": [],
+    "max_reference_probability_delta": 0.0040000000000000036,
+    "choice_changes": []
+  },
+  "decision": "Adopt minimum 8 tokens for eligible FP32 WASM attention; unchanged scalar/native/FP16 fallback.",
+  "raw_root": "benchmarks/qev-pro-review-2026-10-21"
+}

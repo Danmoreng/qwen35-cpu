@@ -289,3 +289,30 @@ blind tile search is performed. Reduced register pressure is not by itself a
 measured performance improvement. Compact results: `results/
 qev-pro-review-2026-10-21/P4.json`; raw `P4-quality`, `P4-performance`,
 `P4-halfdots-quality` and `P4-halfdots-performance`.
+
+
+## P7: shared-KV four-head FP32 WASM attention
+
+The new isolated SIMD translation unit computes four query heads sharing one KV
+head. Query transposition, QK lanes and PV channel vectors reuse KV data while
+preserving each output's accumulation order, softmax and gate arithmetic.
+It requires head width 256, four query heads per KV head and contiguous FP32 KV.
+Other layouts, native execution and FP16 retain their existing kernels.
+The accepted minimum batch size is eight tokens; zero disables the experiment.
+
+The rotating three-candidate grid gives control 129.07/132.24/1072.66 ms,
+minimum eight 126.82/130.00/982.14 ms and minimum 32
+127.12/131.11/986.64 ms. A separate fresh-browser A/B confirms control
+130.85/131.01/1068.05 versus 128.26/128.75/982.99 ms (compute latency,
+three measured runs and one warmup). Adopt minimum eight: approximately 8%
+lower long-request latency, with no short-request regression.
+
+Kernel tests cover token counts 1/3/7/8/31/32/33, positions 0/37/1024,
+whole and split group ranges, extreme finite inputs and output guards.
+Node and actual Chromium pass exact FP32 bit parity against the scalar kernel.
+All 17 native tests and the full 24-question WASM logit/answer gate pass.
+The probability difference to native remains at most 0.004 on this small panel.
+An instrumented diagnostic retains separate worker sums for packing, QK,
+softmax, PV and gating; these sums are not wall latency or additive stage times.
+Raw evidence: P7-quality, P7-performance, P7-fresh and P7-diagnostic.
+Compact samples: results/qev-pro-review-2026-10-21/P7.json.

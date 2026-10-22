@@ -19,6 +19,7 @@
 #include "qwen35x/weights/safetensors.h"
 
 #include <algorithm>
+#include <atomic>
 #include <chrono>
 #include <cmath>
 #include <cstring>
