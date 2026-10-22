@@ -22,23 +22,39 @@ try {
   assert.equal(await page.locator('#cache').isChecked(), true);
   await page.locator('#load').click();
   await page.waitForFunction(() => document.getElementById('status').textContent === 'Ready', null, {timeout: 180000});
-  async function decide(example, key, expected) {
-    await page.locator(`[data-example="${example}"]`).click();
-    await page.locator('#run').click();
+  assert.equal(await page.locator('[data-demo]').count(),8);
+  const cell=await page.locator('.snake-cell').first().boundingBox();
+  assert.ok(Math.abs(cell.width-cell.height)<1,'Snake cells stay square');
+  checks.push('seven live demos plus custom editor; square board');
+  async function decide(demo, key) {
+    await page.locator(`[data-demo="${demo}"]`).click();
+    await page.locator('#demo-run').click();
     await page.waitForFunction(() => document.getElementById('status').textContent === 'Ready', null, {timeout: 180000});
     const result = JSON.parse(await page.locator('#raw').textContent());
-    assert.equal(result.answers[key].choice, expected);
+    assert.ok(result.answers[key]);
     assert.equal(result.metrics.decode_forwards, 0); assert.equal(result.usage.output_tokens, 0);
-    results.push(result.answers); checks.push(example);
+    assert.ok(JSON.parse(await page.locator('#evaluated-request').textContent()).questions[key]);
+    assert.equal(await page.locator('#error').textContent(),'');
+    results.push(result.answers); checks.push(demo);return result;
   }
-  await decide('ticket', 'dept', 'billing');
-  await decide('snake', 'move', 'left');
+  await decide('snake','move');assert.equal(await page.locator('#demo-count').textContent(),'TURN 1');
+  await decide('2048','move');assert.equal(await page.locator('#demo-count').textContent(),'TURN 1');
+  for(const [demo,key] of [['guardrails','injection'],['inbox','folder'],['triage','team'],['routing','tool'],['moderation','useful']])await decide(demo,key);
+  await page.locator('[data-demo="snake"]').click();
+  await page.locator('#autoplay').click();
+  await page.waitForFunction(()=>Number(document.getElementById('demo-count').textContent.split(' ')[1])>=2);
+  await page.locator('#autoplay').click();
+  await page.locator('#demo-run:not([disabled])').waitFor();
+  const paused=await page.locator('#demo-count').textContent();
+  await page.waitForTimeout(800);assert.equal(await page.locator('#demo-count').textContent(),paused);
+  checks.push('autoplay pause stops future state changes');
   const out = args.output || 'benchmarks/qev-wasm-local/ui'; fs.mkdirSync(out, {recursive: true});
   await page.screenshot({path: `${out}/desktop.png`, fullPage: true});
   await page.setViewportSize({width: 390, height: 844});
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   await page.screenshot({path: `${out}/mobile.png`, fullPage: true}); checks.push('responsive layout');
   await page.setViewportSize({width: 1400, height: 1200});
+  await page.locator('#inspector').evaluate(e=>{e.open=true;});
   await page.locator('#request').fill(fs.readFileSync('docs/results/qev-api-2026-10-21/long-request.json', 'utf8'));
   await page.locator('#run').click(); await page.locator('#cancel').click();
   await page.waitForFunction(() => document.getElementById('status').textContent === 'Cancelled', null, {timeout: 180000}); checks.push('cancel in UI');
@@ -46,8 +62,9 @@ try {
   await page.locator('#mode').selectOption('relaxed');
   await page.locator('#load').click();
   await page.waitForFunction(() => document.getElementById('status').textContent === 'Ready', null, {timeout: 180000});
-  await decide('ticket', 'dept', 'billing');
+  await decide('inbox', 'folder');
   assert.equal(requests.filter(url => url.includes('/model/model.q35h?')).length, 1); checks.push('model cache reused after unload');
+  await page.locator('#inspector').evaluate(e=>{e.open=true;});
   await page.locator('#request').fill('{'); await page.locator('#run').click();
   assert.ok((await page.locator('#error').textContent()).length > 0); checks.push('malformed editor JSON');
   assert.ok(requests.every(url => new URL(url).hostname === '127.0.0.1')); checks.push('all resources from localhost');
