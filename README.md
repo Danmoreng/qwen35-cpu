@@ -17,8 +17,8 @@ See the [decision API](docs/server.md#qev-decision-api),
 [decision quality study](docs/qev-calibration-2026-10-21.md) and
 [current decision HTTP/concurrency measurements](docs/qev-http-selected-2026-10-22.md).
 The current native qev server projects only the needed option logits. Fresh
-HTTP B1 medians are **44.38 / 204.09 ms** for 74 / 579 input tokens with the
-adaptive chunk default, or **40.02 / 204.41 ms** with `--prefill-chunk 128`
+HTTP B1 medians are **44.27 / 202.76 ms** for 74 / 579 input tokens with the
+adaptive chunk default, or **40.05 / 203.03 ms** with `--prefill-chunk 128`
 on the Ryzen CPU described below. These are decision latencies, not decode
 tokens/s; weights and calibration are unchanged.
 The Qwen chat/base-model benchmarks below remain separate from that fine-tune.

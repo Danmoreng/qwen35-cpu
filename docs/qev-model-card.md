@@ -97,7 +97,11 @@ CUDA** at revision `9b56ccf00d755b0bf780140f6352a67db1ac0378`; our Q4 uses
 the **native CPU engine** in the frozen study snapshot. The serving revision
 includes subsequent upstream CPU optimizations; its 19 smoke questions still
 match the original rounded probabilities exactly. A separate 225-question CPU/CUDA reference check is
-included in the study. Sizes below are tensor payload, decimal MB.
+included in the study. A subsequent 256-question regression spanning all 22
+skills (up to 8,603 tokens) finds bit-identical FP32 option logits for the
+selected readout and fixed chunk 128 relative to full readout/adaptive chunks.
+The full 13,601-question quality score below was not rerun for this release.
+Sizes below are tensor payload, decimal MB.
 
 | Representation / scoring backend | Tensor MB | Macro accuracy | Mean option KL to BF16 |
 | --- | ---: | ---: | ---: |
@@ -131,10 +135,17 @@ from the quality scoring above.
 
 | Server / checkpoint | 74 input tokens | 579 input tokens |
 | --- | ---: | ---: |
-| **Native / calibrated H128/Q4-G32-DOT4, adaptive chunk** | **44.38 ms** | **204.09 ms** |
-| Native / same checkpoint, chunk 128 | 40.02 ms | 204.41 ms |
-| llama.cpp CPU / BF16 | 77.04 ms | 541.14 ms |
-| llama.cpp CPU / Q8_0 | 92.56 ms | 828.73 ms |
+| **Native / calibrated H128/Q4-G32-DOT4, adaptive chunk** | **44.27 ms** | **202.76 ms** |
+| Native / same checkpoint, chunk 128 | 40.05 ms | 203.03 ms |
+| llama.cpp CPU / BF16, tuned batching | 76.51 ms | 430.79 ms |
+| llama.cpp CPU / Q8_0, tuned batching | 93.17 ms | 674.11 ms |
+
+Both llama.cpp checkpoints use `--batch-size 2048 --ubatch-size 256`, selected
+from seven combinations and confirmed in an independent three-run/one-warmup
+series together with native. Larger microbatches were also tested. These are
+bounded workload results, not a universal optimum; Q8 long-request samples
+range from 650.09 to 742.63 ms. The linked report preserves defaults and all
+individual measurements.
 
 These are B1 first-request observations. A separate fixed-work comparison sends
 the same 16 distinct requests serially or concurrently to one running server

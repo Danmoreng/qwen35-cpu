@@ -1,0 +1,242 @@
+[
+  {
+    "name": "Native selected chunk auto short",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--request",
+      "docs/results/qev-api-2026-10-21/short-request.json"
+    ]
+  },
+  {
+    "name": "Native selected chunk 128 short",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--request",
+      "docs/results/qev-api-2026-10-21/short-request.json",
+      "--prefill-chunk",
+      "128"
+    ]
+  },
+  {
+    "name": "llama bf16 b2048 u256 short",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "llama",
+      "--server",
+      "build-qev-server-current/bin/llama-server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "models/qev-0.8b/qev-0.8b-bf16.gguf",
+      "--request",
+      "docs/results/qev-api-2026-10-21/short-request.json",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "256"
+    ]
+  },
+  {
+    "name": "llama bf16 b2048 u512 short",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "llama",
+      "--server",
+      "build-qev-server-current/bin/llama-server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "models/qev-0.8b/qev-0.8b-bf16.gguf",
+      "--request",
+      "docs/results/qev-api-2026-10-21/short-request.json",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "512"
+    ]
+  },
+  {
+    "name": "llama Q8_0 b2048 u256 short",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "llama",
+      "--server",
+      "build-qev-server-current/bin/llama-server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "models/qev-0.8b/qev-0.8b-Q8_0.gguf",
+      "--request",
+      "docs/results/qev-api-2026-10-21/short-request.json",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "256"
+    ]
+  },
+  {
+    "name": "llama Q8_0 b2048 u512 short",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "llama",
+      "--server",
+      "build-qev-server-current/bin/llama-server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "models/qev-0.8b/qev-0.8b-Q8_0.gguf",
+      "--request",
+      "docs/results/qev-api-2026-10-21/short-request.json",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "512"
+    ]
+  },
+  {
+    "name": "Native selected chunk auto long",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--request",
+      "docs/results/qev-api-2026-10-21/long-request.json"
+    ]
+  },
+  {
+    "name": "Native selected chunk 128 long",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-linux/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--request",
+      "docs/results/qev-api-2026-10-21/long-request.json",
+      "--prefill-chunk",
+      "128"
+    ]
+  },
+  {
+    "name": "llama bf16 b2048 u256 long",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "llama",
+      "--server",
+      "build-qev-server-current/bin/llama-server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "models/qev-0.8b/qev-0.8b-bf16.gguf",
+      "--request",
+      "docs/results/qev-api-2026-10-21/long-request.json",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "256"
+    ]
+  },
+  {
+    "name": "llama bf16 b2048 u512 long",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "llama",
+      "--server",
+      "build-qev-server-current/bin/llama-server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "models/qev-0.8b/qev-0.8b-bf16.gguf",
+      "--request",
+      "docs/results/qev-api-2026-10-21/long-request.json",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "512"
+    ]
+  },
+  {
+    "name": "llama Q8_0 b2048 u256 long",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "llama",
+      "--server",
+      "build-qev-server-current/bin/llama-server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "models/qev-0.8b/qev-0.8b-Q8_0.gguf",
+      "--request",
+      "docs/results/qev-api-2026-10-21/long-request.json",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "256"
+    ]
+  },
+  {
+    "name": "llama Q8_0 b2048 u512 long",
+    "executable": "/home/sebastian/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/bin/python3.12",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "llama",
+      "--server",
+      "build-qev-server-current/bin/llama-server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "models/qev-0.8b/qev-0.8b-Q8_0.gguf",
+      "--request",
+      "docs/results/qev-api-2026-10-21/long-request.json",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "512"
+    ]
+  }
+]

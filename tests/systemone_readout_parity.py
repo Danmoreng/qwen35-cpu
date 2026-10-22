@@ -17,12 +17,13 @@ import urllib.request
 
 
 @contextmanager
-def server(binary, model, weights, head=None, expected_auto_head='selected', threads=8):
+def server(binary, model, weights, head=None, expected_auto_head='selected', threads=8, prefill_chunk=0):
     with socket.socket() as sock:
         sock.bind(('127.0.0.1', 0)); port = sock.getsockname()[1]
     command = [str(binary.resolve()), '--model-dir', str(model), '--weights', str(weights),
                '--threads', str(threads), '--port', str(port), '--residents', '16']
     if head: command += ['--decision-head', head]
+    if head and prefill_chunk: command += ['--prefill-chunk', str(prefill_chunk)]
     with tempfile.TemporaryFile() as log:
         child = subprocess.Popen(command, stdout=log, stderr=log,
                                  env={**os.environ, 'QWEN35_API_KEY': ''})
@@ -61,6 +62,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--expected-auto-head', choices=['selected', 'full'], default='selected')
     parser.add_argument('--threads', type=int, default=8)
+    parser.add_argument('--prefill-chunk', type=int, default=0)
     args = parser.parse_args()
     fixtures = [{**{k: json.loads(line)[k] for k in ('state', 'questions')}, 'encoding': encoding}
                 for line in Path('configs/qev-smoke.jsonl').read_text().splitlines() if line.strip()
@@ -80,7 +82,7 @@ def main():
     if args.reference_server: variants.insert(0, ('previous', args.reference_server, None))
     reference = None
     for name, binary, head in variants:
-        with server(binary, args.model_dir, args.weights, head, args.expected_auto_head, args.threads) as call:
+        with server(binary, args.model_dir, args.weights, head, args.expected_auto_head, args.threads, args.prefill_chunk) as call:
             outputs = [call(body) for body in fixtures]
             canonical = [{'answers': r['answers'], 'usage': r['usage']} for r in outputs]
             assert all(r['usage']['output_tokens'] == 0 for r in outputs)
