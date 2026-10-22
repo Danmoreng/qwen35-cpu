@@ -1,5 +1,8 @@
 # Contributor instructions
 
+- Develop and validate locally, then commit and push finished work directly to
+  `main`. Do not open pull requests unless the user explicitly requests one.
+  Let CI run after the push and require successful checks before publishing a release.
 - Keep code, documentation and commit messages in English.
 - Keep README benchmarks focused on the current product: one performance table
   comparing the native engine, llama.cpp and ik_llama.cpp, followed by quantization
