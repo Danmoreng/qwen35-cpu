@@ -6,6 +6,7 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
+| `avx2-cloud-2026-10-27` | [AVX2 cloud VM tuning](../benchmarks/avx2-cloud.md), paired measurements and logit parity |
 | `native-prefill-reuse-2026-10-22` | Current native README/model-card speed, paired baseline and quality parity; [methodology](../benchmarks/native-prefill.md) |
 | `cpu-refresh-2026-10-22` | Comparator README/model-card speed, all quality scores and preceding native baseline; [methodology](../benchmarks/cpu.md) |
 | `current-cpu-2026-09-07`, `ik-batch16-2026-09-07` | September CPU speed baseline and earlier B16 validation |

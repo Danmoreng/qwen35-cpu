@@ -1,0 +1,58 @@
+[
+  {
+    "prompt_tokens": 7,
+    "scored_positions": 4,
+    "baseline_sha256": "e6b7264ffd7f73dde1a9ebcb7f4925cb65b7f3beadc6f15ad577ee3d242bddd7",
+    "candidate_sha256": "e6b7264ffd7f73dde1a9ebcb7f4925cb65b7f3beadc6f15ad577ee3d242bddd7",
+    "bitwise_equal": true
+  },
+  {
+    "prompt_tokens": 31,
+    "scored_positions": 4,
+    "baseline_sha256": "0c8bfcaa3b5bfbf1e2ce78e7b54d4c5e8e39582938516f1dbe7a45c8706b340b",
+    "candidate_sha256": "0c8bfcaa3b5bfbf1e2ce78e7b54d4c5e8e39582938516f1dbe7a45c8706b340b",
+    "bitwise_equal": true
+  },
+  {
+    "prompt_tokens": 65,
+    "scored_positions": 4,
+    "baseline_sha256": "4fbded1e9cad6af0d4dcde7463f5a28ccc45fcf35510131692f78c3b88edbab2",
+    "candidate_sha256": "4fbded1e9cad6af0d4dcde7463f5a28ccc45fcf35510131692f78c3b88edbab2",
+    "bitwise_equal": true
+  },
+  {
+    "prompt_tokens": 127,
+    "scored_positions": 4,
+    "baseline_sha256": "0af914551ba5c77f2097caa9b778495193912cab864d6aeecc88309ab88eec37",
+    "candidate_sha256": "0af914551ba5c77f2097caa9b778495193912cab864d6aeecc88309ab88eec37",
+    "bitwise_equal": true
+  },
+  {
+    "prompt_tokens": 128,
+    "scored_positions": 4,
+    "baseline_sha256": "3a41ec0bbf459921fb9d609ea80f2e520cdcbce79942519c56afff6c22ef359b",
+    "candidate_sha256": "3a41ec0bbf459921fb9d609ea80f2e520cdcbce79942519c56afff6c22ef359b",
+    "bitwise_equal": true
+  },
+  {
+    "prompt_tokens": 129,
+    "scored_positions": 4,
+    "baseline_sha256": "a52637f3e31020f54193ff5c9abc146cd58d1d6ff3040b201ca41e237a1fe2f5",
+    "candidate_sha256": "a52637f3e31020f54193ff5c9abc146cd58d1d6ff3040b201ca41e237a1fe2f5",
+    "bitwise_equal": true
+  },
+  {
+    "prompt_tokens": 512,
+    "scored_positions": 4,
+    "baseline_sha256": "0bc32dfc7a1ce27ee085a0a7a29c42ab21565fb577ccf6ed0f1b348f30513930",
+    "candidate_sha256": "0bc32dfc7a1ce27ee085a0a7a29c42ab21565fb577ccf6ed0f1b348f30513930",
+    "bitwise_equal": true
+  },
+  {
+    "prompt_tokens": 4096,
+    "scored_positions": 4,
+    "baseline_sha256": "451d7872111a0b34650adc07330273d67432df52a82449b86f68605ba94db8f5",
+    "candidate_sha256": "451d7872111a0b34650adc07330273d67432df52a82449b86f68605ba94db8f5",
+    "bitwise_equal": true
+  }
+]

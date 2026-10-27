@@ -83,13 +83,55 @@ DOT4_INLINE void accumulate(const Dot4Weights & w, const Block * vectors, std::s
   const __m256 scale = _mm256_mul_ps(w.scales, _mm256_set1_ps(a.scales[Token % 4]));
   accumulator = _mm256_fmadd_ps(_mm256_cvtepi32_ps(dot), scale, accumulator);
 }
+#if DOT4_AVX2
+// Streaming four-token dots avoid holding all eight unpacked weights alongside
+// four floating-point accumulators on a machine with only sixteen YMM registers.
+template <std::size_t Token, typename Block>
+DOT4_INLINE void accumulate_chunk(__m256i lo, __m256i hi, const Block *vectors,
+    std::size_t blocks, std::size_t block, std::size_t chunk, __m256i &pairs) noexcept {
+  const auto *qs = vectors[(Token / 4) * blocks + block].qs + (Token % 4) * 32;
+  pairs = _mm256_add_epi16(pairs, _mm256_maddubs_epi16(lo, broadcast4(qs + chunk * 8)));
+  pairs = _mm256_add_epi16(pairs, _mm256_maddubs_epi16(hi, broadcast4(qs + chunk * 8 + 4)));
+#if defined(__GNUC__) || defined(__clang__)
+  // Prevent reassociation across segments, which otherwise makes GCC keep
+  // many products live and spill them. This emits no machine instructions.
+  __asm__("" : "+x"(pairs));
+#endif
+}
+#endif
 template <typename Block, std::size_t... Token>
 DOT4_INLINE void tile(const Q4_0BlockX8 * matrix, const Block * vectors, float * output,
                      std::size_t blocks, std::size_t stride, std::index_sequence<Token...>) noexcept {
   __m256 accumulators[sizeof...(Token)] = {((void)Token, _mm256_setzero_ps())...};
   for (std::size_t block = 0; block < blocks; ++block) {
-    const auto weights = load_weights(matrix[block]);
-    (accumulate<Token>(weights, vectors, blocks, block, accumulators[Token]), ...);
+#if DOT4_AVX2
+    if constexpr (sizeof...(Token) == 4) {
+      __m256i pairs[sizeof...(Token)] = {((void)Token, _mm256_setzero_si256())...};
+      const auto mask = _mm256_set1_epi8(15);
+      for (std::size_t chunk = 0; chunk < 4; ++chunk) {
+        const auto raw = _mm256_loadu_si256(
+            reinterpret_cast<const __m256i *>(matrix[block].qs + chunk * 32));
+        const auto lo = _mm256_and_si256(raw, mask);
+        const auto hi = _mm256_and_si256(_mm256_srli_epi16(raw, 4), mask);
+        (accumulate_chunk<Token>(lo, hi, vectors, blocks, block, chunk, pairs[Token]), ...);
+      }
+      const auto scales = _mm256_cvtph_ps(
+          _mm_loadu_si128(reinterpret_cast<const __m128i *>(matrix[block].d)));
+      const auto finish = [&]<std::size_t T>() {
+        const auto &a = vectors[(T / 4) * blocks + block];
+        // Sixteen products per int16 lane: 16*15*128 = 30720, no overflow.
+        auto dot = _mm256_madd_epi16(pairs[T], _mm256_set1_epi16(1));
+        dot = _mm256_sub_epi32(dot, _mm256_set1_epi32(8 * static_cast<int>(a.sums[T % 4])));
+        const auto scale = _mm256_mul_ps(scales, _mm256_set1_ps(a.scales[T % 4]));
+        accumulators[T] = _mm256_fmadd_ps(_mm256_cvtepi32_ps(dot), scale, accumulators[T]);
+      };
+      (finish.template operator()<Token>(), ...);
+    } else
+#endif
+    {
+      const auto weights = load_weights(matrix[block]);
+      (accumulate<Token>(weights, vectors, blocks, block, accumulators[Token]), ...);
+    }
   }
   (_mm256_storeu_ps(output + Token * stride, accumulators[Token]), ...);
 }
@@ -101,6 +143,14 @@ void DOT4_FN(matvec)(const Q4_0BlockX8 * matrix, const Q8_0BlockX1 * vector, flo
 }
 void DOT4_FN(matmul)(const Q4_0BlockX8 * matrix, const Q8_0BlockX4 * vectors, float * output,
                      std::size_t rows, std::size_t count, std::size_t blocks, std::size_t stride) noexcept {
+#if DOT4_AVX2
+  // Keep an eight-row weight tile hot while processing the prompt. Scanning
+  // the whole matrix for every four tokens repeatedly streams large weights.
+  for (std::size_t r = 0; r < rows / 8; ++r)
+    for (std::size_t token = 0; token + 4 <= count; token += 4)
+      tile(matrix + r * blocks, vectors + (token / 4) * blocks,
+           output + token * stride + r * 8, blocks, stride, std::make_index_sequence<4>{});
+#else
   std::size_t token = 0;
 #if DOT4_WIDE
   for (; token + 16 <= count; token += 16) {
@@ -114,6 +164,7 @@ void DOT4_FN(matmul)(const Q4_0BlockX8 * matrix, const Q8_0BlockX4 * vectors, fl
       tile(matrix + r * blocks, vectors + (token / 4) * blocks, output + token * stride + r * 8,
            blocks, stride, std::make_index_sequence<4>{});
   }
+#endif
 }
 Q4_0ArgmaxResult DOT4_FN(argmax)(const Q4_0BlockX8 * matrix, const Q8_0BlockX1 * vector,
     const int * counts, float penalty, std::size_t offset, std::size_t rows, std::size_t blocks) noexcept {
