@@ -24,6 +24,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 - [AVX2 cloud VM tuning](benchmarks/avx2-cloud.md): prompt processing, decode experiments and bitwise checks on an EPYC VM.
 - [Standard model calibration](benchmarks/calibration.md).
 - [Decision quality](benchmarks/decision-quality.md) and [HTTP latency](benchmarks/decision-http.md).
+- [qev AVX2 tuning](benchmarks/qev-avx2-cloud.md): CPU measurements and attention boundaries for larger chunks.
 - [Browser comparison](benchmarks/browser.md), [WASM FMA](benchmarks/wasm-fma.md)
   and [WASM kernels](benchmarks/wasm-kernels.md).
 - [Base model card](model-card.md) and [decision model card](qev-model-card.md).

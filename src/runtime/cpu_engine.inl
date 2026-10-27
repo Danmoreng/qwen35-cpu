@@ -427,8 +427,8 @@ struct CpuEngine::Impl {
       // Restores can stop inside a canonical chunk. Finish that chunk first,
       // so row/tiled attention dispatch does not shift at the prefix boundary.
       auto count =
-          std::min(chunk - s.result.committed_tokens % chunk,
-                   s.spec.prompt_tokens.size() - s.result.committed_tokens);
+          detail::prefill_chunk_token_count(s.result.committed_tokens,
+              s.spec.prompt_tokens.size() - s.result.committed_tokens, chunk);
       const auto boundary = s.spec.register_prefix_tokens;
       const bool building = boundary && s.result.committed_tokens < boundary;
       if (building) count = std::min(count, boundary - s.result.committed_tokens);

@@ -325,6 +325,14 @@ and are time-sliced between requests; there is no cross-request prefill batch.
 Decode batching therefore does not accelerate this workload. See the
 [HTTP and concurrency measurements](https://github.com/Danmoreng/qwen35-cpu/blob/3680efb33bf6975ce6722d64d20c641cb7490b06/docs/qev-systemone-api-2026-10-21.md).
 
+The requested prefill chunk is an upper bound. The engine also ends a chunk at
+token 128 so that the first queries retain the row-attention kernel used by the
+default configuration. For example, a 579-token input with chunk 512 is processed
+as 128, 384 and 67 tokens. Explicit prefix construction and restored requests
+follow the same boundaries. Larger chunks previously moved the first queries to
+tiled attention and could change probabilities and scores. See the
+[AVX2 tuning study](benchmarks/qev-avx2-cloud.md) for the regression and measurements.
+
 The existing body/context bounds apply. Rendered state <=64 KiB and evaluated
 input tokens <=131,072 per request; context overflow fails explicitly, without
 truncation. Images, streaming and chat templates are unsupported for decisions.

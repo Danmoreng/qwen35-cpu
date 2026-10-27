@@ -1,0 +1,42 @@
+{
+  "exact_rounded_answer_and_usage_parity": true,
+  "fixtures": 41,
+  "parallel_requests": 16,
+  "concurrency": 4,
+  "encodings": [
+    "joint",
+    "per_question"
+  ],
+  "question_types": [
+    "choice",
+    "noul",
+    "score"
+  ],
+  "maximum_options": 255,
+  "model_logit_regression": {
+    "prompt_tokens": 579,
+    "chunk_sizes": [
+      512,
+      1024
+    ],
+    "prefix_lengths": [
+      127,
+      221,
+      511
+    ],
+    "kv_modes": [
+      "contiguous FP16",
+      "shared FP16 pages"
+    ],
+    "bitwise_full_vocabulary_comparisons": 16
+  },
+  "raw_results": "benchmarks/qev-tuning/validation-chunk512.json",
+  "prior_unrestricted_chunk512_failure": {
+    "fixture": 32,
+    "encoding": "joint",
+    "options": 11,
+    "original_score": 1.37,
+    "unrestricted_chunk512_score": 1.36,
+    "note": "Initial 128-token boundary restores exact answers and probabilities."
+  }
+}

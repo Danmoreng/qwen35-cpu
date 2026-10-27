@@ -12,7 +12,7 @@ ctest --test-dir build --output-on-failure
 ```
 
 On Windows, use `scripts/build.ps1` followed by the same CTest command.
-The default server build registers 17 C++ tests. If Python and NumPy are
+The default server build registers 18 C++ tests. If Python and NumPy are
 available at configure time, CTest also registers `evaluation_scripts` and
 `calibration_basis`. Use `ctest --test-dir build -N` to inspect the actual set.
 
@@ -38,15 +38,24 @@ bitwise-logit comparison logic. They do not replace inference in a real browser.
 ## Model-backed checks
 
 The normal native build also produces `cpu_scheduler_model_test`,
-`cpu_prefix_model_test` and `cpu_batch_model_test`. They require matching model
-config/tokenizer files and a packed checkpoint. For the release scheduler check:
+`cpu_prefix_model_test`, `cpu_batch_model_test` and `cpu_prefill_chunk_model_test`.
+They require matching model config/tokenizer files and a packed checkpoint.
+For model-backed checks:
 
 ```sh
 ./build/cpu_scheduler_model_test models/qwen3.5-0.8b models/qwen3.5-0.8b/model.q35h --pages
+./build/cpu_prefill_chunk_model_test models/qwen3.5-0.8b models/qwen3.5-0.8b/model.q35h
+./build/cpu_prefill_chunk_model_test models/qwen3.5-0.8b models/qwen3.5-0.8b/model.q35h --pages
 python tests/server_smoke.py --help
 python tests/systemone_readout_parity.py --help
 python tests/server_api_test.py --help
 ```
+
+The prefill-chunk model check requires the same optional model files. It compares
+full-vocabulary logits at chunk 128 against chunks 512/1024, including registered
+prefixes ending before and after the initial attention boundary. Run it with and
+without shared FP16 KV pages. The qev AVX2 tuning study uses the pinned public
+qev model; see [the report](benchmarks/qev-avx2-cloud.md).
 
 `server_smoke.py` covers completion validation, concurrency and prefix behavior.
 `server_api_test.py` compares chat requests against raw completion using pinned

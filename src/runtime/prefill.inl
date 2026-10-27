@@ -433,7 +433,7 @@ bool run_full_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
   // A short suffix after prefix restore must retain the same arithmetic as
   // those token positions in a larger cold-prefill tile.
   const bool tiled = runtime && runtime->tiled_attention &&
-    (!runtime->automatic_attention || position_start + batch_size > 128);
+    (!runtime->automatic_attention || position_start + batch_size > detail::prefill_attention_row_limit);
   const bool gqa4=runtime && runtime->gqa4_min_tokens &&
     batch_size>=runtime->gqa4_min_tokens && batch_size>=4 && dims.head_dim==256 &&
     dims.n_heads==4*dims.n_kv_heads && !state.k_cache.empty() && !state.pages.width() &&

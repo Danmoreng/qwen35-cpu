@@ -77,7 +77,8 @@ CpuEngine::register_prefix(std::span<const std::int32_t> tokens,
                               : tokens.size() <= 128 ? 64
                                                      : 128;
     for (std::size_t position = 0; position < tokens.size();) {
-      const auto count = std::min(chunk, tokens.size() - position);
+      const auto count = detail::prefill_chunk_token_count(
+          position, tokens.size() - position, chunk);
       const bool last = position + count == tokens.size();
       if (!run_forward_cpu_q8_batch(
               impl_->context.get(), impl_->model->impl_->weights, d,
