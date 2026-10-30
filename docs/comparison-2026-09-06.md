@@ -276,7 +276,7 @@ byte-identical to the original HF files used for this evaluation. Python prepara
 
 ```powershell
 python scripts/prepare-comparison-data.py
-./build-llama/bin/llama-quantize.exe --pure models/llama-comparison/Qwen3.5-0.8B-BF16.gguf models/llama-comparison/Qwen3.5-0.8B-Q4_0-pure.gguf Q4_0 12
+C:/llama.cpp/build/bin/llama-quantize.exe --pure models/llama-comparison/Qwen3.5-0.8B-BF16.gguf models/llama-comparison/Qwen3.5-0.8B-Q4_0-pure.gguf Q4_0 12
 python scripts/record-comparison-inputs.py
 python scripts/evaluate-comparison-quality.py
 python scripts/validate-llama-batching.py

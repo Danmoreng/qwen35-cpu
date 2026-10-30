@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([string]$SourceDir='.cache/llama.cpp',[string]$BuildDir='build-llama-calibration-cuda',[string]$CudaArchitectures='120')
+param([string]$SourceDir=$(if ($env:LLAMA_CPP_HOME) { $env:LLAMA_CPP_HOME } else { 'C:/llama.cpp' }),[string]$BuildDir='build-llama-calibration-cuda',[string]$CudaArchitectures='120')
 $ErrorActionPreference='Stop'
 $root=Split-Path -Parent $PSScriptRoot
 if (!(Get-Command cl.exe -ErrorAction SilentlyContinue)) {
@@ -13,7 +13,7 @@ if (!(Get-Command cl.exe -ErrorAction SilentlyContinue)) {
   }
 }
 $source=(Resolve-Path $SourceDir).Path
-cmake -S "$root/tools/llama-calibration-cuda" -B $BuildDir -G Ninja -DCMAKE_BUILD_TYPE=Release "-DLLAMA_SOURCE_DIR=$source" "-DCMAKE_CUDA_ARCHITECTURES=$CudaArchitectures"
+cmake -S "$root/tools/llama-calibration-cuda" -B $BuildDir -G Ninja -DCMAKE_BUILD_TYPE=Release "-DCENTRAL_LLAMA_HOME=$source" "-DCMAKE_CUDA_ARCHITECTURES=$CudaArchitectures"
 if($LASTEXITCODE -ne 0){throw 'CUDA collector configuration failed'}
 cmake --build $BuildDir --target llama-calibration-cuda llama-calibration-resident-cuda --parallel 6
 if($LASTEXITCODE -ne 0){throw 'CUDA collector build failed'}

@@ -49,7 +49,12 @@ int main(int argc,char** argv) try {
   }
   if(jobs.empty() || std::filesystem::exists(output_root))throw std::runtime_error("Require jobs and fresh output root");
   std::filesystem::create_directories(output_root);
-  ggml_backend_load_all();llama_backend_init();
+  #ifdef _WIN32
+  ggml_backend_load_all_from_path(CENTRAL_LLAMA_BIN);
+#else
+  ggml_backend_load_all();
+#endif
+llama_backend_init();
   const auto load_start=Clock::now();auto mp=llama_model_default_params();
 #ifdef QWEN35_CALIBRATION_CUDA
   mp.n_gpu_layers=999;

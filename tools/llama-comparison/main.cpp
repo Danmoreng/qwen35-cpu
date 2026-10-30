@@ -72,7 +72,12 @@ int main(int argc, char ** argv) try {
       context < int(prompt.size()) + (prefill_only ? 0 : generated))
     throw std::runtime_error("Invalid fixed benchmark configuration");
 #ifndef QWEN35_IK_LLAMA
+  #ifdef _WIN32
+  ggml_backend_load_all_from_path(CENTRAL_LLAMA_BIN);
+#else
   ggml_backend_load_all();
+#endif
+
 #endif
   llama_backend_init();
   const auto load_start = Clock::now();
@@ -92,7 +97,7 @@ int main(int argc, char ** argv) try {
   mp.type_k = GGML_TYPE_F16; mp.type_v = GGML_TYPE_F16;
   mp.flash_attn = true;
 #else
-  // CPU-only build and explicit empty device list prevent accelerator offload.
+  // An explicit empty device list prevents accelerator offload.
   ggml_backend_dev_t devices[] = {nullptr}; mp.devices = devices;
 #endif
 #endif

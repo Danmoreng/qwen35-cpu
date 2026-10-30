@@ -5,6 +5,7 @@ import collections
 import hashlib
 import importlib.metadata
 import json
+import os
 from pathlib import Path
 import struct
 import subprocess
@@ -16,7 +17,7 @@ parser.add_argument('--out', type=Path, default=Path('benchmarks/comparison-2026
 parser.add_argument('--gguf-dir', type=Path, default=Path('models/llama-comparison'))
 parser.add_argument('--h128', type=Path, default=Path('models/hf-download-test/model.q35h'))
 parser.add_argument('--hf-dir', type=Path, default=Path('models/qwen3.5-0.8b'))
-parser.add_argument('--llama-source', type=Path, default=Path('.cache/llama.cpp'))
+parser.add_argument('--llama-source', type=Path, default=Path(os.environ.get('LLAMA_CPP_HOME', 'C:/llama.cpp') if os.name == 'nt' else '.cache/llama.cpp'))
 args = parser.parse_args()
 sys.path.insert(0, str((args.llama_source/'gguf-py').resolve()))
 from gguf import GGUFReader
@@ -77,8 +78,9 @@ info.update(tensor_bytes=payload, parameters=parameters, tensor_types=dict(types
 models['H128-Q4'] = info
 for info in models.values():
     info['bits_per_parameter'] = info['tensor_bytes'] * 8 / info['parameters']
-binary_paths = list(Path('build-llama/bin').glob('*.dll')) + [
-    Path('build-llama/bin/llama-fixed-cpu-bench.exe'), Path('build-llama/bin/llama-quantize.exe'),
+llama_bin = args.llama_source / 'build/bin' if os.name == 'nt' else Path('build-llama/bin')
+binary_paths = list(llama_bin.glob('*.dll')) + [
+    Path('build-llama/bin/llama-fixed-cpu-bench.exe'), llama_bin / 'llama-quantize.exe',
     Path('build/qwen35_cpu.exe'), Path('build/qwen35_cpu_bench.exe')]
 metadata = dict(models=models, binaries=[record(path) for path in binary_paths],
                 llama_revision=source_identity(args.llama_source)['revision'],

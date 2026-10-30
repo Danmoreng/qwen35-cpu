@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([string]$SourceDir='.cache/llama.cpp',[string]$BuildDir='build-llama')
+param([string]$SourceDir=$(if ($env:LLAMA_CPP_HOME) { $env:LLAMA_CPP_HOME } else { 'C:/llama.cpp' }),[string]$BuildDir='build-llama')
 $ErrorActionPreference='Stop'
 $root=Split-Path -Parent $PSScriptRoot
 if (!(Get-Command cl.exe -ErrorAction SilentlyContinue)) {
@@ -13,7 +13,7 @@ if (!(Get-Command cl.exe -ErrorAction SilentlyContinue)) {
   }
 }
 $source=(Resolve-Path $SourceDir).Path
-cmake -S "$root/tools/llama-comparison" -B $BuildDir -G Ninja -DCMAKE_BUILD_TYPE=Release "-DLLAMA_SOURCE_DIR=$source"
+cmake -S "$root/tools/llama-comparison" -B $BuildDir -G Ninja -DCMAKE_BUILD_TYPE=Release "-DCENTRAL_LLAMA_HOME=$source"
 if($LASTEXITCODE -ne 0){throw 'llama.cpp configuration failed'}
-cmake --build $BuildDir --target llama-fixed-cpu-bench llama-quantize --parallel 12
+cmake --build $BuildDir --target llama-fixed-cpu-bench --parallel 12
 if($LASTEXITCODE -ne 0){throw 'llama.cpp build failed'}

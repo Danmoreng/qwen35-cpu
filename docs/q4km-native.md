@@ -45,7 +45,7 @@ C++ field `CpuLoadOptions::cpu_q4_h128_path` accepts either format.
 The comparison's pure file was created with the pinned llama.cpp quantizer:
 
 ```powershell
-./build-llama/bin/llama-quantize.exe --pure models/llama-comparison/Qwen3.5-0.8B-BF16.gguf models/llama-comparison/Qwen3.5-0.8B-Q4_0-pure.gguf Q4_0 12
+C:/llama.cpp/build/bin/llama-quantize.exe --pure models/llama-comparison/Qwen3.5-0.8B-BF16.gguf models/llama-comparison/Qwen3.5-0.8B-Q4_0-pure.gguf Q4_0 12
 ```
 
 See the [original comparison](comparison-2026-09-06.md) for pinned BF16 source,
