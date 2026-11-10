@@ -41,6 +41,46 @@ run did not initially audit training or checkpoint selection. The subsequent
 finds that the qev author used benchmark scores for checkpoint selection.
 Training-overlap exclusion remains an author claim, not an independent finding.
 
+## Published AWS model precision and artifact sizes
+
+The four published Strands/Gemma configurations set `torch_dtype` to
+`bfloat16`. The [serving loader](https://github.com/strands-labs/strands-decider/blob/0ac22a97e584f3ccf87cc9b8cc5fdbad57cdf534/src/strands_decider/modeling.py)
+passes that dtype to the base-model loader, without Q4/Q8 quantization. The
+base Hub metadata also reports BF16 tensors. Independently reading the small
+safetensors headers of all eight Strands weight files finds **FP32 for every
+LoRA and pointer-head tensor**. Thus “BF16 backbone + FP32 adapter/head” is the
+precise description of the published configuration, rather than all tensors
+being BF16.
+
+The published checkpoints contain an adapter and a pointer head; loading them
+also downloads the Google base model. Summing their safetensors file sizes at
+the base revisions named in each checkpoint's provenance gives:
+
+| Strands Decider / Gemma 4 | BF16 base files, GB | FP32 adapter + head, MB | Total weight files, GB | Documented GPU weight memory, about GB |
+| --- | ---: | ---: | ---: | ---: |
+| E2B | 10.246622 | 299.407 | 10.546029 | 9 |
+| E4B | 15.992596 | 434.401 | 16.426996 | 15 |
+| 12B | 23.919549 | 810.540 | 24.730090 | 23 |
+| 26B-A4B | 51.612010 | 240.410 | 51.852420 | 51 |
+
+GB/MB are decimal. These are **published file sizes, not a measurement of the
+original benchmark's local files or peak VRAM**. They exclude tokenizer/config
+files and include the base model's vision/audio weights, which Strands discards
+after loading for text inference. No separate text-only weight export was used
+to calculate this table. Consequently a direct ratio against qev's text-only
+425 MB artifact would include a modality-packaging difference. The GPU column
+comes from the [AWS inference documentation](https://github.com/strands-labs/strands-decider/blob/0ac22a97e584f3ccf87cc9b8cc5fdbad57cdf534/docs/inference.md#gemma-4-models);
+activations and caches add to those approximate weight-memory figures.
+
+The original benchmark run metadata identifies the H100 and results, but does
+not give a complete base-file inventory. Published provenance notes that the
+original loader did not pin the base revision. The table therefore reports
+the attributable published artifacts at the recorded revisions, rather than
+claiming a byte-exact reconstruction of the historical process. No local Gemma
+benchmark was run. [Artifact evidence](../results/jevbench-v1-2026-11-10/aws-model-artifacts.json)
+retains repository pins, exact bytes, file hashes, dtype counts, original run
+metadata and source-snapshot hashes.
+
 ## Where qev succeeds and fails
 
 Using the exact tier mapping retained by Strands:

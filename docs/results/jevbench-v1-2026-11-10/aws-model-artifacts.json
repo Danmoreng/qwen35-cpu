@@ -1,0 +1,193 @@
+{
+  "date": "2026-11-10",
+  "basis": "Published safetensors file sizes at the revisions recorded in the Strands checkpoints; metadata only, no full model downloads or local Gemma inference.",
+  "precision": "BF16 base weights plus FP32 LoRA adapters and pointer heads; no Q4/Q8 quantization in the published serving configuration.",
+  "file_size_scope": "Sum of original full multimodal base weight files plus Strands adapter/head weight files. Excludes tokenizer/config files. Includes base vision/audio weights discarded after loading for text inference. Not a text-only export size or measured VRAM usage.",
+  "historical_limit": "Base revisions come from published provenance. The historical note says the original loader did not pin the base revision, so these are attributable published artifact sizes rather than verified bytes read by the original benchmark process.",
+  "documentation": "https://github.com/strands-labs/strands-decider/blob/0ac22a97e584f3ccf87cc9b8cc5fdbad57cdf534/docs/inference.md#gemma-4-models",
+  "models": [
+    {
+      "model": "Strands Decider / Gemma 4 E2B",
+      "published_backbone_dtype": "bfloat16",
+      "base_repo": "google/gemma-4-E2B-it",
+      "base_revision": "3e22461f65e89153144f8adb70e3b8c2cc9845a7",
+      "base_safetensors_dtype_counts": {
+        "BF16": 5123178051
+      },
+      "base_weight_files": [
+        {
+          "path": "model.safetensors",
+          "bytes": 10246621918,
+          "sha256": "2db5482b20d746879bb3ef79b5203e9075a2e2b98f54ec7c2f281c1477ddc550"
+        }
+      ],
+      "base_weight_file_bytes": 10246621918,
+      "decider_repo": "StrandsAgents/strands-decider-E2B-gemma4-v1-2610",
+      "decider_revision": "d383ecf8534b13d49b3b567a1b66f88fca6d50ba",
+      "additional_weight_files": [
+        {
+          "path": "head.safetensors",
+          "bytes": 9456104,
+          "sha256": "31220ff165a8bb6e48b87a85de11cbfc8660b7047049ea2f91872e1b6ddb45a9",
+          "tensor_dtype_counts": {
+            "F32": 6
+          }
+        },
+        {
+          "path": "lora/adapter_model.safetensors",
+          "bytes": 289950976,
+          "sha256": "c7786a59354aa190082b1c3aedb7ff3311fe260f070f360c4d3518762691c551",
+          "tensor_dtype_counts": {
+            "F32": 410
+          }
+        }
+      ],
+      "additional_weight_file_bytes": 299407080,
+      "total_published_weight_file_bytes": 10546028998,
+      "published_gpu_weight_memory_approx_gb": 9,
+      "reported_benchmark_code_revision": "7593b37e8a012df24ec5827d4837c0da9744a8d7",
+      "reported_benchmark_gpu": "NVIDIA H100 80GB HBM3, 595.91.07",
+      "reported_benchmark_correct": 180,
+      "reported_base_revision_note": "Hub main when the g26 configs were written (2026-10-06); the loader does not pin it"
+    },
+    {
+      "model": "Strands Decider / Gemma 4 E4B",
+      "published_backbone_dtype": "bfloat16",
+      "base_repo": "google/gemma-4-E4B-it",
+      "base_revision": "ee0ef6023621cff504d758262d4e04895a5af4a2",
+      "base_safetensors_dtype_counts": {
+        "BF16": 7996156490
+      },
+      "base_weight_files": [
+        {
+          "path": "model.safetensors",
+          "bytes": 15992595884,
+          "sha256": "cfbd3d2f1cd71bd471c37fe2bf8546d5028d41e5736f64e1ca6c6b8893125503"
+        }
+      ],
+      "base_weight_file_bytes": 15992595884,
+      "decider_repo": "StrandsAgents/strands-decider-E4B-gemma4-v1-2610",
+      "decider_revision": "1344d44397c457f3be34b8ff15c593b41248c6bf",
+      "additional_weight_files": [
+        {
+          "path": "head.safetensors",
+          "bytes": 15755752,
+          "sha256": "609cd2b6fdd4c65b6b5df1abfcb0c7a60dced2d50322e7610f64f5c92fbba113",
+          "tensor_dtype_counts": {
+            "F32": 6
+          }
+        },
+        {
+          "path": "lora/adapter_model.safetensors",
+          "bytes": 418644768,
+          "sha256": "0fd1bf62d764747b6f8531dbe153e79655fb0c8cbfdf5c85abae2d658974b944",
+          "tensor_dtype_counts": {
+            "F32": 516
+          }
+        }
+      ],
+      "additional_weight_file_bytes": 434400520,
+      "total_published_weight_file_bytes": 16426996404,
+      "published_gpu_weight_memory_approx_gb": 15,
+      "reported_benchmark_code_revision": "4df6447511058ce3d09e2f1000efc2487f30b733",
+      "reported_benchmark_gpu": "NVIDIA H100 80GB HBM3, 595.91.07",
+      "reported_benchmark_correct": 187,
+      "reported_base_revision_note": "Hub main when the g26 configs were written (2026-10-06); the loader does not pin it"
+    },
+    {
+      "model": "Strands Decider / Gemma 4 12B",
+      "published_backbone_dtype": "bfloat16",
+      "base_repo": "google/gemma-4-12B-it",
+      "base_revision": "707f0a3b8a3c7ad586ed01e27eafbad8a27dd0f7",
+      "base_safetensors_dtype_counts": {
+        "BF16": 11959730224
+      },
+      "base_weight_files": [
+        {
+          "path": "model.safetensors",
+          "bytes": 23919549408,
+          "sha256": "5a84cb313260ac447237b890387116dfa8682e49a6b44bc585ae8353abbff18d"
+        }
+      ],
+      "base_weight_file_bytes": 23919549408,
+      "decider_repo": "StrandsAgents/strands-decider-12B-gemma4-v1-2610",
+      "decider_revision": "1202634aec54c890c3e11b8747db62195f116006",
+      "additional_weight_files": [
+        {
+          "path": "head.safetensors",
+          "bytes": 23630320,
+          "sha256": "fa6023b17422a569cd2c5b46b29564a827e78f609b1a7d81831d9ed3b1ecb94b",
+          "tensor_dtype_counts": {
+            "F32": 6
+          }
+        },
+        {
+          "path": "lora/adapter_model.safetensors",
+          "bytes": 786909928,
+          "sha256": "67031b25815f17f2307052b9347e369d3eecf5873be5f50a4f5d7fdbef102e7b",
+          "tensor_dtype_counts": {
+            "F32": 656
+          }
+        }
+      ],
+      "additional_weight_file_bytes": 810540248,
+      "total_published_weight_file_bytes": 24730089656,
+      "published_gpu_weight_memory_approx_gb": 23,
+      "reported_benchmark_code_revision": "4df6447511058ce3d09e2f1000efc2487f30b733",
+      "reported_benchmark_gpu": "NVIDIA H100 80GB HBM3, 595.91.07",
+      "reported_benchmark_correct": 200,
+      "reported_base_revision_note": "Hub main when the g26 configs were written (2026-10-06); the loader does not pin it"
+    },
+    {
+      "model": "Strands Decider / Gemma 4 26B-A4B",
+      "published_backbone_dtype": "bfloat16",
+      "base_repo": "google/gemma-4-26B-A4B-it",
+      "base_revision": "4d7ae4984b7db7de8f8457170b3f1a419ee76d52",
+      "base_safetensors_dtype_counts": {
+        "BF16": 25805936206
+      },
+      "base_weight_files": [
+        {
+          "path": "model-00001-of-00002.safetensors",
+          "bytes": 49907246508,
+          "sha256": "1127684971bbca40465435a5cad69d67ad603bf5e61c6dfd5561fae4a3bcfdb3"
+        },
+        {
+          "path": "model-00002-of-00002.safetensors",
+          "bytes": 1704763408,
+          "sha256": "aab47033e1e8a492ef8e581efae1cf36478d0433567e7729b3c1728bc8970db7"
+        }
+      ],
+      "base_weight_file_bytes": 51612009916,
+      "decider_repo": "StrandsAgents/strands-decider-26B-A4B-gemma4-v1-2610",
+      "decider_revision": "3ca5dfe2d5aa758ae162b6249729181f1d13ed65",
+      "additional_weight_files": [
+        {
+          "path": "head.safetensors",
+          "bytes": 17330664,
+          "sha256": "026c2b5fdc76582470674ed444aa464ab6d963fba40fe72f41055bb09ab4f119",
+          "tensor_dtype_counts": {
+            "F32": 6
+          }
+        },
+        {
+          "path": "lora/adapter_model.safetensors",
+          "bytes": 223079704,
+          "sha256": "814160d81f37058cb414b7290a1facd95617bbb6c8edd939abd7627e8c6dd710",
+          "tensor_dtype_counts": {
+            "F32": 410
+          }
+        }
+      ],
+      "additional_weight_file_bytes": 240410368,
+      "total_published_weight_file_bytes": 51852420284,
+      "published_gpu_weight_memory_approx_gb": 51,
+      "reported_benchmark_code_revision": "4df6447511058ce3d09e2f1000efc2487f30b733",
+      "reported_benchmark_gpu": "NVIDIA H100 80GB HBM3, 595.91.07",
+      "reported_benchmark_correct": 207,
+      "reported_base_revision_note": "Hub main when the g26 configs were written (2026-10-06); the loader does not pin it"
+    }
+  ],
+  "raw_manifest": "benchmarks/jevbench-v1-2026-11-10/aws-artifact-evidence-manifest.json",
+  "raw_manifest_sha256": "00882a3315c5f3686d0293ce368388ada59b7d545193e7cedd50dac7071af772"
+}
