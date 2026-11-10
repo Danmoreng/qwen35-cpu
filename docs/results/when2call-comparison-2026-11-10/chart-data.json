@@ -1,0 +1,217 @@
+{
+  "date": "2026-11-10",
+  "cohorts": [
+    {
+      "id": "aa_subset",
+      "tasks": 3423,
+      "metric": "Explicit API-choice accuracy",
+      "note": "Same task cohort; prompts and option order differ",
+      "models": [
+        {
+          "id": "baseten_mammoth-27b",
+          "label": "Mammoth 27B",
+          "provider": "Base Labs",
+          "tasks": 3423,
+          "correct": 3259,
+          "accuracy": 0.9520888109845166,
+          "source": "aa",
+          "source_url": "https://artificialanalysis.ai/evaluations/when2call",
+          "parameters_b": 27,
+          "parameters_source_url": "https://artificialanalysis.ai/decision-models/mammoth-27b",
+          "selected_for_chart": true
+        },
+        {
+          "id": "baseten_elephant-9b",
+          "label": "Elephant 9B",
+          "provider": "Base Labs",
+          "tasks": 3423,
+          "correct": 3248,
+          "accuracy": 0.9488752556237219,
+          "source": "aa",
+          "source_url": "https://artificialanalysis.ai/evaluations/when2call",
+          "parameters_b": 9,
+          "parameters_source_url": "https://artificialanalysis.ai/decision-models/elephant-9b",
+          "selected_for_chart": true
+        },
+        {
+          "id": "liquid-ai_d1-ultra",
+          "label": "d1-ultra",
+          "provider": "Liquid AI",
+          "tasks": 3423,
+          "correct": 3183,
+          "accuracy": 0.9298860648553899,
+          "source": "aa",
+          "source_url": "https://artificialanalysis.ai/evaluations/when2call",
+          "parameters_b": null,
+          "parameters_source_url": null,
+          "selected_for_chart": true
+        },
+        {
+          "id": "perplexity_pplx-decider-v1-2",
+          "label": "Decider v1.2",
+          "provider": "Perplexity",
+          "tasks": 3423,
+          "correct": 3016,
+          "accuracy": 0.881098451650599,
+          "source": "aa",
+          "source_url": "https://artificialanalysis.ai/evaluations/when2call",
+          "parameters_b": 27,
+          "parameters_source_url": "https://huggingface.co/perplexity-ai/pplx-decider-flash-v1.2/blob/9ff7cf9838e59df461c276b7699d56b244d2af58/README.md",
+          "selected_for_chart": true
+        },
+        {
+          "id": "typesafe_jev-1-14",
+          "label": "Jev 1.14",
+          "provider": "TypeSafe",
+          "tasks": 3423,
+          "correct": 2766,
+          "accuracy": 0.8080631025416303,
+          "source": "aa",
+          "source_url": "https://artificialanalysis.ai/evaluations/when2call",
+          "parameters_b": null,
+          "parameters_source_url": null,
+          "selected_for_chart": true
+        },
+        {
+          "id": "perplexity_pplx-decider-flash-v1-2",
+          "label": "Decider Flash v1.2",
+          "provider": "Perplexity",
+          "tasks": 3423,
+          "correct": 2536,
+          "accuracy": 0.740870581361379,
+          "source": "aa",
+          "source_url": "https://artificialanalysis.ai/evaluations/when2call",
+          "parameters_b": 4,
+          "parameters_source_url": "https://huggingface.co/perplexity-ai/pplx-decider-flash-v1.2/blob/9ff7cf9838e59df461c276b7699d56b244d2af58/README.md",
+          "selected_for_chart": true
+        },
+        {
+          "id": "cloudflare_clef",
+          "label": "Clef",
+          "provider": "Cloudflare",
+          "tasks": 3423,
+          "correct": 2429,
+          "accuracy": 0.7096114519427402,
+          "source": "aa",
+          "source_url": "https://artificialanalysis.ai/evaluations/when2call",
+          "parameters_b": 27,
+          "parameters_source_url": "https://huggingface.co/Cloudflare/clef/blob/171287b2571042abec9e7b99752aee58216b0ed0/README.md",
+          "selected_for_chart": true
+        },
+        {
+          "id": "qev-q4",
+          "label": "qev-0.8B Q4",
+          "provider": "Local",
+          "parameters_b": 0.8,
+          "source": "local_cpu",
+          "hardware": "AMD Ryzen 5 7600",
+          "tasks": 3423,
+          "correct": 1618,
+          "saved_probability_argmax_correct": 1619,
+          "accuracy": 0.4726847794332457
+        },
+        {
+          "id": "qev-q8",
+          "label": "qev-0.8B Q8",
+          "provider": "Local",
+          "parameters_b": 0.8,
+          "source": "local_gpu",
+          "hardware": "Intel Arc Pro B70",
+          "tasks": 3423,
+          "correct": 1618,
+          "saved_probability_argmax_correct": 1618,
+          "accuracy": 0.4726847794332457
+        },
+        {
+          "id": "qev-bf16",
+          "label": "qev-0.8B BF16",
+          "provider": "Local",
+          "parameters_b": 0.8,
+          "source": "local_gpu",
+          "hardware": "Intel Arc Pro B70",
+          "tasks": 3423,
+          "correct": 1613,
+          "saved_probability_argmax_correct": 1613,
+          "accuracy": 0.4712240724510663
+        }
+      ]
+    },
+    {
+      "id": "full",
+      "tasks": 3652,
+      "metric": "Explicit API-choice accuracy",
+      "note": "Same task cohort; prompts and option order differ",
+      "models": [
+        {
+          "id": "jev-1.14",
+          "label": "Jev 1.14",
+          "provider": "Published study",
+          "source": "independent",
+          "tasks": 3652,
+          "correct": 2988,
+          "accuracy": 0.8181818181818182,
+          "parameters_b": null,
+          "source_url": "https://github.com/sammy143/decision-models-eval/blob/78769cac4a5fa2ca0de16e941a03af6f037cee2c/runs/exp1/jev-1.14/results.jsonl"
+        },
+        {
+          "id": "jev-1.13",
+          "label": "Jev 1.13",
+          "provider": "Published study",
+          "source": "independent",
+          "tasks": 3652,
+          "correct": 2958,
+          "accuracy": 0.8099671412924425,
+          "parameters_b": null,
+          "source_url": "https://github.com/sammy143/decision-models-eval/blob/78769cac4a5fa2ca0de16e941a03af6f037cee2c/runs/exp1/jev-1.13/results.jsonl"
+        },
+        {
+          "id": "snap",
+          "label": "SubQ Snap preview",
+          "provider": "Published study",
+          "source": "independent",
+          "tasks": 3652,
+          "correct": 2654,
+          "accuracy": 0.7267250821467689,
+          "parameters_b": null,
+          "source_url": "https://github.com/sammy143/decision-models-eval/blob/78769cac4a5fa2ca0de16e941a03af6f037cee2c/runs/exp1/snap/results.jsonl"
+        },
+        {
+          "id": "qev-q8",
+          "label": "qev-0.8B Q8",
+          "provider": "Local",
+          "parameters_b": 0.8,
+          "source": "local_gpu",
+          "hardware": "Intel Arc Pro B70",
+          "tasks": 3652,
+          "correct": 1651,
+          "saved_probability_argmax_correct": 1651,
+          "accuracy": 0.45208105147864186
+        },
+        {
+          "id": "qev-q4",
+          "label": "qev-0.8B Q4",
+          "provider": "Local",
+          "parameters_b": 0.8,
+          "source": "local_cpu",
+          "hardware": "AMD Ryzen 5 7600",
+          "tasks": 3652,
+          "correct": 1650,
+          "saved_probability_argmax_correct": 1651,
+          "accuracy": 0.45180722891566266
+        },
+        {
+          "id": "qev-bf16",
+          "label": "qev-0.8B BF16",
+          "provider": "Local",
+          "parameters_b": 0.8,
+          "source": "local_gpu",
+          "hardware": "Intel Arc Pro B70",
+          "tasks": 3652,
+          "correct": 1647,
+          "saved_probability_argmax_correct": 1647,
+          "accuracy": 0.45098576122672507
+        }
+      ]
+    }
+  ]
+}

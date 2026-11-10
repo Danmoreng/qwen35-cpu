@@ -1,0 +1,18 @@
+id,label,provider,tasks,correct,accuracy,source,source_url,parameters_b,parameters_source_url,selected_for_chart
+baseten_mammoth-27b,Mammoth 27B,Base Labs,3423,3259,0.9520888109845166,aa,https://artificialanalysis.ai/evaluations/when2call,27,https://artificialanalysis.ai/decision-models/mammoth-27b,True
+baseten_elephant-9b,Elephant 9B,Base Labs,3423,3248,0.9488752556237219,aa,https://artificialanalysis.ai/evaluations/when2call,9,https://artificialanalysis.ai/decision-models/elephant-9b,True
+nace_drex-max-v1-1,Drex Max v1.1,Nace.AI,3423,3237,0.9456617002629273,aa,https://artificialanalysis.ai/evaluations/when2call,,,False
+subquadratic_subq-snap-1-1,SubQ Snap 1.1,Subquadratic,3423,3237,0.9456617002629273,aa,https://artificialanalysis.ai/evaluations/when2call,,,False
+fastino_glide-v1-2,GLiDE v1.2,Fastino,3423,3231,0.9439088518843122,aa,https://artificialanalysis.ai/evaluations/when2call,,,False
+liquid-ai_d1-ultra,d1-ultra,Liquid AI,3423,3183,0.9298860648553899,aa,https://artificialanalysis.ai/evaluations/when2call,,,True
+perplexity_pplx-decider-v1-2,Decider v1.2,Perplexity,3423,3016,0.881098451650599,aa,https://artificialanalysis.ai/evaluations/when2call,27,https://huggingface.co/perplexity-ai/pplx-decider-flash-v1.2/blob/9ff7cf9838e59df461c276b7699d56b244d2af58/README.md,True
+celeris_celeris-1-1-decision,Celeris-1.1 Decision,Celeris,3423,2981,0.8708735027753433,aa,https://artificialanalysis.ai/evaluations/when2call,,,False
+nace_drex-v2-0,Drex 2.0,Nace.AI,3423,2973,0.8685363716038562,aa,https://artificialanalysis.ai/evaluations/when2call,,,False
+openrouter_microsoft-decision-1,Microsoft-Decision-1,Microsoft,3423,2957,0.8638621092608822,aa,https://artificialanalysis.ai/evaluations/when2call,,,False
+typesafe_jev-1-14,Jev 1.14,TypeSafe,3423,2766,0.8080631025416303,aa,https://artificialanalysis.ai/evaluations/when2call,,,True
+inception_mercury-decide,Mercury Decide,Inception,3423,2702,0.7893660531697342,aa,https://artificialanalysis.ai/evaluations/when2call,,,False
+liquid-ai_d1,d1,Liquid AI,3423,2668,0.7794332456909144,aa,https://artificialanalysis.ai/evaluations/when2call,,,False
+openai_gpt-6-luna-decisions,GPT-6 Luna (Decisions),OpenAI,3423,2548,0.7443762781186094,aa,https://artificialanalysis.ai/evaluations/when2call,,,False
+perplexity_pplx-decider-flash-v1-2,Decider Flash v1.2,Perplexity,3423,2536,0.740870581361379,aa,https://artificialanalysis.ai/evaluations/when2call,4,https://huggingface.co/perplexity-ai/pplx-decider-flash-v1.2/blob/9ff7cf9838e59df461c276b7699d56b244d2af58/README.md,True
+cloudflare_clef,Clef,Cloudflare,3423,2429,0.7096114519427402,aa,https://artificialanalysis.ai/evaluations/when2call,27,https://huggingface.co/Cloudflare/clef/blob/171287b2571042abec9e7b99752aee58216b0ed0/README.md,True
+cloudflare_clef-omni,Clef-Omni,Cloudflare,3423,2124,0.6205083260297983,aa,https://artificialanalysis.ai/evaluations/when2call,,,False

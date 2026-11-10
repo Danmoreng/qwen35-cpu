@@ -1,0 +1,62 @@
+[
+  {
+    "id": "qev-q4",
+    "label": "qev-0.8B Q4",
+    "provider": "Local",
+    "parameters_b": 0.8,
+    "source": "local_cpu",
+    "hardware": "AMD Ryzen 5 7600",
+    "full": {
+      "tasks": 3652,
+      "correct": 1650,
+      "saved_probability_argmax_correct": 1651,
+      "accuracy": 0.45180722891566266
+    },
+    "aa_subset": {
+      "tasks": 3423,
+      "correct": 1618,
+      "saved_probability_argmax_correct": 1619,
+      "accuracy": 0.4726847794332457
+    }
+  },
+  {
+    "id": "qev-q8",
+    "label": "qev-0.8B Q8",
+    "provider": "Local",
+    "parameters_b": 0.8,
+    "source": "local_gpu",
+    "hardware": "Intel Arc Pro B70",
+    "full": {
+      "tasks": 3652,
+      "correct": 1651,
+      "saved_probability_argmax_correct": 1651,
+      "accuracy": 0.45208105147864186
+    },
+    "aa_subset": {
+      "tasks": 3423,
+      "correct": 1618,
+      "saved_probability_argmax_correct": 1618,
+      "accuracy": 0.4726847794332457
+    }
+  },
+  {
+    "id": "qev-bf16",
+    "label": "qev-0.8B BF16",
+    "provider": "Local",
+    "parameters_b": 0.8,
+    "source": "local_gpu",
+    "hardware": "Intel Arc Pro B70",
+    "full": {
+      "tasks": 3652,
+      "correct": 1647,
+      "saved_probability_argmax_correct": 1647,
+      "accuracy": 0.45098576122672507
+    },
+    "aa_subset": {
+      "tasks": 3423,
+      "correct": 1613,
+      "saved_probability_argmax_correct": 1613,
+      "accuracy": 0.4712240724510663
+    }
+  }
+]

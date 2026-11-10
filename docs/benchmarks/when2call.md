@@ -5,6 +5,9 @@ BF16 through the Decision API. The dataset is NVIDIA's complete **3,652-item
 When2Call MCQ test split**, without exclusions. Model artifacts, prompts,
 temperatures, answer ordering and scoring are fixed; no fitting occurs.
 
+See also the [published-model comparison and English charts](when2call-comparison.md),
+which keep the original full test separate from the AA-filtered cohort.
+
 Results were collected locally on November 10, 2026:
 
 | Checkpoint | Complete-test backend | Correct / 3,652 | Accuracy | Complete pass wall time |

@@ -6,6 +6,7 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
+| `when2call-comparison-2026-11-10` | [Published When2Call comparisons](../benchmarks/when2call-comparison.md), AA cohort re-scoring, independently re-counted Jev/Snap outputs and English charts |
 | `when2call-2026-11-10` | [qev on NVIDIA When2Call](../benchmarks/when2call.md), complete-test candidate-choice accuracy, CPU/Vulkan agreement and frozen provenance |
 | `jevbench-v1-2026-11-10` | [qev on JevBench v1](../benchmarks/jevbench-v1.md), CPU precision/latency comparison, paired accuracy and provenance audit, English chart and published Gemma 4/H100 baselines |
 | `qev-avx2-cloud-2026-10-27` | [qev AVX2 tuning](../benchmarks/qev-avx2-cloud.md), large-chunk parity and paired timings |

@@ -1,0 +1,11 @@
+{
+  "data_sha256": "f0d423c11ce7b3af6488a0a0a18c6f9ad6e51d56a2a40f9cd5ce1ef741f373f2",
+  "renderer_sha256": "54398009eedc81972e9d40d2e423c931a457b5e5343bc9bad9373de4802095b6",
+  "matplotlib_version": "3.11.2",
+  "files": {
+    "when2call-aa-subset.png": "e210c5bfb53934d3433726e20d994f1941a7d8be9cb0f694b5ede00042932264",
+    "when2call-aa-subset.svg": "ea320f334e73a115796a63e362c3633c3657e824d3024d3f8e1c791d8abd0726",
+    "when2call-full.png": "a2b83d1d4364bbe1252a93face6a766056b48ff32f14debad1933c432c2fd884",
+    "when2call-full.svg": "dc198dfee05516fcdd7629d3794880e8cc0714c470056801d183c36a7ebbc302"
+  }
+}

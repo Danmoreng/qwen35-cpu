@@ -161,3 +161,12 @@ explicit handling of interrupted prefixes without requiring models. CTest includ
 recomputes every prediction and Brier score, checks complete-test and CPU-panel
 coverage, records backend agreement, and checks CPU affinity and server shutdown.
 See the [When2Call protocol](benchmarks/when2call.md).
+
+The external comparison adds `python tests/when2call_comparison_test.py`
+(CTest `when2call_comparison`). It checks that AA exclusions remove only the
+ask-information variant at each source ID, rejects unmatched exclusions, keeps
+accuracy separate from other AA metrics, and retains explicit API choice when
+rounded-probability argmax differs. The analysis needs the pinned NVIDIA file,
+saved local predictions and frozen public-source snapshots; it runs no models.
+Plotting needs matplotlib and only the compact chart data. See the
+[comparison report](benchmarks/when2call-comparison.md) for sources and commands.
