@@ -1,5 +1,5 @@
 {
-  "created": "2026-11-10T13:46:53.498382+00:00",
+  "created": "2026-11-10T13:48:25.953258+00:00",
   "layout": "compact",
   "dimensions_px": [
     2560,
@@ -17,14 +17,14 @@
     "docs/results/jevbench-v1-2026-11-10/qev-jevbench-compact"
   ],
   "inputs_sha256": {
-    "scripts/plot-jevbench.py": "4b6f47376115249f0a9cbefae4507cddc26079434d14a2b0ced4130a61840a68",
+    "scripts/plot-jevbench.py": "a43ddf9763987fc44307c3a47f1b3ca03fb96ea904a4565b825ef12aec3065ef",
     "docs/results/jevbench-v1-2026-11-10/chart-data.json": "e8a96f7e7ab7d24d9dd61e5ed521c03d267ac1f5ff39a9e3a0db711dc64b9876",
     "docs/results/jevbench-v1-2026-11-10/weight-memory.json": "a8a0061bac9faf6e99572478a13a7258ceeedfeac261119faf13c1e6e65893de",
     "docs/results/jevbench-v1-2026-11-10/aws-model-artifacts.json": "f966ac75c9be38670cf7e8c9d319e887efcd9c027e91b8c15f6c9f8049109d04"
   },
   "outputs_sha256": {
-    "qev-jevbench-compact.png": "93dc4a558c7f25571f9428fa6a6c35cde90ae46e2eeccd190cee1d0a991d00c1",
-    "qev-jevbench-compact.svg": "f109221840d2c0eb136aa1cabb256c3f114b2f463bfbfed15b8dd49c914fbe4d"
+    "qev-jevbench-compact.png": "812add0e82928452f1b34acb0dae134a85372a27287da978c135d1588a3bb3c6",
+    "qev-jevbench-compact.svg": "4103bf0fdd511dfae998083f405ecade933e5fb4ef95114296399f0aac72fa63"
   },
   "memory_scope": "Checkpoint text-weight storage only; qev tensor payloads, AWS approximate documented GPU weights; excludes inference buffers and full multimodal download sizes.",
   "validation": [
@@ -34,7 +34,8 @@
     "No global title, footer notes, source footnote or accuracy cards",
     "Sidebar text bounds checked for overlap",
     "Final PNG visually inspected",
-    "Default-layout PNG pixel-identical to the previous published chart"
+    "Default-layout PNG pixel-identical to the previous published chart",
+    "Compact CPU latency range bars removed; point coordinates unchanged"
   ],
-  "source_snapshot": "benchmarks/jevbench-v1-2026-11-10/compact"
+  "source_snapshot": "benchmarks/jevbench-v1-2026-11-10/compact/no-whiskers"
 }

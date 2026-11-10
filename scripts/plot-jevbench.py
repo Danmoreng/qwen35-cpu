@@ -114,7 +114,7 @@ def main():
         highlight = r["id"] == "qev-q4"
         x, y = r["median_latency_ms"], 100 * r["accuracy"]
         marker = "*" if highlight else "o" if local else "s"
-        if local:
+        if local and not a.compact:
             ax.errorbar(x, y, xerr=[[x-r["median_min_ms"]], [r["median_max_ms"]-x]],
                         color=teal, capsize=3, linewidth=1.4, zorder=3)
         ax.scatter(x, y, marker=marker, s=330 if highlight else 115,
