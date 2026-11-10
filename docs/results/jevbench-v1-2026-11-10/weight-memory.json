@@ -1,0 +1,71 @@
+{
+  "scope": "Model weight storage in RAM/VRAM, not total process RSS or peak inference memory. AWS values are published approximations, qev values are tensor payload bytes. Decimal GB and MB.",
+  "models": [
+    {
+      "id": "gemma-26b",
+      "label": "Gemma 4 26B-A4B",
+      "device": "VRAM",
+      "weight_bytes": 51000000000,
+      "approximate": true,
+      "basis": "Publisher approximate GPU text-weight memory; BF16 backbone plus FP32 adapter/head",
+      "source": "aws-model-artifacts.json"
+    },
+    {
+      "id": "gemma-12b",
+      "label": "Gemma 4 12B",
+      "device": "VRAM",
+      "weight_bytes": 23000000000,
+      "approximate": true,
+      "basis": "Publisher approximate GPU text-weight memory; BF16 backbone plus FP32 adapter/head",
+      "source": "aws-model-artifacts.json"
+    },
+    {
+      "id": "gemma-e4b",
+      "label": "Gemma 4 E4B",
+      "device": "VRAM",
+      "weight_bytes": 15000000000,
+      "approximate": true,
+      "basis": "Publisher approximate GPU text-weight memory; BF16 backbone plus FP32 adapter/head",
+      "source": "aws-model-artifacts.json"
+    },
+    {
+      "id": "gemma-e2b",
+      "label": "Gemma 4 E2B",
+      "device": "VRAM",
+      "weight_bytes": 9000000000,
+      "approximate": true,
+      "basis": "Publisher approximate GPU text-weight memory; BF16 backbone plus FP32 adapter/head",
+      "source": "aws-model-artifacts.json"
+    },
+    {
+      "id": "qev-bf16",
+      "label": "qev-0.8B BF16",
+      "device": "RAM",
+      "weight_bytes": 1505783040,
+      "approximate": false,
+      "basis": "Text-weight tensor payload, excluding file metadata and inference buffers",
+      "source": "Direct tensor-directory inventory of the benchmark checkpoint",
+      "model_sha256": "47a3e93109187add85f7905d507024ade0fc4c957a503183f3cc6106c68a9980"
+    },
+    {
+      "id": "qev-q8",
+      "label": "qev-0.8B Q8",
+      "device": "RAM",
+      "weight_bytes": 800881920,
+      "approximate": false,
+      "basis": "Text-weight tensor payload, excluding file metadata and inference buffers",
+      "source": "Direct tensor-directory inventory of the benchmark checkpoint",
+      "model_sha256": "07856dd5d6c7d1e19a9579ef324e5377649890a6438f7735ea5ac8935f2b2140"
+    },
+    {
+      "id": "qev-q4",
+      "label": "qev-0.8B Q4",
+      "device": "RAM",
+      "weight_bytes": 424934656,
+      "approximate": false,
+      "basis": "Text-weight tensor payload, excluding file metadata and inference buffers",
+      "source": "Direct tensor-directory inventory of the benchmark checkpoint",
+      "model_sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69"
+    }
+  ]
+}

@@ -17,11 +17,54 @@ from matplotlib.patches import FancyBboxPatch
 from matplotlib.ticker import MultipleLocator
 
 
+def save_figure(fig, output):
+    output.parent.mkdir(parents=True, exist_ok=True)
+    for ext in ("png", "svg"):
+        fig.savefig(output.with_suffix("." + ext), dpi=160, facecolor=fig.get_facecolor())
+    svg = output.with_suffix(".svg")
+    svg.write_text("\n".join(line.rstrip() for line in svg.read_text().splitlines()) + "\n")
+    plt.close(fig)
+
+
+def weight_list(fig, path, rows, ink, muted, teal, orange, grid):
+    memory = json.loads(path.read_text())
+    assert {r["id"] for r in memory["models"]} == {r["id"] for r in rows}
+    fig.add_artist(Line2D([.715, .715], [.14, .88], transform=fig.transFigure,
+                          color=grid, linewidth=1))
+    fig.text(.745, .875, "Model weights", fontsize=13, weight="bold")
+    fig.text(.965, .875, "RAM / VRAM", fontsize=10.5, color=muted, ha="right")
+    pairs = []
+    for index, r in enumerate(memory["models"]):
+        y = .785 - index * .101
+        color = teal if r["device"] == "RAM" else orange
+        highlight = r["id"] == "qev-q4"
+        name = fig.text(.745, y, r["label"], fontsize=11.8,
+                        color=color, weight="bold" if highlight else "normal")
+        size = r["weight_bytes"]
+        value = f"{size/1e9:.2f} GB" if size >= 1e9 else f"{size/1e6:.0f} MB"
+        if r["approximate"]:
+            value = f"≈{size/1e9:.0f} GB"
+        amount = fig.text(.965, y, value, ha="right", fontsize=13,
+                          weight="bold", color=teal if highlight else ink)
+        pairs.append((name, amount))
+        if index < 6:
+            fig.add_artist(Line2D([.745, .965], [y-.039, y-.039],
+                                  transform=fig.transFigure, color=grid, linewidth=.7))
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    assert all(name.get_window_extent(renderer).x1 + 12 < amount.get_window_extent(renderer).x0
+               for name, amount in pairs), "Memory-list columns overlap"
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--data", type=Path, required=True)
     p.add_argument("--output", type=Path, required=True, help="Output filename stem")
+    p.add_argument("--compact", action="store_true", help="Only chart, hardware legend and weight list")
+    p.add_argument("--memory-data", type=Path, help="Weight-residency evidence for the compact layout")
     a = p.parse_args()
+    if a.compact and not a.memory_data:
+        p.error("--compact requires --memory-data")
     data = json.loads(a.data.read_text())
     measured_date = date.fromisoformat(data["measured"]).strftime("%d %b %Y")
     rows = data["models"]
@@ -34,17 +77,18 @@ def main():
     plt.rcParams.update({"font.family": "DejaVu Sans", "svg.fonttype": "none",
                          "text.color": ink, "axes.labelcolor": muted,
                          "xtick.color": muted, "ytick.color": muted})
-    fig = plt.figure(figsize=(15, 9.8), facecolor=bg)
-    fig.text(.065, .936, "Small model. Strong decisions.", fontsize=28, weight="bold")
-    fig.text(.065, .888, "qev-0.8B in Q4, Q8 and BF16  /  JevBench v1 · 231 public tasks",
-             fontsize=13.5, color=muted)
+    fig = plt.figure(figsize=(16, 8.8) if a.compact else (15, 9.8), facecolor=bg)
+    if not a.compact:
+        fig.text(.065, .936, "Small model. Strong decisions.", fontsize=28, weight="bold")
+        fig.text(.065, .888, "qev-0.8B in Q4, Q8 and BF16  /  JevBench v1 · 231 public tasks",
+                 fontsize=13.5, color=muted)
     handles = [Line2D([], [], color=teal, marker="o", linestyle="", markersize=8,
-                      label="Ryzen 5 7600 CPU · measured here"),
+                      label="AMD Ryzen 5 7600 · CPU" if a.compact else "Ryzen 5 7600 CPU · measured here"),
                Line2D([], [], color=orange, marker="s", linestyle="", markersize=8,
-                      label="H100 80 GB GPU · AWS / Strands report")]
-    fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(.06, .848),
+                      label="NVIDIA H100 80 GB · GPU" if a.compact else "H100 80 GB GPU · AWS / Strands report")]
+    fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(.06, .965 if a.compact else .848),
                frameon=False, ncol=2, fontsize=11.3, columnspacing=2.4, handletextpad=.5)
-    ax = fig.add_axes([.075, .275, .585, .49], facecolor=bg)
+    ax = fig.add_axes([.075, .13, .59, .75] if a.compact else [.075, .275, .585, .49], facecolor=bg)
     xmax = max(r["median_latency_ms"] for r in rows)
     ax.set_xlim(0, max(300, (int(xmax / 50) + 2) * 50))
     ax.set_ylim(72, 93)
@@ -54,13 +98,17 @@ def main():
     for spine in ax.spines.values():
         spine.set_visible(False)
     ax.tick_params(length=0, pad=9, labelsize=11)
-    ax.set_xlabel("Median decision latency (ms) · lower is better", labelpad=15, fontsize=11.5)
-    ax.set_ylabel("Accuracy (%) · higher is better", labelpad=16, fontsize=11.5)
+    ax.set_xlabel("Median decision latency (ms)" if a.compact else "Median decision latency (ms) · lower is better",
+                  labelpad=15, fontsize=12 if a.compact else 11.5)
+    ax.set_ylabel("Accuracy (%)" if a.compact else "Accuracy (%) · higher is better",
+                  labelpad=16, fontsize=12 if a.compact else 11.5)
     # Separate close points with fixed label offsets, while keeping every
     # marker at its measured coordinates (no jitter or invented differences).
     offsets = {"qev-q4": (-12, 36), "qev-q8": (15, -33), "qev-bf16": (13, 27),
                "gemma-e2b": (14, -27), "gemma-e4b": (13, 15),
                "gemma-12b": (13, -25), "gemma-26b": (-13, 15)}
+    if a.compact:
+        offsets.update({"qev-bf16": (12, 56), "qev-q8": (18, -36), "gemma-e2b": (-10, -37)})
     for r in rows:
         local = r["source"] == "local_cpu"
         highlight = r["id"] == "qev-q4"
@@ -74,10 +122,15 @@ def main():
         dx, dy = offsets[r["id"]]
         label = f'{r["chart_label"]}\n{100*r["accuracy"]:.2f}% · {x:.0f} ms'
         ax.annotate(label, (x, y), xytext=(dx, dy), textcoords="offset points",
-                    ha="right" if dx < 0 else "left", va="center", fontsize=10.3,
+                    ha="right" if dx < 0 else "left", va="center", fontsize=11.5 if a.compact else 10.3,
                     weight="bold" if highlight else "normal", color=teal if local else ink,
                     arrowprops=dict(arrowstyle="-", color=grid, linewidth=1),
                     bbox=dict(boxstyle="round,pad=.25", facecolor=bg, edgecolor="none", alpha=.94), zorder=6)
+
+    if a.compact:
+        weight_list(fig, a.memory_data, rows, ink, muted, teal, orange, grid)
+        save_figure(fig, a.output)
+        return
 
     fig.text(.725, .752, "qev-0.8B", fontsize=19, weight="bold", color=teal)
     fig.text(.725, .718, "Same fine-tune. Three formats.", fontsize=10.5, color=muted)
@@ -113,12 +166,7 @@ def main():
     fig.text(.065, .016,
              "Sources: strandsagents.com/blog/strands-decider-gemma-4-models/  ·  "
              f"github.com/Danmoreng/qwen35-cpu  ·  {measured_date}", fontsize=8.8, color=muted)
-    a.output.parent.mkdir(parents=True, exist_ok=True)
-    for ext in ("png", "svg"):
-        fig.savefig(a.output.with_suffix("."+ext), dpi=160, facecolor=bg)
-    svg = a.output.with_suffix(".svg")
-    svg.write_text("\n".join(line.rstrip() for line in svg.read_text().splitlines()) + "\n")
-    plt.close(fig)
+    save_figure(fig, a.output)
 
 
 if __name__ == "__main__":

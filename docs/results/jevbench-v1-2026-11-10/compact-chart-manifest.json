@@ -1,0 +1,40 @@
+{
+  "created": "2026-11-10T13:46:53.498382+00:00",
+  "layout": "compact",
+  "dimensions_px": [
+    2560,
+    1408
+  ],
+  "command": [
+    "python",
+    "scripts/plot-jevbench.py",
+    "--data",
+    "docs/results/jevbench-v1-2026-11-10/chart-data.json",
+    "--compact",
+    "--memory-data",
+    "docs/results/jevbench-v1-2026-11-10/weight-memory.json",
+    "--output",
+    "docs/results/jevbench-v1-2026-11-10/qev-jevbench-compact"
+  ],
+  "inputs_sha256": {
+    "scripts/plot-jevbench.py": "4b6f47376115249f0a9cbefae4507cddc26079434d14a2b0ced4130a61840a68",
+    "docs/results/jevbench-v1-2026-11-10/chart-data.json": "e8a96f7e7ab7d24d9dd61e5ed521c03d267ac1f5ff39a9e3a0db711dc64b9876",
+    "docs/results/jevbench-v1-2026-11-10/weight-memory.json": "a8a0061bac9faf6e99572478a13a7258ceeedfeac261119faf13c1e6e65893de",
+    "docs/results/jevbench-v1-2026-11-10/aws-model-artifacts.json": "f966ac75c9be38670cf7e8c9d319e887efcd9c027e91b8c15f6c9f8049109d04"
+  },
+  "outputs_sha256": {
+    "qev-jevbench-compact.png": "93dc4a558c7f25571f9428fa6a6c35cde90ae46e2eeccd190cee1d0a991d00c1",
+    "qev-jevbench-compact.svg": "f109221840d2c0eb136aa1cabb256c3f114b2f463bfbfed15b8dd49c914fbe4d"
+  },
+  "memory_scope": "Checkpoint text-weight storage only; qev tensor payloads, AWS approximate documented GPU weights; excludes inference buffers and full multimodal download sizes.",
+  "validation": [
+    "Seven unchanged accuracy/latency coordinates",
+    "Seven memory rows; qev tensor payloads independently verified from all three checkpoints",
+    "AWS memory values match published documentation",
+    "No global title, footer notes, source footnote or accuracy cards",
+    "Sidebar text bounds checked for overlap",
+    "Final PNG visually inspected",
+    "Default-layout PNG pixel-identical to the previous published chart"
+  ],
+  "source_snapshot": "benchmarks/jevbench-v1-2026-11-10/compact"
+}

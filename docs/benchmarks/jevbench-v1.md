@@ -147,6 +147,26 @@ truncation or generated tokens.
 [all seven models as CSV](../results/jevbench-v1-2026-11-10/cpu-comparison.csv),
 and [individual CPU samples](../results/jevbench-v1-2026-11-10/cpu-samples.csv).
 
+A second, minimal English layout contains only the scatter plot, CPU/GPU legend
+and a seven-model weight-memory list:
+[compact PNG](../results/jevbench-v1-2026-11-10/qev-jevbench-compact.png) and
+[compact SVG](../results/jevbench-v1-2026-11-10/qev-jevbench-compact.svg).
+Its sidebar uses the approximate **9 / 15 / 23 / 51 GB GPU weight-memory** values
+from AWS's text-only serving documentation, rather than full multimodal download
+sizes. qev uses independently checked tensor payloads: **425 MB Q4, 801 MB Q8,
+1.51 GB BF16**, rounded in decimal units. These are model weights, excluding
+KV caches, activations and other runtime allocations. The underlying
+[memory data](../results/jevbench-v1-2026-11-10/weight-memory.json) and
+[render manifest](../results/jevbench-v1-2026-11-10/compact-chart-manifest.json)
+retain the definitions and source hashes outside the image.
+
+```sh
+python scripts/plot-jevbench.py \
+  --data docs/results/jevbench-v1-2026-11-10/chart-data.json \
+  --compact --memory-data docs/results/jevbench-v1-2026-11-10/weight-memory.json \
+  --output docs/results/jevbench-v1-2026-11-10/qev-jevbench-compact
+```
+
 The accuracy totals for Q4, Q8 and BF16 differ by at most two tasks. Q4
 uses a 72.0% smaller model file than BF16. Its median decision latency on this
 machine is about half the BF16/llama.cpp median. These are results for the
