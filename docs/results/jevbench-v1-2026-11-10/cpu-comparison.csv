@@ -1,0 +1,8 @@
+id,model,format,source,hardware,backend,file_bytes,correct,tasks,accuracy,brier,median_latency_ms,median_min_ms,median_max_ms,p95_latency_ms
+qev-bf16,qev-0.8b,BF16,local_cpu,AMD Ryzen 5 7600,llama.cpp CPU,1516746912,179,231,0.7748917748917749,0.3304044396584872,148.1614519998402,143.74680800028727,149.75855000011506,3101.737514499746
+qev-q8,qev-0.8b,Q8_0,local_cpu,AMD Ryzen 5 7600,llama.cpp CPU,811845792,180,231,0.7792207792207793,0.3285355625966986,171.3026870002068,170.63844599942968,172.54797000077815,4223.077447499691
+qev-q4,qev-0.8b,H128/Q4-G32-DOT4,local_cpu,AMD Ryzen 5 7600,native CPU,424964864,181,231,0.7835497835497836,0.3290217858008658,73.77198999984103,73.40137099981803,74.5838940001704,1822.313612000471
+gemma-e2b,Strands Decider / Gemma 4 E2B,,aws_strands_report,NVIDIA H100 80 GB,Strands Decider,,180,231,0.7792207792207793,0.313,102,,,
+gemma-e4b,Strands Decider / Gemma 4 E4B,,aws_strands_report,NVIDIA H100 80 GB,Strands Decider,,187,231,0.8095238095238095,0.243,139,,,
+gemma-12b,Strands Decider / Gemma 4 12B,,aws_strands_report,NVIDIA H100 80 GB,Strands Decider,,200,231,0.8658008658008658,0.173,136,,,
+gemma-26b,Strands Decider / Gemma 4 26B-A4B,,aws_strands_report,NVIDIA H100 80 GB,Strands Decider,,207,231,0.8961038961038961,0.162,245,,,

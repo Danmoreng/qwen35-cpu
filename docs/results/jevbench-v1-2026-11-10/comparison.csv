@@ -1,0 +1,6 @@
+model,source,correct,tasks,accuracy,brier
+qev-0.8b H128/Q4-G32-DOT4,local_native_cpu,181,231,0.7835497835497836,0.3290217858008658
+Strands Decider Gemma 4 E2B,published_strands,180,231,0.7792207792207793,0.313
+Strands Decider Gemma 4 E4B,published_strands,187,231,0.8095238095238095,0.243
+Strands Decider Gemma 4 12B,published_strands,200,231,0.8658008658008658,0.173
+Strands Decider Gemma 4 26B-A4B,published_strands,207,231,0.8961038961038961,0.162

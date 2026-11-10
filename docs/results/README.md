@@ -6,6 +6,7 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
+| `jevbench-v1-2026-11-10` | [qev on JevBench v1](../benchmarks/jevbench-v1.md), CPU precision/latency comparison, English chart and published Gemma 4/H100 baselines |
 | `qev-avx2-cloud-2026-10-27` | [qev AVX2 tuning](../benchmarks/qev-avx2-cloud.md), large-chunk parity and paired timings |
 | `avx2-cloud-2026-10-27` | [AVX2 cloud VM tuning](../benchmarks/avx2-cloud.md), paired measurements and logit parity |
 | `native-prefill-reuse-2026-10-22` | Current native README/model-card speed, paired baseline and quality parity; [methodology](../benchmarks/native-prefill.md) |

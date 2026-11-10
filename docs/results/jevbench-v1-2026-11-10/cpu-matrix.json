@@ -1,0 +1,69 @@
+[
+  {
+    "name": "qev-H128-Q4-native-CPU",
+    "executable": "/usr/bin/python",
+    "args": [
+      "scripts/evaluate-jevbench.py",
+      "--harness",
+      ".cache/jevbench-v1",
+      "--model-dir",
+      "models/qev",
+      "--threads",
+      "6",
+      "--timeout-seconds",
+      "900",
+      "--server",
+      "build-jevbench/qwen35_cpu_server"
+    ]
+  },
+  {
+    "name": "qev-Q8_0-llama-CPU",
+    "executable": "/usr/bin/python",
+    "args": [
+      "scripts/evaluate-jevbench.py",
+      "--harness",
+      ".cache/jevbench-v1",
+      "--model-dir",
+      "models/qev",
+      "--threads",
+      "6",
+      "--timeout-seconds",
+      "900",
+      "--backend",
+      "llama",
+      "--server",
+      "build-dale-llama/bin/llama-server",
+      "--weights",
+      "models/qev-gguf/qev-0.8b-Q8_0.gguf",
+      "--gguf-precision",
+      "Q8_0",
+      "--llama-source",
+      ".cache/llama-dale"
+    ]
+  },
+  {
+    "name": "qev-BF16-llama-CPU",
+    "executable": "/usr/bin/python",
+    "args": [
+      "scripts/evaluate-jevbench.py",
+      "--harness",
+      ".cache/jevbench-v1",
+      "--model-dir",
+      "models/qev",
+      "--threads",
+      "6",
+      "--timeout-seconds",
+      "900",
+      "--backend",
+      "llama",
+      "--server",
+      "build-dale-llama/bin/llama-server",
+      "--weights",
+      "models/qev-gguf/qev-0.8b-bf16.gguf",
+      "--gguf-precision",
+      "BF16",
+      "--llama-source",
+      ".cache/llama-dale"
+    ]
+  }
+]

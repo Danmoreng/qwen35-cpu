@@ -108,4 +108,22 @@ release tags require those variables. See [publication](publishing.md).
 
 Passing correctness checks does not establish a new speed or quality score.
 Run timed comparisons separately through `scripts/benchmark-inference-seq.ps1`.
+
+## JevBench decision comparison
+
+`scripts/evaluate-jevbench.py` requires the pinned JevBench checkout
+`1bcc55eb6c8cffde2306b3db03ede39b61c6152a` and the checksum-verified public
+qev checkpoint. Its default backend uses the native server. The optional
+`--backend llama` path requires a CPU `llama-server` build with `/v1/systemone`
+support, its source checkout, and the pinned publisher Q8_0 or BF16 GGUF named
+by the driver. These inputs are optional and are not downloaded by CTest.
+The harness, adapters and scorer remain unmodified; no Python model runtime
+is required. The full serial measurement uses the sequential PowerShell runner
+with one warmup and three measured passes.
+
+`scripts/summarize-jevbench.py` verifies complete task coverage, raw response
+hashes, strict schema validity, repeated predictions/probabilities, token usage
+and server shutdown before exporting the comparison. Rendering the English
+shareable PNG/SVG with `scripts/plot-jevbench.py` additionally requires
+Matplotlib. See [the frozen protocol and results](benchmarks/jevbench-v1.md).
 Historical extraction and release reports remain in [Git history](history.md).

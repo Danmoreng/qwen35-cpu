@@ -1,0 +1,13 @@
+model,run,warmup,n_correct,median_latency_ms,p95_latency_ms,brier,profile
+qev-q4,0,True,181,85.3968100000202,1797.4704004996056,0.3290217858008658,benchmarks/jevbench-v1-2026-11-10/cpu-performance/case-0-run-0.json
+qev-q4,1,False,181,73.40137099981803,1829.5654129997274,0.3290217858008658,benchmarks/jevbench-v1-2026-11-10/cpu-performance/case-0-run-1.json
+qev-q4,2,False,181,74.5838940001704,1822.163996499512,0.3290217858008658,benchmarks/jevbench-v1-2026-11-10/cpu-performance/case-0-run-2.json
+qev-q4,3,False,181,73.77198999984103,1822.313612000471,0.3290217858008658,benchmarks/jevbench-v1-2026-11-10/cpu-performance/case-0-run-3.json
+qev-q8,0,True,180,177.44676400070603,4514.292995000233,0.3285355625966986,benchmarks/jevbench-v1-2026-11-10/cpu-performance/case-1-run-0.json
+qev-q8,1,False,180,171.3026870002068,4193.523262999861,0.3285355625966986,benchmarks/jevbench-v1-2026-11-10/cpu-performance/case-1-run-1.json
+qev-q8,2,False,180,172.54797000077815,4223.077447499691,0.3285355625966986,benchmarks/jevbench-v1-2026-11-10/cpu-performance/case-1-run-2.json
+qev-q8,3,False,180,170.63844599942968,4242.634397499842,0.3285355625966986,benchmarks/jevbench-v1-2026-11-10/cpu-performance/case-1-run-3.json
+qev-bf16,0,True,179,132.63031600035902,3112.0751795001524,0.3304044396584872,benchmarks/jevbench-v1-2026-11-10/cpu-performance/case-2-run-0.json
+qev-bf16,1,False,179,149.75855000011506,3104.3957355000202,0.3304044396584872,benchmarks/jevbench-v1-2026-11-10/cpu-performance/case-2-run-1.json
+qev-bf16,2,False,179,143.74680800028727,3077.4867145000826,0.3304044396584872,benchmarks/jevbench-v1-2026-11-10/cpu-performance/case-2-run-2.json
+qev-bf16,3,False,179,148.1614519998402,3101.737514499746,0.3304044396584872,benchmarks/jevbench-v1-2026-11-10/cpu-performance/case-2-run-3.json

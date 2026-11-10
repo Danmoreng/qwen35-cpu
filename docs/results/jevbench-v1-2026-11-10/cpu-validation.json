@@ -1,0 +1,36 @@
+[
+  {
+    "model": "qev-q4",
+    "complete_passes": 4,
+    "raw_hashes_verified": 924,
+    "strict_validity": 1.0,
+    "repeat_probabilities_identical": true,
+    "different_token_counts_vs_native": 0,
+    "token_count_deltas": [],
+    "server_stopped": true
+  },
+  {
+    "model": "qev-q8",
+    "complete_passes": 4,
+    "raw_hashes_verified": 924,
+    "strict_validity": 1.0,
+    "repeat_probabilities_identical": true,
+    "different_token_counts_vs_native": 54,
+    "token_count_deltas": [
+      -1
+    ],
+    "server_stopped": true
+  },
+  {
+    "model": "qev-bf16",
+    "complete_passes": 4,
+    "raw_hashes_verified": 924,
+    "strict_validity": 1.0,
+    "repeat_probabilities_identical": true,
+    "different_token_counts_vs_native": 54,
+    "token_count_deltas": [
+      -1
+    ],
+    "server_stopped": true
+  }
+]

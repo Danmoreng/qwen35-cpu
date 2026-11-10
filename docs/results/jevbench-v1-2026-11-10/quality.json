@@ -1,0 +1,130 @@
+{
+  "n_planned": 231,
+  "n_attempted": 231,
+  "n_scorable": 231,
+  "n_valid": 231,
+  "n_correct": 181,
+  "accuracy": 0.7835497835497836,
+  "schema_validity": 1.0,
+  "schema_validity_strict": 1.0,
+  "n_renormalized": 0,
+  "calibration_n": 231,
+  "brier_mean": 0.3290217858008658,
+  "macro_accuracy": 0.7915601913279932,
+  "ece": 0.06750173160173169,
+  "encoding": "per_question",
+  "context": 4096,
+  "input_tokens_total": 144115,
+  "input_tokens_min": 57,
+  "input_tokens_max": 3911,
+  "per_family": {
+    "adequacy": {
+      "n_attempted": 12,
+      "n_correct": 10,
+      "accuracy": 0.8333333333333334
+    },
+    "adversarial": {
+      "n_attempted": 6,
+      "n_correct": 5,
+      "accuracy": 0.8333333333333334
+    },
+    "ambiguous": {
+      "n_attempted": 7,
+      "n_correct": 5,
+      "accuracy": 0.7142857142857143
+    },
+    "extraction": {
+      "n_attempted": 24,
+      "n_correct": 24,
+      "accuracy": 1.0
+    },
+    "fact": {
+      "n_attempted": 12,
+      "n_correct": 12,
+      "accuracy": 1.0
+    },
+    "intent": {
+      "n_attempted": 24,
+      "n_correct": 23,
+      "accuracy": 0.9583333333333334
+    },
+    "judge_hard": {
+      "n_attempted": 17,
+      "n_correct": 9,
+      "accuracy": 0.5294117647058824
+    },
+    "long_policy": {
+      "n_attempted": 19,
+      "n_correct": 8,
+      "accuracy": 0.42105263157894735
+    },
+    "multi_hop": {
+      "n_attempted": 18,
+      "n_correct": 12,
+      "accuracy": 0.6666666666666666
+    },
+    "ordinal": {
+      "n_attempted": 12,
+      "n_correct": 12,
+      "accuracy": 1.0
+    },
+    "policy": {
+      "n_attempted": 12,
+      "n_correct": 12,
+      "accuracy": 1.0
+    },
+    "probability": {
+      "n_attempted": 10,
+      "n_correct": 5,
+      "accuracy": 0.5
+    },
+    "routing": {
+      "n_attempted": 12,
+      "n_correct": 11,
+      "accuracy": 0.9166666666666666
+    },
+    "routing_hard": {
+      "n_attempted": 5,
+      "n_correct": 5,
+      "accuracy": 1.0
+    },
+    "temporal_numeric": {
+      "n_attempted": 15,
+      "n_correct": 5,
+      "accuracy": 0.3333333333333333
+    },
+    "tool_selection": {
+      "n_attempted": 12,
+      "n_correct": 12,
+      "accuracy": 1.0
+    },
+    "tradeoff": {
+      "n_attempted": 6,
+      "n_correct": 4,
+      "accuracy": 0.6666666666666666
+    },
+    "trap": {
+      "n_attempted": 8,
+      "n_correct": 7,
+      "accuracy": 0.875
+    }
+  },
+  "tiers": {
+    "easy": {
+      "n_attempted": 48,
+      "n_correct": 48
+    },
+    "standard": {
+      "n_attempted": 72,
+      "n_correct": 68
+    },
+    "hard": {
+      "n_attempted": 111,
+      "n_correct": 65
+    }
+  },
+  "wilson_95": [
+    0.7260365682646376,
+    0.8317865718991312
+  ]
+}
