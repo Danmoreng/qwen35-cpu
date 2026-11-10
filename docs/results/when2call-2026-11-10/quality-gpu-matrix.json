@@ -1,0 +1,34 @@
+[
+  {
+    "name": "qev-Q8-Vulkan-Intel-B70",
+    "executable": "/usr/bin/python",
+    "args": [
+      "scripts/when2call.py",
+      "run",
+      "--prepared",
+      "benchmarks/when2call-2026-11-10/prepared",
+      "--precision",
+      "Q8",
+      "--timeout-seconds",
+      "7200",
+      "--backend",
+      "vulkan"
+    ]
+  },
+  {
+    "name": "qev-BF16-Vulkan-Intel-B70",
+    "executable": "/usr/bin/python",
+    "args": [
+      "scripts/when2call.py",
+      "run",
+      "--prepared",
+      "benchmarks/when2call-2026-11-10/prepared",
+      "--precision",
+      "BF16",
+      "--timeout-seconds",
+      "7200",
+      "--backend",
+      "vulkan"
+    ]
+  }
+]

@@ -1,0 +1,235 @@
+{
+  "requests": 3652,
+  "n_correct": 1651,
+  "accuracy": 0.45208105147864186,
+  "valid": 3652,
+  "brier": 0.7506573632502738,
+  "macro_f1_present": 0.3884586371801961,
+  "macro_f1_four": 0.2913439778851471,
+  "no_tool_cannot_answer_cases": 258,
+  "no_tool_hallucination_rate": 0.6744186046511628,
+  "top_probability_ties": 1,
+  "api_choice_disagreements": 1,
+  "per_category": {
+    "direct": {
+      "support": 0,
+      "predicted": 156,
+      "correct": 0,
+      "precision": 0.0,
+      "recall": null,
+      "f1": 0.0
+    },
+    "tool_call": {
+      "support": 1295,
+      "predicted": 2951,
+      "correct": 1227,
+      "precision": 0.41579125720094884,
+      "recall": 0.9474903474903474,
+      "f1": 0.5779557230334432
+    },
+    "request_for_info": {
+      "support": 1062,
+      "predicted": 368,
+      "correct": 284,
+      "precision": 0.7717391304347826,
+      "recall": 0.2674199623352166,
+      "f1": 0.3972027972027972
+    },
+    "cannot_answer": {
+      "support": 1295,
+      "predicted": 177,
+      "correct": 140,
+      "precision": 0.7909604519774012,
+      "recall": 0.10810810810810811,
+      "f1": 0.19021739130434784
+    }
+  },
+  "confusion": {
+    "direct": {
+      "direct": 0,
+      "tool_call": 0,
+      "request_for_info": 0,
+      "cannot_answer": 0,
+      "invalid": 0
+    },
+    "tool_call": {
+      "direct": 27,
+      "tool_call": 1227,
+      "request_for_info": 34,
+      "cannot_answer": 7,
+      "invalid": 0
+    },
+    "request_for_info": {
+      "direct": 31,
+      "tool_call": 717,
+      "request_for_info": 284,
+      "cannot_answer": 30,
+      "invalid": 0
+    },
+    "cannot_answer": {
+      "direct": 98,
+      "tool_call": 1007,
+      "request_for_info": 50,
+      "cannot_answer": 140,
+      "invalid": 0
+    }
+  },
+  "ece_10_bins": 0.2832413745892662,
+  "api_choice_correct": 1650,
+  "per_source": {
+    "BFCL v2 Live Multiple": {
+      "requests": 2901,
+      "n_correct": 1340,
+      "accuracy": 0.4619096863150638,
+      "valid": 2901,
+      "brier": 0.7487308177800759,
+      "macro_f1_present": 0.3920496147772349,
+      "macro_f1_four": 0.2940372110829262,
+      "no_tool_cannot_answer_cases": 0,
+      "no_tool_hallucination_rate": null,
+      "top_probability_ties": 1,
+      "api_choice_disagreements": 1,
+      "per_category": {
+        "direct": {
+          "support": 0,
+          "predicted": 74,
+          "correct": 0,
+          "precision": 0.0,
+          "recall": null,
+          "f1": 0.0
+        },
+        "tool_call": {
+          "support": 1037,
+          "predicted": 2420,
+          "correct": 1007,
+          "precision": 0.4161157024793388,
+          "recall": 0.9710703953712633,
+          "f1": 0.582586057275094
+        },
+        "request_for_info": {
+          "support": 827,
+          "predicted": 267,
+          "correct": 215,
+          "precision": 0.8052434456928839,
+          "recall": 0.2599758162031439,
+          "f1": 0.3930530164533821
+        },
+        "cannot_answer": {
+          "support": 1037,
+          "predicted": 140,
+          "correct": 118,
+          "precision": 0.8428571428571429,
+          "recall": 0.11378977820636452,
+          "f1": 0.20050977060322855
+        }
+      },
+      "confusion": {
+        "direct": {
+          "direct": 0,
+          "tool_call": 0,
+          "request_for_info": 0,
+          "cannot_answer": 0,
+          "invalid": 0
+        },
+        "tool_call": {
+          "direct": 10,
+          "tool_call": 1007,
+          "request_for_info": 18,
+          "cannot_answer": 2,
+          "invalid": 0
+        },
+        "request_for_info": {
+          "direct": 12,
+          "tool_call": 580,
+          "request_for_info": 215,
+          "cannot_answer": 20,
+          "invalid": 0
+        },
+        "cannot_answer": {
+          "direct": 52,
+          "tool_call": 833,
+          "request_for_info": 34,
+          "cannot_answer": 118,
+          "invalid": 0
+        }
+      }
+    },
+    "BFCL v2 Live Simple": {
+      "requests": 751,
+      "n_correct": 311,
+      "accuracy": 0.4141145139813582,
+      "valid": 751,
+      "brier": 0.7580993185219707,
+      "macro_f1_present": 0.3725115873936522,
+      "macro_f1_four": 0.27938369054523915,
+      "no_tool_cannot_answer_cases": 258,
+      "no_tool_hallucination_rate": 0.6744186046511628,
+      "top_probability_ties": 0,
+      "api_choice_disagreements": 0,
+      "per_category": {
+        "direct": {
+          "support": 0,
+          "predicted": 82,
+          "correct": 0,
+          "precision": 0.0,
+          "recall": null,
+          "f1": 0.0
+        },
+        "tool_call": {
+          "support": 258,
+          "predicted": 531,
+          "correct": 220,
+          "precision": 0.4143126177024482,
+          "recall": 0.8527131782945736,
+          "f1": 0.5576679340937896
+        },
+        "request_for_info": {
+          "support": 235,
+          "predicted": 101,
+          "correct": 69,
+          "precision": 0.6831683168316832,
+          "recall": 0.2936170212765957,
+          "f1": 0.4107142857142857
+        },
+        "cannot_answer": {
+          "support": 258,
+          "predicted": 37,
+          "correct": 22,
+          "precision": 0.5945945945945946,
+          "recall": 0.08527131782945736,
+          "f1": 0.14915254237288136
+        }
+      },
+      "confusion": {
+        "direct": {
+          "direct": 0,
+          "tool_call": 0,
+          "request_for_info": 0,
+          "cannot_answer": 0,
+          "invalid": 0
+        },
+        "tool_call": {
+          "direct": 17,
+          "tool_call": 220,
+          "request_for_info": 16,
+          "cannot_answer": 5,
+          "invalid": 0
+        },
+        "request_for_info": {
+          "direct": 19,
+          "tool_call": 137,
+          "request_for_info": 69,
+          "cannot_answer": 10,
+          "invalid": 0
+        },
+        "cannot_answer": {
+          "direct": 46,
+          "tool_call": 174,
+          "request_for_info": 16,
+          "cannot_answer": 22,
+          "invalid": 0
+        }
+      }
+    }
+  }
+}

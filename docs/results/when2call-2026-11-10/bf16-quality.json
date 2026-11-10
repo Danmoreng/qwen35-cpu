@@ -1,0 +1,235 @@
+{
+  "requests": 3652,
+  "n_correct": 1647,
+  "accuracy": 0.45098576122672507,
+  "valid": 3652,
+  "brier": 0.7709297317202033,
+  "macro_f1_present": 0.3857588995509423,
+  "macro_f1_four": 0.2893191746632067,
+  "no_tool_cannot_answer_cases": 258,
+  "no_tool_hallucination_rate": 0.686046511627907,
+  "top_probability_ties": 0,
+  "api_choice_disagreements": 0,
+  "per_category": {
+    "direct": {
+      "support": 0,
+      "predicted": 148,
+      "correct": 0,
+      "precision": 0.0,
+      "recall": null,
+      "f1": 0.0
+    },
+    "tool_call": {
+      "support": 1295,
+      "predicted": 2949,
+      "correct": 1221,
+      "precision": 0.4140386571719227,
+      "recall": 0.9428571428571428,
+      "f1": 0.5754005655042412
+    },
+    "request_for_info": {
+      "support": 1062,
+      "predicted": 411,
+      "correct": 318,
+      "precision": 0.7737226277372263,
+      "recall": 0.2994350282485876,
+      "f1": 0.4317718940936864
+    },
+    "cannot_answer": {
+      "support": 1295,
+      "predicted": 144,
+      "correct": 108,
+      "precision": 0.75,
+      "recall": 0.0833976833976834,
+      "f1": 0.15010423905489922
+    }
+  },
+  "confusion": {
+    "direct": {
+      "direct": 0,
+      "tool_call": 0,
+      "request_for_info": 0,
+      "cannot_answer": 0,
+      "invalid": 0
+    },
+    "tool_call": {
+      "direct": 27,
+      "tool_call": 1221,
+      "request_for_info": 38,
+      "cannot_answer": 9,
+      "invalid": 0
+    },
+    "request_for_info": {
+      "direct": 31,
+      "tool_call": 686,
+      "request_for_info": 318,
+      "cannot_answer": 27,
+      "invalid": 0
+    },
+    "cannot_answer": {
+      "direct": 90,
+      "tool_call": 1042,
+      "request_for_info": 55,
+      "cannot_answer": 108,
+      "invalid": 0
+    }
+  },
+  "ece_10_bins": 0.2992045035198267,
+  "api_choice_correct": 1647,
+  "per_source": {
+    "BFCL v2 Live Multiple": {
+      "requests": 2901,
+      "n_correct": 1336,
+      "accuracy": 0.4605308514305412,
+      "valid": 2901,
+      "brier": 0.7696529138819747,
+      "macro_f1_present": 0.388978611142506,
+      "macro_f1_four": 0.2917339583568795,
+      "no_tool_cannot_answer_cases": 0,
+      "no_tool_hallucination_rate": null,
+      "top_probability_ties": 0,
+      "api_choice_disagreements": 0,
+      "per_category": {
+        "direct": {
+          "support": 0,
+          "predicted": 64,
+          "correct": 0,
+          "precision": 0.0,
+          "recall": null,
+          "f1": 0.0
+        },
+        "tool_call": {
+          "support": 1037,
+          "predicted": 2428,
+          "correct": 1003,
+          "precision": 0.4130971993410214,
+          "recall": 0.9672131147540983,
+          "f1": 0.578932178932179
+        },
+        "request_for_info": {
+          "support": 827,
+          "predicted": 301,
+          "correct": 241,
+          "precision": 0.8006644518272426,
+          "recall": 0.2914147521160822,
+          "f1": 0.42730496453900707
+        },
+        "cannot_answer": {
+          "support": 1037,
+          "predicted": 108,
+          "correct": 92,
+          "precision": 0.8518518518518519,
+          "recall": 0.08871745419479267,
+          "f1": 0.16069868995633188
+        }
+      },
+      "confusion": {
+        "direct": {
+          "direct": 0,
+          "tool_call": 0,
+          "request_for_info": 0,
+          "cannot_answer": 0,
+          "invalid": 0
+        },
+        "tool_call": {
+          "direct": 11,
+          "tool_call": 1003,
+          "request_for_info": 22,
+          "cannot_answer": 1,
+          "invalid": 0
+        },
+        "request_for_info": {
+          "direct": 11,
+          "tool_call": 560,
+          "request_for_info": 241,
+          "cannot_answer": 15,
+          "invalid": 0
+        },
+        "cannot_answer": {
+          "direct": 42,
+          "tool_call": 865,
+          "request_for_info": 38,
+          "cannot_answer": 92,
+          "invalid": 0
+        }
+      }
+    },
+    "BFCL v2 Live Simple": {
+      "requests": 751,
+      "n_correct": 311,
+      "accuracy": 0.4141145139813582,
+      "valid": 751,
+      "brier": 0.7758618869115497,
+      "macro_f1_present": 0.37163742057258986,
+      "macro_f1_four": 0.2787280654294424,
+      "no_tool_cannot_answer_cases": 258,
+      "no_tool_hallucination_rate": 0.686046511627907,
+      "top_probability_ties": 0,
+      "api_choice_disagreements": 0,
+      "per_category": {
+        "direct": {
+          "support": 0,
+          "predicted": 84,
+          "correct": 0,
+          "precision": 0.0,
+          "recall": null,
+          "f1": 0.0
+        },
+        "tool_call": {
+          "support": 258,
+          "predicted": 521,
+          "correct": 218,
+          "precision": 0.418426103646833,
+          "recall": 0.8449612403100775,
+          "f1": 0.5596919127086007
+        },
+        "request_for_info": {
+          "support": 235,
+          "predicted": 110,
+          "correct": 77,
+          "precision": 0.7,
+          "recall": 0.3276595744680851,
+          "f1": 0.4463768115942029
+        },
+        "cannot_answer": {
+          "support": 258,
+          "predicted": 36,
+          "correct": 16,
+          "precision": 0.4444444444444444,
+          "recall": 0.06201550387596899,
+          "f1": 0.10884353741496598
+        }
+      },
+      "confusion": {
+        "direct": {
+          "direct": 0,
+          "tool_call": 0,
+          "request_for_info": 0,
+          "cannot_answer": 0,
+          "invalid": 0
+        },
+        "tool_call": {
+          "direct": 16,
+          "tool_call": 218,
+          "request_for_info": 16,
+          "cannot_answer": 8,
+          "invalid": 0
+        },
+        "request_for_info": {
+          "direct": 20,
+          "tool_call": 126,
+          "request_for_info": 77,
+          "cannot_answer": 12,
+          "invalid": 0
+        },
+        "cannot_answer": {
+          "direct": 48,
+          "tool_call": 177,
+          "request_for_info": 17,
+          "cannot_answer": 16,
+          "invalid": 0
+        }
+      }
+    }
+  }
+}

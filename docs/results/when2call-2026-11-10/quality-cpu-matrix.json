@@ -1,0 +1,16 @@
+[
+  {
+    "name": "qev-Q4-CPU",
+    "executable": "/usr/bin/python",
+    "args": [
+      "scripts/when2call.py",
+      "run",
+      "--prepared",
+      "benchmarks/when2call-2026-11-10/prepared",
+      "--precision",
+      "Q4",
+      "--timeout-seconds",
+      "7200"
+    ]
+  }
+]

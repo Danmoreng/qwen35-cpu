@@ -1,0 +1,44 @@
+[
+  {
+    "precision": "Q4",
+    "full_test_rows": 3652,
+    "raw_response_hashes_verified": 3652,
+    "affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "server_stopped": true
+  },
+  {
+    "precision": "Q8",
+    "full_test_rows": 3652,
+    "raw_response_hashes_verified": 3780,
+    "affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "server_stopped": true
+  },
+  {
+    "precision": "BF16",
+    "full_test_rows": 3652,
+    "raw_response_hashes_verified": 3780,
+    "affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "server_stopped": true
+  }
+]

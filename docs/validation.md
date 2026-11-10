@@ -136,3 +136,28 @@ produce latency measurements. Keep one control process at a time and use a
 bounded runtime that ends before the daily work cutoff.
 
 Historical extraction and release reports remain in [Git history](history.md).
+
+## NVIDIA When2Call decision comparison
+
+`scripts/when2call.py` uses only the Python standard library. Preparation needs
+the exact NVIDIA MCQ test file and the native `systemone_protocol_test` with
+the pinned qev tokenizer/config. Evaluation needs the native qev server, the
+publisher Q8/BF16 GGUFs and CPU llama.cpp described in the JevBench section.
+Optional `--backend vulkan` uses a separate stock build of that same revision
+at `.cache/llama-qev-vulkan/bin/llama-server`, with the B70 as `Vulkan0`.
+The native engine does not gain a GPU backend. Compare the complete GPU runs
+against CPU decisions on the frozen 128-item panel.
+Every request must fit its context window; actual token counts, zero generated
+tokens and disabled prefix caching are checked. Run performance cases through
+`benchmark-inference-seq.ps1` with affinity 63. The driver checks the daily
+deadline and terminates its own server on completion or interruption.
+
+`python tests/when2call_test.py` checks answer-key/metadata isolation, preservation
+of shuffled candidate texts and category mapping, and scoring of invalid and
+unsupported-class predictions, rejection of changed prediction records, and
+explicit handling of interrupted prefixes without requiring models. CTest includes it as
+`when2call_scripts` whenever Python is available.
+`scripts/summarize-when2call.py` independently verifies raw response hashes,
+recomputes every prediction and Brier score, checks complete-test and CPU-panel
+coverage, records backend agreement, and checks CPU affinity and server shutdown.
+See the [When2Call protocol](benchmarks/when2call.md).

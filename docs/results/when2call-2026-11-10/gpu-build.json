@@ -1,0 +1,28 @@
+{
+  "cmake_cache_sha256": "b5c357f683c56b36c9fa0001ea454dca869f9db587b91961b0eb7cfc2d2ca621",
+  "spirv_headers_revision": "6efe5ae6b7c6ad29da3f2cc3f164b9c3d72b78b1",
+  "device_inventory": "Available devices:\n  Vulkan0: Intel(R) Graphics (BMG G31) (32656 MiB, 2935 MiB free)\n  Vulkan1: AMD Ryzen 5 7600 6-Core Processor (RADV RAPHAEL_MENDOCINO) (15988 MiB, 15958 MiB free)\n",
+  "existing_gpu_service_running": true,
+  "source_revision": "7d7f0287530bc8981690f361d8c1627dbae1c99a",
+  "build_type": "Release",
+  "backend": "Vulkan",
+  "compiler": "GNU 16.2.1",
+  "cmake_options": [
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DGGML_VULKAN=ON",
+    "-DLLAMA_CURL=OFF",
+    "-DLLAMA_BUILD_TESTS=OFF",
+    "-DLLAMA_BUILD_EXAMPLES=OFF",
+    "-DCMAKE_PREFIX_PATH=/home/sebastian/Development/qwen35-cpu/.cache/spirv-headers-qev/install",
+    "-DCMAKE_CXX_FLAGS=-I/home/sebastian/Development/qwen35-cpu/.cache/spirv-headers-qev/include"
+  ],
+  "build_command": [
+    "cmake",
+    "--build",
+    ".cache/llama-qev-vulkan",
+    "--target",
+    "llama-server",
+    "-j",
+    "2"
+  ]
+}

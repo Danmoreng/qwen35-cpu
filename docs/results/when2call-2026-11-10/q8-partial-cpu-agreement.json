@@ -1,0 +1,294 @@
+{
+  "first_only_correct": 4,
+  "second_only_correct": 5,
+  "different_predictions": 14,
+  "cases": [
+    {
+      "id": "08abb2e6-71e5-44b8-ad9d-a73792fc9027",
+      "expected": "cannot_answer",
+      "first": "cannot_answer",
+      "second": "direct",
+      "first_correct": true,
+      "second_correct": false,
+      "first_probabilities": {
+        "direct": 0.3979799236898894,
+        "tool_call": 0.0713561936222969,
+        "request_for_info": 0.11701708372057225,
+        "cannot_answer": 0.41364679896724144
+      },
+      "second_probabilities": {
+        "direct": 0.4046146551543879,
+        "tool_call": 0.07439623909107829,
+        "request_for_info": 0.1202148151473297,
+        "cannot_answer": 0.400774290607204
+      }
+    },
+    {
+      "id": "fb9c0bde-edc2-4aea-afc3-dc1cbaf7f7f3",
+      "expected": "cannot_answer",
+      "first": "tool_call",
+      "second": "cannot_answer",
+      "first_correct": false,
+      "second_correct": true,
+      "first_probabilities": {
+        "tool_call": 0.3966247208873726,
+        "cannot_answer": 0.38761153122397646,
+        "direct": 0.09341430148207418,
+        "request_for_info": 0.12234944640657675
+      },
+      "second_probabilities": {
+        "tool_call": 0.3907803831871166,
+        "cannot_answer": 0.3918978171898719,
+        "direct": 0.0924076817817767,
+        "request_for_info": 0.1249141178412349
+      }
+    },
+    {
+      "id": "a1b0372b-554d-49d5-8569-df71934327b4",
+      "expected": "cannot_answer",
+      "first": "cannot_answer",
+      "second": "tool_call",
+      "first_correct": true,
+      "second_correct": false,
+      "first_probabilities": {
+        "cannot_answer": 0.36636827090488355,
+        "direct": 0.15202658662985866,
+        "request_for_info": 0.12586730142981795,
+        "tool_call": 0.3557378410354397
+      },
+      "second_probabilities": {
+        "cannot_answer": 0.3570864352040721,
+        "direct": 0.1477137529616952,
+        "request_for_info": 0.12189616221333333,
+        "tool_call": 0.3733036496208994
+      }
+    },
+    {
+      "id": "2e4395b1-71c6-4997-9e87-9ba9be468eb4",
+      "expected": "cannot_answer",
+      "first": "tool_call",
+      "second": "direct",
+      "first_correct": false,
+      "second_correct": false,
+      "first_probabilities": {
+        "tool_call": 0.32373786541869204,
+        "direct": 0.30372379987964837,
+        "request_for_info": 0.06554906646553949,
+        "cannot_answer": 0.3069892682361201
+      },
+      "second_probabilities": {
+        "tool_call": 0.31201334706154504,
+        "direct": 0.31984013793465343,
+        "request_for_info": 0.06672471431729347,
+        "cannot_answer": 0.30142180068650803
+      }
+    },
+    {
+      "id": "8d594593-adab-4bbc-8e54-3136973b721d",
+      "expected": "cannot_answer",
+      "first": "cannot_answer",
+      "second": "direct",
+      "first_correct": true,
+      "second_correct": false,
+      "first_probabilities": {
+        "cannot_answer": 0.3522039167907036,
+        "direct": 0.34145634215156795,
+        "request_for_info": 0.11921864731064857,
+        "tool_call": 0.18712109374707986
+      },
+      "second_probabilities": {
+        "cannot_answer": 0.3364704279802086,
+        "direct": 0.355446642272846,
+        "request_for_info": 0.12803581424454566,
+        "tool_call": 0.18004711550239974
+      }
+    },
+    {
+      "id": "34647ce4-5b3c-428c-b9a6-0eda42393a25",
+      "expected": "cannot_answer",
+      "first": "direct",
+      "second": "request_for_info",
+      "first_correct": false,
+      "second_correct": false,
+      "first_probabilities": {
+        "direct": 0.37152724651619345,
+        "tool_call": 0.07543147642591347,
+        "request_for_info": 0.36824171943792106,
+        "cannot_answer": 0.18479955761997202
+      },
+      "second_probabilities": {
+        "direct": 0.3652779577588971,
+        "tool_call": 0.07332648363408319,
+        "request_for_info": 0.3750261323633532,
+        "cannot_answer": 0.18636942624366654
+      }
+    },
+    {
+      "id": "8249fc40-c5c9-4782-b28c-02df0bb18c62",
+      "expected": "cannot_answer",
+      "first": "tool_call",
+      "second": "cannot_answer",
+      "first_correct": false,
+      "second_correct": true,
+      "first_probabilities": {
+        "request_for_info": 0.11688050614246959,
+        "direct": 0.14526306783851536,
+        "tool_call": 0.3734716522444432,
+        "cannot_answer": 0.36438477377457196
+      },
+      "second_probabilities": {
+        "request_for_info": 0.11648683894770546,
+        "direct": 0.14365989096445003,
+        "tool_call": 0.36503445595365447,
+        "cannot_answer": 0.37481881413419
+      }
+    },
+    {
+      "id": "31d6deeb-c26d-43eb-a0a9-cae01cc9d981",
+      "expected": "cannot_answer",
+      "first": "tool_call",
+      "second": "request_for_info",
+      "first_correct": false,
+      "second_correct": false,
+      "first_probabilities": {
+        "cannot_answer": 0.06929507671758203,
+        "direct": 0.12031933444953853,
+        "tool_call": 0.4058112963637181,
+        "request_for_info": 0.40457429246916127
+      },
+      "second_probabilities": {
+        "cannot_answer": 0.06790822452309192,
+        "direct": 0.11440944217885746,
+        "tool_call": 0.38755622079767615,
+        "request_for_info": 0.43012611250037436
+      }
+    },
+    {
+      "id": "0114f8da-a53a-4a33-8fcd-394fafe6b246",
+      "expected": "cannot_answer",
+      "first": "cannot_answer",
+      "second": "tool_call",
+      "first_correct": true,
+      "second_correct": false,
+      "first_probabilities": {
+        "tool_call": 0.3955533705914628,
+        "direct": 0.09978573294340624,
+        "cannot_answer": 0.4044949642389727,
+        "request_for_info": 0.10016593222615824
+      },
+      "second_probabilities": {
+        "tool_call": 0.40096352383118977,
+        "direct": 0.10349210525766014,
+        "cannot_answer": 0.396919712383679,
+        "request_for_info": 0.09862465852747115
+      }
+    },
+    {
+      "id": "1e333361-f2cd-4ea9-8ce6-8bb89d6824ac",
+      "expected": "cannot_answer",
+      "first": "request_for_info",
+      "second": "tool_call",
+      "first_correct": false,
+      "second_correct": false,
+      "first_probabilities": {
+        "request_for_info": 0.46132997914754353,
+        "cannot_answer": 0.03778492064801568,
+        "tool_call": 0.42148057642204245,
+        "direct": 0.07940452378239841
+      },
+      "second_probabilities": {
+        "request_for_info": 0.440467834504227,
+        "cannot_answer": 0.03714215973050529,
+        "tool_call": 0.4449418345890089,
+        "direct": 0.07744817117625867
+      }
+    },
+    {
+      "id": "18f28dd7-6aa6-49f6-9735-0ec6f64072ee",
+      "expected": "cannot_answer",
+      "first": "tool_call",
+      "second": "cannot_answer",
+      "first_correct": false,
+      "second_correct": true,
+      "first_probabilities": {
+        "cannot_answer": 0.3498123979614815,
+        "request_for_info": 0.20857730840676644,
+        "direct": 0.08331268079233436,
+        "tool_call": 0.35829761283941775
+      },
+      "second_probabilities": {
+        "cannot_answer": 0.35300234827091254,
+        "request_for_info": 0.2102604149333699,
+        "direct": 0.08461640119619547,
+        "tool_call": 0.35212083559952206
+      }
+    },
+    {
+      "id": "a1388013-26fb-4c02-bbb0-24217041165f",
+      "expected": "cannot_answer",
+      "first": "request_for_info",
+      "second": "cannot_answer",
+      "first_correct": false,
+      "second_correct": true,
+      "first_probabilities": {
+        "tool_call": 0.08649598423142371,
+        "request_for_info": 0.3533270746901018,
+        "cannot_answer": 0.3489861799448415,
+        "direct": 0.21119076113363308
+      },
+      "second_probabilities": {
+        "tool_call": 0.08560338514470531,
+        "request_for_info": 0.3474243626360623,
+        "cannot_answer": 0.3537835565056748,
+        "direct": 0.21318869571355759
+      }
+    },
+    {
+      "id": "a23c44b4-2cd4-47a6-910a-a11a9ada46d5",
+      "expected": "cannot_answer",
+      "first": "tool_call",
+      "second": "direct",
+      "first_correct": false,
+      "second_correct": false,
+      "first_probabilities": {
+        "cannot_answer": 0.17759425891494596,
+        "tool_call": 0.2769427434185431,
+        "request_for_info": 0.2695994564358292,
+        "direct": 0.27586354123068174
+      },
+      "second_probabilities": {
+        "cannot_answer": 0.1789967110851409,
+        "tool_call": 0.2621415305715447,
+        "request_for_info": 0.2690663506853044,
+        "direct": 0.28979540765801
+      }
+    },
+    {
+      "id": "b20b6ecc-f602-4aef-8c62-2d79e9547e3a",
+      "expected": "cannot_answer",
+      "first": "direct",
+      "second": "cannot_answer",
+      "first_correct": false,
+      "second_correct": true,
+      "first_probabilities": {
+        "tool_call": 0.0434260373706608,
+        "cannot_answer": 0.3812995668786034,
+        "request_for_info": 0.16660809219046147,
+        "direct": 0.40866630356027434
+      },
+      "second_probabilities": {
+        "tool_call": 0.042547221606196985,
+        "cannot_answer": 0.39607194385417205,
+        "request_for_info": 0.17065657773587153,
+        "direct": 0.3907242568037594
+      }
+    }
+  ],
+  "tasks": 1317,
+  "first_backend": "cpu",
+  "second_backend": "vulkan",
+  "cpu_correct": 115,
+  "gpu_correct": 116,
+  "max_probability_delta": 0.042414872008018856,
+  "excluded_from_full_test_accuracy": true
+}

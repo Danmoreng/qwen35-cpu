@@ -1,0 +1,62 @@
+{
+  "dataset": "NVIDIA When2Call MCQ test",
+  "tasks": 3652,
+  "dataset_revision": "0582f7749df63a96fdc3070932e83e72396ace53",
+  "adapted_protocol": true,
+  "models": [
+    {
+      "precision": "Q4",
+      "quality_backend": "cpu",
+      "requests": 3652,
+      "correct": 1651,
+      "accuracy": 0.45208105147864186,
+      "brier": 0.7506573632502738,
+      "ece_10_bins": 0.2832413745892662,
+      "api_choice_correct": 1650,
+      "macro_f1_present": 0.3884586371801961,
+      "macro_f1_four": 0.2913439778851471,
+      "valid": 3652,
+      "no_tool_hallucination_rate": 0.6744186046511628,
+      "no_tool_cannot_answer_cases": 258,
+      "top_probability_ties": 1,
+      "api_choice_disagreements": 1,
+      "quality_wall_time_s": 2321.309097
+    },
+    {
+      "precision": "Q8",
+      "quality_backend": "vulkan",
+      "requests": 3652,
+      "correct": 1651,
+      "accuracy": 0.45208105147864186,
+      "brier": 0.7697408264711185,
+      "ece_10_bins": 0.29763134406972225,
+      "api_choice_correct": 1651,
+      "macro_f1_present": 0.38753208557256036,
+      "macro_f1_four": 0.29064906417942027,
+      "valid": 3652,
+      "no_tool_hallucination_rate": 0.6821705426356589,
+      "no_tool_cannot_answer_cases": 258,
+      "top_probability_ties": 0,
+      "api_choice_disagreements": 0,
+      "quality_wall_time_s": 468.536695
+    },
+    {
+      "precision": "BF16",
+      "quality_backend": "vulkan",
+      "requests": 3652,
+      "correct": 1647,
+      "accuracy": 0.45098576122672507,
+      "brier": 0.7709297317202033,
+      "ece_10_bins": 0.2992045035198267,
+      "api_choice_correct": 1647,
+      "macro_f1_present": 0.3857588995509423,
+      "macro_f1_four": 0.2893191746632067,
+      "valid": 3652,
+      "no_tool_hallucination_rate": 0.686046511627907,
+      "no_tool_cannot_answer_cases": 258,
+      "top_probability_ties": 0,
+      "api_choice_disagreements": 0,
+      "quality_wall_time_s": 454.378146
+    }
+  ]
+}

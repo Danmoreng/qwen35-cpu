@@ -1,0 +1,12 @@
+{
+  "first_only_correct": 0,
+  "second_only_correct": 0,
+  "different_predictions": 0,
+  "cases": [],
+  "tasks": 128,
+  "first_backend": "cpu",
+  "second_backend": "vulkan",
+  "cpu_correct": 56,
+  "gpu_correct": 56,
+  "max_probability_delta": 0.012698127455762986
+}
