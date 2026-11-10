@@ -14,7 +14,7 @@ measurements belong in ignored local directories. Use each command's `--help`
 | Quality scoring | `evaluate-comparison-quality.py`, `evaluate-native-gguf.py`, `compare-logit-dumps.py`, `compare-quality-pair.py`, `quality-report.py` |
 | Calibration | `prepare-diverse-calibration.py`, `collect-resident-calibration.py`, `fit-dot4-quant.py`, `fit-block-covariance.py`, `run-large-calibration-study.py` |
 | Decision-model calibration | `prepare-qev-calibration.py`, `collect-qev-calibration.py`, `qev-study.py`, `split-qev-study.py` |
-| JevBench v1 decisions | `evaluate-jevbench.py`, `summarize-jevbench.py`, `plot-jevbench.py`; frozen harness, native Q4 or publisher Q8/BF16 through CPU llama.cpp; timings through `benchmark-inference-seq.ps1` |
+| JevBench v1 decisions | `evaluate-jevbench.py`, `summarize-jevbench.py`, `plot-jevbench.py`, `audit-jevbench.py`; frozen harness, native Q4 or publisher Q8/BF16 through CPU llama.cpp; timings through `benchmark-inference-seq.ps1` |
 | Model packaging | `prepare-hf-package.py`, `prepare-qev-hf-package.py`, `upload-hf-package.py` |
 | Binary packaging | `package-release.py`, `verify-release.py` |
 | Space packaging | `prepare-qev-space.py`, `serve-space-preview.py`, `publish-qev-space.py` |

@@ -250,15 +250,15 @@
     "cpu-samples.csv": "23dab5946ad1d645ed4afbdd02e713a66219206847c2cbf5bba90302cdd58a7f",
     "cpu-validation.json": "53103113609cda9038264feb6ed35474518076fd0ad4b845bd1374c1136f017b",
     "manifest.json": "0a1e054f332a433a54f15560095ebfb79c54ab409a0bae960f2ef4fb6a7cf375",
-    "qev-jevbench-cpu-vs-h100.png": "e20c7db8efda17feb17b07593cecd5468bcfd3b1b5a1697ab22d35c5ac44b259",
-    "qev-jevbench-cpu-vs-h100.svg": "e3820397abc13f5c430552c1e7fed7229bd3c9384b9a9bbe5c45198d4ca34a9f",
+    "qev-jevbench-cpu-vs-h100.png": "2238eec70627592681215ba016bd4f9f9e476b3cc235a8fa05bcd8bebe81ac9d",
+    "qev-jevbench-cpu-vs-h100.svg": "a9887ff21e1be61922ebe1ced3bb779bc887182ea54cd9c3bc72662812e7c841",
     "quality.json": "5ba9237d35cf0c2cb9d91bf26a91e7d9913211c97051fcad2ed2c404e4336a1f",
-    "twitter-caption.txt": "5e6003466cff87dd25d004444320b60068e6a5ebdbe986a60018c32e2f98a6ae"
+    "twitter-caption.txt": "8c764fed13d9907c991bd3be7b4722cb00e0518001de54495d92374e96b82029"
   },
   "scripts": {
     "evaluate-jevbench.py": "1537d68a7f357070fa0c4edf1f898fdbb35786657831ce0f1345f2fa139aa7d8",
-    "summarize-jevbench.py": "81e0df571017861da56b93855d77eb71e94777676ffca72bb2f373eda6d99f42",
-    "plot-jevbench.py": "a14643e6a1122dd4367b4633f9e01bc0a056d770512e7bc4e1b388bd33964f50"
+    "summarize-jevbench.py": "ccfee5ae26e2ab5f7ee9c6671617307979f9eeed57ac0f6944403f1207ad5b3a",
+    "plot-jevbench.py": "dfd0de107e973877dc764034a30243b800037c7ea0228e820a79bbe05a656413"
   },
   "plotting_requirements": [
     "contourpy==1.4.0",
@@ -272,5 +272,6 @@
     "pyparsing==3.3.3",
     "python-dateutil==4.0.0",
     "tzdata==2026.6"
-  ]
+  ],
+  "followup_audit": "audit-provenance.json"
 }

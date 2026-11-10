@@ -1,1 +1,1 @@
-qev-0.8B in H128/Q4-G32-DOT4: 425 MB, 181/231 (78.35%) on JevBench v1, 74 ms median on a Ryzen 5 7600 CPU. Q8/BF16 tested too. Chart includes AWS's reported Gemma 4/H100 results (E2B: 180/231). Different hardware; 1 task apart.
+qev-0.8B in H128/Q4-G32-DOT4: 425 MB, 181/231 (78.35%) on JevBench v1, 74 ms median on a Ryzen 5 7600 CPU. Q8/BF16 tested too. AWS Gemma/H100 results are reported; hardware differs. Public set; qev checkpoint selection used benchmark scores.

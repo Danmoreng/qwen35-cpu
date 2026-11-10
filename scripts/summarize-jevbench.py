@@ -130,11 +130,10 @@ def main():
                                       cpu_measurement_protocol="one full warmup plus three full measured passes, serial HTTP, loading excluded",
                                       models=models))
     q4 = qev_models[0]
-    gap = abs(q4["correct"] - 180)
     caption = (f'qev-0.8B in H128/Q4-G32-DOT4: {q4["file_bytes"]/1e6:.0f} MB, {q4["correct"]}/231 ({100*q4["accuracy"]:.2f}%) on JevBench v1, '
                f'{q4["median_latency_ms"]:.0f} ms median on a Ryzen 5 7600 CPU. Q8/BF16 tested too. '
-               "Chart includes AWS's reported Gemma 4/H100 results (E2B: 180/231). "
-               f'Different hardware; {gap} task{"s" if gap != 1 else ""} apart.')
+               "AWS Gemma/H100 results are reported; hardware differs. "
+               "Public set; qev checkpoint selection used benchmark scores.")
     assert len(caption) <= 280
     (out / "twitter-caption.txt").write_text(caption + "\n")
     save(out / "cpu-validation.json", validations)

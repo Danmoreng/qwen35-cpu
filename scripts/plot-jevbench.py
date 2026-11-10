@@ -107,7 +107,10 @@ def main():
     fig.text(.065, .064,
              "Different hardware and runtimes across families. Gemma results are reported, not rerun here. "
              "Model-file sizes are not RAM usage.", fontsize=9.1, color=muted)
-    fig.text(.065, .029,
+    fig.text(.065, .040,
+             "Public benchmark: qev's author used benchmark scores for checkpoint selection. "
+             "Training-overlap exclusion is author-reported, not independently verified.", fontsize=9.1, color=muted)
+    fig.text(.065, .016,
              "Sources: strandsagents.com/blog/strands-decider-gemma-4-models/  ·  "
              f"github.com/Danmoreng/qwen35-cpu  ·  {measured_date}", fontsize=8.8, color=muted)
     a.output.parent.mkdir(parents=True, exist_ok=True)

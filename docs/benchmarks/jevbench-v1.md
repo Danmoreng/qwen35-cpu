@@ -36,7 +36,10 @@ similar top-label accuracy to E2B. Its top-label ECE is **0.06750**.
 This is the 231-task **public accuracy**, not the newer JevBench leaderboard
 composite, sealed held-out score, or the separate Jev Skills suite. Different
 model families, training recipes and numeric formats are being compared. This
-run does not audit the original models' training or checkpoint-selection data.
+run did not initially audit training or checkpoint selection. The subsequent
+[precision and provenance audit](#precision-and-training-provenance-audit)
+finds that the qev author used benchmark scores for checkpoint selection.
+Training-overlap exclusion remains an author claim, not an independent finding.
 
 ## Where qev succeeds and fails
 
@@ -162,6 +165,84 @@ boundary effects. A one- or two-task difference on this public set is not
 evidence that quantization generally improves accuracy. It also does not
 establish equal probability fidelity; Brier and the earlier independent
 [Jev Skills calibration study](decision-quality.md) remain separate evidence.
+
+## Precision and training provenance audit
+
+The November 10 follow-up independently compares the saved per-task decisions:
+
+| Paired comparison | First only correct | Second only correct | Different predictions | Exact two-sided McNemar p |
+| --- | ---: | ---: | ---: | ---: |
+| Q4 vs BF16 | 4 | 2 | 11 | 0.6875 |
+| Q4 vs Q8 | 3 | 2 | 10 | 1.0000 |
+| Q8 vs BF16 | 1 | 0 | 1 | 1.0000 |
+
+Q4's two-task net advantage over BF16 is **not a demonstrated accuracy gain**.
+Quantization changes option logits; some changes correct an error and others
+introduce one. Higher numeric fidelity does not guarantee a higher count of
+correct argmax answers on this finite set. Do not describe this as proven
+regularization. The paired p-values are descriptive and assume independent
+items, whereas this benchmark includes related cases. Identical repeated runs
+establish reproducibility, not additional independent accuracy samples.
+
+The only Q8/BF16 disagreement is `hard-sol-a-multi_hop-01`. Their top-two
+probability margins are 0.00913 and 0.00161 respectively: a close decision that
+flips with numerical changes in the same HTTP engine. Q4/BF16 also includes
+larger distribution shifts; not every changed answer is a near tie.
+Six of their eleven disagreements have the tokenizer-boundary difference
+described above. A subsequent quality-only control feeds both GGUFs the exact
+native token IDs: **BF16 stays at 179/231 and Q8 at 180/231**. BF16 changes
+no predictions; Q8 changes one incorrect label to another incorrect label
+(`hard-opus-a-temporal_numeric-07`, in the boundary group). Thus the control
+retains the accuracy ranking. It uses the existing CPU study tool with batch
+2,048, microbatch 512, FP16 KV and the same six-core affinity; it is not a
+bit-width-only comparison against the native Q4 kernels. Full results are in
+[precision-audit.json](../results/jevbench-v1-2026-11-10/precision-audit.json).
+It does not replace the HTTP measurements or their latency values.
+
+**Checkpoint selection used benchmark feedback.** The publisher's
+[October 22 clarification](https://huggingface.co/labqoat/qev-0.8b/commit/1d5e299fb410f2f120ddca45a95cac9651326cde)
+states that benchmark scores guided the choice of checkpoints and weight soups;
+these are not untouched held-out results. This supersedes the pinned older
+card's broader claim that benchmarks were not used for tuning. It also renames
+the release from A1/SE50 to SG50. This is a documentation clarification, not a
+different weight release: Hub LFS metadata at the measured source revision
+`6334efd2d556cad22a3040049efb2887a60e7fb2` and current revision
+`9a095f35fe0e27a888cfed9eb1517718dc9dc59e` gives the same `model.safetensors`
+SHA-256, `d33a719c0eedc34a530879e3840ddf0a0769b5060a987aed24e84e1170b8beb5`.
+The earlier [reference tensor audit](decision-quality.md#references-and-data-separation)
+links that source to the measured BF16 GGUF. The card's 231-item “Benchmark
+Heaven” result is the relevant public set; its separately named 240-case
+“JevBench” evaluation is a different suite.
+
+**Direct training contamination remains unproven either way.** The publisher
+says benchmark items were excluded from training/calibration, with a 16-token
+overlap screen and (in the older card) an embedding similarity screen. Training
+also deliberately covers similar task formats. Neither this repository nor
+the inspected public Hub files provide the full training corpus, filtering
+outputs or checkpoint-selection logs needed to reproduce those claims. The
+author's public `jev-skills` dataset is an evaluation suite, not that corpus.
+Exact-overlap filtering alone cannot rule out paraphrases, generated derivatives
+or overlap already present in base-model pretraining. Benchmark-informed
+selection is established; training on these exact test answers is not.
+
+Our Q4 calibration records use independent public training splits and generated
+inputs, with recipe selection on a Jev Skills development panel. They do not
+record fitting or recipe selection on these 231 tasks; this cannot audit the
+original fine-tune's unpublished training data. See
+[data separation](decision-quality.md#independent-calibration-inputs).
+
+The justified claim is therefore **181/231 on a public benchmark, retained after
+Q4 quantization**, with benchmark-informed upstream checkpoint selection.
+It is not a verified contamination-free generalization score. A stronger next
+evaluation would freeze all three existing artifacts and a new scoring plan,
+then use fresh private, program-checked tasks or an independently administered
+sealed benchmark, without adapting models or prompts to the results. No
+checkpoint, prompt or calibration setting was changed during this audit.
+The Gemma models' training and selection histories were not audited here.
+
+The [audit evidence](../results/jevbench-v1-2026-11-10/audit-provenance.json)
+records source pins, weight identity, per-task comparisons and raw snapshot
+hashes. The English chart and caption now carry the checkpoint-selection caveat.
 
 ## Reproduction and evidence
 

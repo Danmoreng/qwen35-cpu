@@ -126,4 +126,13 @@ hashes, strict schema validity, repeated predictions/probabilities, token usage
 and server shutdown before exporting the comparison. Rendering the English
 shareable PNG/SVG with `scripts/plot-jevbench.py` additionally requires
 Matplotlib. See [the frozen protocol and results](benchmarks/jevbench-v1.md).
+
+`scripts/audit-jevbench.py` recomputes paired disagreements from those saved
+results. Its `--prepare` mode additionally requires `systemone_protocol_test`
+and the pinned native qev tokenizer/config to export exact native input tokens.
+The quality-only control uses the existing CPU `qev-llama-study` target with
+the pinned BF16/Q8 GGUFs; it has no Python inference dependencies and does not
+produce latency measurements. Keep one control process at a time and use a
+bounded runtime that ends before the daily work cutoff.
+
 Historical extraction and release reports remain in [Git history](history.md).

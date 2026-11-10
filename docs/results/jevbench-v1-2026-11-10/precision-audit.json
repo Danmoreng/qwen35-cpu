@@ -1,0 +1,520 @@
+{
+  "tasks": 231,
+  "comparisons": {
+    "Q4_vs_BF16": {
+      "first_correct": 181,
+      "second_correct": 179,
+      "first_only_correct": 4,
+      "second_only_correct": 2,
+      "different_predictions": 11,
+      "exact_mcnemar_two_sided_p": 0.6875,
+      "cases": [
+        {
+          "task_id": "original-adequacy-05-1",
+          "first": "no",
+          "second": "yes",
+          "first_correct": true,
+          "second_correct": false,
+          "boundary_difference": false,
+          "first_margin": 0.1800000000000001,
+          "second_margin": 0.5482845996073931
+        },
+        {
+          "task_id": "hard-opus-a-temporal_numeric-07",
+          "first": "sep_25",
+          "second": "sep_24",
+          "first_correct": false,
+          "second_correct": false,
+          "boundary_difference": true,
+          "first_margin": 0.02749999999999997,
+          "second_margin": 0.02450362693839861
+        },
+        {
+          "task_id": "hard-opus-a-temporal_numeric-12",
+          "first": "2",
+          "second": "3",
+          "first_correct": false,
+          "second_correct": false,
+          "boundary_difference": true,
+          "first_margin": 0.2674,
+          "second_margin": 0.17043647513380727
+        },
+        {
+          "task_id": "hard-opus-b-multi_hop-04",
+          "first": "no_page_ticket_only",
+          "second": "dmitri",
+          "first_correct": false,
+          "second_correct": false,
+          "boundary_difference": true,
+          "first_margin": 0.6951,
+          "second_margin": 0.8083352037997641
+        },
+        {
+          "task_id": "hard-opus-b-tradeoff-08",
+          "first": "yes",
+          "second": "no",
+          "first_correct": true,
+          "second_correct": false,
+          "boundary_difference": true,
+          "first_margin": 0.13559999999999994,
+          "second_margin": 0.40252768512584813
+        },
+        {
+          "task_id": "hard-opus-c-long_policy-02",
+          "first": "erase_all",
+          "second": "erase_but_retain_transaction_records",
+          "first_correct": false,
+          "second_correct": true,
+          "boundary_difference": true,
+          "first_margin": 0.07900000000000001,
+          "second_margin": 0.08026924219141007
+        },
+        {
+          "task_id": "hard-opus-c-long_policy-03",
+          "first": "eur_300",
+          "second": "eur_200",
+          "first_correct": false,
+          "second_correct": false,
+          "boundary_difference": true,
+          "first_margin": 0.03230000000000005,
+          "second_margin": 0.08381794698361783
+        },
+        {
+          "task_id": "hard-sol-a-multi_hop-01",
+          "first": "accept_s2_dusk",
+          "second": "reject_cutoff",
+          "first_correct": true,
+          "second_correct": false,
+          "boundary_difference": false,
+          "first_margin": 0.1507,
+          "second_margin": 0.0016067830547314976
+        },
+        {
+          "task_id": "hard-sol-a-multi_hop-05",
+          "first": "pay_manager_approved",
+          "second": "reject_category",
+          "first_correct": false,
+          "second_correct": false,
+          "boundary_difference": false,
+          "first_margin": 0.31310000000000004,
+          "second_margin": 0.23910096948300852
+        },
+        {
+          "task_id": "hard-sol-b-temporal_numeric-01",
+          "first": "late_by_under_2h",
+          "second": "within_window",
+          "first_correct": true,
+          "second_correct": false,
+          "boundary_difference": false,
+          "first_margin": 0.05080000000000001,
+          "second_margin": 0.12242769987357904
+        },
+        {
+          "task_id": "hard-sol-c-judge_hard-10",
+          "first": "no",
+          "second": "yes",
+          "first_correct": false,
+          "second_correct": true,
+          "boundary_difference": false,
+          "first_margin": 0.1774,
+          "second_margin": 0.4764559069895635
+        }
+      ]
+    },
+    "Q4_vs_Q8": {
+      "first_correct": 181,
+      "second_correct": 180,
+      "first_only_correct": 3,
+      "second_only_correct": 2,
+      "different_predictions": 10,
+      "exact_mcnemar_two_sided_p": 1.0,
+      "cases": [
+        {
+          "task_id": "original-adequacy-05-1",
+          "first": "no",
+          "second": "yes",
+          "first_correct": true,
+          "second_correct": false,
+          "boundary_difference": false,
+          "first_margin": 0.1800000000000001,
+          "second_margin": 0.4558166859184567
+        },
+        {
+          "task_id": "hard-opus-a-temporal_numeric-07",
+          "first": "sep_25",
+          "second": "sep_24",
+          "first_correct": false,
+          "second_correct": false,
+          "boundary_difference": true,
+          "first_margin": 0.02749999999999997,
+          "second_margin": 0.02210954915997193
+        },
+        {
+          "task_id": "hard-opus-a-temporal_numeric-12",
+          "first": "2",
+          "second": "3",
+          "first_correct": false,
+          "second_correct": false,
+          "boundary_difference": true,
+          "first_margin": 0.2674,
+          "second_margin": 0.17118745368360477
+        },
+        {
+          "task_id": "hard-opus-b-multi_hop-04",
+          "first": "no_page_ticket_only",
+          "second": "dmitri",
+          "first_correct": false,
+          "second_correct": false,
+          "boundary_difference": true,
+          "first_margin": 0.6951,
+          "second_margin": 0.8170325510948908
+        },
+        {
+          "task_id": "hard-opus-b-tradeoff-08",
+          "first": "yes",
+          "second": "no",
+          "first_correct": true,
+          "second_correct": false,
+          "boundary_difference": true,
+          "first_margin": 0.13559999999999994,
+          "second_margin": 0.35996204617486155
+        },
+        {
+          "task_id": "hard-opus-c-long_policy-02",
+          "first": "erase_all",
+          "second": "erase_but_retain_transaction_records",
+          "first_correct": false,
+          "second_correct": true,
+          "boundary_difference": true,
+          "first_margin": 0.07900000000000001,
+          "second_margin": 0.1586905798526596
+        },
+        {
+          "task_id": "hard-opus-c-long_policy-03",
+          "first": "eur_300",
+          "second": "eur_200",
+          "first_correct": false,
+          "second_correct": false,
+          "boundary_difference": true,
+          "first_margin": 0.03230000000000005,
+          "second_margin": 0.07613183602328105
+        },
+        {
+          "task_id": "hard-sol-a-multi_hop-05",
+          "first": "pay_manager_approved",
+          "second": "reject_category",
+          "first_correct": false,
+          "second_correct": false,
+          "boundary_difference": false,
+          "first_margin": 0.31310000000000004,
+          "second_margin": 0.23911684653055626
+        },
+        {
+          "task_id": "hard-sol-b-temporal_numeric-01",
+          "first": "late_by_under_2h",
+          "second": "within_window",
+          "first_correct": true,
+          "second_correct": false,
+          "boundary_difference": false,
+          "first_margin": 0.05080000000000001,
+          "second_margin": 0.1328649957861765
+        },
+        {
+          "task_id": "hard-sol-c-judge_hard-10",
+          "first": "no",
+          "second": "yes",
+          "first_correct": false,
+          "second_correct": true,
+          "boundary_difference": false,
+          "first_margin": 0.1774,
+          "second_margin": 0.5033527368582291
+        }
+      ]
+    },
+    "Q8_vs_BF16": {
+      "first_correct": 180,
+      "second_correct": 179,
+      "first_only_correct": 1,
+      "second_only_correct": 0,
+      "different_predictions": 1,
+      "exact_mcnemar_two_sided_p": 1.0,
+      "cases": [
+        {
+          "task_id": "hard-sol-a-multi_hop-01",
+          "first": "accept_s2_dusk",
+          "second": "reject_cutoff",
+          "first_correct": true,
+          "second_correct": false,
+          "boundary_difference": false,
+          "first_margin": 0.009129170838535594,
+          "second_margin": 0.0016067830547314976
+        }
+      ]
+    }
+  },
+  "token_control": {
+    "purpose": "Quality only: exact native tokens, CPU llama.cpp; no latency inference",
+    "ubatch": 512,
+    "batch": 2048,
+    "threads": 6,
+    "kv": "F16",
+    "context": 4096,
+    "correct": {
+      "BF16": 179,
+      "Q8": 180
+    },
+    "versus_original": {
+      "BF16": {
+        "first_correct": 179,
+        "second_correct": 179,
+        "first_only_correct": 0,
+        "second_only_correct": 0,
+        "different_predictions": 0,
+        "exact_mcnemar_two_sided_p": 1.0,
+        "cases": []
+      },
+      "Q8": {
+        "first_correct": 180,
+        "second_correct": 180,
+        "first_only_correct": 0,
+        "second_only_correct": 0,
+        "different_predictions": 1,
+        "exact_mcnemar_two_sided_p": 1.0,
+        "cases": [
+          {
+            "task_id": "hard-opus-a-temporal_numeric-07",
+            "first": "sep_25",
+            "second": "sep_24",
+            "first_correct": false,
+            "second_correct": false,
+            "boundary_difference": true,
+            "first_margin": 0.004072205697425835,
+            "second_margin": 0.02210954915997193
+          }
+        ]
+      }
+    },
+    "q4_comparisons": {
+      "BF16": {
+        "first_correct": 181,
+        "second_correct": 179,
+        "first_only_correct": 4,
+        "second_only_correct": 2,
+        "different_predictions": 11,
+        "exact_mcnemar_two_sided_p": 0.6875,
+        "cases": [
+          {
+            "task_id": "original-adequacy-05-1",
+            "first": "no",
+            "second": "yes",
+            "first_correct": true,
+            "second_correct": false,
+            "boundary_difference": false,
+            "first_margin": 0.1800000000000001,
+            "second_margin": 0.5482845857447478
+          },
+          {
+            "task_id": "hard-opus-a-temporal_numeric-07",
+            "first": "sep_25",
+            "second": "sep_24",
+            "first_correct": false,
+            "second_correct": false,
+            "boundary_difference": true,
+            "first_margin": 0.02749999999999997,
+            "second_margin": 0.0009392036052982
+          },
+          {
+            "task_id": "hard-opus-a-temporal_numeric-12",
+            "first": "2",
+            "second": "3",
+            "first_correct": false,
+            "second_correct": false,
+            "boundary_difference": true,
+            "first_margin": 0.2674,
+            "second_margin": 0.19178330754346717
+          },
+          {
+            "task_id": "hard-opus-b-multi_hop-04",
+            "first": "no_page_ticket_only",
+            "second": "dmitri",
+            "first_correct": false,
+            "second_correct": false,
+            "boundary_difference": true,
+            "first_margin": 0.6951,
+            "second_margin": 0.806703123227658
+          },
+          {
+            "task_id": "hard-opus-b-tradeoff-08",
+            "first": "yes",
+            "second": "no",
+            "first_correct": true,
+            "second_correct": false,
+            "boundary_difference": true,
+            "first_margin": 0.13559999999999994,
+            "second_margin": 0.3812933268732382
+          },
+          {
+            "task_id": "hard-opus-c-long_policy-02",
+            "first": "erase_all",
+            "second": "erase_but_retain_transaction_records",
+            "first_correct": false,
+            "second_correct": true,
+            "boundary_difference": true,
+            "first_margin": 0.07900000000000001,
+            "second_margin": 0.06674069989781345
+          },
+          {
+            "task_id": "hard-opus-c-long_policy-03",
+            "first": "eur_300",
+            "second": "eur_200",
+            "first_correct": false,
+            "second_correct": false,
+            "boundary_difference": true,
+            "first_margin": 0.03230000000000005,
+            "second_margin": 0.0669992223665376
+          },
+          {
+            "task_id": "hard-sol-a-multi_hop-01",
+            "first": "accept_s2_dusk",
+            "second": "reject_cutoff",
+            "first_correct": true,
+            "second_correct": false,
+            "boundary_difference": false,
+            "first_margin": 0.1507,
+            "second_margin": 0.0016067834746181786
+          },
+          {
+            "task_id": "hard-sol-a-multi_hop-05",
+            "first": "pay_manager_approved",
+            "second": "reject_category",
+            "first_correct": false,
+            "second_correct": false,
+            "boundary_difference": false,
+            "first_margin": 0.31310000000000004,
+            "second_margin": 0.23910097863037633
+          },
+          {
+            "task_id": "hard-sol-b-temporal_numeric-01",
+            "first": "late_by_under_2h",
+            "second": "within_window",
+            "first_correct": true,
+            "second_correct": false,
+            "boundary_difference": false,
+            "first_margin": 0.05080000000000001,
+            "second_margin": 0.12219526420400106
+          },
+          {
+            "task_id": "hard-sol-c-judge_hard-10",
+            "first": "no",
+            "second": "yes",
+            "first_correct": false,
+            "second_correct": true,
+            "boundary_difference": false,
+            "first_margin": 0.1774,
+            "second_margin": 0.47645589621187634
+          }
+        ]
+      },
+      "Q8": {
+        "first_correct": 181,
+        "second_correct": 180,
+        "first_only_correct": 3,
+        "second_only_correct": 2,
+        "different_predictions": 9,
+        "exact_mcnemar_two_sided_p": 1.0,
+        "cases": [
+          {
+            "task_id": "original-adequacy-05-1",
+            "first": "no",
+            "second": "yes",
+            "first_correct": true,
+            "second_correct": false,
+            "boundary_difference": false,
+            "first_margin": 0.1800000000000001,
+            "second_margin": 0.4558166734122683
+          },
+          {
+            "task_id": "hard-opus-a-temporal_numeric-12",
+            "first": "2",
+            "second": "3",
+            "first_correct": false,
+            "second_correct": false,
+            "boundary_difference": true,
+            "first_margin": 0.2674,
+            "second_margin": 0.19906047680682443
+          },
+          {
+            "task_id": "hard-opus-b-multi_hop-04",
+            "first": "no_page_ticket_only",
+            "second": "dmitri",
+            "first_correct": false,
+            "second_correct": false,
+            "boundary_difference": true,
+            "first_margin": 0.6951,
+            "second_margin": 0.7835185355087754
+          },
+          {
+            "task_id": "hard-opus-b-tradeoff-08",
+            "first": "yes",
+            "second": "no",
+            "first_correct": true,
+            "second_correct": false,
+            "boundary_difference": true,
+            "first_margin": 0.13559999999999994,
+            "second_margin": 0.35027474063262404
+          },
+          {
+            "task_id": "hard-opus-c-long_policy-02",
+            "first": "erase_all",
+            "second": "erase_but_retain_transaction_records",
+            "first_correct": false,
+            "second_correct": true,
+            "boundary_difference": true,
+            "first_margin": 0.07900000000000001,
+            "second_margin": 0.15060725107988965
+          },
+          {
+            "task_id": "hard-opus-c-long_policy-03",
+            "first": "eur_300",
+            "second": "eur_200",
+            "first_correct": false,
+            "second_correct": false,
+            "boundary_difference": true,
+            "first_margin": 0.03230000000000005,
+            "second_margin": 0.05988704323496369
+          },
+          {
+            "task_id": "hard-sol-a-multi_hop-05",
+            "first": "pay_manager_approved",
+            "second": "reject_category",
+            "first_correct": false,
+            "second_correct": false,
+            "boundary_difference": false,
+            "first_margin": 0.31310000000000004,
+            "second_margin": 0.23911685564682478
+          },
+          {
+            "task_id": "hard-sol-b-temporal_numeric-01",
+            "first": "late_by_under_2h",
+            "second": "within_window",
+            "first_correct": true,
+            "second_correct": false,
+            "boundary_difference": false,
+            "first_margin": 0.05080000000000001,
+            "second_margin": 0.13318337052927343
+          },
+          {
+            "task_id": "hard-sol-c-judge_hard-10",
+            "first": "no",
+            "second": "yes",
+            "first_correct": false,
+            "second_correct": true,
+            "boundary_difference": false,
+            "first_margin": 0.1774,
+            "second_margin": 0.503352725300255
+          }
+        ]
+      }
+    }
+  }
+}
