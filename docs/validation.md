@@ -28,11 +28,12 @@ disposable benchmark output. The GGML-derived K-quant fixtures have their own
 ```sh
 node tests/demo_scenarios_test.mjs
 node tests/model_manifest_test.mjs
+node tests/workerfs_test.mjs
 node tests/wasm_capabilities_test.mjs
 node tests/wasm_logit_parity_test.mjs
 ```
 
-These check demo rules, model manifests, the fused-FMA capability guard and
+These check demo rules, model manifests, bounded WORKERFS reads, the fused-FMA capability guard and
 bitwise-logit comparison logic. They do not replace inference in a real browser.
 
 ## Model-backed checks

@@ -39,6 +39,13 @@ a model cache. "Unload engine" terminates the worker and its thread pool,
 allowing another runtime to be selected. "Clear cache" removes only this demo's
 OPFS directory and Cache API namespace.
 
+Download completion is followed by tokenizer loading and tensor checksum
+validation. The worker reports the file being read during this phase. A bounded
+1 MiB read-ahead buffer avoids a browser-storage round trip for every small C++
+stream read, including when the model is cached in OPFS. Tensor checksums are
+still verified; the buffer does not copy the whole checkpoint into JavaScript
+memory and is released after initialization.
+
 ## Build
 
 The locally tested compiler is **Emscripten 6.0.13**, SDK toolchain

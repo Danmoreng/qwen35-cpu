@@ -123,12 +123,23 @@ onmessage = async ({data}) => {
       }
       module.FS.mkdir('/model');
       module.FS.mount(module.WORKERFS, {blobs}, '/model'); mounted = true;
+      const {bufferWorkerFSReads} = await import('./workerfs.js');
+      let lastReadProgress = 0;
+      const restoreReads = bufferWorkerFSReads(module.WORKERFS, {onRead(name, position, size) {
+        if (performance.now() - lastReadProgress < 100) return;
+        lastReadProgress = performance.now();
+        send('progress', {phase: `Initializing CPU engine · reading ${name} (${Math.floor(position / size * 100)}%)`,
+          loaded: total, total});
+      }});
       send('progress', {phase: 'Validating tensors and loading the CPU engine', loaded: total, total});
       const start = performance.now();
-      if (data.chunk !== undefined || data.profile)
-        call('qev_options', ['number', 'number'], [data.chunk ?? 32, data.profile ? 1 : 0]);
-      if (data.tuning) call('qev_tune', ['string'], [JSON.stringify(data.tuning)]);
-      const result = call('qev_load', ['string', 'number', 'number'], ['/model', data.threads, data.context]);
+      let result;
+      try {
+        if (data.chunk !== undefined || data.profile)
+          call('qev_options', ['number', 'number'], [data.chunk ?? 32, data.profile ? 1 : 0]);
+        if (data.tuning) call('qev_tune', ['string'], [JSON.stringify(data.tuning)]);
+        result = call('qev_load', ['string', 'number', 'number'], ['/model', data.threads, data.context]);
+      } finally { restoreReads(); }
       // All weights/configuration are owned by C++; release Blob/file references.
       module.FS.unmount('/model'); mounted = false; blobs.length = 0;
       loading = false;

@@ -14,7 +14,7 @@ MODEL_SHA = 'e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69'
 MODEL_FILES = ('model.q35h', 'config.json', 'tokenizer.json', 'tokenizer_config.json',
                'vocab.json', 'merges.txt', 'qev_config.json')
 WEB_FILES = ('index.html', 'style.css', 'app.js', 'worker.js', 'capabilities.js',
-             'scenarios.js', 'model-manifest.js')
+             'scenarios.js', 'model-manifest.js', 'workerfs.js')
 MODES = ('scalar', 'simd', 'threads', 'relaxed', 'relaxed-threads', 'fma', 'fma-threads')
 LICENSES = ('qwen35-cpu.txt', 'decider-ai.txt', 'ggml.txt', 'utf8proc.txt',
             'nlohmann-json.txt', 'emscripten.txt')
