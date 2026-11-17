@@ -60,7 +60,7 @@ if (QWEN35X_SYSTEM_PROCESSOR_LOWER MATCHES "^(x86_64|amd64|i[3-6]86)$" OR
         src/cpu/q4_0_vnni.cpp src/cpu/q4_dot4_vex.cpp src/cpu/q8_0_vnni.cpp
         PROPERTIES COMPILE_OPTIONS "/arch:AVX2")
       set_source_files_properties(
-        src/cpu/activation_avx512.cpp src/cpu/q4_h128_avx512.cpp src/cpu/full_attention_tiled_avx512.cpp
+        src/cpu/activation_avx512.cpp src/cpu/delta_net_avx512.cpp src/cpu/q4_h128_avx512.cpp src/cpu/full_attention_tiled_avx512.cpp
         PROPERTIES COMPILE_OPTIONS "/arch:AVX512")
       set_source_files_properties(
         src/cpu/q4_g16_evex.cpp src/cpu/q4_0_avx512_vnni.cpp src/cpu/q4_0_evex_vnni.cpp src/cpu/q4_dot4_evex.cpp src/cpu/q4_dot4_prefill_avx512.cpp
@@ -82,7 +82,7 @@ if (QWEN35X_SYSTEM_PROCESSOR_LOWER MATCHES "^(x86_64|amd64|i[3-6]86)$" OR
     if (QWEN35X_COMPILER_HAS_MAVX512F)
       set(QWEN35X_Q8_0_HAS_AVX512_TU ON)
       set_source_files_properties(
-        src/cpu/activation_avx512.cpp src/cpu/q4_h128_avx512.cpp src/cpu/full_attention_tiled_avx512.cpp
+        src/cpu/activation_avx512.cpp src/cpu/delta_net_avx512.cpp src/cpu/q4_h128_avx512.cpp src/cpu/full_attention_tiled_avx512.cpp
         PROPERTIES COMPILE_OPTIONS "-mavx512f;-mavx2;-mf16c;-mfma")
       check_cxx_compiler_flag("-mavx512vnni" QWEN35X_COMPILER_HAS_MAVX512VNNI)
       check_cxx_compiler_flag("-mavx512vl" QWEN35X_COMPILER_HAS_MAVX512VL)
@@ -113,7 +113,7 @@ else ()
 endif ()
 
 if (QWEN35X_Q8_0_HAS_AVX512_TU)
-  target_sources(qwen35x_core PRIVATE src/cpu/activation_avx512.cpp src/cpu/q4_h128_avx512.cpp src/cpu/full_attention_tiled_avx512.cpp)
+  target_sources(qwen35x_core PRIVATE src/cpu/activation_avx512.cpp src/cpu/delta_net_avx512.cpp src/cpu/q4_h128_avx512.cpp src/cpu/full_attention_tiled_avx512.cpp)
   target_compile_definitions(qwen35x_core PRIVATE QWEN35X_Q8_0_HAS_AVX512_TU=1)
 else ()
   target_compile_definitions(qwen35x_core PRIVATE QWEN35X_Q8_0_HAS_AVX512_TU=0)

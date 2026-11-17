@@ -119,6 +119,11 @@ void gated_delta_net_update_batch_rows_avx2(
   std::size_t row_end) noexcept;
 #endif
 
+#if QWEN35X_Q8_0_HAS_AVX512_TU
+void gated_delta_net_update_rows_avx512(float *, const float *, const float *, const float *,
+    const float *, const float *, float *, std::size_t, std::size_t, std::size_t) noexcept;
+#endif
+
 } // namespace detail
 
 void gated_delta_net_update_rows(
@@ -144,6 +149,13 @@ void gated_delta_net_update_rows(
   if (q8_0_resolve_backend(backend) == Q8_0Backend::wasm_simd) {
     detail::gated_delta_net_update_rows_wasm(state, q, k, v, alpha, beta, output,
       key_dim, value_dim, row_begin, bounded_end); return;
+  }
+#endif
+#if QWEN35X_Q8_0_HAS_AVX512_TU
+  if (key_dim == 128 && q8_0_backend_uses_avx512(backend)) {
+    detail::gated_delta_net_update_rows_avx512(state, q, k, v, alpha, beta, output,
+      value_dim, row_begin, bounded_end);
+    return;
   }
 #endif
 #if QWEN35X_Q8_0_HAS_AVX2_TU

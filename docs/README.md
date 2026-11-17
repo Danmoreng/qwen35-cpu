@@ -20,6 +20,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 
 - [Current CPU comparison](benchmarks/cpu.md), [IK prefill analysis](benchmarks/cpu.md#why-ik-iq4_ks_r4-prefill-changed)
   and [IK batch-16 methodology](benchmarks/ik-batch16.md).
+- [AVX-512 DeltaNet decode](benchmarks/deltanet-xeon.md) measures single-stream generation on a Xeon VM.
 - [Native prefill optimization](benchmarks/native-prefill.md): paired measurements and bitwise quality checks.
 - [AVX2 cloud VM tuning](benchmarks/avx2-cloud.md): prompt processing, decode experiments and bitwise checks on an EPYC VM.
 - [Standard model calibration](benchmarks/calibration.md).

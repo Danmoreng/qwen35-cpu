@@ -1,0 +1,283 @@
+{
+  "source_revision": "2f7faac466d7d9c969cb886ef174fe202497b7ee",
+  "engine_sha256": {
+    "baseline": "3f88598fc26e25d85c2d640eea11d513884c2687c31acb4d5ad5c43c1a35afdb",
+    "candidate": "84b2f560626dc81139fd65de40afcc8f26db8dd194f0b1c86a869d6572179791"
+  },
+  "model_sha256": "013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a",
+  "affinity": "0,2,4",
+  "threads": 3,
+  "speed": {
+    "story": {
+      "baseline": [
+        35.9711253149,
+        36.2259307254,
+        18.2708149053,
+        31.0087219736,
+        35.6344686832,
+        36.5390428523
+      ],
+      "candidate": [
+        34.6613778579,
+        37.2088339889,
+        35.7276059926,
+        33.8021944522,
+        29.5745703734,
+        32.8326850403
+      ],
+      "baseline_median": 35.80279699905,
+      "candidate_median": 34.23178615505,
+      "paired_change_percent": -0.46392449620812903,
+      "wins": 3,
+      "steps": 127
+    },
+    "p512": {
+      "baseline": [
+        33.1498513856,
+        33.1253412458,
+        34.7815777511,
+        32.8212456033,
+        31.7568982573,
+        26.3833374051
+      ],
+      "candidate": [
+        35.2572385559,
+        35.194863782,
+        30.69687809,
+        32.6529797552,
+        34.5591561629,
+        34.4467101993
+      ],
+      "baseline_median": 32.97329342455,
+      "candidate_median": 34.502933181100005,
+      "paired_change_percent": 6.302352522401855,
+      "wins": 4,
+      "steps": 127
+    }
+  },
+  "profiling": {
+    "baseline": {
+      "ms_per_token": [
+        2.297703645669291,
+        2.83448162992126,
+        2.1923892519685038
+      ],
+      "median": 2.297703645669291
+    },
+    "candidate": {
+      "ms_per_token": [
+        2.4242269763779527,
+        1.916970062992126,
+        2.008345149606299
+      ],
+      "median": 2.008345149606299
+    }
+  },
+  "selected": "row-pairs",
+  "register_speed": {
+    "story": {
+      "baseline": [
+        33.4931744978,
+        33.9980946697,
+        34.6983241783,
+        34.5337557326
+      ],
+      "registers": [
+        32.682718129,
+        36.155764981,
+        34.6887489452,
+        37.4600796817
+      ],
+      "median_paired_change_percent": 3.159424567841995
+    },
+    "p512": {
+      "baseline": [
+        34.2361201148,
+        33.3780240721,
+        33.8205479394,
+        34.4495703181
+      ],
+      "registers": [
+        34.1825761837,
+        30.6506702637,
+        31.9414811462,
+        30.1682179023
+      ],
+      "median_paired_change_percent": -6.863548907104877
+    }
+  },
+  "paired_sessions": {
+    "row-pairs": {
+      "story": {
+        "session_rates": [
+          [
+            35.48565560229353,
+            35.46086839132131
+          ],
+          [
+            33.947034746547175,
+            34.8074743608171
+          ],
+          [
+            35.9749517697968,
+            37.2354587704843
+          ]
+        ],
+        "session_change_percent": [
+          -0.0698513541641077,
+          2.5346532346465,
+          3.50384625601019
+        ],
+        "median_change_percent": 2.5346532346465,
+        "windows_won": 29,
+        "window_count": 48
+      },
+      "p512": {
+        "session_rates": [
+          [
+            33.030945123516325,
+            33.70237805928005
+          ],
+          [
+            34.700748492126735,
+            35.48962170735517
+          ],
+          [
+            33.80409498186717,
+            34.35996497355909
+          ]
+        ],
+        "session_change_percent": [
+          2.0327390973917447,
+          2.273360804904323,
+          1.6443865513633416
+        ],
+        "median_change_percent": 2.0327390973917447,
+        "windows_won": 28,
+        "window_count": 48
+      }
+    },
+    "registers": {
+      "story": {
+        "session_rates": [
+          [
+            32.860189696473725,
+            32.45248666035592
+          ],
+          [
+            31.05893278057807,
+            31.7778471559902
+          ],
+          [
+            26.213966050846338,
+            26.26600439718222
+          ]
+        ],
+        "session_change_percent": [
+          -1.2407202754570634,
+          2.3146782939743815,
+          0.1985138236424877
+        ],
+        "median_change_percent": 0.1985138236424877,
+        "windows_won": 28,
+        "window_count": 48
+      },
+      "p512": {
+        "session_rates": [
+          [
+            32.93491213083117,
+            32.705783737708536
+          ],
+          [
+            18.54761221394867,
+            19.11273441400067
+          ],
+          [
+            17.91913654323025,
+            18.309238731493533
+          ]
+        ],
+        "session_change_percent": [
+          -0.6957006358858431,
+          3.0468730612504435,
+          2.177014429920532
+        ],
+        "median_change_percent": 2.177014429920532,
+        "windows_won": 22,
+        "window_count": 48
+      }
+    }
+  },
+  "isolated_ms_per_layer": {
+    "18": {
+      "stock": 0.0538890199652778,
+      "paired-rows": 0.0494685099826389,
+      "registers": 0.0398998893229167
+    },
+    "432": {
+      "stock": 0.1071391328125,
+      "paired-rows": 0.0970127430555556,
+      "registers": 0.0983484947916667
+    }
+  },
+  "logit_parity": {
+    "story-baseline": {
+      "sha256": "f5310b039b4bfa0a337d6cefb3595497398db1fb52f53f7d31cb7c96ff7e98c1",
+      "vectors": 12,
+      "vocab": 248320
+    },
+    "story-candidate": {
+      "sha256": "f5310b039b4bfa0a337d6cefb3595497398db1fb52f53f7d31cb7c96ff7e98c1",
+      "vectors": 12,
+      "vocab": 248320
+    },
+    "p512-baseline": {
+      "sha256": "cd4f1c041589a93e7029282d8573cd3940d1e835ba721fbf0d810c97d079ba20",
+      "vectors": 12,
+      "vocab": 248320
+    },
+    "p512-candidate": {
+      "sha256": "cd4f1c041589a93e7029282d8573cd3940d1e835ba721fbf0d810c97d079ba20",
+      "vectors": 12,
+      "vocab": 248320
+    }
+  },
+  "cpu": {
+    "name": "Intel Xeon Platinum 8573C",
+    "guest": "KVM",
+    "cpu_quota": "400000 100000",
+    "memory_limit": 17179869184
+  },
+  "compiler": "GCC 14.2.0 Release",
+  "model_revision": "f6cb5cf04a9094670f9041578a3f4e44b94a1395",
+  "inputs": {
+    "/workspace/decode-study/story.csv": {
+      "bytes": 186,
+      "sha256": "AC4237CDA3FD2E3E695F6BE7C3E5554D93505E84E7783A8828B61905742AA657"
+    },
+    "/workspace/decode-tools/model/config.json": {
+      "bytes": 2907,
+      "sha256": "B90B86F35C8E6925EF74EE04D0E758F0A845C83A42089AD82BBAA948DE9B4204"
+    },
+    "/workspace/decode-tools/model/model.q35h": {
+      "bytes": 424964864,
+      "sha256": "013FBFAA03760E759181301DDAF964BB5C200C50C50617AFE72557FD65BCBF0A"
+    },
+    "/workspace/decode-tools/model/tokenizer.json": {
+      "bytes": 12807982,
+      "sha256": "5F9E4D4901A92B997E463C1F46055088B6CCA5CA61A6522D1B9F64C4BB81CB42"
+    },
+    "/workspace/decode-tools/model/tokenizer_config.json": {
+      "bytes": 16709,
+      "sha256": "49E2B6E395F959F077F1E992B338919C0D4A9732FC6E613995E06557F843500C"
+    },
+    "/workspace/qwen35-cpu/docs/results/cpu-refresh-2026-10-22/prompt-512.csv": {
+      "bytes": 2311,
+      "sha256": "6BAA0783F9AD2ADEA59013C948CD15A0A465E870837BF9A60E57EB73EF39BD81"
+    }
+  },
+  "register_sha256": "a9e1cd34be10ef80b5ed1afa3d2e3e76389576be143cbebf00d438b20f3bb510",
+  "paired_driver_sha256": "8a2d2de2fba0ae129979b426b17a0dcafd8974476d3e76f6e8d0483a101ec545",
+  "test_suite": "19/19 server-off CTests. Socket-dependent When2Call rerun with loopback permission.",
+  "normal_entrypoint_sha256": "84b2f560626dc81139fd65de40afcc8f26db8dd194f0b1c86a869d6572179791"
+}

@@ -33,9 +33,9 @@ std::vector<float> values(const std::size_t count, const float phase) {
   return result;
 }
 
-bool test_backend(const Q8_0Backend backend) {
+bool test_backend(const Q8_0Backend backend, const std::size_t key_dim = 19,
+                  const Q8_0Backend reference = Q8_0Backend::scalar) {
   constexpr std::size_t heads = 3;
-  constexpr std::size_t key_dim = 19;
   constexpr std::size_t value_dim = 11;
   std::vector<float> expected_state = values(heads * value_dim * key_dim, 0.3F);
   std::vector<float> actual_state = expected_state;
@@ -50,7 +50,7 @@ bool test_backend(const Q8_0Backend backend) {
   qwen35x::cpu::gated_delta_net_update_rows(
     expected_state.data(), q.data(), k.data(), v.data(), alpha.data(), beta.data(),
     expected_output.data(), heads, key_dim, value_dim, 0, heads * value_dim,
-    Q8_0Backend::scalar);
+    reference);
   // Exercise disjoint partitions and a non-vector-width tail.
   qwen35x::cpu::gated_delta_net_update_rows(
     actual_state.data(), q.data(), k.data(), v.data(), alpha.data(), beta.data(),
@@ -59,6 +59,12 @@ bool test_backend(const Q8_0Backend backend) {
     actual_state.data(), q.data(), k.data(), v.data(), alpha.data(), beta.data(),
     actual_output.data(), heads, key_dim, value_dim, 13, heads * value_dim, backend);
 
+  if (reference == Q8_0Backend::avx2) {
+    return expect(std::memcmp(expected_state.data(), actual_state.data(),
+                              expected_state.size() * sizeof(float)) == 0, "partitioned state bit mismatch") &&
+           expect(std::memcmp(expected_output.data(), actual_output.data(),
+                              expected_output.size() * sizeof(float)) == 0, "partitioned output bit mismatch");
+  }
   bool ok = true;
   for (std::size_t index = 0; index < expected_state.size(); ++index) {
     ok = expect(near(expected_state[index], actual_state[index]), "state mismatch") && ok;
@@ -166,7 +172,8 @@ int main() {
       test_batch_backend(Q8_0Backend::avx_vnni) && ok;
   }
   if (qwen35x::cpu::q8_0_backend_available(Q8_0Backend::avx512)) {
-    ok = test_backend(Q8_0Backend::avx512) &&
+    ok = test_backend(Q8_0Backend::avx512, 128, Q8_0Backend::avx2) &&
+      test_backend(Q8_0Backend::avx512) &&
       test_batch_backend(Q8_0Backend::avx512) && ok;
   }
   if (qwen35x::cpu::q8_0_backend_available(Q8_0Backend::avx512_vnni)) {
