@@ -1,0 +1,17 @@
+{
+  "transcript": {
+    "instruction": "Korrigiere Rechtschreibung, Satzzeichen und offensichtliche Erkennungsfehler im folgenden Transkript. Behalte die Formulierungen bei. Gib nur den korrigierten Text aus.",
+    "source": "Guten Morgen Frau Keller wir haben den Termin für nächsten Mittwoch um zehn Uhr im Kalender hinterlegt. Die Unterlagen schicke ich Ihnen heute Nachmittag per Mehl zu. Bitte geben Sie mir bis Freitag Bescheid, ob Herr Brandt ebenfalls an der Besprechung teilnimmt. Dann reserviere ich den größeren Raum im zweiten Stock."
+  },
+  "editing": {
+    "instruction": "Edit this support email. Change Tuesday to Thursday and replace the pickup location with the west entrance. Preserve all other wording and return just the revised email.",
+    "source": "Hello Morgan,\n\nYour replacement laptop will be ready on Tuesday morning. Please bring your old laptop and the power adapter to the front desk at the east entrance. We have already copied your files and checked the display. If you need help signing in, a technician will be available until four in the afternoon.\n\nThanks,\nLeah"
+  },
+  "code": {
+    "instruction": "Rename the Python function and its call site from invoice_total to subtotal. Keep all other code unchanged. Return just the code without Markdown fences.",
+    "source": "from decimal import Decimal\n\ndef invoice_total(items):\n    amount = Decimal('0.00')\n    for item in items:\n        amount += item.price * item.quantity\n    return amount\n\ndef receipt(items, tax_rate):\n    net = invoice_total(items)\n    return {'net': net, 'tax': net * tax_rate}"
+  },
+  "prose": {
+    "instruction": "Write a short adventure story in English about a lighthouse keeper who finds a letter washed ashore. Start with the scene itself."
+  }
+}

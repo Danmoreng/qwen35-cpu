@@ -166,6 +166,10 @@ class Service {
           if (!tokenizer_.encode(job->prompt, job->spec.prompt_tokens, error)) {
             finish(job, failure(400, error)); continue;
           }
+          if (!job->draft_source.empty() &&
+              !tokenizer_.encode(job->draft_source, job->spec.draft_source_tokens, error)) {
+            finish(job, failure(400, error)); continue;
+          }
           job->prompt_count = job->spec.prompt_tokens.size();
           if (job->count_only) {
             finish(job, {200, {{"input_tokens", job->prompt_count}}}); continue;
@@ -236,6 +240,9 @@ class Service {
             }
             if (job->stop_matcher->stopped()) {
               engine_->cancel(it->id);
+              // Count through the token containing the byte stop; a verified
+              // block can already have buffered additional output.
+              result.generated_tokens = it->output.size();
               result.status = CpuRequestStatus::complete;
             } else if (result.status == CpuRequestStatus::complete && it->output.size() < result.output_tokens.size()) {
               ++it; continue; // Drain remaining buffered tokens before finalizing.

@@ -1,7 +1,7 @@
 bool run_forward_single_token(CpuExecutionContext *context,
     const ModelWeights &weights,const RuntimeDims &d,ModelState &state,
     int token,int position,std::vector<float> &logits,
-    CpuGreedySamplingState *sampling,std::string &error) {
+    CpuGreedySamplingState *sampling,std::string &error, bool readout = true) {
   if(token<0 || token>=d.vocab_size) {error="Token outside vocabulary.";return false;}
   auto &w=context->decode.forward;
   w.x.resize(d.hidden);
@@ -28,6 +28,7 @@ bool run_forward_single_token(CpuExecutionContext *context,
     if(!matvec_2d(context,layer.mlp_down,w.mlp_hidden,w.mlp_out,error))return false;
     for(std::size_t i=0;i<w.x.size();++i)w.x[i]=w.residual[i]+w.mlp_out[i];
   }
+  if (!readout) return true;
   rms_norm_qwen3next(w.x,weights.final_norm,d.rms_eps,w.final_hidden);
   if(sampling && sampling->enabled) {
     logits.clear();

@@ -1,6 +1,7 @@
 #include "qwen35x/cpu/q4_g16.h"
 #include "attention_partition.h"
 #include "prefill_chunk.h"
+#include "token_draft.h"
 #include "qwen35x/runtime/cpu_engine.h"
 
 #include "qwen35x/cpu/activation.h"

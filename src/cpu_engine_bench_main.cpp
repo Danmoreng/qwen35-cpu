@@ -119,6 +119,7 @@ int main(int argc, char **argv) try {
       options.model_dir = value;
     else if ((arg == "--cpu-q4-h128" || arg == "--cpu-gguf"))
       options.cpu_q4_h128_path = value;
+    else if (arg == "--draft") spec.draft_mode = parse_cpu_draft_mode(value);
     else if (arg == "--cpu-batch")
       batch_size = positive();
     else if (arg == "--cpu-residents") residents = positive();
@@ -155,15 +156,16 @@ int main(int argc, char **argv) try {
       operation_profile_path = value;
     else if (arg == "--prompt-tokens")
       spec.prompt_tokens = tokens(value);
+    else if (arg == "--stop-token-ids") spec.stop_token_ids = tokens(value);
     else if (arg == "--forced-output-tokens")
       spec.forced_output_tokens = tokens(value);
-    else if (arg == "--prompt-tokens-file") {
+    else if (arg == "--prompt-tokens-file" || arg == "--draft-source-tokens-file") {
       std::ifstream file(value);
       std::ostringstream text;
       text << file.rdbuf();
       if (!file)
         throw std::runtime_error("Cannot read token file");
-      spec.prompt_tokens = tokens(text.str());
+      (arg == "--prompt-tokens-file" ? spec.prompt_tokens : spec.draft_source_tokens) = tokens(text.str());
     } else if (arg == "--cpu-isa") {
       bool found = false;
       const char *names[] = {"auto",     "scalar", "avx2",
@@ -234,7 +236,7 @@ int main(int argc, char **argv) try {
   if (serving) return serving_benchmark(*engine, spec, prefix, batch_size,
       profile->text.vocab_size, identical_prompts, arrival_gap_ms, load_ms,
       prefix_build_ms, profile_path);
-  std::vector<CpuRequestId> ids;
+  std::vector<CpuRequestId> ids, active;
   const auto prefill_start = Clock::now();
   for (std::size_t r = 0; r < batch_size; ++r) {
     auto request = spec;
@@ -253,12 +255,11 @@ int main(int argc, char **argv) try {
       check(engine->advance(id, error));
       check(engine->result(id, state));
     } while (state.status == CpuRequestStatus::prefill);
+    if (state.status == CpuRequestStatus::decode) active.push_back(id);
   }
   const double prefill_ms = ms(prefill_start);
   std::vector<double> ticks;
-  auto active = ids;
-  if (spec.max_new_tokens == 1)
-    active.clear();
+
   const auto decode_start = Clock::now();
   while (!active.empty()) {
     const auto tick_start = Clock::now();
@@ -327,6 +328,8 @@ int main(int argc, char **argv) try {
       << ",\"prefix_build_time_ms\":" << prefix_build_ms
       << ",\"prefix_cache_restore_time_ms\":" << restore_ms
       << ",\"prefix_cache_bytes\":" << (prefix ? prefix->size_bytes() : 0)
+      << ",\"draft_rounds\":" << stats.draft_rounds << ",\"proposed_tokens\":" << stats.proposed_tokens
+      << ",\"accepted_draft_tokens\":" << stats.accepted_draft_tokens << ",\"replayed_tokens\":" << stats.replayed_tokens
       << ",\"decode_time_ms\":" << decode_ms
       << ",\"tokens_per_second\":" << throughput
       << ",\"per_request_tokens_per_second\":" << throughput / batch_size

@@ -392,3 +392,15 @@ This real-model test checks authorization, invalid input, repeated requests and
 exact greedy/seeded-sampling parity for concurrent prefix-sharing requests,
 mixed sampling settings, Top-K/Top-P edge cases and CLI/API sampling agreement. It is
 a correctness test, not a server throughput measurement.
+
+## Drafting for text completions
+
+OpenAI-style `/v1/chat/completions` and `/v1/completions` accept optional `"draft": "ngram"` or `"draft": "input"`. Omit the field or use `"off"` for ordinary decode. Input mode can additionally receive a `draft_source` string containing the document to follow. Keep the document in the prompt as well. Both methods support greedy and temperature sampling with the usual top-k, top-p, repetition penalty and seed. The native CLI exposes the same modes via `--draft off|ngram|input` and `--draft-source-file FILE`.
+
+In this request the transcript supplies candidate tokens and the target model decides which corrections to make.
+
+```json
+{"model":"Qwen3.5-0.8B-H128-Q4-G32-DOT4","messages":[{"role":"user","content":"Korrigiere nur Schreibfehler: Ich schicke dir die Unterlagen per Mehl zu."}],"draft":"input","draft_source":"Ich schicke dir die Unterlagen per Mehl zu.","temperature":0}
+```
+
+See the [engine API](cpu-engine-api.md#text-drafts) for dispatch, validation and memory behavior.

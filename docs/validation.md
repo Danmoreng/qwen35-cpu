@@ -171,3 +171,11 @@ rounded-probability argmax differs. The analysis needs the pinned NVIDIA file,
 saved local predictions and frozen public-source snapshots; it runs no models.
 Plotting needs matplotlib and only the compact chart data. See the
 [comparison report](benchmarks/when2call-comparison.md) for sources and commands.
+
+The optional native draft regression needs the standard H128/Q4-G32-DOT4 text checkpoint and an AVX2-capable x86 CPU:
+
+```sh
+./build/cpu_draft_model_test models/qwen3.5-0.8b models/qwen3.5-0.8b/model.q35h
+```
+
+It checks accepted blocks, deliberate rejections at all three positions, stop sequences, serving backpressure, fixed-seed sampling with a repetition penalty, and contiguous and paged KV. The token-lookup and protocol tests run without model weights.

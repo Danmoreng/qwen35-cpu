@@ -20,7 +20,14 @@ int main(int argc, char **argv) try {
   const auto request = parse(base.dump(), 256, "test", Api::chat);
   check(request.spec.max_new_tokens == 16 && request.spec.sampling.temperature == 0, "Sampling/limits lost");
   check(request.prompt == "<|im_start|>user\nHello<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n", "Generation prefix differs");
+  auto edit = base;
+  edit["draft"] = "input";
+  edit["draft_source"] = "original source";
+  const auto copied = parse(edit.dump(), 256, "test", Api::chat);
+  check(copied.spec.draft_mode == qwen35x::CpuDraftMode::input && copied.draft_source == "original source",
+        "Input draft settings lost");
   for (const auto &patch : std::vector<Json>{
+      {{"draft","unknown"}}, {{"draft","ngram"},{"draft_source","unused"}},
       {{"model", "wrong"}}, {{"messages", Json::array()}}, {{"max_tokens", 12}},
       {{"max_completion_tokens", true}}, {{"max_completion_tokens", -1}},
       {{"max_completion_tokens", 257}}, {{"max_completion_tokens", 18446744073709551615ULL}},

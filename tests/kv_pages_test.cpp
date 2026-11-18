@@ -30,6 +30,11 @@ int main() try {
     check(a.keys()[n][0] == 0x4200 && a.values()[n][0] == 0x4400);
     for (std::size_t i = 0; i < n; ++i)
       check(a.keys()[i][0] == prefix.keys()[i][0]);
+    auto rewind = cache.branch(1024);
+    rewind.truncate(n-1);
+    rewind.append(k.data(), v.data(), Q8_0Backend::scalar);
+    check(rewind.size() == n && rewind.keys()[n-1][0] == 0x4200);
+    check(cache.keys()[n-1][0] == 0x3c00);
     prefix = {};
     check(b.keys()[n - 1][0] == 0x3c00);
   }

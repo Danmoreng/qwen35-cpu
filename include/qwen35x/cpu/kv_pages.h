@@ -6,7 +6,7 @@
 #include <vector>
 
 namespace qwen35x::cpu {
-// Append-only FP16 KV pages. Copies share immutable page references; appending
+// FP16 KV pages with suffix rollback. Copies share immutable page references; appending
 // to a shared partial page creates one private copy before writing. Row views
 // remain valid until the owning cache is appended, assigned or destroyed.
 class KvPagesF16 {
@@ -65,6 +65,13 @@ public:
     keys_.push_back(k);
     values_.push_back(v);
     ++size_;
+  }
+  void truncate(std::size_t tokens) {
+    if (tokens > size_) throw std::out_of_range("Invalid KV rollback position");
+    keys_.resize(tokens);
+    values_.resize(tokens);
+    pages_.resize((tokens + page_tokens - 1) / page_tokens);
+    size_ = tokens;
   }
   KvPagesF16 prefix(std::size_t tokens) const {
     if (!tokens || tokens > size_)

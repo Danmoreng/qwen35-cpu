@@ -48,7 +48,7 @@ int main(int argc, char **argv) try {
   CpuRequestSpec request;
   request.sampling.temperature = 0;
   request.sampling.repetition_penalty = 1;
-  std::string prompt, tokenize_out, logits_out;
+  std::string prompt, tokenize_out, logits_out, draft_source_path;
   bool has_prompt = false, has_tokens = false;
   for (int i = 1; i < argc; ++i) {
     const std::string key = argv[i];
@@ -57,6 +57,7 @@ int main(int argc, char **argv) try {
         "--model-dir DIR --weights FILE --prompt TEXT | --prompt-file FILE | --tokens-file FILE\n"
         "[--threads N] [--max-context N] [--max-new-tokens N]\n"
         "[--temperature F] [--top-p F] [--top-k N] [--repetition-penalty F] [--seed N]\n"
+        "[--draft off|ngram|input] [--draft-source-file FILE]\n"
         "[--tokenize-out FILE] [--forced-tokens-file FILE --logits-out FILE]\n"
         "Raw text completion; supply your own rendered chat template. Default: greedy.\n";
       return 0;
@@ -98,6 +99,8 @@ int main(int argc, char **argv) try {
       if (key == "--top-k") request.sampling.top_k = static_cast<int>(n);
       else request.sampling.seed = n;
     }
+    else if (key == "--draft") request.draft_mode = parse_cpu_draft_mode(value);
+    else if (key == "--draft-source-file") draft_source_path = value;
     else if (key == "--tokenize-out") tokenize_out = value;
     else if (key == "--logits-out") logits_out = value;
     else if (key == "--forced-tokens-file") request.forced_output_tokens = tokens(read(value));
@@ -107,6 +110,10 @@ int main(int argc, char **argv) try {
   auto check = [&](bool ok) {if (!ok) throw std::runtime_error(error);};
   QwenTokenizer tokenizer;
   check(QwenTokenizer::load_from_hf_directory(load.model_dir, tokenizer, error));
+  if (!draft_source_path.empty()) {
+    if (request.draft_mode != CpuDraftMode::input) throw std::runtime_error("--draft-source-file requires --draft input");
+    check(tokenizer.encode(read(draft_source_path), request.draft_source_tokens, error));
+  }
   if (has_prompt) check(tokenizer.encode(prompt, request.prompt_tokens, error));
   if (request.prompt_tokens.empty()) throw std::runtime_error("Prompt must not be empty");
   if (!tokenize_out.empty()) {

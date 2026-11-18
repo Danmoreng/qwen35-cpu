@@ -112,3 +112,13 @@ Q6_K, Q8_0 matrices), plus F32 retained tensors.
 The loader selects by file magic, validates shapes and retains the packed bytes.
 `CpuModel::weight_format()` returns `h128-q4-dot4`, `gguf-q4_0-dot4` or `gguf-k-quants`.
 Config/tokenizer handling remains unchanged. See [format support](q4km-native.md).
+
+## Text drafts
+
+Set `CpuRequestSpec::draft_mode` to `CpuDraftMode::ngram` or `CpuDraftMode::input` to opt in. The default is off. The verifier is available for single-stream text decode with native packed Q4 DOT4 weights and AVX2 or a wider x86 backend. Multirequest decode batches, forced tokens, logit callbacks and constrained sampling follow their ordinary execution paths.
+
+The n-gram mode indexes three-token sequences with known successors in the prompt and already generated output. A match proposes up to three continuation tokens from the most recent occurrence. Input mode follows a cursor in the source, realigns locally after edits and uses a three-token lookup to find more distant matches. Supply `draft_source_tokens` for a particular document. An empty source selects the prompt. Include the document in the prompt so the model can read it. The separate source guides the draft lookup.
+
+The request owner verifies one pending token and up to three candidates. Matrix projections are batched. Attention and the recurrent state advance in causal order. Every returned token is selected by the target model using the request's penalties and RNG. Unused draft positions consume no random samples. On a rejection, the engine keeps the selected replacement, restores convolution and DeltaNet state after the pending token, and replays any accepted prefix. The engine overwrites contiguous KV rows and truncates paged KV. Stop conditions and available output buffer space bound each round.
+
+One `advance()` may now deliver up to four tokens when explicitly enabled. `decode_forwards` counts committed decode positions. Engine stats separately expose draft rounds, proposed and accepted tokens, and replayed positions. The verifier retains a recurrent checkpoint per active engine (about 18 MiB plus convolution state) and may hold four vocabulary rows for sampling. Request-local lookup indices grow with the indexed text.

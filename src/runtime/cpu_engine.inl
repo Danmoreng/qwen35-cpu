@@ -72,6 +72,7 @@ struct CpuEngine::Impl {
     std::vector<int> counts;
     std::mt19937 rng;
     std::vector<float> logits;
+    detail::TokenDraft draft;
     int pending_token = -1;
     bool resident = false;
     std::size_t consumed = 0;
@@ -132,7 +133,11 @@ struct CpuEngine::Impl {
 #include "cpu_engine_greedy.inl"
 #include "cpu_engine_state_batch.inl"
 
-  bool forward_batch(std::span<Sequence *> rows, std::string &error) {
+  // For causal verification all lanes refer to one sequence. Keep only the
+  // recurrent state after the pending token; suffix KV rows can be overwritten.
+  std::vector<LinearAttentionState> draft_checkpoint;
+  bool forward_batch(std::span<Sequence *> rows, std::string &error,
+                     std::span<const std::int32_t> causal_inputs = {}) {
     const auto &d = model->impl_->dims;
     const auto &w = model->impl_->weights;
     const std::size_t count = rows.size(), hidden = d.hidden;
@@ -142,7 +147,7 @@ struct CpuEngine::Impl {
     b.residual.resize(count * hidden);
     b.mlp_hidden.resize(count * intermediate);
     for (std::size_t r = 0; r < count; ++r)
-      dequantize_embedding_row(w.embed_tokens, rows[r]->pending_token,
+      dequantize_embedding_row(w.embed_tokens, causal_inputs.empty() ? rows[r]->pending_token : causal_inputs[r],
                                b.x.data()+r*hidden, hidden);
     std::size_t linear_index = 0, full_index = 0;
     auto project = [&](const TensorData &weight,
@@ -167,7 +172,7 @@ struct CpuEngine::Impl {
       b.core.resize(count * core_width);
       // Each stateful kernel sees one request's state and absolute position;
       // no padded row can mutate state or access another request's scratch.
-      if (config.parallel_state_batches &&
+      if (causal_inputs.empty() && config.parallel_state_batches &&
           count >= context->executor->thread_count()) {
         if (!state_batch(layer, rows, linear_index, full_index, width,
                          core_width, error))
@@ -183,7 +188,7 @@ struct CpuEngine::Impl {
                 context.get(), layer, d, s.state.linear_states[linear_index],
                 b.normed, b.row, error, projected, true);
           else {
-            const auto position = s.result.committed_tokens;
+            const auto position = s.result.committed_tokens + (causal_inputs.empty() ? 0 : r);
             const auto rope_offset = position * (d.rope_dim / 2);
             ok = run_full_attention_step(
                 context.get(), layer, d, s.state.full_states[full_index],
@@ -193,6 +198,8 @@ struct CpuEngine::Impl {
           }
           if (!ok)
             return false;
+          if (!causal_inputs.empty() && !r && layer.is_linear)
+            draft_checkpoint[linear_index] = s.state.linear_states[linear_index];
           std::copy(b.row.begin(), b.row.end(),
                     b.core.begin() + r * core_width);
         }
@@ -226,6 +233,7 @@ struct CpuEngine::Impl {
                              b.final_hidden);
     const bool greedy =
         config.batch_greedy && w.embed_tokens.is_q4_0() &&
+        (causal_inputs.empty() || rows.front()->spec.sampling.repetition_penalty == 1) &&
         std::all_of(rows.begin(), rows.end(), [](const auto *s) {
           return s->spec.sampling.temperature <= 1e-6F &&
                  s->spec.forced_output_tokens.empty() &&
@@ -389,6 +397,50 @@ struct CpuEngine::Impl {
                             : CpuRequestStatus::decode;
     return true;
   }
+  bool verify_draft(Sequence &s, const detail::DraftProposal &proposal, std::string &error) {
+    std::array<Sequence *, 4> rows;
+    rows.fill(&s);
+    std::array<std::int32_t, 4> input{s.pending_token};
+    std::copy_n(proposal.tokens.begin(), proposal.count, input.begin()+1);
+    const auto width = proposal.count + 1;
+    draft_checkpoint.resize(s.state.linear_states.size());
+    if (!forward_batch(std::span(rows).first(width), error, std::span(input).first(width)))
+      return false;
+    const auto position = s.result.committed_tokens;
+    const auto vocab = model->impl_->dims.vocab_size;
+    ++stats.draft_rounds;
+    stats.proposed_tokens += proposal.count;
+    std::size_t accepted = 0, used = 0;
+    while (used < width) {
+      int token = -1;
+      if (batch.greedy_tokens.empty()) {
+        const auto first = batch.logits.begin() + used * vocab;
+        s.logits.assign(first, first + vocab);
+      } else token = batch.greedy_tokens[used];
+      if (!select(s, token, error)) return false;
+      ++used;
+      if (used == width || s.pending_token != input[used]) break;
+      ++accepted;
+      if (terminal(s)) break;
+    }
+    stats.accepted_draft_tokens += accepted;
+    s.draft.accepted(proposal, accepted);
+    if (used < width && !terminal(s)) {
+      s.state.linear_states.swap(draft_checkpoint);
+      for (auto &full : s.state.full_states)
+        if (full.pages.width()) full.pages.truncate(position + 1);
+      for (std::size_t i = 1; i < used; ++i) {
+        if (!run_forward_single_token(context.get(), model->impl_->weights, model->impl_->dims,
+              s.state, input[i], static_cast<int>(position+i), s.logits, nullptr, error, false))
+          return false;
+        ++stats.replayed_tokens;
+      }
+    }
+    s.result.committed_tokens += used;
+    s.result.decode_forwards += used;
+    return true;
+  }
+
   bool advance(Sequence &s, std::string &error) {
     if (s.result.status != CpuRequestStatus::prefill &&
         s.result.status != CpuRequestStatus::decode)
@@ -404,6 +456,29 @@ struct CpuEngine::Impl {
         &s.counts, s.spec.sampling.repetition_penalty, -1, greedy};
     bool predict = true, ok;
     const auto start = std::chrono::steady_clock::now();
+    if (!prefill && s.spec.draft_mode != CpuDraftMode::off &&
+        s.spec.forced_output_tokens.empty() && !s.spec.logits_callback && !s.spec.sampling_constraint &&
+        !model->impl_->gguf && model->supports_selected_logits() &&
+        cpu::q8_0_backend_uses_avx2(model->impl_->backend)) {
+      auto room = s.spec.max_new_tokens - s.result.generated_tokens;
+      if (config.max_queued_requests)
+        room = std::min(room, config.max_buffered_tokens - (s.result.output_tokens.size() - s.consumed));
+      if (room > 1) {
+        try {
+          const auto proposal = s.draft.propose(s.spec, s.result.output_tokens, room-1);
+          if (proposal.count) {
+            ok = verify_draft(s, proposal, error);
+            s.result.decode_ms += elapsed_ms(start);
+            if (!ok) { s.result.status = CpuRequestStatus::failed; s.result.error = error; }
+            return ok;
+          }
+        } catch (const std::bad_alloc &) {
+          s.result.status = CpuRequestStatus::failed;
+          s.result.error = error = "Could not allocate draft verification workspace.";
+          return false;
+        }
+      }
+    }
     if (prefill && s.result.committed_tokens == s.spec.prompt_tokens.size()) {
       // A complete hit still performs private head selection; a cached sample
       // must never substitute for this request's penalties or RNG state.
@@ -530,6 +605,9 @@ CpuRequestId CpuEngine::submit(CpuRequestSpec spec, std::string &error) {
                    valid_token) ||
       !std::all_of(spec.forced_output_tokens.begin(),
                    spec.forced_output_tokens.end(), valid_token) ||
+      (!spec.draft_source_tokens.empty() && spec.draft_mode != CpuDraftMode::input) ||
+      spec.draft_source_tokens.size() > impl_->config.max_context ||
+      !std::all_of(spec.draft_source_tokens.begin(), spec.draft_source_tokens.end(), valid_token) ||
       !std::isfinite(spec.sampling.temperature) ||
       spec.sampling.temperature < 0 || !std::isfinite(spec.sampling.top_p) ||
       spec.sampling.top_p <= 0 || spec.sampling.top_p > 1 ||

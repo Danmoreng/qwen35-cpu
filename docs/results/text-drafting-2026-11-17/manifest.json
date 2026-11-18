@@ -1,0 +1,60 @@
+{
+  "parent": "b8b9623db24d9178c5765ff21f331d3d95daa496",
+  "model_revision": "f6cb5cf04a9094670f9041578a3f4e44b94a1395",
+  "binaries": {
+    "/workspace/decode-tools/build/qwen35_cpu_bench": "27E38E32A3668F06F11F776EE6F5E81D26B73148079AB78112E7B7D21BAA58C4"
+  },
+  "inputs": {
+    "/workspace/decode-tools/model/tokenizer_config.json": {
+      "bytes": 16709,
+      "sha256": "49E2B6E395F959F077F1E992B338919C0D4A9732FC6E613995E06557F843500C"
+    },
+    "/workspace/decode-tools/model/tokenizer.json": {
+      "bytes": 12807982,
+      "sha256": "5F9E4D4901A92B997E463C1F46055088B6CCA5CA61A6522D1B9F64C4BB81CB42"
+    },
+    "/workspace/qwen35-cpu/benchmarks/draft/code.csv": {
+      "bytes": 536,
+      "sha256": "DB9D0F74A409B6162EFF6635EDAFE9ADDCCF13F24EF4BBD2C703F379031CDFDD"
+    },
+    "/workspace/qwen35-cpu/benchmarks/draft/transcript.csv": {
+      "bytes": 655,
+      "sha256": "DE7BE42E3CC1031E8CE5BD1EFF135BBAEEF64742A7042D976CA9D7105EA0B129"
+    },
+    "/workspace/decode-tools/model/model.q35h": {
+      "bytes": 424964864,
+      "sha256": "013FBFAA03760E759181301DDAF964BB5C200C50C50617AFE72557FD65BCBF0A"
+    },
+    "/workspace/decode-tools/model/config.json": {
+      "bytes": 2907,
+      "sha256": "B90B86F35C8E6925EF74EE04D0E758F0A845C83A42089AD82BBAA948DE9B4204"
+    },
+    "/workspace/qwen35-cpu/benchmarks/draft/prose.csv": {
+      "bytes": 186,
+      "sha256": "AC4237CDA3FD2E3E695F6BE7C3E5554D93505E84E7783A8828B61905742AA657"
+    },
+    "/workspace/qwen35-cpu/benchmarks/draft/editing.csv": {
+      "bytes": 517,
+      "sha256": "D9F83932F2A77BCF2754A862E0566591A1ABF309CFFF5FB18A507F76B21B4682"
+    }
+  },
+  "source_hint_sha256": {
+    "code-source.csv": "367152c9c3abf5b0faddf4250701ed960a0d7420baaaebf516d20c37c2044a58",
+    "transcript-source.csv": "9a25aa05497161ded99ba1ab6f654c8818e60c44e84c7f860a35029a79e4487c",
+    "editing-source.csv": "22e2bc33a585d2562d180b90f93f420d0094ce45e7c8f8cb09a1eeaa7c4e523f"
+  },
+  "cpu": "Intel Xeon Platinum 8573C, KVM",
+  "affinity": "0,2,4",
+  "threads": 3,
+  "quota": "400000 100000",
+  "compiler": "14.2.0",
+  "isa": "avx512-vnni-q4+avx512-fp32",
+  "parity": "All output IDs equal to off for each prompt and sampling configuration, all four runs including warmup.",
+  "sampler": {
+    "temperature": 0.65,
+    "top_k": 40,
+    "top_p": 0.9,
+    "seed": 83,
+    "repetition_penalty": 1.05
+  }
+}

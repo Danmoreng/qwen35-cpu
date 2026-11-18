@@ -16,7 +16,7 @@ enum class Api { completion, chat, messages };
 class ByteGrammar;
 struct Request {
   Api api = Api::completion;
-  std::string prompt, prefix_prompt;
+  std::string prompt, prefix_prompt, draft_source;
   CpuRequestSpec spec;
   bool stream = false, include_usage = false;
   bool automatic_prefix = true;
@@ -140,12 +140,17 @@ inline Request parse(const std::string &body, std::size_t context, const std::st
   if (api == Api::chat)
     fields(j, {"model", "messages", "max_tokens", "max_completion_tokens", "temperature", "stream", "n",
                "prefix_tokens", "top_p", "top_k", "seed", "repetition_penalty", "stop", "stream_options",
-               "cache_prompt", "prompt_cache_key"});
+               "cache_prompt", "prompt_cache_key", "draft", "draft_source"});
   else
     fields(j, {"model", "prompt", "max_tokens", "temperature", "stream", "n", "prefix_tokens",
-               "top_p", "top_k", "seed", "repetition_penalty", "stop", "stream_options", "cache_prompt", "prompt_cache_key"});
+               "top_p", "top_k", "seed", "repetition_penalty", "stop", "stream_options", "cache_prompt", "prompt_cache_key", "draft", "draft_source"});
   if (j.contains("model")) require(j.at("model").get<std::string>() == model, "Unknown model");
   Request request; request.api = api;
+  if (j.contains("draft")) request.spec.draft_mode = parse_cpu_draft_mode(j.at("draft").get<std::string>());
+  if (j.contains("draft_source")) {
+    require(request.spec.draft_mode == CpuDraftMode::input, "draft_source requires draft=input");
+    request.draft_source = j.at("draft_source").get<std::string>();
+  }
   if (j.contains("stream") && !j["stream"].is_null()) {
     require(j["stream"].is_boolean(), "stream must be boolean");
     request.stream = j["stream"].get<bool>();

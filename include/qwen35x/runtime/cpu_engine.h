@@ -2,6 +2,8 @@
 
 #include "qwen35x/runtime/options.h"
 #include <span>
+#include <string_view>
+#include <stdexcept>
 
 namespace qwen35x {
 
@@ -85,6 +87,14 @@ public:
   virtual bool apply(float *logits, std::size_t count, std::string &error) = 0;
   virtual bool accept(std::int32_t token, std::string &error) = 0;
 };
+enum class CpuDraftMode { off, ngram, input };
+inline CpuDraftMode parse_cpu_draft_mode(std::string_view value) {
+  if (value == "off") return CpuDraftMode::off;
+  if (value == "ngram") return CpuDraftMode::ngram;
+  if (value == "input") return CpuDraftMode::input;
+  throw std::invalid_argument("draft mode must be off, ngram or input");
+}
+
 struct CpuRequestSpec {
   std::vector<std::int32_t> prompt_tokens;
   std::vector<std::int32_t> forced_output_tokens;
@@ -109,6 +119,8 @@ struct CpuRequestSpec {
   // in the same namespace. May extend an attached shorter prefix. Zero disables
   // automatic single-flight registration.
   std::size_t register_prefix_tokens = 0;
+  CpuDraftMode draft_mode = CpuDraftMode::off;
+  std::vector<std::int32_t> draft_source_tokens;
 };
 struct CpuRequestResult {
   CpuRequestStatus status = CpuRequestStatus::prefill;
@@ -129,6 +141,8 @@ struct CpuRequestResult {
 };
 
 struct CpuEngineStats {
+  std::size_t draft_rounds = 0, proposed_tokens = 0, accepted_draft_tokens = 0;
+  std::size_t replayed_tokens = 0;
   std::uint64_t batch_ticks = 0, batch_rows = 0;
   std::uint64_t projection_batches = 0, lm_head_batches = 0;
   std::uint64_t greedy_lm_head_batches = 0, greedy_t8_head_batches = 0;
@@ -161,7 +175,7 @@ public:
   // Does not build state or run inference. The returned handle pins its storage.
   std::shared_ptr<const CpuPrefix>
   find_prefix(std::span<const std::int32_t> tokens, const std::string &trust_namespace);
-  // One bounded prefill chunk or one decode forward; no background work.
+  // One prefill chunk or decode step. Opt-in drafting may deliver up to four tokens.
   bool advance(CpuRequestId id, std::string &error);
   // One decode row per distinct active request, in the supplied row order.
   // Prompts must be initialized first. Empty batches are a no-op; B=1 keeps
