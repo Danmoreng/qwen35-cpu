@@ -103,3 +103,48 @@ The [run samples](../results/qwen35-2b-i7/ik-2026-11-18/samples.csv) and
 [reproduction manifest](../results/qwen35-2b-i7/ik-2026-11-18/manifest.json)
 record the timing boundaries, arguments, input and binary hashes, source
 revisions and tensor inventories.
+
+## BF16 fidelity of the size-matched quants
+
+Each model size used one shared BF16 reference in llama.cpp on the CPU. The
+test covered ten reserved documents across German, English, Python code, dialog
+and math, two per domain. For each document, all three systems received the
+same 512 prompt tokens and 128 forced continuations. Each score covers
+1,280 positions. KL measures the mean divergence from the BF16 distribution
+over all 248,320 vocabulary entries (nats per position, lower is closer).
+Perplexity measures the probability assigned to the observed continuation.
+Top-1 agreement counts positions where the quant and BF16 chose the same token.
+
+The BF16 target perplexities were 12.1266 (0.8B) and 8.6919 (2B).
+
+| Qwen3.5 | Checkpoint and scoring backend | Mean KL ↓ | Target perplexity ↓ | Top-1 agreement ↑ |
+|---|---|---:|---:|---:|
+| 2B | H128/Q4-G32-DOT4, native CPU | 0.048752 | 9.0666 | 88.91% |
+| 2B | IQ4_K_R4, ik_llama.cpp CPU | 0.049760 | 9.1614 | 88.59% |
+| 0.8B | H128/Q4-G32-DOT4, native CPU | 0.064336 | 12.7184 | 87.42% |
+| 0.8B | IQ4_K_R4, ik_llama.cpp CPU | 0.077614 | 12.9446 | 85.55% |
+
+| Qwen3.5 | H128 vs. IK change in mean KL | H128 wins by document (KL) | Paired KL difference, 95% interval | H128 vs. IK change in perplexity, 95% interval |
+|---|---:|---:|---:|---:|
+| 0.8B | -17.1% | 9/10 | -0.01328 [-0.01706, -0.00950] | -1.75% [-2.81%, -0.67%] |
+| 2B | -2.0% | 7/10 | -0.00101 [-0.00524, +0.00323] | -1.03% [-2.48%, +0.43%] |
+
+At 0.8B, both paired intervals favor the calibrated native checkpoint. At 2B,
+its pooled lead is small and both intervals cross zero. IK was closer to BF16
+on average on the two 2B dialog windows, while H128 had lower mean KL in each
+of the other four domains.
+
+The intervals resample matched documents within each domain, preserving the
+five-domain mix. Two documents per domain and the fixed selection limit transfer
+to other workloads. Scores include the arithmetic of each deployed CPU backend.
+H128 used 256-document activation calibration and blockwise error compensation.
+The measured IK quants were created without an external importance matrix.
+
+As a calibration control, the unweighted 2B H128 artifact scored 0.086713
+mean KL and 9.4150 perplexity on the same reference and targets.
+This control reuses archived full-vocabulary native logits for the same windows.
+All BF16, calibrated H128 and IQ4_K_R4 logits in the main comparison were freshly computed.
+
+The [per-window measurements](../results/qwen35-2b-i7/ik-quality-2026-11-18/windows.csv)
+and [quality manifest](../results/qwen35-2b-i7/ik-quality-2026-11-18/quality.json)
+include domain scores, paired intervals, token hashes, source revisions and binary identities.

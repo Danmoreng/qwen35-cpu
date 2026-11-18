@@ -1,0 +1,449 @@
+{
+  "native_source": "ce73894",
+  "llama_cpp": "73a43d1f69345aee8bb186ef4b3172cef892f2e5",
+  "ik_llama_cpp": "093e74cb0590eaf462a04516ba1bab8c6b6637bc",
+  "reference_sources": {
+    "0.8B": "Unsloth BF16 GGUF, revision 6ab461498e2023f6e3c1baea90a8f0fe38ab64d0",
+    "2B": "Qwen/Qwen3.5-2B revision 15852e8c16360a2fea060d615a32b45270f8a8fc, llama.cpp converter 73a43d1f69345aee8bb186ef4b3172cef892f2e5, --no-mtp --outtype bf16"
+  },
+  "protocol": {
+    "cpu": "Intel Core i7-8750H",
+    "cpu_set": "0-5",
+    "threads": 6,
+    "context_limit": 1024,
+    "prefix_tokens": 512,
+    "forced_targets": 128,
+    "vocabulary": 248320,
+    "native": "calibrated H128/Q4-G32-DOT4 in native CPU engine",
+    "ik": "pure IQ4_K_R4 in ik_llama.cpp with runtime repacking",
+    "teacher": "llama.cpp BF16 CPU",
+    "secondary": "2B archived native unweighted MSE16 logits rescored against the same fresh teacher",
+    "primary_metric": "Mean KL(BF16 || candidate) in nats per position over the entire vocabulary",
+    "ppl": "exp(pooled mean target negative log likelihood)",
+    "top1": "Fraction with the same argmax as BF16",
+    "uncertainty": "Paired percentile bootstrap by document within fixed domains, all 1024 equiprobable ordered resamples; inverse empirical CDF, 2.5% and 97.5%. Fixed first-eligible selection and two documents per domain limit generalization."
+  },
+  "command_templates": {
+    "teacher": "taskset -c 0-5 build-llama/bin/llama-fixed-cpu-bench --cpu-gguf BF16 --prompt-tokens-file PROMPT --forced-output-tokens TARGET_CSV --max-new-tokens 128 --cpu-threads 6 --max-context 1024 --logits-out DUMP --profile-json PROFILE",
+    "ik": "taskset -c 0-5 ik-fixed-cpu-bench --cpu-gguf IQ4_K_R4 --ik-repack --prompt-tokens-file PROMPT --forced-output-tokens TARGET_CSV --max-new-tokens 128 --cpu-threads 6 --max-context 1024 --logits-out DUMP --profile-json PROFILE",
+    "native": "taskset -c 0-5 build/qwen35_cpu --model-dir MODEL_DIR --weights Q35H --tokens-file PROMPT --forced-tokens-file TARGETS --threads 6 --max-context 1024 --logits-out DUMP",
+    "metrics": "python3 scripts/compare-logit-dumps.py --teacher REFERENCE --candidate DUMP --csv TOKEN_METRICS --json SUMMARY"
+  },
+  "windows": [
+    {
+      "id": "de-000",
+      "domain": "de",
+      "row_index": 5,
+      "repository": "HuggingFaceFW/fineweb-2",
+      "revision": "af9c13333eb981300149d5ca60a8e9d659b276b9",
+      "file": "data/deu_Latn/train/000_00000.parquet",
+      "source_sha256": "294bd89695b744fac449dbff58db05dafe5adbc5a257973b664b6a24159f766c",
+      "token_sha256": "261a66e408e3a231b727af4f996783d064d71fc689e64996cbb633fb6812a8a6",
+      "prompt_sha256": "e367cf4488524aeb6c8659887738da5844560432c5391a1021d2070b15d6e51e",
+      "targets_sha256": "34dff1b6b36fd35bd6cb4a31e6b4252ed42d5392c4774b1516c3e61926ce0d82"
+    },
+    {
+      "id": "de-001",
+      "domain": "de",
+      "row_index": 6,
+      "repository": "HuggingFaceFW/fineweb-2",
+      "revision": "af9c13333eb981300149d5ca60a8e9d659b276b9",
+      "file": "data/deu_Latn/train/000_00000.parquet",
+      "source_sha256": "78653bf526bf434855483a9af0692901da01b498f646230ed6410c255cb46717",
+      "token_sha256": "0a8bf9d2f6005dca40ea6631bbe3348841c232925d1baad111cb8d18c283fc72",
+      "prompt_sha256": "4bf07498d8364e8c57b41daec01a1e7517f9787848e6676ac6edef1e7a8b120a",
+      "targets_sha256": "9ccb9e93d4248a728091ab136a7c0a6be3e1caeee95d9954e92783c4722c827b"
+    },
+    {
+      "id": "en-000",
+      "domain": "en",
+      "row_index": 4,
+      "repository": "HuggingFaceFW/fineweb-edu",
+      "revision": "87f09149ef4734204d70ed1d046ddc9ca3f2b8f9",
+      "file": "data/CC-MAIN-2013-20/train-00000-of-00014.parquet",
+      "source_sha256": "78cabf1ca028cbac5409a8a1e10d159d1a572d766d8bfab722af69022a896ce3",
+      "token_sha256": "1a6927b8e2b5e5e47320509ce32f1397dd9d02c6b53130b4b60791b057903080",
+      "prompt_sha256": "9ca0a70e1161cf95c449e20101cc0d295e83a09d187a01a12a8290b21824bd3a",
+      "targets_sha256": "028a4f7f53dcbe92caa0e40f6f3089014358da87b0758f5b9a192a8dab330f50"
+    },
+    {
+      "id": "en-001",
+      "domain": "en",
+      "row_index": 7,
+      "repository": "HuggingFaceFW/fineweb-edu",
+      "revision": "87f09149ef4734204d70ed1d046ddc9ca3f2b8f9",
+      "file": "data/CC-MAIN-2013-20/train-00000-of-00014.parquet",
+      "source_sha256": "349fd95cb1773b2787708ea0f0d21b99ea496c20968a73d350a24ca8eaada0fe",
+      "token_sha256": "2bb646c775900bf0f95b7ede8e68b851bd63e5ede0c93c2a18cd291dfe658788",
+      "prompt_sha256": "2108b6a93a6920581169d2e5bfd20eb101f93817420564f8d9cb2cf19c9189b3",
+      "targets_sha256": "ea8cf7b3a82e4c922f3687c696c60f535a816d635ba09f49d79af94e582510a4"
+    },
+    {
+      "id": "code-000",
+      "domain": "code",
+      "row_index": 2,
+      "repository": "codeparrot/codeparrot-clean",
+      "revision": "35a59fb025bc0a102f7d96eac09d145b896d487b",
+      "file": "file-000000000001.json.gz",
+      "source_sha256": "7f0f3cb4c0b98797d80a1f94f8e9819827572eda86abb03cdeb677e1ed633197",
+      "token_sha256": "58c28b83c73937db6ce747ee926c6ebb54ae1c79a1515185a611979c883fb0f7",
+      "prompt_sha256": "152e2ef40aa7dca7b9de95e7ed593f7497375e1d3bb2f3ed27f5d461ce7aeae9",
+      "targets_sha256": "294c8d6a275bb0b50c144f9dfb68ae8d557778ab8a49746a3d0e404a46fd2a7e"
+    },
+    {
+      "id": "code-001",
+      "domain": "code",
+      "row_index": 6,
+      "repository": "codeparrot/codeparrot-clean",
+      "revision": "35a59fb025bc0a102f7d96eac09d145b896d487b",
+      "file": "file-000000000001.json.gz",
+      "source_sha256": "b976342461e1b163ed024e781e1adad73d6f5a71c36a232c4e2f990bf8690cb0",
+      "token_sha256": "04999a93458ee830bef230d8a6bd0a1ac0c366ce34b9217102662c75c2232f84",
+      "prompt_sha256": "24c648c95e5529dd20d83646393d8181850b67af272df3bd075c947ec4748dba",
+      "targets_sha256": "76f8c36820ab32244cf17e05a2e19ffc19043fe04ea855c710a6273be26ba2ee"
+    },
+    {
+      "id": "chat-000",
+      "domain": "chat",
+      "row_index": 0,
+      "repository": "HuggingFaceTB/smoltalk",
+      "revision": "5feaf2fd3ffca7c237fc38d1861bc30365d48ffa",
+      "file": "data/smol-magpie-ultra/train-00000-of-00006.parquet",
+      "source_sha256": "194da73faa48d669bc7821653a7606cd1ea8d073d81ffbe52a3973002fe4b24e",
+      "token_sha256": "420af6856eda21f7f32e3800e1b99cab7db67406bee82b22d79095930fc42b34",
+      "prompt_sha256": "9c6b299954a4afb5b0e94487d249cfe3dd34df98c9c53fafbfc56ea0eebdd1e3",
+      "targets_sha256": "e0e511f26648a4aa81b3c19781cf18985c4b22bce425149e86ddbcdb1b763866"
+    },
+    {
+      "id": "chat-001",
+      "domain": "chat",
+      "row_index": 1,
+      "repository": "HuggingFaceTB/smoltalk",
+      "revision": "5feaf2fd3ffca7c237fc38d1861bc30365d48ffa",
+      "file": "data/smol-magpie-ultra/train-00000-of-00006.parquet",
+      "source_sha256": "117d5daacbd9b54f1fa38c17f334b8156b4ebc9745caa5259d443759f8bcd897",
+      "token_sha256": "f552cce7e892b083eedbcd1a168b508ad9f439a8713d804b5a5216a8d6cbd586",
+      "prompt_sha256": "92f2163ea8c296c673594a8a40844f55a90e3a94545feb354fbb94789741da36",
+      "targets_sha256": "b68b55730496b40d14f7c5939b4a1aa5c908006a6174fc8d7d3fecaf3cde8948"
+    },
+    {
+      "id": "math-000",
+      "domain": "math",
+      "row_index": 0,
+      "repository": "open-web-math/open-web-math",
+      "revision": "fde8ef8de2300f5e778f56261843dab89f230815",
+      "file": "data/train-00000-of-00114-5a023365406cb9c4.parquet",
+      "source_sha256": "1b4ab9473209f648e11745c1fd9d1627bac956bc478de47562aae0788b6faefe",
+      "token_sha256": "75b45c7e0bbaf469b51e5f28909dc0d1cb18db50100f7e5d73be57da5921c20d",
+      "prompt_sha256": "ddd5905d68552d0e17e02a5e4fbd87fa26cf7830b7f634a88c56a4102a0e6976",
+      "targets_sha256": "4c798c5f99095b7d80f218327fbf7a219e6e3a5d4ad3aa16ccfc4ccef7417483"
+    },
+    {
+      "id": "math-001",
+      "domain": "math",
+      "row_index": 2,
+      "repository": "open-web-math/open-web-math",
+      "revision": "fde8ef8de2300f5e778f56261843dab89f230815",
+      "file": "data/train-00000-of-00114-5a023365406cb9c4.parquet",
+      "source_sha256": "79bfdd9e001bc29a6a28590ab2e26accaa8193793209f32ccdd4a5ca2e3b3177",
+      "token_sha256": "8bffdcbbb443e779fa5e78fe6123c3b268da63ef64fbb14ab4451855dbbc7e4d",
+      "prompt_sha256": "3526a8d9b94baf0c026e8a6f3bd99fe7a666e068bcbad65d336fc7f1a5c6ec8a",
+      "targets_sha256": "c30641571ff32c7b2a89780d640a57bff56417129b02355076fe0886307b0b16"
+    }
+  ],
+  "sha256": {
+    "models/llama-comparison/Qwen3.5-0.8B-BF16.gguf": "cedf89af31c9041b601fa58303285bc46d99c51baee1b13f5e919626ca526ee5",
+    "benchmarks/ik-current-093e74c/Qwen3.5-2B-text-BF16.gguf": "d2a10f0d9f44024ce891da4eeaf539dea7315bd4d1e5e0a96bbfca544d2b2955",
+    "models/qwen3.5-0.8b/model.q35h": "013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a",
+    "models/ik-comparison/Qwen3.5-0.8B-IQ4_K_R4-093e74c.gguf": "37a92ad119da91c633a9399e1da3fb5aa48bb23df1aec766707e2ded54ba8c96",
+    "models/qwen3.5-2b/model.q35h": "1084c3a2751d3813a2aa686337f717e56291e6a1a79ff8be1b6d1665d22892a3",
+    "models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-093e74c.gguf": "247e5b20477552bb0ddb7021840b2591866f5f5261e95c255f90580395ce7d8a",
+    "build/qwen35_cpu": "830417f5358cbe39f10ec992cdd51b047746a30728bb9d5ba4ccb690d85ce8fe",
+    "build-llama/bin/llama-fixed-cpu-bench": "8405d86a693e357b735638ffc269b529375d5bb51dedda3754913e0f98d86474",
+    "benchmarks/ik-current-093e74c/build/bin/ik-fixed-cpu-bench": "2f4b858a2581453cb74db4d1518d081ed8efd0490d44970b9eed16ef06ef0fc8",
+    "scripts/compare-logit-dumps.py": "1bca3b6c7598268a6c635a6756207730ed171e80c591bd8dd0bd527a3f027950",
+    "models/qwen3.5-0.8b/tokenizer.json": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+    "models/qwen3.5-2b/tokenizer.json": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+    "build-llama/bin/libllama.so.0.4.0": "c4870ec07dc789f241428a76eec81815b03348a97dc97961b470f3385b3b9dad",
+    "build-llama/bin/libggml.so.0.23.0": "3c9104781ecab72c1d2c30e1bd727e5b99ed9dc3c18d621ae0b7f3be0b9cd954",
+    "build-llama/bin/libggml-base.so.0.23.0": "adc40c48a812919467331306d04b26b16457e89cb3d957cbe205dfef8cdff859",
+    "build-llama/bin/libggml-cpu.so.0.23.0": "47f2f06be2d889887be8fd7be5cb83d823b4f45d74753820fac179a04a6fb98b",
+    "benchmarks/ik-current-093e74c/build/ik/src/libllama.so": "cf522cd4d93dce2ef19d5f5e9f313c3ca512afbca3e475335b4739a196a6fb41",
+    "benchmarks/ik-current-093e74c/build/ik/ggml/src/libggml.so": "9a83dce3c96194a3b500f2604d3fb0fb1ffcd4671fef36f05e1fd1e9366954a7",
+    "models/qwen3.5-2b/model-mse16.q35h": "533225f8eca705106dee6db5188941c47a4349473e39384fd856a31c9e2ff325"
+  },
+  "results": {
+    "0.8B": {
+      "overall": {
+        "native": {
+          "positions": 1280,
+          "kl": 0.06433551759343772,
+          "ppl": 12.718380786844673,
+          "bf16_ppl": 12.126605135884791,
+          "top1_agreement": 0.87421875
+        },
+        "ik": {
+          "positions": 1280,
+          "kl": 0.07761444183875302,
+          "ppl": 12.944583054021864,
+          "bf16_ppl": 12.126605135884791,
+          "top1_agreement": 0.85546875
+        }
+      },
+      "domains": {
+        "de": {
+          "native": {
+            "positions": 256,
+            "kl": 0.09217292748254521,
+            "ppl": 42.71162204012542,
+            "bf16_ppl": 38.14088861617107,
+            "top1_agreement": 0.796875
+          },
+          "ik": {
+            "positions": 256,
+            "kl": 0.11979864273992677,
+            "ppl": 43.92227528256608,
+            "bf16_ppl": 38.14088861617107,
+            "top1_agreement": 0.765625
+          }
+        },
+        "en": {
+          "native": {
+            "positions": 256,
+            "kl": 0.06392432008027162,
+            "ppl": 26.721993460209568,
+            "bf16_ppl": 25.34763893445185,
+            "top1_agreement": 0.85546875
+          },
+          "ik": {
+            "positions": 256,
+            "kl": 0.0735942591533042,
+            "ppl": 26.632946862737207,
+            "bf16_ppl": 25.34763893445185,
+            "top1_agreement": 0.87109375
+          }
+        },
+        "code": {
+          "native": {
+            "positions": 256,
+            "kl": 0.0596700492852702,
+            "ppl": 6.305686527961404,
+            "bf16_ppl": 5.954087099896663,
+            "top1_agreement": 0.90625
+          },
+          "ik": {
+            "positions": 256,
+            "kl": 0.05901439779096407,
+            "ppl": 6.470602232869386,
+            "bf16_ppl": 5.954087099896663,
+            "top1_agreement": 0.9140625
+          }
+        },
+        "chat": {
+          "native": {
+            "positions": 256,
+            "kl": 0.06347173960212502,
+            "ppl": 5.158284177341082,
+            "bf16_ppl": 5.210342351020447,
+            "top1_agreement": 0.921875
+          },
+          "ik": {
+            "positions": 256,
+            "kl": 0.07299042699748862,
+            "ppl": 5.255401386546122,
+            "bf16_ppl": 5.210342351020447,
+            "top1_agreement": 0.8671875
+          }
+        },
+        "math": {
+          "native": {
+            "positions": 256,
+            "kl": 0.0424385515169766,
+            "ppl": 8.964097225878685,
+            "bf16_ppl": 8.743522242257376,
+            "top1_agreement": 0.890625
+          },
+          "ik": {
+            "positions": 256,
+            "kl": 0.06267448251208142,
+            "ppl": 9.136622574320214,
+            "bf16_ppl": 8.743522242257376,
+            "top1_agreement": 0.859375
+          }
+        }
+      },
+      "paired": {
+        "kl_difference_native_minus_ik": -0.013278924245315293,
+        "kl_difference_95pct": [
+          -0.017060327087503713,
+          -0.009497521403126846
+        ],
+        "kl_percent_change": -17.108831720909322,
+        "ppl_percent_change": -1.7474666138969308,
+        "ppl_percent_change_95pct": [
+          -2.814310079014437,
+          -0.6689120112654434
+        ],
+        "native_lower_kl_documents": 9,
+        "native_lower_ppl_documents": 8
+      }
+    },
+    "2B": {
+      "overall": {
+        "native": {
+          "positions": 1280,
+          "kl": 0.04875223321902549,
+          "ppl": 9.066618087528061,
+          "bf16_ppl": 8.691909553210234,
+          "top1_agreement": 0.8890625
+        },
+        "ik": {
+          "positions": 1280,
+          "kl": 0.04975967197706851,
+          "ppl": 9.161427195394047,
+          "bf16_ppl": 8.691909553210234,
+          "top1_agreement": 0.8859375
+        },
+        "unweighted": {
+          "positions": 1280,
+          "kl": 0.08671282807661448,
+          "ppl": 9.415039461650307,
+          "bf16_ppl": 8.691909553210234,
+          "top1_agreement": 0.86640625
+        }
+      },
+      "domains": {
+        "de": {
+          "native": {
+            "positions": 256,
+            "kl": 0.07268482750118717,
+            "ppl": 27.13714221717764,
+            "bf16_ppl": 24.051344308886303,
+            "top1_agreement": 0.8359375
+          },
+          "ik": {
+            "positions": 256,
+            "kl": 0.08220261211288091,
+            "ppl": 26.894511957229618,
+            "bf16_ppl": 24.051344308886303,
+            "top1_agreement": 0.8125
+          },
+          "unweighted": {
+            "positions": 256,
+            "kl": 0.12913964531663663,
+            "ppl": 27.50885274019378,
+            "bf16_ppl": 24.051344308886303,
+            "top1_agreement": 0.7734375
+          }
+        },
+        "en": {
+          "native": {
+            "positions": 256,
+            "kl": 0.04041956278679303,
+            "ppl": 17.75698299943606,
+            "bf16_ppl": 16.905915867807114,
+            "top1_agreement": 0.8828125
+          },
+          "ik": {
+            "positions": 256,
+            "kl": 0.048282089888674426,
+            "ppl": 16.885378499520424,
+            "bf16_ppl": 16.905915867807114,
+            "top1_agreement": 0.8984375
+          },
+          "unweighted": {
+            "positions": 256,
+            "kl": 0.07218362737359463,
+            "ppl": 19.254065624584836,
+            "bf16_ppl": 16.905915867807114,
+            "top1_agreement": 0.87109375
+          }
+        },
+        "code": {
+          "native": {
+            "positions": 256,
+            "kl": 0.037174972290007616,
+            "ppl": 4.506086425023099,
+            "bf16_ppl": 4.480389848948744,
+            "top1_agreement": 0.90625
+          },
+          "ik": {
+            "positions": 256,
+            "kl": 0.04429690112542399,
+            "ppl": 4.501664022067008,
+            "bf16_ppl": 4.480389848948744,
+            "top1_agreement": 0.94140625
+          },
+          "unweighted": {
+            "positions": 256,
+            "kl": 0.06342523759664698,
+            "ppl": 4.646761217056171,
+            "bf16_ppl": 4.480389848948744,
+            "top1_agreement": 0.88671875
+          }
+        },
+        "chat": {
+          "native": {
+            "positions": 256,
+            "kl": 0.06145873876921272,
+            "ppl": 3.956379197876283,
+            "bf16_ppl": 4.075066163280427,
+            "top1_agreement": 0.91015625
+          },
+          "ik": {
+            "positions": 256,
+            "kl": 0.036149348445987044,
+            "ppl": 4.323750894683429,
+            "bf16_ppl": 4.075066163280427,
+            "top1_agreement": 0.8828125
+          },
+          "unweighted": {
+            "positions": 256,
+            "kl": 0.11023359212988301,
+            "ppl": 4.2136783962813285,
+            "bf16_ppl": 4.075066163280427,
+            "top1_agreement": 0.90234375
+          }
+        },
+        "math": {
+          "native": {
+            "positions": 256,
+            "kl": 0.03202306474792693,
+            "ppl": 7.131746463832621,
+            "bf16_ppl": 6.682630744624204,
+            "top1_agreement": 0.91015625
+          },
+          "ik": {
+            "positions": 256,
+            "kl": 0.037867408312376165,
+            "ppl": 7.301422199285744,
+            "bf16_ppl": 6.682630744624204,
+            "top1_agreement": 0.89453125
+          },
+          "unweighted": {
+            "positions": 256,
+            "kl": 0.0585820379663112,
+            "ppl": 7.133522829468473,
+            "bf16_ppl": 6.682630744624204,
+            "top1_agreement": 0.8984375
+          }
+        }
+      },
+      "paired": {
+        "kl_difference_native_minus_ik": -0.0010074387580430166,
+        "kl_difference_95pct": [
+          -0.005243985964535569,
+          0.003229108448449536
+        ],
+        "kl_percent_change": -2.0246089212712093,
+        "ppl_percent_change": -1.034872687889199,
+        "ppl_percent_change_95pct": [
+          -2.4830601147160736,
+          0.4348212261766182
+        ],
+        "native_lower_kl_documents": 7,
+        "native_lower_ppl_documents": 6
+      }
+    }
+  }
+}
