@@ -68,3 +68,38 @@ the first 1,024 tokens of one document in each domain.
 Per-window quality, corpus revisions, binary and checkpoint hashes, exact
 benchmark arguments and individual speed runs are in the
 [model results](../results/qwen35-2b-i7/model-results.json).
+
+## Matched ik_llama.cpp comparison on November 18, 2026
+
+On the i7-8750H the native engine decoded 11.2% faster at 0.8B and
+15.4% faster at 2B than ik_llama.cpp IQ4_K_R4. Each pair has identical
+on-disk tensor payload. Complete file sizes include format metadata and the
+GGUF tokenizer. MB is decimal.
+
+| Qwen3.5 | Engine and quant | Tensor MB | File MB | Prefill tok/s | Decode tok/s |
+|---|---|---:|---:|---:|---:|
+| 0.8B | Native H128/Q4-G32-DOT4 | 424.93 | 424.96 | 463.42 | 63.65 |
+| 0.8B | ik_llama.cpp IQ4_K_R4 | 424.93 | 435.90 | 303.10 | 57.24 |
+| 2B | Native H128/Q4-G32-DOT4 | 1,060.41 | 1,060.44 | 203.45 | 28.13 |
+| 2B | ik_llama.cpp IQ4_K_R4 | 1,060.41 | 1,071.37 | 119.46 | 24.38 |
+
+Both calibrated native checkpoints were remeasured alongside IQ4_K_R4 files
+freshly quantized with the same IK build used for inference. The 0.8B source
+was the archived Unsloth BF16 GGUF. The 2B source was the original Qwen
+checkpoint, exported as a 24-layer text-only BF16 GGUF with the optional MTP
+head excluded. IK used its pure IQ4_K_R4 recipe without an importance matrix
+and enabled runtime tensor repacking. The CPU-only Release build used GCC
+15.2.0 and host-native instruction selection. [Tested IK revision](https://github.com/ikawrakow/ik_llama.cpp/commit/093e74cb0590eaf462a04516ba1bab8c6b6637bc).
+
+Each model size ran as its own two-engine matrix with alternating case order.
+All rates are medians of three measured runs after one warmup. Each process
+used six physical cores (mask 0x3f), one request, an 8,192-token context limit,
+FP16 KV, the same 512 prompt tokens, and the same 64 forced output tokens.
+Prefill includes the final vocabulary projection, using the native forward
+timer and IK's synchronized decode call. Generation counts the remaining 63
+decode forwards. Load time and load-time repacking are excluded.
+
+The [run samples](../results/qwen35-2b-i7/ik-2026-11-18/samples.csv) and
+[reproduction manifest](../results/qwen35-2b-i7/ik-2026-11-18/manifest.json)
+record the timing boundaries, arguments, input and binary hashes, source
+revisions and tensor inventories.
