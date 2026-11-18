@@ -1,0 +1,287 @@
+{
+  "baseline_revision": "ee5448626554cd9d1b13a1d17772041c427135ee",
+  "candidate_prefill_source_blob": "32c08db3f5559c7cbb4554da7774d0f34c1014bc",
+  "checkpoint": "H128/Q4-G32-DOT4",
+  "cpu": "Intel Core i7-8750H",
+  "threads": 6,
+  "logical_cpus": "0-5",
+  "affinity_mask": 63,
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "build": "CMake Release",
+  "os": "Linux 7.0.0-43-generic x86_64 GNU/Linux",
+  "cpufreq_driver": "intel_pstate",
+  "governor": "powersave",
+  "binary_sha256": {
+    "build/qwen35_cpu_bench": "9452d973750dbd6b9e023f798d950f49568b8c30e270fefa15f3f46fc04577d0",
+    "build/qwen35_cpu": "f45c7599bf02b0bb3007bfe9737d039b83f6f1c158a963e68cf47246d53c5353",
+    "benchmarks/i7-land-20261118/base/qwen35_cpu_bench": "ea00486942c1c4bf9403cc5c3eb396ad509d75836819eff1c37a70368a17b948",
+    "benchmarks/i7-land-20261118/base/qwen35_cpu": "e2eda2bef471727d5591a10284d9ffb8e5fd652ed4ba4d2d20f2efc5e4e96a25"
+  },
+  "runner": "scripts/benchmark-inference-seq.ps1",
+  "warmups": 1,
+  "runs": 3,
+  "raw_directory": "benchmarks/i7-land-20261118",
+  "inputs": {
+    "docs/results/cpu-refresh-2026-10-22/prompt-512.csv": "6baa0783f9ad2adea59013c948cd15a0a465e870837bf9a60e57eb73ef39bd81",
+    "benchmarks/i7-land-20261118/prompt-2048.csv": "48b54fa209a28077398dd1e82797f7f28e2b6276e71568decceb4d7378a0d4df",
+    "models/qwen3.5-0.8b/model.q35h": "013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a",
+    "models/qwen3.5-0.8b/tokenizer_config.json": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c",
+    "models/qwen3.5-0.8b/tokenizer.json": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+    "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv": "bb1582bd818d65ba153c31116895c24fd69d9edd822bb7c5fb8873055e6cd435",
+    "models/qwen3.5-0.8b/config.json": "b90b86f35c8e6925ef74ee04d0e758f0a845c83a42089ad82bbaa948de9b4204"
+  },
+  "series": {
+    "matrix-run": {
+      "matrix": [
+        {
+          "name": "base-p512",
+          "executable": "benchmarks/i7-land-20261118/base/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-threads",
+            "6",
+            "--cpu-isa",
+            "avx2",
+            "--cpu-isa-strict",
+            "--cpu-batch",
+            "1",
+            "--cpu-batch-full-logits",
+            "--max-context",
+            "8192",
+            "--prompt-tokens-file",
+            "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461",
+            "--max-new-tokens",
+            "2"
+          ]
+        },
+        {
+          "name": "candidate-p512",
+          "executable": "build/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-threads",
+            "6",
+            "--cpu-isa",
+            "avx2",
+            "--cpu-isa-strict",
+            "--cpu-batch",
+            "1",
+            "--cpu-batch-full-logits",
+            "--max-context",
+            "8192",
+            "--prompt-tokens-file",
+            "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461",
+            "--max-new-tokens",
+            "2"
+          ]
+        },
+        {
+          "name": "base-p2048",
+          "executable": "benchmarks/i7-land-20261118/base/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-threads",
+            "6",
+            "--cpu-isa",
+            "avx2",
+            "--cpu-isa-strict",
+            "--cpu-batch",
+            "1",
+            "--cpu-batch-full-logits",
+            "--max-context",
+            "8192",
+            "--prompt-tokens-file",
+            "benchmarks/i7-land-20261118/prompt-2048.csv",
+            "--forced-output-tokens",
+            "303,22461",
+            "--max-new-tokens",
+            "2"
+          ]
+        },
+        {
+          "name": "candidate-p2048",
+          "executable": "build/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-threads",
+            "6",
+            "--cpu-isa",
+            "avx2",
+            "--cpu-isa-strict",
+            "--cpu-batch",
+            "1",
+            "--cpu-batch-full-logits",
+            "--max-context",
+            "8192",
+            "--prompt-tokens-file",
+            "benchmarks/i7-land-20261118/prompt-2048.csv",
+            "--forced-output-tokens",
+            "303,22461",
+            "--max-new-tokens",
+            "2"
+          ]
+        },
+        {
+          "name": "base-p4096",
+          "executable": "benchmarks/i7-land-20261118/base/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-threads",
+            "6",
+            "--cpu-isa",
+            "avx2",
+            "--cpu-isa-strict",
+            "--cpu-batch",
+            "1",
+            "--cpu-batch-full-logits",
+            "--max-context",
+            "8192",
+            "--prompt-tokens-file",
+            "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+            "--forced-output-tokens",
+            "303,22461",
+            "--max-new-tokens",
+            "2"
+          ]
+        },
+        {
+          "name": "candidate-p4096",
+          "executable": "build/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-threads",
+            "6",
+            "--cpu-isa",
+            "avx2",
+            "--cpu-isa-strict",
+            "--cpu-batch",
+            "1",
+            "--cpu-batch-full-logits",
+            "--max-context",
+            "8192",
+            "--prompt-tokens-file",
+            "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+            "--forced-output-tokens",
+            "303,22461",
+            "--max-new-tokens",
+            "2"
+          ]
+        }
+      ],
+      "metadata_sha256": "c251c37b39ff50503b8b33a758d4b1610e310ad6473d5c0e5038ab04947587a3",
+      "results_sha256": "04fb9e26d6ad1c03dccb14b57d40c06fe86935411a2c8fa52120c0baaaa6134e"
+    },
+    "confirm-matrix-run": {
+      "matrix": [
+        {
+          "name": "candidate-p4096",
+          "executable": "build/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-threads",
+            "6",
+            "--cpu-isa",
+            "avx2",
+            "--cpu-isa-strict",
+            "--cpu-batch",
+            "1",
+            "--cpu-batch-full-logits",
+            "--max-context",
+            "8192",
+            "--prompt-tokens-file",
+            "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+            "--forced-output-tokens",
+            "303,22461",
+            "--max-new-tokens",
+            "2"
+          ]
+        },
+        {
+          "name": "base-p4096",
+          "executable": "benchmarks/i7-land-20261118/base/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-threads",
+            "6",
+            "--cpu-isa",
+            "avx2",
+            "--cpu-isa-strict",
+            "--cpu-batch",
+            "1",
+            "--cpu-batch-full-logits",
+            "--max-context",
+            "8192",
+            "--prompt-tokens-file",
+            "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+            "--forced-output-tokens",
+            "303,22461",
+            "--max-new-tokens",
+            "2"
+          ]
+        }
+      ],
+      "metadata_sha256": "2ba8d4b7a9ff46ec14667ee65e1ac7cc31e11f46f41e909cd4d28e9b730e02e3",
+      "results_sha256": "85ba4893fe04a8dd605b35c8687a50e1e27dea008be73c321200f2fc4c097445"
+    }
+  },
+  "logit_checks": [
+    {
+      "prompt_tokens": 512,
+      "positions": 4,
+      "vocabulary": 248320,
+      "dump_sha256": "6182714bb4cedbf9a7aca5326f9cdba7a8f1aafc1e3d5fd6e9db96a0f6612d7e"
+    },
+    {
+      "prompt_tokens": 1151,
+      "positions": 4,
+      "vocabulary": 248320,
+      "dump_sha256": "f1b2a4cca21588e3211c08d09fbdbf799458cd6c35097273025840df0b6cd93f"
+    },
+    {
+      "prompt_tokens": 1152,
+      "positions": 4,
+      "vocabulary": 248320,
+      "dump_sha256": "d6568d4b08ba6f0ce82ed05d7d385b34e0a0ecb92ad0455404f9f9c7a0d6cc40"
+    },
+    {
+      "prompt_tokens": 1153,
+      "positions": 4,
+      "vocabulary": 248320,
+      "dump_sha256": "0817436f0a30c51cba446364b782aceffbcfcfb401a451c5c63466bbee080988"
+    },
+    {
+      "prompt_tokens": 4096,
+      "positions": 4,
+      "vocabulary": 248320,
+      "dump_sha256": "f685afc1603408974cfaebf7974c67165023f80d1bd144a005ad7f663c04605e"
+    }
+  ]
+}

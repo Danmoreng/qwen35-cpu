@@ -500,6 +500,11 @@ bool run_full_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
       runtime->query_tile, runtime->kv_tile, runtime->attention_gqa};
     args.pages=state.pages.width()?&page_rows:nullptr;
     if(runtime->automatic_attention && runtime->executor && args.share_gqa) {
+      // Amortize FP16 KV unpacking over more queries once the history is long.
+      if (runtime->attention_backend == cpu::Q8_0Backend::avx2 && args.keys_f16 &&
+          args.position >= 1024 && args.tokens >= 128) {
+        args.query_tile = 16;
+      }
       // Keep enough independent tasks for the actual pool, including short tails.
       while(args.query_tile>4 && cpu::tiled_attention_tasks(args)<runtime->executor->thread_count()) args.query_tile/=2;
       if(cpu::tiled_attention_tasks(args)<runtime->executor->thread_count()) args.share_gqa=false;

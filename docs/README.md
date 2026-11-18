@@ -26,6 +26,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 - [Speculative text decoding](benchmarks/text-drafting.md) compares prompt and input-source lookup on single-stream editing and generation.
 - [AVX-512 DeltaNet decode](benchmarks/deltanet-xeon.md) measures single-stream generation on a Xeon VM.
 - [Native prefill optimization](benchmarks/native-prefill.md): paired measurements and bitwise quality checks.
+- [AVX2 prefill on the i7-8750H](benchmarks/avx2-prefill-i7.md) measures query tile selection for long prompts.
 - [AVX2 cloud VM tuning](benchmarks/avx2-cloud.md): prompt processing, decode experiments and bitwise checks on an EPYC VM.
 - [Standard model calibration](benchmarks/calibration.md).
 - [Decision quality](benchmarks/decision-quality.md) and [HTTP latency](benchmarks/decision-http.md).

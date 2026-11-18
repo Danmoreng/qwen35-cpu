@@ -34,7 +34,8 @@ int main() {
           for (int pos : {0, 37, 129, 4032})
             for (int bq : {4, 8, 16})
               for (int bk : {32, 64, 128}) {
-                if (pos == 4032 && (tokens != 65 || bq != 8 || bk != 32))
+                const bool long_avx2_tile = backend == Q8_0Backend::avx2 && share && half && bq == 16;
+                if (pos == 4032 && (tokens != 65 || (bq != 8 && !long_avx2_tile) || bk != 32))
                   continue;
                 constexpr int H = 8, HK = 2, D = 256;
                 const int count = pos + tokens;
