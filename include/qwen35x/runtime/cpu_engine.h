@@ -74,6 +74,7 @@ struct CpuEngineConfig {
   // terminal results until release. Queued requests have no allocated KV state.
   std::size_t max_queued_requests = 0;
   std::size_t max_decode_batch_size = 32;
+  std::size_t max_prefill_requests = 1; // Opt-in short selected-readout requests, 1..8.
   std::size_t max_buffered_tokens = 256;
   // Opt-in FP16 shared prefix pages; contiguous caches remain the reference.
   bool shared_kv_pages = false;
@@ -147,6 +148,7 @@ struct CpuEngineStats {
   std::uint64_t projection_batches = 0, lm_head_batches = 0;
   std::uint64_t greedy_lm_head_batches = 0, greedy_t8_head_batches = 0;
   std::uint64_t state_batches = 0;
+  std::uint64_t shared_prefill_ticks = 0, shared_prefill_requests = 0;
   std::size_t queued_requests = 0, resident_requests = 0;
   std::uint64_t prefix_builds = 0, prefix_build_fallbacks = 0;
   std::uint64_t prefix_hits = 0, prefix_cached_tokens = 0, prefix_evictions = 0;

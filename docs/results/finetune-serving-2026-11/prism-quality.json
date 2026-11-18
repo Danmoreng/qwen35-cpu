@@ -1,0 +1,416 @@
+{
+  "summary": {
+    "reference": {
+      "accuracy": 0.9166666666666666,
+      "macro_f1": 0.9080851063829787,
+      "mrr": 1.0
+    },
+    "native": {
+      "accuracy": 0.9166666666666666,
+      "macro_f1": 0.9111111111111111,
+      "mrr": 1.0
+    },
+    "top1_agreement": 0.9444444444444444,
+    "probability_mae": 0.10071573549079081,
+    "max_probability_error": 0.2159099927603772
+  },
+  "dtype": "torch.bfloat16",
+  "rows": [
+    {
+      "reference": {
+        "irrelevant": 0.18242551386356354,
+        "relevant": 0.8175744414329529
+      },
+      "native": {
+        "irrelevant": 0.12132437655915314,
+        "relevant": 0.8786756234408468
+      },
+      "tokens": 225
+    },
+    {
+      "reference": {
+        "irrelevant": 0.3208213150501251,
+        "relevant": 0.6791787147521973
+      },
+      "native": {
+        "irrelevant": 0.20866731216497147,
+        "relevant": 0.7913326878350285
+      },
+      "tokens": 223
+    },
+    {
+      "reference": {
+        "irrelevant": 0.8175744414329529,
+        "relevant": 0.18242551386356354
+      },
+      "native": {
+        "irrelevant": 0.693312376311391,
+        "relevant": 0.3066876236886091
+      },
+      "tokens": 217
+    },
+    {
+      "reference": {
+        "irrelevant": 0.4687906503677368,
+        "relevant": 0.531209409236908
+      },
+      "native": {
+        "irrelevant": 0.2528806576073596,
+        "relevant": 0.7471193423926403
+      },
+      "tokens": 221
+    },
+    {
+      "reference": {
+        "irrelevant": 0.8670357465744019,
+        "relevant": 0.13296423852443695
+      },
+      "native": {
+        "irrelevant": 0.7831882663769774,
+        "relevant": 0.21681173362302256
+      },
+      "tokens": 218
+    },
+    {
+      "reference": {
+        "irrelevant": 0.18242551386356354,
+        "relevant": 0.8175744414329529
+      },
+      "native": {
+        "irrelevant": 0.11724897662015404,
+        "relevant": 0.882751023379846
+      },
+      "tokens": 223
+    },
+    {
+      "reference": {
+        "irrelevant": 0.8354835510253906,
+        "relevant": 0.16451646387577057
+      },
+      "native": {
+        "irrelevant": 0.7202971817202904,
+        "relevant": 0.27970281827970955
+      },
+      "tokens": 216
+    },
+    {
+      "reference": {
+        "irrelevant": 0.5,
+        "relevant": 0.5
+      },
+      "native": {
+        "irrelevant": 0.3810598551025652,
+        "relevant": 0.6189401448974348
+      },
+      "tokens": 219
+    },
+    {
+      "reference": {
+        "irrelevant": 0.7057850360870361,
+        "relevant": 0.29421496391296387
+      },
+      "native": {
+        "irrelevant": 0.5796309385325226,
+        "relevant": 0.4203690614674774
+      },
+      "tokens": 218
+    },
+    {
+      "reference": {
+        "irrelevant": 0.3486451804637909,
+        "relevant": 0.6513549089431763
+      },
+      "native": {
+        "irrelevant": 0.2201161128954422,
+        "relevant": 0.7798838871045578
+      },
+      "tokens": 225
+    },
+    {
+      "reference": {
+        "irrelevant": 0.7057850360870361,
+        "relevant": 0.29421496391296387
+      },
+      "native": {
+        "irrelevant": 0.5803910677602844,
+        "relevant": 0.4196089322397156
+      },
+      "tokens": 222
+    },
+    {
+      "reference": {
+        "irrelevant": 0.8354835510253906,
+        "relevant": 0.16451646387577057
+      },
+      "native": {
+        "irrelevant": 0.7340763388312787,
+        "relevant": 0.26592366116872135
+      },
+      "tokens": 219
+    },
+    {
+      "reference": {
+        "irrelevant": 0.6791787147521973,
+        "relevant": 0.3208213150501251
+      },
+      "native": {
+        "irrelevant": 0.5324564716032185,
+        "relevant": 0.4675435283967816
+      },
+      "tokens": 220
+    },
+    {
+      "reference": {
+        "irrelevant": 0.8354835510253906,
+        "relevant": 0.16451646387577057
+      },
+      "native": {
+        "irrelevant": 0.7354108601310387,
+        "relevant": 0.26458913986896127
+      },
+      "tokens": 213
+    },
+    {
+      "reference": {
+        "irrelevant": 0.3486451804637909,
+        "relevant": 0.6513549089431763
+      },
+      "native": {
+        "irrelevant": 0.32122207280382137,
+        "relevant": 0.6787779271961786
+      },
+      "tokens": 225
+    },
+    {
+      "reference": {
+        "irrelevant": 0.8807970285415649,
+        "relevant": 0.11920291185379028
+      },
+      "native": {
+        "irrelevant": 0.8233894276175147,
+        "relevant": 0.17661057238248531
+      },
+      "tokens": 213
+    },
+    {
+      "reference": {
+        "irrelevant": 0.2018132209777832,
+        "relevant": 0.7981867790222168
+      },
+      "native": {
+        "irrelevant": 0.15616068679398,
+        "relevant": 0.8438393132060199
+      },
+      "tokens": 218
+    },
+    {
+      "reference": {
+        "irrelevant": 0.7772998809814453,
+        "relevant": 0.22270014882087708
+      },
+      "native": {
+        "irrelevant": 0.692771905028849,
+        "relevant": 0.30722809497115106
+      },
+      "tokens": 215
+    },
+    {
+      "reference": {
+        "irrelevant": 0.18242551386356354,
+        "relevant": 0.8175744414329529
+      },
+      "native": {
+        "irrelevant": 0.14802987765569303,
+        "relevant": 0.851970122344307
+      },
+      "tokens": 222
+    },
+    {
+      "reference": {
+        "irrelevant": 0.5926666259765625,
+        "relevant": 0.4073334336280823
+      },
+      "native": {
+        "irrelevant": 0.4558126375100202,
+        "relevant": 0.5441873624899798
+      },
+      "tokens": 218
+    },
+    {
+      "reference": {
+        "irrelevant": 0.7981867790222168,
+        "relevant": 0.2018132209777832
+      },
+      "native": {
+        "irrelevant": 0.6485676535568882,
+        "relevant": 0.3514323464431119
+      },
+      "tokens": 214
+    },
+    {
+      "reference": {
+        "irrelevant": 0.7549149990081787,
+        "relevant": 0.24508501589298248
+      },
+      "native": {
+        "irrelevant": 0.6320388875587416,
+        "relevant": 0.3679611124412583
+      },
+      "tokens": 219
+    },
+    {
+      "reference": {
+        "irrelevant": 0.7310585975646973,
+        "relevant": 0.2689414322376251
+      },
+      "native": {
+        "irrelevant": 0.6169696374609838,
+        "relevant": 0.38303036253901634
+      },
+      "tokens": 217
+    },
+    {
+      "reference": {
+        "irrelevant": 0.3208213150501251,
+        "relevant": 0.6791787147521973
+      },
+      "native": {
+        "irrelevant": 0.24759458565419262,
+        "relevant": 0.7524054143458074
+      },
+      "tokens": 221
+    },
+    {
+      "reference": {
+        "irrelevant": 0.7549149990081787,
+        "relevant": 0.24508501589298248
+      },
+      "native": {
+        "irrelevant": 0.5940076820524584,
+        "relevant": 0.4059923179475416
+      },
+      "tokens": 215
+    },
+    {
+      "reference": {
+        "irrelevant": 0.16451646387577057,
+        "relevant": 0.8354835510253906
+      },
+      "native": {
+        "irrelevant": 0.10222293343276681,
+        "relevant": 0.8977770665672331
+      },
+      "tokens": 222
+    },
+    {
+      "reference": {
+        "irrelevant": 0.7981867790222168,
+        "relevant": 0.2018132209777832
+      },
+      "native": {
+        "irrelevant": 0.6805577578053413,
+        "relevant": 0.3194422421946587
+      },
+      "tokens": 217
+    },
+    {
+      "reference": {
+        "irrelevant": 0.16451646387577057,
+        "relevant": 0.8354835510253906
+      },
+      "native": {
+        "irrelevant": 0.12111631805980538,
+        "relevant": 0.8788836819401945
+      },
+      "tokens": 224
+    },
+    {
+      "reference": {
+        "irrelevant": 0.6791787147521973,
+        "relevant": 0.3208213150501251
+      },
+      "native": {
+        "irrelevant": 0.5944487279369484,
+        "relevant": 0.40555127206305164
+      },
+      "tokens": 222
+    },
+    {
+      "reference": {
+        "irrelevant": 0.8670357465744019,
+        "relevant": 0.13296423852443695
+      },
+      "native": {
+        "irrelevant": 0.7859561690684792,
+        "relevant": 0.21404383093152082
+      },
+      "tokens": 217
+    },
+    {
+      "reference": {
+        "irrelevant": 0.7310585975646973,
+        "relevant": 0.2689414322376251
+      },
+      "native": {
+        "irrelevant": 0.5471621035455552,
+        "relevant": 0.45283789645444483
+      },
+      "tokens": 218
+    },
+    {
+      "reference": {
+        "irrelevant": 0.8175744414329529,
+        "relevant": 0.18242551386356354
+      },
+      "native": {
+        "irrelevant": 0.7132416680380176,
+        "relevant": 0.28675833196198236
+      },
+      "tokens": 218
+    },
+    {
+      "reference": {
+        "irrelevant": 0.22270014882087708,
+        "relevant": 0.7772998809814453
+      },
+      "native": {
+        "irrelevant": 0.175800465814816,
+        "relevant": 0.824199534185184
+      },
+      "tokens": 222
+    },
+    {
+      "reference": {
+        "irrelevant": 0.8354835510253906,
+        "relevant": 0.16451646387577057
+      },
+      "native": {
+        "irrelevant": 0.7440469410849281,
+        "relevant": 0.255953058915072
+      },
+      "tokens": 217
+    },
+    {
+      "reference": {
+        "irrelevant": 0.2018132209777832,
+        "relevant": 0.7981867790222168
+      },
+      "native": {
+        "irrelevant": 0.16287666580551902,
+        "relevant": 0.837123334194481
+      },
+      "tokens": 222
+    },
+    {
+      "reference": {
+        "irrelevant": 0.7310585975646973,
+        "relevant": 0.2689414322376251
+      },
+      "native": {
+        "irrelevant": 0.5917624071284874,
+        "relevant": 0.4082375928715127
+      },
+      "tokens": 220
+    }
+  ]
+}

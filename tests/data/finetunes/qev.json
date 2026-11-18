@@ -1,0 +1,119 @@
+{
+  "task": "classification",
+  "labels": {
+    "account": "A",
+    "billing": "B",
+    "sales": "C",
+    "tech": "D"
+  },
+  "qev_question": {
+    "type": "choice",
+    "instructions": "Which team should handle this ticket?",
+    "criteria": {
+      "account": "login and access",
+      "billing": "payments and refunds",
+      "sales": "pricing and upgrades",
+      "tech": "bugs and broken features"
+    }
+  },
+  "prompt_template": "Context:\n{state}\n\nQuestion: Which team should handle this ticket?\nOptions:\n(A) account: login and access\n(B) billing: payments and refunds\n(C) sales: pricing and upgrades\n(D) tech: bugs and broken features\nAnswer: (",
+  "temperature": 1.7,
+  "cases": [
+    {
+      "fields": {
+        "state": "I moved last month and no longer have the phone that receives my sign-in code."
+      },
+      "expected": "account"
+    },
+    {
+      "fields": {
+        "state": "My invoice shows the same monthly fee twice."
+      },
+      "expected": "billing"
+    },
+    {
+      "fields": {
+        "state": "What would it cost to add another ten users to our contract?"
+      },
+      "expected": "sales"
+    },
+    {
+      "fields": {
+        "state": "Each time I export a spreadsheet the browser tab freezes."
+      },
+      "expected": "tech"
+    },
+    {
+      "fields": {
+        "state": "The password reset email never arrived."
+      },
+      "expected": "account"
+    },
+    {
+      "fields": {
+        "state": "We returned the scanner on Monday. Has the refund been issued yet?"
+      },
+      "expected": "billing"
+    },
+    {
+      "fields": {
+        "state": "Can a school get a discount on the annual plan?"
+      },
+      "expected": "sales"
+    },
+    {
+      "fields": {
+        "state": "Since yesterday's update the desktop client crashes when I open the preferences window."
+      },
+      "expected": "tech"
+    },
+    {
+      "fields": {
+        "state": "Please restore access to our team workspace after the administrator left the company."
+      },
+      "expected": "account"
+    },
+    {
+      "fields": {
+        "state": "Could you send an itemised receipt for my January payment?"
+      },
+      "expected": "billing"
+    },
+    {
+      "fields": {
+        "state": "We are evaluating your enterprise tier and need a quotation for eighty seats."
+      },
+      "expected": "sales"
+    },
+    {
+      "fields": {
+        "state": "The mobile app shows a white screen after I tap on a saved draft."
+      },
+      "expected": "tech"
+    },
+    {
+      "fields": {
+        "state": "I signed in with my old work email and can no longer switch to the new address."
+      },
+      "expected": "account"
+    },
+    {
+      "fields": {
+        "state": "The card on file expired. Where do I update it before the next invoice?"
+      },
+      "expected": "billing"
+    },
+    {
+      "fields": {
+        "state": "Does upgrading to the professional plan include telephone support?"
+      },
+      "expected": "sales"
+    },
+    {
+      "fields": {
+        "state": "Our project dashboard stopped refreshing although the underlying data keeps changing."
+      },
+      "expected": "tech"
+    }
+  ]
+}

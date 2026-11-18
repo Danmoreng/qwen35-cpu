@@ -9,6 +9,7 @@ import argparse
 import concurrent.futures
 import json
 import os
+import math
 from pathlib import Path
 import socket
 import subprocess
@@ -25,6 +26,9 @@ def main():
     p.add_argument('--request', type=Path, required=True)
     p.add_argument('--threads', type=int, default=8)
     p.add_argument('--decision-head', choices=['auto', 'full'])
+    p.add_argument('--ticket-panel', action='store_true', help='Read labeled, variable-length states from --request')
+    p.add_argument('--prefill-requests', type=int, choices=range(1, 9),
+                   help='Benchmark native shared prefill, with fixed admission width and the prefix cache off')
     p.add_argument('--prefill-chunk', type=int, default=0)
     p.add_argument('--batch-size', type=int)
     p.add_argument('--ubatch-size', type=int)
@@ -43,6 +47,9 @@ def main():
     if args.backend=='native':
         cmd+=['--model-dir',str(args.model_dir),'--weights',str(args.weights),'--threads',str(args.threads),
               '--residents',str(args.concurrency),'--max-context','8192','--port',str(port)]
+        if args.prefill_requests:
+            cmd += ['--prefill-requests', str(args.prefill_requests), '--batch-width', str(args.concurrency),
+                    '--prefix-cache', 'off']
         if args.decision_head:cmd+=['--decision-head',args.decision_head]
         if args.prefill_chunk:cmd+=['--prefill-chunk',str(args.prefill_chunk)]
     else:
@@ -54,7 +61,12 @@ def main():
     body=args.request.read_bytes()
     # Concurrency matrices use a different state per request, including B1,
     # so identical prefixes/results cannot turn the test into a cache benchmark.
-    if args.distinct_states or args.concurrency > 1:
+    if args.ticket_panel:
+        panel = json.loads(body)
+        if len(panel['cases']) < count: raise ValueError('Not enough distinct cases')
+        bodies = [json.dumps(dict(state=c['fields']['state'], questions={'dept': panel['qev_question']})).encode()
+                  for c in panel['cases'][:count]]
+    elif args.distinct_states or args.concurrency > 1:
         request=json.loads(body)
         if not isinstance(request['state'],str):raise ValueError('Concurrency fixtures require string state')
         bodies=[json.dumps({**request,'state':f'{chr(65+i)}: '+request['state']}).encode() for i in range(count)]
@@ -83,14 +95,20 @@ def main():
             elapsed=results[0][0] if len(results) == 1 else (time.perf_counter()-start)*1000
             times=[x[0] for x in results];result=results[0][1]
             assert all(x[1]['usage']['output_tokens']==0 for x in results)
+            stats = {}
+            if args.prefill_requests:
+                with urllib.request.urlopen(base+'/v1/cache', timeout=5) as response:
+                    stats = json.load(response)
             args.profile_json.write_text(json.dumps(dict(cpu_batch=args.concurrency,prompt_tokens=result['usage']['input_tokens'],
                 generated_tokens=0,decode_forward_steps=0,decision_latency_ms=elapsed,
                 decisions_per_second=1000*len(results)/elapsed,server_command=cmd,response=result,
                 concurrency=args.concurrency,completed_requests=len(results),
                 request_latencies_ms=times,mean_request_latency_ms=sum(times)/len(times),
-                max_request_latency_ms=max(times),
+                max_request_latency_ms=max(times), p95_ms=sorted(times)[math.ceil(.95*len(times))-1],
+                shared_ticks=stats.get('shared_prefill_ticks', 0),
+                shared_requests=stats.get('shared_prefill_requests', 0),
                 responses=[x[1] for x in results],
-                scope='First B1 HTTP decision after readiness; no warmup inside server; loading excluded'),indent=2)+'\n')
+                scope='HTTP decisions after readiness; loading excluded'),indent=2)+'\n')
         finally:
             child.terminate()
             try:child.wait(timeout=10)

@@ -13,15 +13,19 @@ bool CpuEngine::step(bool &progressed, std::string &error) {
     ~Guard() { value = false; }
   } guard(e.scheduling);
   std::size_t resident = 0;
-  CpuRequestId queued = 0;
+  std::vector<CpuRequestId> queued_ids;
   for (auto &[id, s] : e.requests) {
     e.retire(*s);
     resident += s->resident;
-    if (s->result.status == CpuRequestStatus::queued && e.prefix_admissible(*s) &&
-        (!queued || id < queued))
-      queued = id;
+    if (s->result.status == CpuRequestStatus::queued) queued_ids.push_back(id);
   }
-  if (queued && resident < e.config.max_resident_requests) {
+  std::sort(queued_ids.begin(), queued_ids.end());
+  std::size_t admitted = 0;
+  for (auto queued : queued_ids) {
+    if (resident >= e.config.max_resident_requests || admitted >= e.config.max_prefill_requests) break;
+    if (!e.prefix_admissible(*e.requests.at(queued))) continue;
+    ++admitted;
+    ++resident;
     auto &s = *e.requests.at(queued);
     s.result.queue_ms = elapsed_ms(s.arrival);
     s.resident = true; // Also makes partial allocations eligible for cleanup.
@@ -66,15 +70,29 @@ bool CpuEngine::step(bool &progressed, std::string &error) {
     e.last_decode = work.back();
   } else {
     work.push_back(prefill.front());
-    e.last_prefill = work.front();
+    if (e.config.max_prefill_requests > 1 && e.short_readout(*e.requests.at(work.front())))
+      for (auto id : std::span(prefill).subspan(1)) {
+        if (work.size() == e.config.max_prefill_requests) break;
+        if (e.short_readout(*e.requests.at(id))) work.push_back(id);
+      }
+    e.last_prefill = work.back();
   }
   e.prefer_decode = !do_decode;
   progressed = true;
   bool ok = false;
+  bool group_failure = false;
   try {
-    ok = do_decode ? advance_batch(work, error) : advance(work.front(), error);
+    if (do_decode) ok = advance_batch(work, error);
+    else if (work.size() == 1) ok = advance(work.front(), error);
+    else {
+      ok = e.shared_prefill(work, error);
+      group_failure = !ok; // Stateful segments cannot be retried after a partial forward.
+    }
   } catch (const std::exception &exception) {
     error = exception.what();
+    group_failure = true;
+  }
+  if (group_failure) {
     for (auto id : work) {
       auto &s = *e.requests.at(id);
       s.result.status = CpuRequestStatus::failed;

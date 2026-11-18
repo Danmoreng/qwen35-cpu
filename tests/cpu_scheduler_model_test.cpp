@@ -1,6 +1,8 @@
 #include "qwen35x/compiler/compiler.h"
 #include "qwen35x/runtime/cpu_engine.h"
 #include <algorithm>
+#include <array>
+#include <cmath>
 #include <cstring>
 #include <iostream>
 #include <limits>
@@ -62,6 +64,54 @@ int main(int argc, char **argv) try {
   config.max_queued_requests = 8;
   config.max_decode_batch_size = 2;
   config.max_buffered_tokens = 2;
+  // Ragged prompts, interrupted chunks and one complete private prefix. Compare
+  // unrounded logits before the HTTP layer applies a softmax and rounds them.
+  if (model->supports_selected_logits()) {
+    auto run = [&](int width) {
+      auto cfg = config;
+      cfg.max_prefill_requests = width;
+      cfg.max_resident_requests = 4;
+      cfg.prefill_chunk_size = 8;
+      auto test = CpuEngine::create(model, cfg, error);
+      check(bool(test));
+      std::array<std::vector<float>, 4> logits;
+      std::vector<CpuRequestId> pending;
+      for (std::size_t i = 0; i < logits.size(); ++i) {
+        CpuRequestSpec req;
+        req.prompt_tokens.assign(5 + i * 3, 1234 + static_cast<int>(i));
+        req.trust_namespace = "classifier-test";
+        req.selected_logit_tokens = {123, 456, 789};
+        req.forced_output_tokens = {123};
+        req.max_new_tokens = 1;
+        req.selected_logits_callback = capture;
+        req.selected_logits_callback_context = &logits[i];
+        if (i == 0) {
+          req.prefix = test->register_prefix(req.prompt_tokens, req.trust_namespace, error);
+          check(bool(req.prefix));
+        }
+        if (i == 1) req.register_prefix_tokens = 3;
+        pending.push_back(test->submit(req, error));
+        check(pending.back() != 0);
+      }
+      for (int tick = 0; tick < 32; ++tick) {
+        bool advanced;
+        check(test->step(advanced, error));
+        if (!advanced) break;
+      }
+      for (auto id : pending) {
+        CpuRequestResult result;
+        check(test->result(id, result) && result.status == CpuRequestStatus::complete);
+      }
+      check((test->stats().shared_prefill_ticks > 0) == (width > 1));
+      return logits;
+    };
+    const auto single = run(1), shared = run(4);
+    for (std::size_t row = 0; row < single.size(); ++row) {
+      check(single[row].size() == 3 && shared[row].size() == 3);
+      for (std::size_t col = 0; col < 3; ++col)
+        check(std::abs(single[row][col] - shared[row][col]) < 0.001F);
+    }
+  }
   auto engine = CpuEngine::create(model, config, error);
   check(bool(engine));
   constexpr std::size_t count = 4;

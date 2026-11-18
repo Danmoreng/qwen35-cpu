@@ -243,6 +243,7 @@ std::vector<ConversionTensor> plan_conversion(
 bool convert_tensor(
   const std::string & model_dir,
   const ConversionTensor & conversion,
+  bool text_only_names,
   const qwen35x::cpu::Q4Quantizer recipe,
   const std::string & importance_dir,
   const std::string & covariance_dir,
@@ -262,8 +263,12 @@ bool convert_tensor(
   std::vector<qwen35x::cpu::Q8_0Block> q8_blocks;
   for (const auto & source : conversion.sources) {
     qwen35x::SafetensorTensorF32 tensor;
+    // HF exports of Qwen3_5ForCausalLM can omit the language_model prefix.
+    // Keep artifact and calibration names canonical across both source layouts.
+    std::string name = source.name;
+    if (text_only_names) name.replace(0, sizeof("model.language_model.") - 1, "model.");
     if (!qwen35x::SafetensorLoader::read_tensor_f32(
-          model_dir, source.name, tensor, error)) {
+          model_dir, name, tensor, error)) {
       return false;
     }
     if (!shape_matches(tensor.shape, source.shape)) {
@@ -506,6 +511,15 @@ int main(int argc, char ** argv) {
     tensors.push_back(item.output);
   }
 
+  auto has_tensor = [&](const std::string &name) {
+    std::string shard, ignored;
+    qwen35x::SafetensorTensorInfo info;
+    return qwen35x::SafetensorLoader::resolve_tensor_file(model_dir, name, shard, ignored) &&
+           qwen35x::SafetensorLoader::load_tensor_info(shard, name, info, ignored);
+  };
+  const bool text_only_names = !has_tensor("model.language_model.embed_tokens.weight") &&
+                                has_tensor("model.embed_tokens.weight");
+
   const auto nonce = std::chrono::steady_clock::now().time_since_epoch().count();
   const fs::path partial = output_path + ".partial." + std::to_string(nonce);
   qwen35x::Q4H128ArtifactWriter writer;
@@ -515,7 +529,7 @@ int main(int argc, char ** argv) {
   }
   for (std::size_t index = 0; index < tensors.size(); ++index) {
     const auto started = std::chrono::steady_clock::now();
-    if (!convert_tensor(model_dir, conversion[index], recipe, importance_dir, covariance_dir, writer, error)) {
+    if (!convert_tensor(model_dir, conversion[index], text_only_names, recipe, importance_dir, covariance_dir, writer, error)) {
       writer.close();
       std::error_code ignored;
       fs::remove(partial, ignored);

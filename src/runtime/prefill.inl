@@ -576,6 +576,13 @@ bool run_full_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
   return ok;
 }
 
+struct PrefillSegment {
+  ModelState *state;
+  int position;
+  std::size_t count;
+  std::vector<float> hidden;
+};
+
 bool run_forward_cpu_q8_batch(CpuExecutionContext *cpu_context,
   const ModelWeights & weights,
   const RuntimeDims & dims,
@@ -588,7 +595,8 @@ bool run_forward_cpu_q8_batch(CpuExecutionContext *cpu_context,
   CpuGreedySamplingState * greedy_sampling,
   DecodeProfilingAccumulator * profiling,
   std::string & error_message,
-  std::vector<float> * normalized_output = nullptr) {
+  std::vector<float> * normalized_output = nullptr,
+  std::span<PrefillSegment> segments = {}) {
   if (cpu_context == nullptr || token_ids == nullptr || batch_size == 0) {
     error_message = "Batched CPU Q8_0 forward received an invalid runtime or empty batch.";
     return false;
@@ -629,6 +637,7 @@ bool run_forward_cpu_q8_batch(CpuExecutionContext *cpu_context,
   auto & mlp_hidden = scratch.mlp_hidden;
   mlp_hidden.resize(batch_size * intermediate);
   auto & mlp_output = scratch.mlp_output;
+  std::vector<float> segment_input, segment_output;
   int full_index = 0;
   int linear_index = 0;
 
@@ -637,35 +646,32 @@ bool run_forward_cpu_q8_batch(CpuExecutionContext *cpu_context,
     rms_norm_qwen3next_batch(
       x, batch_size, hidden, layer.input_layernorm, dims.rms_eps, normed);
     const auto attention_start = std::chrono::steady_clock::now();
-    bool attention_ok = false;
-    if (layer.is_linear) {
-      attention_ok = run_linear_attention_batch_cpu_q8(cpu_context,
-        layer,
-        dims,
-        state.linear_states[static_cast<std::size_t>(linear_index++)],
-        normed,
-        batch_size,
-        position_start,
-        attention,
-        error_message);
+    auto attend = [&](ModelState &owner, int position, std::size_t count,
+                      const std::vector<float> &input, std::vector<float> &output) {
+      if (layer.is_linear)
+        return run_linear_attention_batch_cpu_q8(cpu_context, layer, dims,
+          owner.linear_states[linear_index], input, count, position, output, error_message);
+      const auto offset = static_cast<std::size_t>(position) * (dims.rope_dim / 2);
+      return run_full_attention_batch_cpu_q8(cpu_context, layer, dims,
+        owner.full_states[full_index], input, count, position, owner.rope_cosine.data() + offset,
+        owner.rope_sine.data() + offset, output, error_message);
+    };
+    if (segments.empty()) {
+      if (!attend(state, position_start, batch_size, normed, attention)) return false;
     } else {
-      attention_ok = run_full_attention_batch_cpu_q8(cpu_context,
-        layer,
-        dims,
-        state.full_states[static_cast<std::size_t>(full_index++)],
-        normed,
-        batch_size,
-        position_start,
-        state.rope_cosine.data() +
-          static_cast<std::size_t>(position_start) * static_cast<std::size_t>(dims.rope_dim / 2),
-        state.rope_sine.data() +
-          static_cast<std::size_t>(position_start) * static_cast<std::size_t>(dims.rope_dim / 2),
-        attention,
-        error_message);
+      // Share the MLP across all rows, keep attention and DeltaNet scans contiguous
+      // in the original sequence and operate on that request's private state.
+      attention.resize(batch_size * hidden);
+      std::size_t offset = 0;
+      for (const auto &part : segments) {
+        const auto size = part.count * hidden;
+        segment_input.assign(normed.begin() + offset, normed.begin() + offset + size);
+        if (!attend(*part.state, part.position, part.count, segment_input, segment_output)) return false;
+        std::copy(segment_output.begin(), segment_output.end(), attention.begin() + offset);
+        offset += size;
+      }
     }
-    if (!attention_ok) {
-      return false;
-    }
+    if (layer.is_linear) ++linear_index; else ++full_index;
     if (profiling != nullptr) {
       profiling->attention_ms += elapsed_ms(attention_start);
     }
@@ -717,6 +723,16 @@ bool run_forward_cpu_q8_batch(CpuExecutionContext *cpu_context,
     }
   }
 
+  if (!segments.empty()) {
+    std::size_t end = 0;
+    for (auto &part : segments) {
+      end += part.count;
+      part.hidden.resize(hidden);
+      cpu::rms_norm_f32(x.data() + (end - 1) * hidden, weights.final_norm.data.data(),
+                        part.hidden.data(), 1, hidden, dims.rms_eps, 1.0F);
+    }
+    return true;
+  }
   if (!compute_next_logits && normalized_output == nullptr) {
     return true;
   }

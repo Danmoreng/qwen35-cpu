@@ -441,6 +441,46 @@ struct CpuEngine::Impl {
     return true;
   }
 
+  bool short_readout(const Sequence &s) const {
+    auto remaining = s.spec.prompt_tokens.size() - s.result.committed_tokens;
+    return !s.spec.selected_logit_tokens.empty() && remaining > 0 && remaining <= 128;
+  }
+
+  bool shared_prefill(const std::vector<CpuRequestId> &ids, std::string &error) {
+    const auto start = std::chrono::steady_clock::now();
+    std::vector<PrefillSegment> segments;
+    std::vector<std::int32_t> tokens;
+    for (auto id : ids) {
+      auto &s = *requests.at(id);
+      const auto pos = s.result.committed_tokens;
+      const auto chunk = config.prefill_chunk_size ? config.prefill_chunk_size :
+                         (s.spec.prompt_tokens.size() <= 128 ? 64U : 128U);
+      auto count = detail::prefill_chunk_token_count(pos, s.spec.prompt_tokens.size() - pos, chunk);
+      if (s.spec.register_prefix_tokens > pos) count = std::min(count, s.spec.register_prefix_tokens - pos);
+      segments.push_back({&s.state, static_cast<int>(pos), count, {}});
+      tokens.insert(tokens.end(), s.spec.prompt_tokens.begin() + pos, s.spec.prompt_tokens.begin() + pos + count);
+    }
+    const auto &weights = model->impl_->weights;
+    std::vector<float> unused;
+    if (!run_forward_cpu_q8_batch(context.get(), weights, model->impl_->dims, *segments.front().state,
+        tokens.data(), tokens.size(), 0, false, unused, nullptr, nullptr, error, nullptr, segments)) return false;
+    ++stats.shared_prefill_ticks;
+    stats.shared_prefill_requests += ids.size();
+    for (std::size_t i = 0; i < ids.size(); ++i) {
+      auto &s = *requests.at(ids[i]);
+      auto &part = segments[i];
+      s.result.committed_tokens += part.count;
+      s.result.prefill_tokens += part.count;
+      if (s.result.committed_tokens == s.spec.prompt_tokens.size()) {
+        if (!compute_selected_logits_from_embedding(context.get(), weights.embed_tokens, part.hidden,
+              s.spec.selected_logit_tokens, s.logits, error) || !select(s, -1, error)) return false;
+      }
+      if (s.result.committed_tokens == s.spec.register_prefix_tokens) publish_prefix(s, std::move(part.hidden));
+      s.result.prefill_ms += elapsed_ms(start) / ids.size();
+    }
+    return true;
+  }
+
   bool advance(Sequence &s, std::string &error) {
     if (s.result.status != CpuRequestStatus::prefill &&
         s.result.status != CpuRequestStatus::decode)
@@ -556,6 +596,7 @@ CpuEngine::create(std::shared_ptr<const CpuModel> model,
       !config.max_context ||
       config.max_context >
           static_cast<std::size_t>(std::numeric_limits<int>::max()) ||
+      !config.max_prefill_requests || config.max_prefill_requests > 8 ||
       config.prefill_chunk_size > 2048 ||
       (config.kv_cache_bits != 0 && config.kv_cache_bits != 16 && config.kv_cache_bits != 32) ||
       (config.shared_kv_pages && config.kv_cache_bits == 32) ||

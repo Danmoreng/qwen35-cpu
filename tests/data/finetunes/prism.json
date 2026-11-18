@@ -1,0 +1,299 @@
+{
+  "task": "classification",
+  "positive": "relevant",
+  "labels": {
+    "irrelevant": "no",
+    "relevant": "yes"
+  },
+  "prompt_template": "<|im_start|>system\nJudge whether the Document meets the requirements based on the Query and the Instruct provided. <|im_end|>\n<|im_start|>user\n<Instruct>: Judge if the document is relevant to the query. Reply \"yes\" or \"no\".\nOn \"yes\", also emit:\n<contribution>One sentence covering every core point the document contributes to the query, without elaboration.</contribution>\n<evidence>Self-contained rewrite of the query-relevant content. Rules:\n- Faithful: rephrase only; add or infer nothing.\n- Self-contained: evidence alone must fully answer the query.\n- Concise: drop query-irrelevant background.\n- Verbatim (no translation): proper nouns, terms, abbreviations, numbers, dates, code, URLs.\n- Output language: multilingual doc → query's language; else doc's language.</evidence>\n<Query>: {query}\n<Document>: {document}<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+  "cases": [
+    {
+      "group": "1",
+      "fields": {
+        "query": "How long will the library keep my reserved book?",
+        "document": "After the pickup email, reserved books stay at the front desk for seven calendar days."
+      },
+      "expected": "relevant"
+    },
+    {
+      "group": "1",
+      "fields": {
+        "query": "How long will the library keep my reserved book?",
+        "document": "Borrowed books may be renewed for three weeks if nobody has reserved them."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "1",
+      "fields": {
+        "query": "How long will the library keep my reserved book?",
+        "document": "The library has two quiet reading rooms upstairs."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "2",
+      "fields": {
+        "query": "Can I bring my bike on the airport shuttle?",
+        "document": "Bike parking is available next to the shuttle stop at Terminal B."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "2",
+      "fields": {
+        "query": "Can I bring my bike on the airport shuttle?",
+        "document": "The last train from the city leaves at midnight."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "2",
+      "fields": {
+        "query": "Can I bring my bike on the airport shuttle?",
+        "document": "The airport shuttle carries folding bicycles only, and they must be bagged."
+      },
+      "expected": "relevant"
+    },
+    {
+      "group": "3",
+      "fields": {
+        "query": "How do I stop my paper statements?",
+        "document": "A lost card can be replaced through the app."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "3",
+      "fields": {
+        "query": "How do I stop my paper statements?",
+        "document": "Under Billing, select Delivery preferences and switch from paper to email."
+      },
+      "expected": "relevant"
+    },
+    {
+      "group": "3",
+      "fields": {
+        "query": "How do I stop my paper statements?",
+        "document": "A paper statement lists last month's transactions and opening balance."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "4",
+      "fields": {
+        "query": "Wann muss ich den Zählerstand ablesen?",
+        "document": "Für die Jahresabrechnung lesen Sie den Zähler am letzten Tag im März ab."
+      },
+      "expected": "relevant"
+    },
+    {
+      "group": "4",
+      "fields": {
+        "query": "Wann muss ich den Zählerstand ablesen?",
+        "document": "Der Stromzähler befindet sich im Keller neben dem Sicherungskasten."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "4",
+      "fields": {
+        "query": "Wann muss ich den Zählerstand ablesen?",
+        "document": "Die nächste Abschlagszahlung ist im April fällig."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "5",
+      "fields": {
+        "query": "Why did the museum close the west wing?",
+        "document": "The west wing normally opens at ten and contains the ceramics collection."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "5",
+      "fields": {
+        "query": "Why did the museum close the west wing?",
+        "document": "Tickets include the sculpture garden."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "5",
+      "fields": {
+        "query": "Why did the museum close the west wing?",
+        "document": "A roof leak damaged the ceiling above the west gallery, which will stay closed for repairs."
+      },
+      "expected": "relevant"
+    },
+    {
+      "group": "6",
+      "fields": {
+        "query": "Does the soup contain dairy?",
+        "document": "The building has a separate entrance for deliveries."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "6",
+      "fields": {
+        "query": "Does the soup contain dairy?",
+        "document": "The soup base contains cream and the garnish includes grated Parmesan."
+      },
+      "expected": "relevant"
+    },
+    {
+      "group": "6",
+      "fields": {
+        "query": "Does the soup contain dairy?",
+        "document": "The kitchen labels all soup containers with their preparation dates."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "7",
+      "fields": {
+        "query": "Which bus serves the temporary clinic?",
+        "document": "For the temporary clinic, take route 17 and get off at Willow Street."
+      },
+      "expected": "relevant"
+    },
+    {
+      "group": "7",
+      "fields": {
+        "query": "Which bus serves the temporary clinic?",
+        "document": "Buses from the old clinic stop running at 8 pm."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "7",
+      "fields": {
+        "query": "Which bus serves the temporary clinic?",
+        "document": "The clinic lends wheelchairs at reception."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "8",
+      "fields": {
+        "query": "Comment annuler une réservation de salle ?",
+        "document": "Les salles réservables disposent toutes d’un vidéoprojecteur."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "8",
+      "fields": {
+        "query": "Comment annuler une réservation de salle ?",
+        "document": "Le café du hall ferme à dix-sept heures."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "8",
+      "fields": {
+        "query": "Comment annuler une réservation de salle ?",
+        "document": "Ouvrez Mes réservations, choisissez la salle et cliquez sur Annuler."
+      },
+      "expected": "relevant"
+    },
+    {
+      "group": "9",
+      "fields": {
+        "query": "Will deleting the app cancel my subscription?",
+        "document": "The subscription includes access to the weekly newsletter."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "9",
+      "fields": {
+        "query": "Will deleting the app cancel my subscription?",
+        "document": "Removing the app does not end billing. Cancel your subscription in your store account."
+      },
+      "expected": "relevant"
+    },
+    {
+      "group": "9",
+      "fields": {
+        "query": "Will deleting the app cancel my subscription?",
+        "document": "Reinstalling the app restores your saved display settings."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "10",
+      "fields": {
+        "query": "What does the blinking amber light on the pump mean?",
+        "document": "A flashing amber indicator on this pump means the intake filter is clogged."
+      },
+      "expected": "relevant"
+    },
+    {
+      "group": "10",
+      "fields": {
+        "query": "What does the blinking amber light on the pump mean?",
+        "document": "A solid amber light on the charger indicates charging is in progress."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "10",
+      "fields": {
+        "query": "What does the blinking amber light on the pump mean?",
+        "document": "Replacement hoses are available in two lengths."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "11",
+      "fields": {
+        "query": "How much notice do volunteers need to swap shifts?",
+        "document": "Volunteers can view past shifts in their account history."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "11",
+      "fields": {
+        "query": "How much notice do volunteers need to swap shifts?",
+        "document": "Annual staff leave is approved by the office manager."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "11",
+      "fields": {
+        "query": "How much notice do volunteers need to swap shifts?",
+        "document": "Submit shift swaps at least 48 hours before the scheduled start."
+      },
+      "expected": "relevant"
+    },
+    {
+      "group": "12",
+      "fields": {
+        "query": "Which documents must I attach for a travel reimbursement?",
+        "document": "The finance office is on the first floor."
+      },
+      "expected": "irrelevant"
+    },
+    {
+      "group": "12",
+      "fields": {
+        "query": "Which documents must I attach for a travel reimbursement?",
+        "document": "Attach itemised receipts and the signed travel authorisation to your claim."
+      },
+      "expected": "relevant"
+    },
+    {
+      "group": "12",
+      "fields": {
+        "query": "Which documents must I attach for a travel reimbursement?",
+        "document": "Travel claims are processed on the second Friday of each month."
+      },
+      "expected": "irrelevant"
+    }
+  ]
+}

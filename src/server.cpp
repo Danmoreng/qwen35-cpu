@@ -4,6 +4,7 @@
 #include "httplib.h"
 #include "systemone.h"
 #include "server_protocol.h"
+#include "server_classifier.h"
 #include "server_anthropic.h"
 #include "server_constraint.h"
 #include "server_stream.h"
@@ -53,6 +54,7 @@ struct Job : server::Request {
   std::atomic<bool> cancelled{false};
   std::size_t prompt_count = 0, limit = 0;
   std::optional<systemone::Request> decision;
+  bool classify = false;
   std::size_t question = 0;
   std::size_t decision_prefix = 0, cached_tokens = 0;
   std::vector<std::int32_t> readout_ids;
@@ -87,6 +89,7 @@ class Service {
   std::shared_ptr<const server::TokenVocabulary> vocabulary_;
   std::unique_ptr<CpuEngine> engine_;
   std::optional<systemone::Config> decision_;
+  server::Classifier classifier_;
   std::size_t max_context_;
   server::BatchTuning tuning_;
   bool selected_decision_head_ = false;
@@ -108,19 +111,14 @@ class Service {
   Json cache_stats() const {
     const auto s = engine_->stats();
     return {{"enabled", automatic_prefix_}, {"budget_bytes", prefix_budget_},
+      {"shared_prefill_ticks", s.shared_prefill_ticks}, {"shared_prefill_requests", s.shared_prefill_requests},
       {"entries", s.prefix_entries}, {"bytes", s.prefix_bytes}, {"hits", s.prefix_hits},
       {"cached_tokens", s.prefix_cached_tokens}, {"builds", s.prefix_builds},
       {"evictions", s.prefix_evictions}, {"budget_fallbacks", s.prefix_build_fallbacks}};
   }
-  CpuRequestId submit_decision(const std::shared_ptr<Job> &job, std::string &error) {
-    const auto count = job->decision->questions[job->question].names.size();
-    job->readout_ids.assign(decision_->ids.begin(), decision_->ids.begin() + count);
-    job->option_logits.clear();
-    CpuRequestSpec spec;
-    spec.prompt_tokens = job->decision->rows[job->question]; spec.max_new_tokens = 1;
-    spec.forced_output_tokens = {decision_->ids.front()};
-    spec.trust_namespace = "local-server-qev";
-    configure_cache(spec, job->decision_prefix);
+  void configure_readout(CpuRequestSpec &spec, const std::shared_ptr<Job> &job) {
+    spec.max_new_tokens = 1;
+    spec.forced_output_tokens = {job->readout_ids.front()};
     if (selected_decision_head_) {
       spec.selected_logit_tokens = job->readout_ids;
       spec.selected_logits_callback = Job::capture_selected;
@@ -128,6 +126,16 @@ class Service {
     } else {
       spec.logits_callback = Job::capture; spec.logits_callback_context = job.get();
     }
+  }
+  CpuRequestId submit_decision(const std::shared_ptr<Job> &job, std::string &error) {
+    const auto count = job->decision->questions[job->question].names.size();
+    job->readout_ids.assign(decision_->ids.begin(), decision_->ids.begin() + count);
+    job->option_logits.clear();
+    CpuRequestSpec spec;
+    spec.prompt_tokens = job->decision->rows[job->question];
+    spec.trust_namespace = "local-server-qev";
+    configure_cache(spec, job->decision_prefix);
+    configure_readout(spec, job);
     return engine_->submit(std::move(spec), error);
   }
   void finish(const std::shared_ptr<Job> &job, Reply reply) {
@@ -173,6 +181,11 @@ class Service {
           }
           if (!tokenizer_.encode(job->prompt, job->spec.prompt_tokens, error)) {
             finish(job, failure(400, error)); continue;
+          }
+          if (job->classify) {
+            job->readout_ids = classifier_.tokens;
+            configure_readout(job->spec, job);
+            job->spec.trust_namespace = "local-server-classifier";
           }
           if (job->truncation_messages.is_array()) {
             const auto reserve = job->count_only ? 0 : job->spec.max_new_tokens - 1;
@@ -272,7 +285,7 @@ class Service {
           engine_->cancel(it->id); engine_->release(it->id);
           finish(it->job, failure(500, error)); it = active.erase(it); continue;
         }
-        if (!job->decision) {
+        if (!job->decision && !job->classify) {
           try {
             if (it->output.size() != previous) {
               std::string bytes;
@@ -298,7 +311,11 @@ class Service {
           Reply reply = failure(500, result.error);
           if (result.status == CpuRequestStatus::cancelled) reply = failure(499, "Request cancelled");
           if (result.status == CpuRequestStatus::complete) {
-            if (it->job->decision) {
+            if (job->classify) {
+              reply = {200, classifier_.score(job->option_logits)};
+              reply.body["usage"] = {{"input_tokens", job->prompt_count}, {"output_tokens", 0}};
+              reply.body["cache"] = {{"read_tokens", result.cached_prefix_tokens}};
+            } else if (it->job->decision) {
               auto &job = it->job; auto &decision = *job->decision;
               job->cached_tokens += result.cached_prefix_tokens;
               try {
@@ -353,6 +370,7 @@ public:
       : max_context_(config.max_context), automatic_prefix_(automatic_prefix), prefix_budget_(config.max_prefix_bytes) {
     std::string error;
     if (!QwenTokenizer::load_from_hf_directory(load.model_dir, tokenizer_, error)) throw std::runtime_error(error);
+    classifier_ = server::Classifier::load(load.model_dir, tokenizer_);
     decision_ = systemone::Config::load(load.model_dir, tokenizer_);
     auto profile = ProfileLoader::load_from_hf_directory(load.model_dir, error);
     if (!profile) throw std::runtime_error(error);
@@ -379,6 +397,7 @@ public:
     ++outstanding_; pending_.push_back(std::move(job)); wake_.notify_one(); return true;
   }
   const server::BatchTuning &batch_tuning() const { return tuning_; }
+  bool classifier_enabled() const { return !classifier_.tokens.empty(); }
   bool decisions_enabled() const { return decision_.has_value(); }
   Json cache_status() { std::lock_guard lock(mutex_); return cache_snapshot_; }
 };
@@ -410,10 +429,10 @@ int main(int argc, char **argv) try {
       std::cout << "Qwen3.5 CPU HTTP server\n--model-dir DIR [--weights FILE] [--threads auto|N] [--batch-width auto|N] [--batch-db PATH]\n"
         "[--host 127.0.0.1] [--port 8080] [--max-context 8192] [--residents 16]\n"
         "[--decision-encoding joint|per_question] (qev_config.json required)\n"
-        "[--decision-head auto|full] [--prefill-chunk N] (1..2048; default adaptive)\n"
+        "[--prefill-requests 1..8] [--decision-head auto|full] [--prefill-chunk N] (1..2048; default adaptive)\n"
         "[--prefix-cache auto|off] [--prefix-cache-mib 256]\n"
         "GET /health, GET /v1/models, GET /v1/cache, POST /v1/responses (stored response subresources available)\n"
-        "POST /v1/completions, POST /v1/chat/completions, POST /v1/systemone\nPOST /v1/messages, POST /v1/messages/count_tokens\n";
+        "POST /v1/completions, POST /v1/chat/completions, POST /v1/classify, POST /v1/systemone\nPOST /v1/messages, POST /v1/messages/count_tokens\n";
       return 0;
     }
     if (++i == argc) throw std::runtime_error("Missing value: " + key);
@@ -447,6 +466,7 @@ int main(int argc, char **argv) try {
       if (value != "auto" && value != "full") throw std::runtime_error("Invalid decision head");
       auto_decision_head = value == "auto";
     }
+    else if (key == "--prefill-requests") config.max_prefill_requests = number();
     else if (key == "--prefill-chunk") {
       config.prefill_chunk_size = number();
       if (config.prefill_chunk_size > 2048) throw std::runtime_error("Prefill chunk must be <=2048");
@@ -618,6 +638,18 @@ int main(int argc, char **argv) try {
   });
   http.Post("/v1/messages/count_tokens", [&](const httplib::Request &request, httplib::Response &response) {
     messages_route(request, response, true);
+  });
+  http.Post("/v1/classify", [&](const httplib::Request &request, httplib::Response &response) {
+    if (!authorized(request, response)) return;
+    if (!service.classifier_enabled()) { send(response, failure(400, "This model has no classifier.json")); return; }
+    auto job = std::make_shared<Job>();
+    try {
+      const auto body = Json::parse(request.body);
+      job->prompt = body.at("prompt").get<std::string>();
+      server::require(body.size() == 1 && !job->prompt.empty(), "Expected a non-empty prompt");
+      job->classify = true;
+    } catch (const std::exception &e) { send(response, failure(400, e.what())); return; }
+    dispatch(job, request, response);
   });
   http.Post("/v1/systemone", [&](const httplib::Request &request, httplib::Response &response) {
     if (!authorized(request, response)) return;

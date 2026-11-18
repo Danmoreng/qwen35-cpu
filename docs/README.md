@@ -5,6 +5,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 
 ## Use and integrate
 
+- [Fine-tune import and task evaluation](finetunes.md) covers HF snapshots, LoRA adapters and single-token classifiers.
 - [HTTP server](server.md): Responses, offline batches, CPU tuning, chat completions and decision requests.
 - [C++ engine API](cpu-engine-api.md): batching, scheduling and prefix reuse.
 - [Quantization](quantization.md): H128/Q4-G32-DOT4 format and offline calibration.
@@ -20,6 +21,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 
 - [Current CPU comparison](benchmarks/cpu.md), [IK prefill analysis](benchmarks/cpu.md#why-ik-iq4_ks_r4-prefill-changed)
   and [IK batch-16 methodology](benchmarks/ik-batch16.md).
+- [Fine-tune serving](benchmarks/finetune-serving.md) compares Prism and QEV against BF16 and tests shared decision prefill.
 - [Batches API throughput](benchmarks/batch-api.md) compares serial and concurrent processing of 16 German text corrections.
 - [Speculative text decoding](benchmarks/text-drafting.md) compares prompt and input-source lookup on single-stream editing and generation.
 - [AVX-512 DeltaNet decode](benchmarks/deltanet-xeon.md) measures single-stream generation on a Xeon VM.

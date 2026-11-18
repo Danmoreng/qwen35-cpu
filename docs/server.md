@@ -489,3 +489,5 @@ In this request the transcript supplies candidate tokens and the target model de
 ```
 
 See the [engine API](cpu-engine-api.md#text-drafts) for dispatch, validation and memory behavior.
+
+See [fine-tune serving](finetunes.md) for `POST /v1/classify`, classifier profiles and shared prefill.

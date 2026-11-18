@@ -197,3 +197,7 @@ python tests/batches_sdk_test.py --server build/qwen35_cpu_server --model-dir mo
 ```
 
 This real-model test uses the OpenAI SDK, a temporary authenticated server and an isolated SQLite database. It checks tuning and manual overrides, JSONL output parity, per-request errors, validation, pagination, cancellation and recovery after killing the server mid-batch. Pass `--qev-model-dir models/qev` to compare three batched decision outputs against the direct System One endpoint using the qev checkpoint.
+
+### Fine-tune serving
+
+Run `tests/classifier_smoke.py --server PATH --model-dir PRISM_DIR --panel tests/data/finetunes/prism.json` with the imported Prism package. The test compares full and selected heads and checks prefix reuse. The model-backed `cpu_scheduler_model_test` checks unrounded, request-private logits for ragged shared prefill. See [fine-tune import](finetunes.md) for reference dependencies and labeled quality panels.

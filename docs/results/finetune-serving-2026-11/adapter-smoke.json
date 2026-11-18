@@ -1,0 +1,26 @@
+{
+  "adapter": "Local deterministic nonzero rank-2 q_proj LoRA on Prism, torch seed 123; normal B weights (std=0.008), alpha 4. Integration fixture.",
+  "base": "infgrad/Prism-Qwen3.5-Reranker-0.8B",
+  "base_revision": "c60729783cb2f0662c0b054a02964402a211e3f4",
+  "adapter_sha256": "5fb510d8aa92544156429b8d2bc9899faac0a0fc47c602837a2cc88da2d2b2ab",
+  "merged_precision": "float32",
+  "plain_artifact_sha256": "d119f352815da41acc3561045b6be2c64baba0139484e64ab793dcaf161f67b0",
+  "adapted_artifact_sha256": "f3129ee332c3aecbb87d9525a6510594e1cc2ef0dd8d86b48ca722b76bff675c",
+  "reference_dtype": "torch.float32",
+  "evaluation_cases": 3,
+  "summary": {
+    "reference": {
+      "accuracy": 0.6666666666666666,
+      "macro_f1": 0.6666666666666666,
+      "mrr": 1.0
+    },
+    "native": {
+      "accuracy": 0.6666666666666666,
+      "macro_f1": 0.6666666666666666,
+      "mrr": 1.0
+    },
+    "top1_agreement": 1,
+    "probability_mae": 0.07456865356595366,
+    "max_probability_error": 0.09012148640623704
+  }
+}

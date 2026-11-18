@@ -1,0 +1,128 @@
+{
+  "trials": [
+    {
+      "case": "c2-w1",
+      "median_decisions_s": 3.040031836914839,
+      "runs_decisions_s": [
+        2.981577020078005,
+        3.040031836914839,
+        3.5187225438254903
+      ],
+      "p95_ms": 874.6134569992137,
+      "shared_ticks": [
+        0,
+        0,
+        0
+      ],
+      "segment_requests": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "case": "c2-w2",
+      "median_decisions_s": 3.1033518328503744,
+      "runs_decisions_s": [
+        3.1033518328503744,
+        2.9110197470710952,
+        3.5373983586238777
+      ],
+      "p95_ms": 821.7665329993906,
+      "shared_ticks": [
+        7,
+        8,
+        8
+      ],
+      "segment_requests": [
+        14,
+        16,
+        16
+      ]
+    },
+    {
+      "case": "c4-w1",
+      "median_decisions_s": 2.677945461509856,
+      "runs_decisions_s": [
+        2.252414425456834,
+        2.677945461509856,
+        3.2646694439483337
+      ],
+      "p95_ms": 2484.5846930002153,
+      "shared_ticks": [
+        0,
+        0,
+        0
+      ],
+      "segment_requests": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "case": "c4-w4",
+      "median_decisions_s": 3.049616974264144,
+      "runs_decisions_s": [
+        3.049616974264144,
+        2.919029818719903,
+        3.776946651854342
+      ],
+      "p95_ms": 1652.0952280006895,
+      "shared_ticks": [
+        9,
+        8,
+        9
+      ],
+      "segment_requests": [
+        25,
+        23,
+        24
+      ]
+    },
+    {
+      "case": "c8-w1",
+      "median_decisions_s": 2.6128440006930607,
+      "runs_decisions_s": [
+        2.6128440006930607,
+        2.1941309029284706,
+        2.7171074040024448
+      ],
+      "p95_ms": 4560.137954000311,
+      "shared_ticks": [
+        0,
+        0,
+        0
+      ],
+      "segment_requests": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "case": "c8-w8",
+      "median_decisions_s": 1.4937886175178912,
+      "runs_decisions_s": [
+        3.2156861104150334,
+        1.4937886175178912,
+        1.4474281978495258
+      ],
+      "p95_ms": 6338.738585000101,
+      "shared_ticks": [
+        5,
+        5,
+        5
+      ],
+      "segment_requests": [
+        26,
+        26,
+        26
+      ]
+    }
+  ],
+  "maximum_api_probability_delta": 0,
+  "requests_per_sample": 16,
+  "min_input_tokens": 60,
+  "max_input_tokens": 71
+}
