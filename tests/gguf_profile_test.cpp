@@ -30,6 +30,15 @@ int main() {
   c.linear_key_head_dim=128;c.linear_value_head_dim=128;c.linear_num_key_heads=16;c.linear_num_value_heads=16;
   c.full_attention_interval=4;c.vocab_size=248320;
   for(int i=0;i<24;++i)p.fingerprint.attention_schedule.push_back((i+1)%4?AttentionBlock::linear:AttentionBlock::full);
+  p.family = "qwen3.5";
+  if (text_architecture(p) != TextArchitecture::qwen35_0_8b) return 5;
+  auto larger = p;
+  larger.text.hidden_size = 2048;
+  if (text_architecture(larger) != TextArchitecture::unsupported) return 6;
+  larger.text.intermediate_size = 6144;
+  if (text_architecture(larger) != TextArchitecture::qwen35_2b) return 7;
+  larger.fingerprint.attention_schedule[0] = AttentionBlock::full;
+  if (text_architecture(larger) != TextArchitecture::unsupported) return 8;
   for(bool nonfinite : {false,true}) {
     std::ofstream f(file,std::ios::binary);
     f.write("GGUF",4);u32(f,3);u64(f,0);u64(f,22);

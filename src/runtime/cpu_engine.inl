@@ -40,13 +40,16 @@ CpuModel::load(const ModelProfile &profile,
   model->profile = profile;
   model->backend = cpu::q8_0_resolve_backend(options.cpu_q8_backend);
   if (!build_runtime_dims(profile, model->dims, error)) return nullptr;
-  const auto &d=model->dims;
-  if (d.n_layers!=24 || d.hidden!=1024 || d.intermediate!=3584 ||
-      d.vocab_size!=248320 || d.n_heads!=8 || d.n_kv_heads!=2 || d.head_dim!=256 ||
-      d.linear_num_v_heads!=16 || d.linear_head_k_dim!=128 || d.linear_head_v_dim!=128) {
-    error="Only the Qwen3.5-0.8B text architecture is supported.";return nullptr;
+  const auto architecture = text_architecture(profile);
+  if (architecture == TextArchitecture::unsupported) {
+    error = "Expected the Qwen3.5-0.8B or Qwen3.5-2B text architecture.";
+    return nullptr;
   }
-  model->gguf=is_gguf_file(options.cpu_q4_h128_path);
+  model->gguf = is_gguf_file(options.cpu_q4_h128_path);
+  if (model->gguf && architecture != TextArchitecture::qwen35_0_8b) {
+    error = "Qwen3.5-2B requires an H128 artifact.";
+    return nullptr;
+  }
   if (
       !(model->gguf ? load_model_weights_from_quantized_gguf : load_model_weights_from_q4_h128)(options.cpu_q4_h128_path,
                           model->dims, profile, model->backend, 0,

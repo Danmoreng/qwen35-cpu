@@ -52,12 +52,14 @@ int main(int argc,char** argv) try {
   ggml_backend_load_all();llama_backend_init();
   const auto load_start=Clock::now();auto mp=llama_model_default_params();
 #ifdef QWEN35_CALIBRATION_CUDA
+  const char * backend = "cuda";
   mp.n_gpu_layers=999;
   auto gpu=ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_GPU);
   if(!gpu || std::string(ggml_backend_dev_name(gpu)).rfind("CUDA",0)!=0)
     throw std::runtime_error("CUDA device required; CPU fallback is disabled for this collector");
   ggml_backend_dev_t gpu_devices[]={gpu,nullptr};mp.devices=gpu_devices;
 #else
+  const char * backend = "cpu";
   mp.n_gpu_layers=0;ggml_backend_dev_t devices[]={nullptr};mp.devices=devices;
 #endif
   std::unique_ptr<llama_model,decltype(&llama_model_free)> model(llama_model_load_from_file(model_path.c_str(),mp),llama_model_free);
@@ -71,6 +73,8 @@ int main(int argc,char** argv) try {
   cp.type_k=GGML_TYPE_F16;cp.type_v=GGML_TYPE_F16;cp.flash_attn_type=LLAMA_FLASH_ATTN_TYPE_ENABLED;
   cp.cb_eval=ProjectionCapture::callback;cp.cb_eval_user_data=&capture;
 #ifdef QWEN35_CALIBRATION_CUDA
+  // Allow the GPU backend to select ordinary attention on older CUDA devices.
+  cp.flash_attn_type=LLAMA_FLASH_ATTN_TYPE_AUTO;
   cp.offload_kqv=true;cp.op_offload=true;
 #else
   cp.offload_kqv=false;cp.op_offload=false;
@@ -82,7 +86,7 @@ int main(int argc,char** argv) try {
   llama_batch batch=llama_batch_init(2048,0,1);
   struct Guard { llama_batch & batch; ~Guard(){llama_batch_free(batch);} } guard{batch};
   std::ofstream profile(profile_path);profile<<std::setprecision(12);
-  profile<<"{\"quality_capture\":true,\"resident\":true,\"model_loads\":1,\"batched_teacher\":"<<(batched?"true":"false")
+  profile<<"{\"teacher_backend\":\""<<backend<<"\",\"quality_capture\":true,\"resident\":true,\"model_loads\":1,\"batched_teacher\":"<<(batched?"true":"false")
     <<",\"load_time_ms\":"<<load_ms<<",\"documents\":[";
   bool first=true;
   for(const auto& job:jobs) {

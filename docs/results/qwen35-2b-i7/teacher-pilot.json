@@ -1,0 +1,282 @@
+{
+  "checkpoint_revision": "15852e8c16360a2fea060d615a32b45270f8a8fc",
+  "checkpoint_sha256": "aa33250c4fc64891ddfaba3a314fd9542ea371843c387178b425fbcc5ed680b1",
+  "llama_cpp": "73a43d1f69345aee8bb186ef4b3172cef892f2e5",
+  "teacher_gguf_sha256": "36EF0997AD80341BA712364D0A6761EC65FC77C316951FE95D58966083AAE355",
+  "source_revision": "5cab37f9991d74dacfc9e90fbe2c91068eb1df33",
+  "source_diff_sha256": "E3C1B06C711AA5598DF025DA5A3D399D9EC43098E8DCA81A693E03D6E4D989BD",
+  "cpu": "Intel Core i7-8750H",
+  "gpu": "GeForce GTX 1070 with Max-Q Design",
+  "cuda": "12.4",
+  "driver": "580.178.04",
+  "cuda_architecture": "61",
+  "GGML_CUDA_CUBLAS_COMPUTE_TYPE": "f32",
+  "affinity": 63,
+  "warmups": 1,
+  "measured_runs": 3,
+  "peak_device_memory_mib": 6171,
+  "idle_device_memory_mib": 3,
+  "vram_sample_interval_ms": 200,
+  "pilot_documents": [
+    {
+      "id": "de-002",
+      "repository": "HuggingFaceFW/fineweb-2",
+      "revision": "af9c13333eb981300149d5ca60a8e9d659b276b9",
+      "file": "data/deu_Latn/train/000_00000.parquet",
+      "row_index": 7,
+      "tokens": 1024,
+      "token_sha256": "9de8c69d6a37ef8a92a4379926e21bc66604794d491eac2316f967d41a7c8d79"
+    },
+    {
+      "id": "en-002",
+      "repository": "HuggingFaceFW/fineweb-edu",
+      "revision": "87f09149ef4734204d70ed1d046ddc9ca3f2b8f9",
+      "file": "data/CC-MAIN-2013-20/train-00000-of-00014.parquet",
+      "row_index": 8,
+      "tokens": 1024,
+      "token_sha256": "3f4e2c667d169f77c139ff85a034be50cece776290da37e23779c26f1d70887b"
+    }
+  ],
+  "cases": [
+    {
+      "name": "2B cpu resident teacher",
+      "executable": "build-llama/bin/llama-calibration-resident-cpu",
+      "sha256": "8126DEB0B7A349F3EB6775A8504BC58AFC5C4B2EA4379F73F386044DB7E18CFE",
+      "args": [
+        "--cpu-gguf",
+        "models/llama-comparison/Qwen3.5-2B-BF16.gguf",
+        "--jobs-file",
+        "benchmarks/2b-cuda/pilot.tsv",
+        "--output-root",
+        "@profile",
+        "--max-context",
+        "1024",
+        "--cpu-threads",
+        "6",
+        "--batched-teacher"
+      ],
+      "profiles": [
+        {
+          "teacher_backend": "cpu",
+          "quality_capture": true,
+          "resident": true,
+          "model_loads": 1,
+          "batched_teacher": true,
+          "load_time_ms": 567.345488,
+          "documents": [
+            {
+              "id": "de-002",
+              "tokens": 1024,
+              "collection_ms": 15302.808021
+            },
+            {
+              "id": "en-002",
+              "tokens": 1024,
+              "collection_ms": 17966.519328
+            }
+          ],
+          "document_count": 2,
+          "collection_time_ms": 33271.988729
+        },
+        {
+          "teacher_backend": "cpu",
+          "quality_capture": true,
+          "resident": true,
+          "model_loads": 1,
+          "batched_teacher": true,
+          "load_time_ms": 608.268113,
+          "documents": [
+            {
+              "id": "de-002",
+              "tokens": 1024,
+              "collection_ms": 14684.764921
+            },
+            {
+              "id": "en-002",
+              "tokens": 1024,
+              "collection_ms": 15499.65216
+            }
+          ],
+          "document_count": 2,
+          "collection_time_ms": 30186.510142
+        },
+        {
+          "teacher_backend": "cpu",
+          "quality_capture": true,
+          "resident": true,
+          "model_loads": 1,
+          "batched_teacher": true,
+          "load_time_ms": 551.055078,
+          "documents": [
+            {
+              "id": "de-002",
+              "tokens": 1024,
+              "collection_ms": 15549.115475
+            },
+            {
+              "id": "en-002",
+              "tokens": 1024,
+              "collection_ms": 15675.11589
+            }
+          ],
+          "document_count": 2,
+          "collection_time_ms": 31226.75337
+        },
+        {
+          "teacher_backend": "cpu",
+          "quality_capture": true,
+          "resident": true,
+          "model_loads": 1,
+          "batched_teacher": true,
+          "load_time_ms": 591.422345,
+          "documents": [
+            {
+              "id": "de-002",
+              "tokens": 1024,
+              "collection_ms": 14665.569159
+            },
+            {
+              "id": "en-002",
+              "tokens": 1024,
+              "collection_ms": 15579.806013
+            }
+          ],
+          "document_count": 2,
+          "collection_time_ms": 30247.563085
+        }
+      ]
+    },
+    {
+      "name": "2B cuda resident teacher",
+      "executable": "build-2b-calib-cuda/bin/llama-calibration-resident-cuda",
+      "sha256": "26E60FCAF681951DBE0EBDF608465E264CE2B71175CCA53875C0667A2861D6DC",
+      "args": [
+        "--cpu-gguf",
+        "models/llama-comparison/Qwen3.5-2B-BF16.gguf",
+        "--jobs-file",
+        "benchmarks/2b-cuda/pilot.tsv",
+        "--output-root",
+        "@profile",
+        "--max-context",
+        "1024",
+        "--cpu-threads",
+        "6",
+        "--batched-teacher"
+      ],
+      "profiles": [
+        {
+          "teacher_backend": "cuda",
+          "quality_capture": true,
+          "resident": true,
+          "model_loads": 1,
+          "batched_teacher": true,
+          "load_time_ms": 1059.262556,
+          "documents": [
+            {
+              "id": "de-002",
+              "tokens": 1024,
+              "collection_ms": 2109.397819
+            },
+            {
+              "id": "en-002",
+              "tokens": 1024,
+              "collection_ms": 1996.233052
+            }
+          ],
+          "document_count": 2,
+          "collection_time_ms": 4106.396432
+        },
+        {
+          "teacher_backend": "cuda",
+          "quality_capture": true,
+          "resident": true,
+          "model_loads": 1,
+          "batched_teacher": true,
+          "load_time_ms": 1045.392579,
+          "documents": [
+            {
+              "id": "de-002",
+              "tokens": 1024,
+              "collection_ms": 2094.896527
+            },
+            {
+              "id": "en-002",
+              "tokens": 1024,
+              "collection_ms": 2024.523496
+            }
+          ],
+          "document_count": 2,
+          "collection_time_ms": 4120.17488
+        },
+        {
+          "teacher_backend": "cuda",
+          "quality_capture": true,
+          "resident": true,
+          "model_loads": 1,
+          "batched_teacher": true,
+          "load_time_ms": 1060.898676,
+          "documents": [
+            {
+              "id": "de-002",
+              "tokens": 1024,
+              "collection_ms": 2166.926186
+            },
+            {
+              "id": "en-002",
+              "tokens": 1024,
+              "collection_ms": 1999.185931
+            }
+          ],
+          "document_count": 2,
+          "collection_time_ms": 4166.91209
+        },
+        {
+          "teacher_backend": "cuda",
+          "quality_capture": true,
+          "resident": true,
+          "model_loads": 1,
+          "batched_teacher": true,
+          "load_time_ms": 1015.286954,
+          "documents": [
+            {
+              "id": "de-002",
+              "tokens": 1024,
+              "collection_ms": 2088.575102
+            },
+            {
+              "id": "en-002",
+              "tokens": 1024,
+              "collection_ms": 2013.307069
+            }
+          ],
+          "document_count": 2,
+          "collection_time_ms": 4102.674097
+        }
+      ]
+    }
+  ],
+  "parity": {
+    "de-002": {
+      "projections": 187,
+      "min_rows": 128,
+      "activation_cosine": 0.9999942809064327,
+      "activation_min_tensor_cosine": 0.9999798354557229,
+      "activation_median_tensor_cosine": 0.9999937400065364,
+      "logit_relative_rms": 0.002624303751826529,
+      "kl_cpu_gpu": 4.972100535570304e-05,
+      "cpu_top1": 165070,
+      "gpu_top1": 165070
+    },
+    "en-002": {
+      "projections": 187,
+      "min_rows": 128,
+      "activation_cosine": 0.9999945665805775,
+      "activation_min_tensor_cosine": 0.9999805317303221,
+      "activation_median_tensor_cosine": 0.9999941960094365,
+      "logit_relative_rms": 0.005000746859795529,
+      "kl_cpu_gpu": 8.754924215766235e-06,
+      "cpu_top1": 7026,
+      "gpu_top1": 7026
+    }
+  }
+}

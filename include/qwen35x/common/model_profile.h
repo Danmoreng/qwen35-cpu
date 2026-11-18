@@ -57,6 +57,9 @@ struct ModelProfile {
   ModelWeightsManifest weights;
 };
 
+enum class TextArchitecture { unsupported, qwen35_0_8b, qwen35_2b };
+TextArchitecture text_architecture(const ModelProfile & profile);
+
 std::string to_string(AttentionBlock block);
 std::string fingerprint_summary(const ModelFingerprint & fingerprint);
 

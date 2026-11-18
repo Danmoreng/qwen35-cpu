@@ -26,6 +26,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 - [Speculative text decoding](benchmarks/text-drafting.md) compares prompt and input-source lookup on single-stream editing and generation.
 - [AVX-512 DeltaNet decode](benchmarks/deltanet-xeon.md) measures single-stream generation on a Xeon VM.
 - [Native prefill optimization](benchmarks/native-prefill.md): paired measurements and bitwise quality checks.
+- [Qwen3.5-2B on the i7-8750H](benchmarks/qwen35-2b-i7.md) measures offline teacher collection on the CPU and GTX 1070 Max-Q.
 - [AVX2 prefill on the i7-8750H](benchmarks/avx2-prefill-i7.md) measures query tile selection for long prompts.
 - [AVX2 cloud VM tuning](benchmarks/avx2-cloud.md): prompt processing, decode experiments and bitwise checks on an EPYC VM.
 - [Standard model calibration](benchmarks/calibration.md).

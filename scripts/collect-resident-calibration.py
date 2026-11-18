@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Keep the CUDA BF16 teacher resident and compact captures with bounded disk use."""
+"""Keep the BF16 teacher resident and compact captures with bounded disk use."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import json
@@ -13,12 +13,21 @@ from evaluation_common import sha, source_identity
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--corpus', type=Path, required=True)
 p.add_argument('--out', type=Path, required=True)
-p.add_argument('--collector', type=Path, default=Path('build-llama-calibration-cuda/bin/llama-calibration-resident-cuda.exe'))
+p.add_argument('--teacher', type=Path, default=Path('models/llama-comparison/Qwen3.5-0.8B-BF16.gguf'))
+p.add_argument('--backend', choices=['cuda', 'cpu'], default='cuda')
+p.add_argument('--threads', type=int, default=8)
+p.add_argument('--collector', type=Path)
 p.add_argument('--documents', type=int, help='Optional small validation subset')
 p.add_argument('--sequential-teacher', action='store_true')
 p.add_argument('--minimum-free-gib', type=float, default=16)
 p.add_argument('--block-covariance', action='store_true', help='Persist full and stratified 40-document block moments before raw cleanup')
 a = p.parse_args()
+if a.collector is None:
+    build = 'build-llama-calibration-cuda' if a.backend == 'cuda' else 'build-llama'
+    suffix = '.exe' if os.name == 'nt' else ''
+    a.collector = Path(build, 'bin', f'llama-calibration-resident-{a.backend}{suffix}')
+if a.threads <= 0:
+    p.error('threads must be positive')
 if a.documents is not None and a.documents <= 0:
     p.error('documents must be positive')
 if a.minimum_free_gib <= 0:
@@ -31,14 +40,14 @@ if not documents:
 a.out.mkdir(parents=True, exist_ok=False)
 jobs = a.out/'jobs.tsv'
 jobs.write_text(''.join(f"{d['id']}\t{Path(d['folder'])/'tokens.csv'}\n" for d in documents))
-teacher = Path('models/llama-comparison/Qwen3.5-0.8B-BF16.gguf')
+teacher = a.teacher
 captures = a.out/'captures'
 command = [str(a.collector.resolve()), '--cpu-gguf', str(teacher), '--jobs-file', str(jobs),
     '--output-root', str(captures), '--max-context', str(max(d['tokens'] for d in documents)),
-    '--cpu-threads', '8', '--profile-json', str(a.out/'profile.json'), '--wait-for-ack']
+    '--cpu-threads', str(a.threads), '--profile-json', str(a.out/'profile.json'), '--wait-for-ack']
 if not a.sequential_teacher:
     command.append('--batched-teacher')
-metadata = dict(version=1, teacher_backend='cuda', resident=True,
+metadata = dict(version=1, teacher_backend=a.backend, resident=True,
     batched_teacher=not a.sequential_teacher, teacher_sha256=sha(teacher), collector_sha256=sha(a.collector),
     selection_sha256=sha(a.corpus/'selection.json'), source=source_identity(Path('.')),
     command=command, documents=[], maximum_pending_raw_documents=2)
@@ -120,6 +129,9 @@ with (a.out/'teacher.log').open('w') as log, ThreadPoolExecutor(max_workers=1) a
             process.wait()
         process.stdin.close()
         process.stdout.close()
+profile = json.loads((a.out/'profile.json').read_text())
+if profile['teacher_backend'] != a.backend:
+    raise RuntimeError('Collector backend differs from requested backend')
 print('Resident collection and raw cleanup completed.',flush=True)
 for name, selected in [('full', metadata['documents']), ('small', [d for d in metadata['documents'] if d['id'] in small_ids])]:
     folder = a.out / name

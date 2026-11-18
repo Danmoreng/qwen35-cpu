@@ -436,6 +436,24 @@ std::optional<ModelProfile> ProfileLoader::load_from_hf_directory(const std::str
   return profile;
 }
 
+TextArchitecture text_architecture(const ModelProfile & profile) {
+  const auto & c = profile.text;
+  const auto & schedule = profile.fingerprint.attention_schedule;
+  if (profile.family != "qwen3.5" || c.num_hidden_layers != 24 || c.vocab_size != 248320 ||
+      c.num_attention_heads != 8 || c.num_key_value_heads != 2 || c.head_dim != 256 ||
+      c.linear_num_key_heads != 16 || c.linear_num_value_heads != 16 ||
+      c.linear_key_head_dim != 128 || c.linear_value_head_dim != 128 ||
+      c.linear_conv_kernel_dim != 4 || !c.tie_word_embeddings || schedule.size() != 24)
+    return TextArchitecture::unsupported;
+  for (std::size_t i = 0; i < schedule.size(); ++i) {
+    if (schedule[i] != ((i + 1) % 4 == 0 ? AttentionBlock::full : AttentionBlock::linear))
+      return TextArchitecture::unsupported;
+  }
+  if (c.hidden_size == 1024 && c.intermediate_size == 3584) return TextArchitecture::qwen35_0_8b;
+  if (c.hidden_size == 2048 && c.intermediate_size == 6144) return TextArchitecture::qwen35_2b;
+  return TextArchitecture::unsupported;
+}
+
 std::string to_string(AttentionBlock block) {
   switch (block) {
     case AttentionBlock::linear:

@@ -99,3 +99,52 @@ head still rejects calibration inputs. See the
 [head experiment report](https://github.com/Danmoreng/qwen35-cpu/blob/3680efb33bf6975ce6722d64d20c641cb7490b06/docs/head-experiments-2026-09-06.md) for format contracts,
 quality tradeoffs and matched timing. These options do not change the published
 calibrated standard.
+
+## Qwen3.5-2B
+
+Use the same packer and engine with the official 2B checkpoint and tokenizer.
+The following Linux commands build an unweighted MSE16 baseline.
+
+```sh
+hf download Qwen/Qwen3.5-2B --revision 15852e8c16360a2fea060d615a32b45270f8a8fc --local-dir models/qwen3.5-2b
+build/qwen35_cpu_pack --hf-model-dir models/qwen3.5-2b --output models/qwen3.5-2b/model-mse16.q35h
+build/qwen35_cpu --model-dir models/qwen3.5-2b --weights models/qwen3.5-2b/model-mse16.q35h --prompt "Once upon a time" --max-new-tokens 32
+```
+
+Calibration uses a text-only BF16 GGUF converted from the same checkpoint.
+Pass its path via `--teacher` to `scripts/collect-resident-calibration.py` and use
+the 2B tokenizer when preparing the corpus. Fit importance and block covariance
+from these captures and supply both directories to the packer. The optional
+CUDA collector runs offline. The native inference executable uses the CPU.
+
+For a Pascal GPU with compute capability 6.1, the following example uses
+CUDA 12.4, GCC 13 and the pinned llama.cpp checkout under `.cache/llama.cpp`.
+Set the cuBLAS compute type to FP32 so that the collector can multiply the
+original BF16 weights on this device. Use a Python environment with the
+llama.cpp converter dependencies, Transformers, PyArrow, fsspec HTTP support,
+NumPy and threadpoolctl. The capture cleanup script requires PowerShell 7.
+
+```sh
+cmake -S tools/llama-calibration-cuda -B build-llama-calibration-cuda -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=61 \
+  -DCMAKE_CUDA_HOST_COMPILER=g++-13 -DCMAKE_CXX_COMPILER=g++-13 -DCMAKE_C_COMPILER=gcc-13 \
+  -DGGML_CUDA_FA=OFF -DGGML_CUDA_NCCL=OFF -DLLAMA_SOURCE_DIR="$PWD/.cache/llama.cpp"
+cmake --build build-llama-calibration-cuda --target llama-calibration-resident-cuda
+teacher=models/llama-comparison/Qwen3.5-2B-BF16.gguf
+mkdir -p models/llama-comparison
+python .cache/llama.cpp/convert_hf_to_gguf.py models/qwen3.5-2b --outtype bf16 --outfile "$teacher"
+work=benchmarks/2b-onboarding
+python scripts/prepare-diverse-calibration.py --large --model-dir models/qwen3.5-2b --out "$work/corpus"
+python scripts/audit-calibration-corpus.py "$work/corpus"
+GGML_CUDA_CUBLAS_COMPUTE_TYPE=f32 python scripts/collect-resident-calibration.py \
+  --teacher "$teacher" --backend cuda --threads 6 --corpus "$work/corpus" --out "$work/collection" --block-covariance
+python scripts/fit-dot4-quant.py "$work/collection/full" --out "$work/importance"
+python scripts/fit-block-covariance.py "$work/collection/covariance-full" --out "$work/covariance"
+build/qwen35_cpu_pack --hf-model-dir models/qwen3.5-2b --output models/qwen3.5-2b/model.q35h \
+  --importance-dir "$work/importance" --covariance-dir "$work/covariance"
+```
+
+The CPU reference collector builds from `tools/llama-comparison` as target
+`llama-calibration-resident-cpu` and accepts the same jobs file. The collection
+wrapper selects it with `--backend cpu`. Use separate output directories for
+each run.

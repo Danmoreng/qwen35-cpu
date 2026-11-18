@@ -46,9 +46,9 @@ def records(url):
                 yield from batch.to_pylist()
 
 
-def main(out, expand_from=None):
+def main(out, model_dir, expand_from=None, large=False):
     out.mkdir(parents=True, exist_ok=False)
-    tokenizer = AutoTokenizer.from_pretrained('models/hf-download-test', local_files_only=True)
+    tokenizer = AutoTokenizer.from_pretrained(model_dir, local_files_only=True)
     excluded = set()
     for folder in ['comparison-2026-09-06', 'plan-heldout-v1', 'head-audit-v1']:
         for path in (Path('benchmarks') / folder).rglob('source.txt'):
@@ -58,7 +58,7 @@ def main(out, expand_from=None):
     previous = json.loads((expand_from / 'selection.json').read_text()) if expand_from else None
     counts = dict(de=64, en=64, code=51, chat=51, math=26)
     for domain, (repo, filename, count) in SOURCES.items():
-        if previous:
+        if large or previous:
             count = counts[domain]
         response = requests.get('https://huggingface.co/api/datasets/' + repo, timeout=60)
         response.raise_for_status()
@@ -116,7 +116,7 @@ def main(out, expand_from=None):
             raise ValueError(f'Insufficient independent {domain} records')
         (out / 'selection.json').write_text(json.dumps(dict(documents=all_documents, sources=provenance), indent=2))
     calibration = [d for d in all_documents if d['split'] == 'calibration']
-    mixture = calibration if previous else [d for d in calibration if d['domain'] != 'en'] + [d for d in calibration if d['domain'] == 'en'][:10]
+    mixture = calibration if large or previous else [d for d in calibration if d['domain'] != 'en'] + [d for d in calibration if d['domain'] == 'en'][:10]
     prose = [d for d in calibration if d['domain'] == 'en']
     for name, documents in [('mixture', mixture), ('prose', prose)]:
         (out / (name + '.json')).write_text(json.dumps(dict(version=1, documents=documents,
@@ -146,5 +146,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--expand-from', type=Path, help='Reuse pinned revisions and final split; select 256 calibration documents')
+    parser.add_argument('--model-dir', type=Path, default=Path('models/hf-download-test'))
+    parser.add_argument('--large', action='store_true', help='Select 256 calibration documents using the current source revisions')
     args = parser.parse_args()
-    main(args.out, args.expand_from)
+    main(args.out, args.model_dir, args.expand_from, args.large)

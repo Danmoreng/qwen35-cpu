@@ -473,9 +473,9 @@ int main(int argc, char ** argv) {
     std::cerr << "Profile load failed: " << error << '\n';
     return 3;
   }
-  if(profile->text.num_hidden_layers!=24 || profile->text.hidden_size!=1024 ||
-     profile->text.intermediate_size!=3584 || profile->text.vocab_size!=248320) {
-    std::cerr<<"Only Qwen3.5-0.8B is supported.\n";return 1;
+  if (qwen35x::text_architecture(*profile) == qwen35x::TextArchitecture::unsupported) {
+    std::cerr << "Expected the Qwen3.5-0.8B or Qwen3.5-2B text architecture.\n";
+    return 1;
   }
   qwen35x::Q4H128ArtifactMetadata metadata;
   metadata.num_hidden_layers = static_cast<std::uint32_t>(profile->text.num_hidden_layers);

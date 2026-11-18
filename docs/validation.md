@@ -201,3 +201,10 @@ This real-model test uses the OpenAI SDK, a temporary authenticated server and a
 ### Fine-tune serving
 
 Run `tests/classifier_smoke.py --server PATH --model-dir PRISM_DIR --panel tests/data/finetunes/prism.json` with the imported Prism package. The test compares full and selected heads and checks prefix reuse. The model-backed `cpu_scheduler_model_test` checks unrounded, request-private logits for ragged shared prefill. See [fine-tune import](finetunes.md) for reference dependencies and labeled quality panels.
+
+For 2B model-backed validation, supply the 2B tokenizer, configuration and
+matching packed checkpoint to the same batch parity test used for 0.8B.
+
+```sh
+build/cpu_batch_model_test models/qwen3.5-2b models/qwen3.5-2b/model-mse16.q35h
+```
