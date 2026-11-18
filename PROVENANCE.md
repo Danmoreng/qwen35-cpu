@@ -33,3 +33,5 @@ Apache-2.0. See [the retained notice](licenses/server-notice.txt) and
 `c0a807afcbcd2528f304bada513afd11d1e9c979` also informed the separation of protocol
 adapters, generation events and transport lifecycle tests. The native Qwen
 model, tokenizer, CPU executor and hybrid state ownership remain this engine's.
+
+The native HTTP server statically links the public-domain SQLite 3.51.2 amalgamation for batch storage. CMake pins the upstream archive and its SHA-256. [SQLite licensing](https://sqlite.org/copyright.html)

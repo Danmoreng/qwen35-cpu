@@ -1,6 +1,6 @@
 # Native CPU HTTP server
 
-`qwen35_cpu_server --model-dir models/qwen3.5-0.8b --threads 8`
+`qwen35_cpu_server --model-dir models/qwen3.5-0.8b`
 
 The directory contains `model.q35h`, config and tokenizer files. `--weights`
 can override the artifact path, including a supported Q4_0 `--pure` or Q4_K_M GGUF file in source
@@ -118,6 +118,51 @@ print(response.output_text)
 | State and transport | The HTTP/SSE implementation supports process-local response IDs. Durable conversations, cross-replica routing, 24-hour cache retention, WebSocket sessions and webhooks need storage or transport work. |
 
 The optional SDK integration test covers the local contract. See [validation](validation.md#responses-sdk).
+
+## Batches
+
+Upload a UTF-8 JSONL file with `purpose="batch"`, then submit its ID to `POST /v1/batches`. The server queues the job and returns its ID immediately. Every row needs a unique `custom_id`, method `POST`, the batch endpoint and an independent request body. Choose one endpoint per file from `/v1/chat/completions`, `/v1/completions`, `/v1/responses` and the local qev extension `/v1/systemone`. Responses rows take a self-contained history and use `store=false`. Streaming and nested background jobs are unsupported.
+
+```python
+import json
+import time
+from openai import OpenAI
+
+client = OpenAI(base_url="http://127.0.0.1:8080/v1", api_key="local")
+model = client.models.list().data[0].id
+endpoint = "/v1/chat/completions"
+texts = ["wir sehen uns am freitag", "bitte schick die rechnung per mail"]
+rows = [
+    {"custom_id": str(i), "method": "POST", "url": endpoint, "body": {
+        "model": model, "temperature": 0, "messages": [
+            {"role": "system", "content": "Korrigiere Schreibweise und Zeichensetzung."},
+            {"role": "user", "content": text}]}}
+    for i, text in enumerate(texts)
+]
+data = "\n".join(json.dumps(row) for row in rows).encode()
+source = client.files.create(file=("transcripts.jsonl", data), purpose="batch")
+job = client.batches.create(input_file_id=source.id, endpoint=endpoint, completion_window="24h")
+while job.status in {"validating", "in_progress", "cancelling", "finalizing"}:
+    time.sleep(0.5)
+    job = client.batches.retrieve(job.id)
+for file_id in (job.output_file_id, job.error_file_id):
+    if file_id:
+        for line in client.files.content(file_id).text.splitlines():
+            result = json.loads(line)
+            print(result["custom_id"], result["response"])
+```
+
+Use `client.batches.list()`, `retrieve(id)` and `cancel(id)` for status and cancellation. Completed rows remain downloadable on cancellation or expiry. Structural validation failures, including duplicate IDs, fail the batch before inference and report a line number. Individual inference or parameter errors go into a separate error file. File endpoints support upload, paginated listing, metadata, content and deletion. Requests use the same authentication as chat. Locally stored transcripts are visible to clients sharing the server key.
+
+The default store is in memory. **For restart recovery**, launch with `--batch-db /path/to/batches.sqlite` on a writable local volume, using a dedicated database per model and server. SQLite commits row results and counts together. A restarted server resumes unfinished rows and preserves existing output files throughout their lifetime. One process owns the database. Delete unneeded files with `client.files.delete(id)`. Inputs in active batches are pinned.
+
+The local limits are 4 MiB and 4096 rows per input file, 256 KiB per line, 32 MiB of results per job and 64 queued or running jobs. The file store allows 128 MiB of payload, including 32 MiB reserved from uploads for results. A worker feeds one batch at a time to the shared inference scheduler. It can run multiple rows concurrently with ordinary API traffic. The 24-hour window includes queueing.
+
+### Automatic CPU selection
+
+The default `--threads auto --batch-width auto` probes the loaded model before listening. It measures short greedy decode batches, or prompt processing with the selected decision readout on qev when enabled. The server tests a shortlist of thread counts and widths up to the resident limit, 16 rows and a memory-headroom estimate. Linux uses process affinity and available cgroup v2 CPU quotas. Windows uses process affinity when available. Each candidate receives a warmup and three measurement windows. The probe selects by median throughput, first comparing thread counts and then widths with those threads. Output length, prompt length, sampling mode and concurrent load can change the best setting.
+
+`GET /v1/batch-config` reports detected CPU capacity, chosen inference threads, simultaneous batch rows and the measured candidates. Use `--threads N --batch-width N` to skip the probe. The width must fit `--residents`. The server shares one inference executor across batch and interactive work.
 
 ## Streaming and stops
 
@@ -405,8 +450,8 @@ API extensions, not standard OpenAI completions parameters.
 
 - Default 16 residents and decode batch limit 16; `--residents` accepts 1..64.
 - At most 64 outstanding service jobs; HTTP pool has 32 workers and 64 queued sockets.
-- Request body <=256 KiB; raw prompt <=64 KiB; context includes generated inputs.
-- Default context 8192, adjustable with `--max-context`; no automatic thread tuning.
+- Request body <=256 KiB except batch file uploads; raw prompt <=64 KiB; context includes generated inputs.
+- Default context 8192, adjustable with `--max-context`.
 - Five-minute HTTP request deadline; disconnects and deadlines cancel engine work
   at a scheduler boundary. JSON responses accumulate output up to the requested
   token limit; SSE delivers incremental text. Finished request records are released.

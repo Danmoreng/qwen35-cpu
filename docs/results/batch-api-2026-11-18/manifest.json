@@ -1,0 +1,106 @@
+{
+  "utc": "2026-11-18T10:52:09.8683266Z",
+  "parent": "18033fbd20f7e60bb46eba10ab640cef645c6037",
+  "cpu": "Intel Xeon Platinum 8573C, KVM",
+  "allowed_cpus": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "cpu_max": "400000 100000",
+  "model_revision": "f6cb5cf04a9094670f9041578a3f4e44b94a1395",
+  "weights_sha256": "013FBFAA03760E759181301DDAF964BB5C200C50C50617AFE72557FD65BCBF0A",
+  "server_sha256": "f2febcfe64367594c0aa8184a1bc455d7357a09436963c9bacfb3e17b7546e81",
+  "sdk": "openai 3.55.0",
+  "batch_probe": {
+    "cpu_capacity": 4,
+    "threads": 4,
+    "batch_width": 8,
+    "probes": [
+      {
+        "threads": 2,
+        "width": 4,
+        "positions_per_second": 59.719466759805144,
+        "min_positions_per_second": 57.417634152605935,
+        "max_positions_per_second": 65.05705007231334
+      },
+      {
+        "threads": 3,
+        "width": 4,
+        "positions_per_second": 64.57985737296325,
+        "min_positions_per_second": 43.47133073617128,
+        "max_positions_per_second": 67.86117087206159
+      },
+      {
+        "threads": 4,
+        "width": 4,
+        "positions_per_second": 69.77591456316051,
+        "min_positions_per_second": 39.90034350554852,
+        "max_positions_per_second": 89.38506039329539
+      },
+      {
+        "threads": 4,
+        "width": 1,
+        "positions_per_second": 22.904732609063547,
+        "min_positions_per_second": 17.578610248609277,
+        "max_positions_per_second": 27.25044903971189
+      },
+      {
+        "threads": 4,
+        "width": 2,
+        "positions_per_second": 30.31787802443098,
+        "min_positions_per_second": 23.916857541127488,
+        "max_positions_per_second": 44.720745108433725
+      },
+      {
+        "threads": 4,
+        "width": 8,
+        "positions_per_second": 117.59417257374042,
+        "min_positions_per_second": 101.12119004270258,
+        "max_positions_per_second": 120.83952900255942
+      },
+      {
+        "threads": 4,
+        "width": 16,
+        "positions_per_second": 110.44397085379468,
+        "min_positions_per_second": 88.66149972567024,
+        "max_positions_per_second": 118.86769854650917
+      }
+    ]
+  },
+  "matrix": [
+    {
+      "name": "serial",
+      "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "args": [
+        "/workspace/qwen35-cpu/scripts/benchmark-batches.py",
+        "--server",
+        "/workspace/decode-tools/build/qwen35_cpu_server",
+        "--model-dir",
+        "/workspace/decode-tools/model",
+        "--threads",
+        "4",
+        "--batch-width",
+        "1"
+      ]
+    },
+    {
+      "name": "selected",
+      "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "args": [
+        "/workspace/qwen35-cpu/scripts/benchmark-batches.py",
+        "--server",
+        "/workspace/decode-tools/build/qwen35_cpu_server",
+        "--model-dir",
+        "/workspace/decode-tools/model",
+        "--threads",
+        "4",
+        "--batch-width",
+        "8"
+      ]
+    }
+  ],
+  "benchmark_script_sha256": "bc26ee14f7363018e3e55a965662779e68687b2ac25612a1af77385a2b966cb6"
+}

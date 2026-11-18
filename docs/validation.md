@@ -189,3 +189,11 @@ python tests/responses_sdk_test.py --base-url http://127.0.0.1:8080/v1
 ```
 
 Checks cover greedy chat parity, constrained sampling, typed SSE, function calls and results, input counting, history pagination, stored item references, deletion, background cancellation, replay, context truncation and rejection of unsupported capabilities.
+
+## Batches SDK
+
+```sh
+python tests/batches_sdk_test.py --server build/qwen35_cpu_server --model-dir models/qwen3.5-0.8b
+```
+
+This real-model test uses the OpenAI SDK, a temporary authenticated server and an isolated SQLite database. It checks tuning and manual overrides, JSONL output parity, per-request errors, validation, pagination, cancellation and recovery after killing the server mid-batch. Pass `--qev-model-dir models/qev` to compare three batched decision outputs against the direct System One endpoint using the qev checkpoint.

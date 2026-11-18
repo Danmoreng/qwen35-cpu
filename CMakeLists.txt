@@ -161,11 +161,19 @@ if (QWEN35_BUILD_SERVER)
     URL https://codeload.github.com/nlohmann/json/tar.gz/refs/tags/v3.12.0
     URL_HASH SHA256=4b92eb0c06d10683f7447ce9406cb97cd4b453be18d7279320f7b2f025c10187
     SOURCE_SUBDIR unused)
-  FetchContent_MakeAvailable(http_headers json_headers)
+  FetchContent_Declare(batch_sqlite
+    URL https://www.sqlite.org/2026/sqlite-amalgamation-3510200.zip
+    URL_HASH SHA256=6e2a845a493026bdbad0618b2b5a0cf48584faab47384480ed9f592d912f23ec
+    SOURCE_SUBDIR unused)
+  FetchContent_MakeAvailable(http_headers json_headers batch_sqlite)
+  add_library(qwen35_batch_sqlite STATIC ${batch_sqlite_SOURCE_DIR}/sqlite3.c)
+  target_include_directories(qwen35_batch_sqlite PUBLIC ${batch_sqlite_SOURCE_DIR})
+  target_compile_definitions(qwen35_batch_sqlite PRIVATE SQLITE_OMIT_LOAD_EXTENSION SQLITE_DQS=0)
+
   add_executable(qwen35_cpu_server src/server.cpp)
   target_include_directories(qwen35_cpu_server PRIVATE
     ${http_headers_SOURCE_DIR} ${json_headers_SOURCE_DIR}/single_include)
-  target_link_libraries(qwen35_cpu_server PRIVATE qwen35x_core Threads::Threads)
+  target_link_libraries(qwen35_cpu_server PRIVATE qwen35x_core qwen35_batch_sqlite Threads::Threads)
   add_executable(systemone_protocol_test tests/systemone_protocol_test.cpp)
   target_include_directories(systemone_protocol_test PRIVATE src ${json_headers_SOURCE_DIR}/single_include)
   target_link_libraries(systemone_protocol_test PRIVATE qwen35x_core)

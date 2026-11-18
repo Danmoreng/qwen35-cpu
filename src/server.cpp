@@ -8,6 +8,8 @@
 #include "server_constraint.h"
 #include "server_stream.h"
 #include "server_responses.h"
+#include "server_batch_db.h"
+#include "server_batch_tuning.h"
 #include <algorithm>
 #include <atomic>
 #include <cmath>
@@ -86,6 +88,7 @@ class Service {
   std::unique_ptr<CpuEngine> engine_;
   std::optional<systemone::Config> decision_;
   std::size_t max_context_;
+  server::BatchTuning tuning_;
   bool selected_decision_head_ = false;
   bool automatic_prefix_ = true;
   std::size_t prefix_budget_ = 0;
@@ -346,7 +349,7 @@ class Service {
     }
   }
 public:
-  Service(const CpuLoadOptions &load, const CpuEngineConfig &config, bool auto_decision_head, bool automatic_prefix)
+  Service(const CpuLoadOptions &load, CpuEngineConfig &config, bool auto_decision_head, bool automatic_prefix, std::size_t fixed_width)
       : max_context_(config.max_context), automatic_prefix_(automatic_prefix), prefix_budget_(config.max_prefix_bytes) {
     std::string error;
     if (!QwenTokenizer::load_from_hf_directory(load.model_dir, tokenizer_, error)) throw std::runtime_error(error);
@@ -360,6 +363,7 @@ public:
     if (decision_) model_name = "qev-0.8b-H128-Q4-G32-DOT4";
     selected_decision_head_ = auto_decision_head && model->supports_selected_logits();
     if (decision_) std::cout << "System One readout: " << (selected_decision_head_ ? "selected" : "full") << '\n';
+    tuning_ = server::tune_batches(model, config, fixed_width, decision_ ? std::span<const std::int32_t>(decision_->ids) : std::span<const std::int32_t>{}, selected_decision_head_);
     engine_ = CpuEngine::create(model, config, error);
     if (!engine_) throw std::runtime_error(error);
     cache_snapshot_ = cache_stats();
@@ -374,6 +378,7 @@ public:
     if (stopping_ || outstanding_ >= 64) return false;
     ++outstanding_; pending_.push_back(std::move(job)); wake_.notify_one(); return true;
   }
+  const server::BatchTuning &batch_tuning() const { return tuning_; }
   bool decisions_enabled() const { return decision_.has_value(); }
   Json cache_status() { std::lock_guard lock(mutex_); return cache_snapshot_; }
 };
@@ -383,12 +388,16 @@ std::shared_ptr<Job> parse(const std::string &body, std::size_t context, server:
   static_cast<server::Request &>(*job) = server::parse_openai(body, context, model_name, api);
   return job;
 }
+#include "server_batches.inl"
 }
 
 int main(int argc, char **argv) try {
   CpuLoadOptions load;
   load.model_dir = "models/qwen3.5-0.8b";
   CpuEngineConfig config;
+  config.threads = 0;
+  std::size_t batch_width = 0;
+  std::string batch_db = ":memory:";
   config.max_resident_requests = 16; config.max_queued_requests = 64;
   config.max_decode_batch_size = 16; config.shared_kv_pages = true;
   std::string host = "127.0.0.1";
@@ -398,7 +407,7 @@ int main(int argc, char **argv) try {
   for (int i = 1; i < argc; ++i) {
     const std::string key = argv[i];
     if (key == "--help") {
-      std::cout << "Qwen3.5 CPU HTTP server\n--model-dir DIR [--weights FILE] [--threads N]\n"
+      std::cout << "Qwen3.5 CPU HTTP server\n--model-dir DIR [--weights FILE] [--threads auto|N] [--batch-width auto|N] [--batch-db PATH]\n"
         "[--host 127.0.0.1] [--port 8080] [--max-context 8192] [--residents 16]\n"
         "[--decision-encoding joint|per_question] (qev_config.json required)\n"
         "[--decision-head auto|full] [--prefill-chunk N] (1..2048; default adaptive)\n"
@@ -416,7 +425,9 @@ int main(int argc, char **argv) try {
     };
     if (key == "--model-dir") load.model_dir = value;
     else if (key == "--weights") load.cpu_q4_h128_path = value;
-    else if (key == "--threads") config.threads = number();
+    else if (key == "--threads") config.threads = value == "auto" ? 0 : number();
+    else if (key == "--batch-width") batch_width = value == "auto" ? 0 : number();
+    else if (key == "--batch-db") batch_db = value;
     else if (key == "--prefix-cache") {
       if (value != "auto" && value != "off") throw std::runtime_error("Prefix cache must be auto or off");
       automatic_prefix = value == "auto";
@@ -452,11 +463,13 @@ int main(int argc, char **argv) try {
   const std::string api_key = key_env ? key_env : "";
   if (host != "127.0.0.1" && host != "::1" && host != "localhost" && api_key.empty())
     throw std::runtime_error("Set QWEN35_API_KEY before binding a non-loopback interface");
-  Service service(load, config, auto_decision_head, automatic_prefix);
+  if (batch_width > config.max_resident_requests) throw std::runtime_error("--batch-width exceeds --residents");
+  Service service(load, config, auto_decision_head, automatic_prefix, batch_width);
+  BatchService batches(service, batch_db, config.max_context, service.batch_tuning().width, decision_encoding);
   server::ResponseStore responses;
   httplib::Server http;
   http.new_task_queue = [] { return new httplib::ThreadPool(32, 32, 64); };
-  http.set_payload_max_length(262144);
+  http.set_payload_max_length(4 * 1024 * 1024 + 16384);
   http.set_read_timeout(10, 0); http.set_write_timeout(10, 0); http.set_keep_alive_max_count(1);
   auto send = [](httplib::Response &response, const Reply &reply, bool messages = false) {
     response.status = reply.status;
@@ -467,6 +480,20 @@ int main(int argc, char **argv) try {
         (messages && request.get_header_value("x-api-key") == api_key)) return true;
     send(response, failure(401, "Unauthorized"), messages); return false;
   };
+  http.set_pre_routing_handler([&](const httplib::Request &req, httplib::Response &res) {
+    if (req.method == "POST" && req.path != "/v1/files" &&
+        req.get_header_value_u64("Content-Length") > 262144) {
+      send(res,failure(413,"Request body exceeds 256 KiB")); return httplib::Server::HandlerResponse::Handled;
+    }
+    return httplib::Server::HandlerResponse::Unhandled;
+  });
+  http.set_pre_request_handler([&](const httplib::Request &req, httplib::Response &res) {
+    if (req.path != "/v1/files" && (req.body.size()>262144 || req.is_multipart_form_data())) {
+      send(res,failure(413,"Invalid or oversized request body")); return httplib::Server::HandlerResponse::Handled;
+    }
+    return httplib::Server::HandlerResponse::Unhandled;
+  });
+#include "server_batch_routes.inl"
   http.Get("/health", [&](const auto &request, auto &response) {
     if (authorized(request, response)) send(response, {200, {{"status", "ok"}}});
   });

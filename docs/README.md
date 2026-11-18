@@ -5,7 +5,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 
 ## Use and integrate
 
-- [HTTP server](server.md): Responses, chat completions, decision requests, sampling and limits.
+- [HTTP server](server.md): Responses, offline batches, CPU tuning, chat completions and decision requests.
 - [C++ engine API](cpu-engine-api.md): batching, scheduling and prefix reuse.
 - [Quantization](quantization.md): H128/Q4-G32-DOT4 format and offline calibration.
 - [GGUF loading](q4km-native.md): native pure Q4_0 and experimental Q4_K_M.
@@ -20,6 +20,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 
 - [Current CPU comparison](benchmarks/cpu.md), [IK prefill analysis](benchmarks/cpu.md#why-ik-iq4_ks_r4-prefill-changed)
   and [IK batch-16 methodology](benchmarks/ik-batch16.md).
+- [Batches API throughput](benchmarks/batch-api.md) compares serial and concurrent processing of 16 German text corrections.
 - [Speculative text decoding](benchmarks/text-drafting.md) compares prompt and input-source lookup on single-stream editing and generation.
 - [AVX-512 DeltaNet decode](benchmarks/deltanet-xeon.md) measures single-stream generation on a Xeon VM.
 - [Native prefill optimization](benchmarks/native-prefill.md): paired measurements and bitwise quality checks.
