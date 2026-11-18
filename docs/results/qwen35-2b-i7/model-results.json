@@ -1,0 +1,443 @@
+{
+  "source": "3c5a34344af6430006e6b027578025756786fa34",
+  "cpu": "Intel Core i7-8750H",
+  "inference": {
+    "threads": 6,
+    "affinity": 63,
+    "batch": 1,
+    "prompt": 512,
+    "forced_outputs": 64,
+    "warmups": 1,
+    "runs": 3,
+    "binaries": {
+      "build/qwen35_cpu_bench": "AC95BC20DD3B53EA0C34DE949D9AE1376AAC672F55AACE26B00524B64A683532"
+    },
+    "inputs": {
+      "models/qwen3.5-2b/tokenizer.json": {
+        "sha256": "5F9E4D4901A92B997E463C1F46055088B6CCA5CA61A6522D1B9F64C4BB81CB42",
+        "bytes": 12807982
+      },
+      "models/qwen3.5-0.8b/config.json": {
+        "sha256": "B90B86F35C8E6925EF74EE04D0E758F0A845C83A42089AD82BBAA948DE9B4204",
+        "bytes": 2907
+      },
+      "models/qwen3.5-2b/model.q35h": {
+        "sha256": "1084C3A2751D3813A2AA686337F717E56291E6A1A79FF8BE1B6D1665D22892A3",
+        "bytes": 1060442880
+      },
+      "docs/results/cpu-refresh-2026-10-22/prompt-512.csv": {
+        "sha256": "6BAA0783F9AD2ADEA59013C948CD15A0A465E870837BF9A60E57EB73EF39BD81",
+        "bytes": 2311
+      },
+      "models/qwen3.5-2b/config.json": {
+        "sha256": "ED1C1723241F23F7F4E23430759CBD7DCFB4103CBDFE052BFE7626B57C2615B4",
+        "bytes": 2908
+      },
+      "models/qwen3.5-0.8b/tokenizer.json": {
+        "sha256": "5F9E4D4901A92B997E463C1F46055088B6CCA5CA61A6522D1B9F64C4BB81CB42",
+        "bytes": 12807982
+      },
+      "models/qwen3.5-0.8b/model.q35h": {
+        "sha256": "013FBFAA03760E759181301DDAF964BB5C200C50C50617AFE72557FD65BCBF0A",
+        "bytes": 424964864
+      },
+      "models/qwen3.5-2b/tokenizer_config.json": {
+        "sha256": "49E2B6E395F959F077F1E992B338919C0D4A9732FC6E613995E06557F843500C",
+        "bytes": 16709
+      },
+      "models/qwen3.5-0.8b/tokenizer_config.json": {
+        "sha256": "49E2B6E395F959F077F1E992B338919C0D4A9732FC6E613995E06557F843500C",
+        "bytes": 16709
+      }
+    },
+    "benches": [
+      {
+        "case": {
+          "name": "H128 0.8b B1 P512 D64",
+          "executable": "build/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-0.8b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-0.8b/model.q35h",
+            "--cpu-threads",
+            "6",
+            "--cpu-isa",
+            "avx2",
+            "--cpu-isa-strict",
+            "--cpu-batch",
+            "1",
+            "--cpu-batch-full-logits",
+            "--max-context",
+            "8192",
+            "--prompt-tokens-file",
+            "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858",
+            "--max-new-tokens",
+            "64"
+          ]
+        },
+        "profiles": [
+          {
+            "prefill_forward_tokens_per_second": 437.085688013,
+            "tokens_per_second": 63.5242199035,
+            "peak_rss_bytes": 491241472,
+            "resolved_isa": "avx2+fma+f16c"
+          },
+          {
+            "prefill_forward_tokens_per_second": 466.990108272,
+            "tokens_per_second": 63.0932090489,
+            "peak_rss_bytes": 490852352,
+            "resolved_isa": "avx2+fma+f16c"
+          },
+          {
+            "prefill_forward_tokens_per_second": 452.782181487,
+            "tokens_per_second": 63.338484726,
+            "peak_rss_bytes": 491053056,
+            "resolved_isa": "avx2+fma+f16c"
+          },
+          {
+            "prefill_forward_tokens_per_second": 463.936709029,
+            "tokens_per_second": 63.4500717262,
+            "peak_rss_bytes": 491163648,
+            "resolved_isa": "avx2+fma+f16c"
+          }
+        ]
+      },
+      {
+        "case": {
+          "name": "H128 2b B1 P512 D64",
+          "executable": "build/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "models/qwen3.5-2b",
+            "--cpu-q4-h128",
+            "models/qwen3.5-2b/model.q35h",
+            "--cpu-threads",
+            "6",
+            "--cpu-isa",
+            "avx2",
+            "--cpu-isa-strict",
+            "--cpu-batch",
+            "1",
+            "--cpu-batch-full-logits",
+            "--max-context",
+            "8192",
+            "--prompt-tokens-file",
+            "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858",
+            "--max-new-tokens",
+            "64"
+          ]
+        },
+        "profiles": [
+          {
+            "prefill_forward_tokens_per_second": 204.076939567,
+            "tokens_per_second": 28.1242910042,
+            "peak_rss_bytes": 1134153728,
+            "resolved_isa": "avx2+fma+f16c"
+          },
+          {
+            "prefill_forward_tokens_per_second": 206.955888631,
+            "tokens_per_second": 27.9987479084,
+            "peak_rss_bytes": 1134153728,
+            "resolved_isa": "avx2+fma+f16c"
+          },
+          {
+            "prefill_forward_tokens_per_second": 197.036241278,
+            "tokens_per_second": 28.108663734,
+            "peak_rss_bytes": 1134211072,
+            "resolved_isa": "avx2+fma+f16c"
+          },
+          {
+            "prefill_forward_tokens_per_second": 207.508074834,
+            "tokens_per_second": 28.0598415655,
+            "peak_rss_bytes": 1134100480,
+            "resolved_isa": "avx2+fma+f16c"
+          }
+        ]
+      }
+    ]
+  },
+  "calibration": {
+    "source_sha256": "8202238a803f4cc25db36240b178315749d76e1908eb737b725dfb650dec1ebf",
+    "dataset_revisions": {
+      "de": {
+        "repository": "HuggingFaceFW/fineweb-2",
+        "revision": "af9c13333eb981300149d5ca60a8e9d659b276b9",
+        "file": "data/deu_Latn/train/000_00000.parquet"
+      },
+      "en": {
+        "repository": "HuggingFaceFW/fineweb-edu",
+        "revision": "87f09149ef4734204d70ed1d046ddc9ca3f2b8f9",
+        "file": "data/CC-MAIN-2013-20/train-00000-of-00014.parquet"
+      },
+      "code": {
+        "repository": "codeparrot/codeparrot-clean",
+        "revision": "35a59fb025bc0a102f7d96eac09d145b896d487b",
+        "file": "file-000000000001.json.gz"
+      },
+      "chat": {
+        "repository": "HuggingFaceTB/smoltalk",
+        "revision": "5feaf2fd3ffca7c237fc38d1861bc30365d48ffa",
+        "file": "data/smol-magpie-ultra/train-00000-of-00006.parquet"
+      },
+      "math": {
+        "repository": "open-web-math/open-web-math",
+        "revision": "fde8ef8de2300f5e778f56261843dab89f230815",
+        "file": "data/train-00000-of-00114-5a023365406cb9c4.parquet"
+      }
+    },
+    "audit": {
+      "calibration_documents": 256,
+      "tokens": 262144,
+      "domain_tokens": {
+        "de": 65536,
+        "en": 65536,
+        "code": 52224,
+        "chat": 52224,
+        "math": 26624
+      },
+      "overlapping_documents": [],
+      "arithmetic_documents": [],
+      "cross_split_groups": [],
+      "limitation": "Checks selected source text; does not establish pretraining independence."
+    },
+    "ordered_calibration_token_hash_sha256": "bff91dc9da422e8d678c57436ead688c9ba9479001deefb7f4189d277c3f2047",
+    "documents": 256,
+    "model_loads": 1,
+    "teacher_gguf_sha256": "36ef0997ad80341ba712364d0a6761ec65fc77c316951fe95d58966083aae355",
+    "projections": 187,
+    "importance_manifest_sha256": "f1b64365ec1d762c2195c1aa82024e2acc9cd320e61bcc3b9e1d0d15bb7c3f07",
+    "covariance_manifest_sha256": "2a3c6f91949222ce6a6c5938c30d1717b7b4eae4f7e628d575d9095d39b9c391",
+    "pack_binary_sha256": "b36a836bdff4955d3d1eb2d72449b4be4b905b06d90086bf13bb38dac99b2b6a",
+    "mse16_sha256": "533225f8eca705106dee6db5188941c47a4349473e39384fd856a31c9e2ff325",
+    "calibrated_sha256": "1084c3a2751d3813a2aa686337f717e56291e6a1a79ff8be1b6d1665d22892a3",
+    "artifact_bytes": 1060442880,
+    "collection_and_statistics_elapsed_seconds": 585.47,
+    "resident_teacher_seconds": 579.435476354,
+    "packer_sum_of_tensor_times_seconds": 716.472,
+    "accelerated_statistics_reference_documents": 1,
+    "raw_and_diagonal_repeated_documents": 11
+  },
+  "quality": {
+    "teacher": "llama.cpp CPU BF16",
+    "teacher_binary_sha256": "8405d86a693e357b735638ffc269b529375d5bb51dedda3754913e0f98d86474",
+    "candidate": "native CPU",
+    "candidate_binary_sha256": "830417f5358cbe39f10ec992cdd51b047746a30728bb9d5ba4ccb690d85ce8fe",
+    "mse16": {
+      "positions": 1280,
+      "teacher_ppl": 8.691909553210234,
+      "candidate_ppl": 9.415039461650311,
+      "kl": 0.08671282807661448
+    },
+    "calibrated": {
+      "positions": 1280,
+      "teacher_ppl": 8.691909553210234,
+      "candidate_ppl": 9.066618087528061,
+      "kl": 0.04875223321902549
+    },
+    "windows": [
+      {
+        "id": "de-000",
+        "domain": "de",
+        "prompt_sha256": "e367cf4488524aeb6c8659887738da5844560432c5391a1021d2070b15d6e51e",
+        "targets_sha256": "34dff1b6b36fd35bd6cb4a31e6b4252ed42d5392c4774b1516c3e61926ce0d82",
+        "mse16": {
+          "positions": 128,
+          "teacher_ppl": 35.26778103007075,
+          "candidate_ppl": 39.68089119429963,
+          "kl": 0.12508590467595015
+        },
+        "calibrated": {
+          "positions": 128,
+          "teacher_ppl": 35.26778103007075,
+          "candidate_ppl": 39.74913113637398,
+          "kl": 0.07177716850700556
+        }
+      },
+      {
+        "id": "de-001",
+        "domain": "de",
+        "prompt_sha256": "4bf07498d8364e8c57b41daec01a1e7517f9787848e6676ac6edef1e7a8b120a",
+        "targets_sha256": "9ccb9e93d4248a728091ab136a7c0a6be3e1caeee95d9954e92783c4722c827b",
+        "mse16": {
+          "positions": 128,
+          "teacher_ppl": 16.402142300117287,
+          "candidate_ppl": 19.0705641003944,
+          "kl": 0.1331933859573231
+        },
+        "calibrated": {
+          "positions": 128,
+          "teacher_ppl": 16.402142300117287,
+          "candidate_ppl": 18.52680716941336,
+          "kl": 0.07359248649536877
+        }
+      },
+      {
+        "id": "en-000",
+        "domain": "en",
+        "prompt_sha256": "9ca0a70e1161cf95c449e20101cc0d295e83a09d187a01a12a8290b21824bd3a",
+        "targets_sha256": "028a4f7f53dcbe92caa0e40f6f3089014358da87b0758f5b9a192a8dab330f50",
+        "mse16": {
+          "positions": 128,
+          "teacher_ppl": 18.738525235901868,
+          "candidate_ppl": 21.885943725218887,
+          "kl": 0.0827960689517655
+        },
+        "calibrated": {
+          "positions": 128,
+          "teacher_ppl": 18.738525235901868,
+          "candidate_ppl": 20.39650048199077,
+          "kl": 0.04848444510214826
+        }
+      },
+      {
+        "id": "en-001",
+        "domain": "en",
+        "prompt_sha256": "2108b6a93a6920581169d2e5bfd20eb101f93817420564f8d9cb2cf19c9189b3",
+        "targets_sha256": "ea8cf7b3a82e4c922f3687c696c60f535a816d635ba09f49d79af94e582510a4",
+        "mse16": {
+          "positions": 128,
+          "teacher_ppl": 15.252533896412391,
+          "candidate_ppl": 16.938682093413444,
+          "kl": 0.06157118579542377
+        },
+        "calibrated": {
+          "positions": 128,
+          "teacher_ppl": 15.252533896412391,
+          "candidate_ppl": 15.459046296724617,
+          "kl": 0.0323546804714378
+        }
+      },
+      {
+        "id": "code-000",
+        "domain": "code",
+        "prompt_sha256": "152e2ef40aa7dca7b9de95e7ed593f7497375e1d3bb2f3ed27f5d461ce7aeae9",
+        "targets_sha256": "294c8d6a275bb0b50c144f9dfb68ae8d557778ab8a49746a3d0e404a46fd2a7e",
+        "mse16": {
+          "positions": 128,
+          "teacher_ppl": 3.343578602137659,
+          "candidate_ppl": 3.368643765218694,
+          "kl": 0.043312724705809914
+        },
+        "calibrated": {
+          "positions": 128,
+          "teacher_ppl": 3.343578602137659,
+          "candidate_ppl": 3.2718914344050347,
+          "kl": 0.031249741985365554
+        }
+      },
+      {
+        "id": "code-001",
+        "domain": "code",
+        "prompt_sha256": "24c648c95e5529dd20d83646393d8181850b67af272df3bd075c947ec4748dba",
+        "targets_sha256": "76f8c36820ab32244cf17e05a2e19ffc19043fe04ea855c710a6273be26ba2ee",
+        "mse16": {
+          "positions": 128,
+          "teacher_ppl": 6.003715057193227,
+          "candidate_ppl": 6.4098169213613945,
+          "kl": 0.08353775048748405
+        },
+        "calibrated": {
+          "positions": 128,
+          "teacher_ppl": 6.003715057193227,
+          "candidate_ppl": 6.205833927209664,
+          "kl": 0.043100202594649674
+        }
+      },
+      {
+        "id": "chat-000",
+        "domain": "chat",
+        "prompt_sha256": "9c6b299954a4afb5b0e94487d249cfe3dd34df98c9c53fafbfc56ea0eebdd1e3",
+        "targets_sha256": "e0e511f26648a4aa81b3c19781cf18985c4b22bce425149e86ddbcdb1b763866",
+        "mse16": {
+          "positions": 128,
+          "teacher_ppl": 4.524716187531395,
+          "candidate_ppl": 4.859982094313884,
+          "kl": 0.09943371617528651
+        },
+        "calibrated": {
+          "positions": 128,
+          "teacher_ppl": 4.524716187531395,
+          "candidate_ppl": 4.407575426544239,
+          "kl": 0.05501547429371719
+        }
+      },
+      {
+        "id": "chat-001",
+        "domain": "chat",
+        "prompt_sha256": "92f2163ea8c296c673594a8a40844f55a90e3a94545feb354fbb94789741da36",
+        "targets_sha256": "b68b55730496b40d14f7c5939b4a1aa5c908006a6174fc8d7d3fecaf3cde8948",
+        "mse16": {
+          "positions": 128,
+          "teacher_ppl": 3.6701007415391262,
+          "candidate_ppl": 3.653323259783448,
+          "kl": 0.12103346808447951
+        },
+        "calibrated": {
+          "positions": 128,
+          "teacher_ppl": 3.6701007415391262,
+          "candidate_ppl": 3.551371183149751,
+          "kl": 0.06790200324470826
+        }
+      },
+      {
+        "id": "math-000",
+        "domain": "math",
+        "prompt_sha256": "ddd5905d68552d0e17e02a5e4fbd87fa26cf7830b7f634a88c56a4102a0e6976",
+        "targets_sha256": "4c798c5f99095b7d80f218327fbf7a219e6e3a5d4ad3aa16ccfc4ccef7417483",
+        "mse16": {
+          "positions": 128,
+          "teacher_ppl": 4.981956689508305,
+          "candidate_ppl": 5.60678003332199,
+          "kl": 0.058442251136974384
+        },
+        "calibrated": {
+          "positions": 128,
+          "teacher_ppl": 4.981956689508305,
+          "candidate_ppl": 5.345328055839663,
+          "kl": 0.024255137169037023
+        }
+      },
+      {
+        "id": "math-001",
+        "domain": "math",
+        "prompt_sha256": "3526a8d9b94baf0c026e8a6f3bd99fe7a666e068bcbad65d336fc7f1a5c6ec8a",
+        "targets_sha256": "c30641571ff32c7b2a89780d640a57bff56417129b02355076fe0886307b0b16",
+        "mse16": {
+          "positions": 128,
+          "teacher_ppl": 8.963858269390965,
+          "candidate_ppl": 9.076002207348502,
+          "kl": 0.05872182479564801
+        },
+        "calibrated": {
+          "positions": 128,
+          "teacher_ppl": 8.963858269390965,
+          "candidate_ppl": 9.515189169507302,
+          "kl": 0.03979099232681685
+        }
+      }
+    ]
+  },
+  "regression": {
+    "existing_0_8b_four_position_logit_dump_sha256": "6182714bb4cedbf9a7aca5326f9cdba7a8f1aafc1e3d5fd6e9db96a0f6612d7e",
+    "batch_logit_parity": [
+      4,
+      8,
+      12,
+      16,
+      20,
+      32
+    ],
+    "unit_tests_passed": 24,
+    "tokenizer_parity_windows": 5,
+    "tokenizer_tokens_per_window": 1024,
+    "batch_parity_artifacts": [
+      "mse16",
+      "calibrated"
+    ]
+  }
+}

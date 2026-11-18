@@ -144,6 +144,9 @@ build/qwen35_cpu_pack --hf-model-dir models/qwen3.5-2b --output models/qwen3.5-2
   --importance-dir "$work/importance" --covariance-dir "$work/covariance"
 ```
 
+The 2B pilot, final held-out quality and native CPU timings are in the
+[2B measurement report](benchmarks/qwen35-2b-i7.md).
+
 The CPU reference collector builds from `tools/llama-comparison` as target
 `llama-calibration-resident-cpu` and accepts the same jobs file. The collection
 wrapper selects it with `--backend cpu`. Use separate output directories for
