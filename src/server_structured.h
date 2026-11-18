@@ -58,7 +58,8 @@ inline Json tool_history(const Json &messages) {
   require(pending.empty(), "Tool calls require corresponding results");
   return normalized;
 }
-inline Request parse_openai(const std::string &body, std::size_t context, const std::string &model, Api api) {
+inline Request parse_openai(const std::string &body, std::size_t context, const std::string &model, Api api,
+                            Json *formatted_messages = nullptr) {
   auto j = Json::parse(body);
   require(j.is_object(), "Expected JSON object");
   std::shared_ptr<const ByteGrammar> grammar;
@@ -137,6 +138,7 @@ inline Request parse_openai(const std::string &body, std::size_t context, const 
   }
   if (!instruction.empty() && api == Api::chat) add_instruction(j["messages"], instruction);
   auto request = parse(j.dump(), context, model, api);
+  if (formatted_messages) *formatted_messages = std::move(j.at("messages"));
   require(!grammar || request.stops.empty(), "Text stop sequences cannot be combined with constrained output");
   request.grammar = std::move(grammar); request.tool_mode = tool_mode;
   return request;

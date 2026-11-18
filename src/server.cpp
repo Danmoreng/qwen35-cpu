@@ -7,6 +7,7 @@
 #include "server_anthropic.h"
 #include "server_constraint.h"
 #include "server_stream.h"
+#include "server_responses.h"
 #include <algorithm>
 #include <atomic>
 #include <cmath>
@@ -35,10 +36,13 @@ struct Job : server::Request {
   std::shared_ptr<server::JsonConstraint> constraint;
   std::unique_ptr<server::StopMatcher> stop_matcher;
   std::string text;
+  std::shared_ptr<server::ResponseRecord> response_record;
+  Json truncation_messages;
   CpuRequestId id = 0;
   std::time_t created = std::time(nullptr);
   void accept(std::string_view value) {
     text.append(value);
+    if (response_record && !tool_mode && !value.empty()) response_record->delta(std::string(value));
     if (stream && !tool_mode) events.push(std::string(value));
   }
   void ready(Reply reply) {
@@ -128,6 +132,7 @@ class Service {
       const auto snapshot = cache_stats();
       std::lock_guard lock(mutex_); cache_snapshot_ = snapshot; --outstanding_;
     }
+    if (job->response_record) job->response_record->finish(reply);
     job->ready(reply);
     if (job->stream) job->events.finish(reply);
     job->promise.set_value(std::move(reply));
@@ -166,6 +171,37 @@ class Service {
           if (!tokenizer_.encode(job->prompt, job->spec.prompt_tokens, error)) {
             finish(job, failure(400, error)); continue;
           }
+          if (job->truncation_messages.is_array()) {
+            const auto reserve = job->count_only ? 0 : job->spec.max_new_tokens - 1;
+            const auto budget = max_context_ - reserve;
+            if (job->spec.prompt_tokens.size() > budget) {
+              auto &messages = job->truncation_messages;
+              // Drop whole old turns, including their tool calls and results. Keep
+              // leading instructions and at least the most recent user question.
+              std::vector<std::size_t> turns;
+              for (std::size_t i=0; i<messages.size(); ++i)
+                if (messages[i]["role"]=="user" &&
+                    !server::content(messages[i].at("content")).starts_with("<tool_response>"))
+                  turns.push_back(i);
+              bool fits=false;
+              std::size_t low=1, high=turns.size();
+              while (low<high) {
+                const auto mid=low+(high-low)/2;
+                auto shortened=messages;
+                shortened.erase(shortened.begin()+turns.front(),shortened.begin()+turns[mid]);
+                std::string prefix;
+                auto prompt=server::chat_prompt(shortened,&prefix);
+                std::vector<std::int32_t> ids;
+                if (!tokenizer_.encode(prompt,ids,error)) break;
+                if (ids.size()>budget) {low=mid+1; continue;}
+                fits=true; high=mid;
+                job->spec.prompt_tokens=std::move(ids);
+                job->prefix_prompt=std::move(prefix);
+                job->prompt=std::move(prompt);
+              }
+              if (!fits) {finish(job,failure(400,"Latest turn and instructions exceed the context window")); continue;}
+            }
+          }
           if (!job->draft_source.empty() &&
               !tokenizer_.encode(job->draft_source, job->spec.draft_source_tokens, error)) {
             finish(job, failure(400, error)); continue;
@@ -198,12 +234,14 @@ class Service {
           auto id = engine_->submit(std::move(job->spec), error);
           if (!id) { finish(job, failure(400, error)); continue; }
           job->id = id;
+          if (job->response_record) job->response_record->start();
           active.push_back({id, job, {}});
           job->ready({200, Json::object()});
         } catch (const std::exception &e) { finish(job, failure(500, e.what())); }
       }
       for (auto &item : active)
-        if (stopping || item.job->cancelled) engine_->cancel(item.id);
+        if (stopping || item.job->cancelled || (item.job->response_record && item.job->response_record->cancel_requested))
+          engine_->cancel(item.id);
       bool progressed = false;
       std::string error;
       if (!active.empty() && !engine_->step(progressed, error)) {
@@ -365,7 +403,7 @@ int main(int argc, char **argv) try {
         "[--decision-encoding joint|per_question] (qev_config.json required)\n"
         "[--decision-head auto|full] [--prefill-chunk N] (1..2048; default adaptive)\n"
         "[--prefix-cache auto|off] [--prefix-cache-mib 256]\n"
-        "GET /health, GET /v1/models, GET /v1/cache\n"
+        "GET /health, GET /v1/models, GET /v1/cache, POST /v1/responses (stored response subresources available)\n"
         "POST /v1/completions, POST /v1/chat/completions, POST /v1/systemone\nPOST /v1/messages, POST /v1/messages/count_tokens\n";
       return 0;
     }
@@ -415,6 +453,7 @@ int main(int argc, char **argv) try {
   if (host != "127.0.0.1" && host != "::1" && host != "localhost" && api_key.empty())
     throw std::runtime_error("Set QWEN35_API_KEY before binding a non-loopback interface");
   Service service(load, config, auto_decision_head, automatic_prefix);
+  server::ResponseStore responses;
   httplib::Server http;
   http.new_task_queue = [] { return new httplib::ThreadPool(32, 32, 64); };
   http.set_payload_max_length(262144);
@@ -528,6 +567,7 @@ int main(int argc, char **argv) try {
     catch (const std::exception &e) { send(response, failure(400, e.what())); return; }
     dispatch(job, request, response);
   });
+#include "server_responses_routes.inl"
   auto messages_route = [&](const httplib::Request &request, httplib::Response &response, bool count_only) {
     if (!authorized(request, response, true)) return;
     const auto version = request.get_header_value("anthropic-version");

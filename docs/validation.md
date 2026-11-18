@@ -179,3 +179,13 @@ The optional native draft regression needs the standard H128/Q4-G32-DOT4 text ch
 ```
 
 It checks accepted blocks, deliberate rejections at all three positions, stop sequences, serving backpressure, fixed-seed sampling with a repetition penalty, and contiguous and paged KV. The token-lookup and protocol tests run without model weights.
+
+## Responses SDK
+
+Run the server with the native text model and the default 8192-token context. Install the official Python OpenAI SDK in the test environment. The integration run used SDK 3.55.0. Set `QWEN35_API_KEY` in the test environment when the server requires authentication.
+
+```sh
+python tests/responses_sdk_test.py --base-url http://127.0.0.1:8080/v1
+```
+
+Checks cover greedy chat parity, constrained sampling, typed SSE, function calls and results, input counting, history pagination, stored item references, deletion, background cancellation, replay, context truncation and rejection of unsupported capabilities.

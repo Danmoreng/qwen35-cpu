@@ -5,7 +5,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 
 ## Use and integrate
 
-- [HTTP server](server.md): text completions, decision requests, sampling and limits.
+- [HTTP server](server.md): Responses, chat completions, decision requests, sampling and limits.
 - [C++ engine API](cpu-engine-api.md): batching, scheduling and prefix reuse.
 - [Quantization](quantization.md): H128/Q4-G32-DOT4 format and offline calibration.
 - [GGUF loading](q4km-native.md): native pure Q4_0 and experimental Q4_K_M.

@@ -17,6 +17,7 @@ The process starts listening only after the model has loaded successfully.
 - `GET /v1/cache`: prefix-cache counters and bounded storage usage.
 - `POST /v1/completions`: raw prompt, JSON or SSE response.
 - `POST /v1/chat/completions`: text messages, native Qwen formatting, JSON or SSE response.
+- `POST /v1/responses` supports local text generation, function calls and stored response chains. See [Responses](#responses).
 - `POST /v1/messages`: Anthropic-compatible text Messages, JSON or SSE response.
 - `POST /v1/messages/count_tokens`: logical token count using the native formatter/tokenizer.
 
@@ -74,10 +75,49 @@ Optional numeric fields may be null to use their defaults.
 
 Responses use `object: "chat.completion"`, an assistant `message`, finish reason
 and token usage. Unsupported fields fail explicitly with an OpenAI-style error.
-Structured output and tool fields are described below. The Responses API is not implemented.
+Structured output and tool fields are described below.
 The OpenAI SDK works with a custom server `base_url` and
 the actual model ID from `/v1/models`; API compatibility does not imply OpenAI
 model capabilities.
+
+## Responses
+
+Point an OpenAI SDK at the local server and use the ID from `GET /v1/models`.
+
+```python
+from openai import OpenAI
+
+client = OpenAI(base_url="http://127.0.0.1:8080/v1", api_key="local")
+model = client.models.list().data[0].id
+response = client.responses.create(
+    model=model,
+    instructions="Korrigiere nur Rechtschreibung und Zeichensetzung.",
+    input="wir treffen uns morgen früh am bahnhof",
+    store=False,
+)
+print(response.output_text)
+```
+
+- `POST /v1/responses` accepts a string or typed text messages, developer/system instructions, assistant history, a single client function call and its output. Stored items can also be passed by `item_reference`. The formatter, tokenizer, scheduler, prefix cache and sampling implementation are shared with chat.
+- `text.format` supports plain text, JSON objects and the [JSON Schema subset](#structured-output-and-tools). The engine enforces the grammar at each sampling step. An exhausted output budget returns `status: "incomplete"` and `incomplete_details.reason: "max_output_tokens"`. Check the status before parsing. `text.verbosity` applies a natural-language instruction. `temperature`, `top_p` and `max_output_tokens` control generation.
+- `previous_response_id` includes prior input and output in the new request. Top-level instructions apply to the current response. Supply them again to carry them forward. `truncation: "auto"` drops the oldest complete conversation turns while retaining leading instructions and the latest user turn. The body and formatted prompt size limits still apply. An oversized final turn returns HTTP 400.
+- `stream: true` sends named SSE lifecycle, item, content and text events with sequential event numbers. Function arguments are emitted after grammar validation. `background: true` requires storage and continues after disconnect. A background response created with streaming supports replay with `GET /v1/responses/{id}?stream=true&starting_after=N`.
+- `GET /v1/responses/{id}`, `DELETE /v1/responses/{id}` and `POST /v1/responses/{id}/cancel` retrieve, delete and cancel a background job respectively. Retrieval and deletion also work for stored foreground responses. Finalized responses can be deleted. Input items support cursor pagination at `GET /v1/responses/{id}/input_items` using `limit`, `order` and `after`.
+- `POST /v1/responses/input_tokens` counts the locally formatted input with the model tokenizer. Generated responses report cached input tokens and output tokens. Token counting alone does not populate the inference cache.
+- By default the single-tenant process retains up to 32 response records in RAM, including input, output, metadata and any streaming journal. On insertion the oldest finished record is evicted when needed. Restarting drops the records. With `store: false` the result is returned to the caller and the ID cannot be retrieved. The separate inference prefix cache has its own budget and policy.
+
+### Compatibility boundaries
+
+| Capability | Current behavior or dependency |
+|---|---|
+| Tool calls | Client functions using the documented object schemas, up to eight definitions and one call per turn. Parallel calls and hosted tools require additional orchestration. |
+| Log probabilities | Positive `top_logprobs` and `message.output_text.logprobs` are unsupported. Full logits exist internally. The server needs the selected token and normalized alternatives from the sampler, including alignment with decoded output and streaming. |
+| Reasoning and compaction | This formatter uses thinking-disabled Qwen text generation. Effort budgets, reasoning output and compatible opaque compaction items require different model/runtime behavior. The compact endpoint returns 501. |
+| Images, audio and files | The text checkpoint has no vision/audio frontend. File extraction, retrieval, ASR and TTS require separate processing or models. |
+| Hosted services | Web/file search, code execution, managed prompts, vector stores, external MCP and cloud service tiers require service integrations. Requests for unsupported options return an error. |
+| State and transport | The HTTP/SSE implementation supports process-local response IDs. Durable conversations, cross-replica routing, 24-hour cache retention, WebSocket sessions and webhooks need storage or transport work. |
+
+The optional SDK integration test covers the local contract. See [validation](validation.md#responses-sdk).
 
 ## Streaming and stops
 
