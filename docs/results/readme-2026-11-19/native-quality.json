@@ -1,0 +1,177 @@
+{
+  "native_cli": "build-readme-refresh/qwen35_cpu",
+  "native_cli_sha256": "8ce08b87bb53f94fac6daed10a932ed1b841736076deb733a2590d4ccc2d0880",
+  "revision": "8b0d6426aa4bf3a2fbc4f648d29eeb0b4b2fadb6",
+  "affinity": 255,
+  "raw_directory": "benchmarks/readme-2026-11-19/quality",
+  "inputs": "docs/results/cpu-refresh-2026-10-22/quality-inputs.json",
+  "reference": "docs/results/cpu-refresh-2026-10-22/quality-windows.csv",
+  "cli_args": [
+    "--model-dir",
+    "models/qwen3.5-0.8b-linux",
+    "--weights",
+    "models/qwen3.5-0.8b-linux/model.q35h",
+    "--tokens-file",
+    "benchmarks/cpu-refresh-2026-10-22/quality/window-00/prompt.csv",
+    "--forced-tokens-file",
+    "benchmarks/cpu-refresh-2026-10-22/quality/window-00/targets.csv",
+    "--threads",
+    "8",
+    "--max-context",
+    "1024"
+  ],
+  "window_path_substitution": "window-00 through window-15",
+  "cli_capture_args": [
+    "--logits-out",
+    "<output>.logits"
+  ],
+  "scored_tokens": 8192,
+  "ppl": 15.796494708693714,
+  "windows_matching_reference": 16,
+  "windows": [
+    {
+      "window": 0,
+      "scored_tokens": 512,
+      "vocab": 248320,
+      "nll_sum": 1052.6293893228578,
+      "candidate_sha256": "726770f9530400d0a6c50fe134fc1097c12212d1eaf01b93ad61aa84f420dc28",
+      "reference_candidate_sha256": "726770f9530400d0a6c50fe134fc1097c12212d1eaf01b93ad61aa84f420dc28",
+      "bitwise_match": true
+    },
+    {
+      "window": 1,
+      "scored_tokens": 512,
+      "vocab": 248320,
+      "nll_sum": 1359.5257678448688,
+      "candidate_sha256": "aa48c46854241b55095a64c4d0bba2f2f1c830e12252b215165bbcf5700f4d5a",
+      "reference_candidate_sha256": "aa48c46854241b55095a64c4d0bba2f2f1c830e12252b215165bbcf5700f4d5a",
+      "bitwise_match": true
+    },
+    {
+      "window": 2,
+      "scored_tokens": 512,
+      "vocab": 248320,
+      "nll_sum": 1544.630844171514,
+      "candidate_sha256": "639c02bc01459730d95f566e3377fb1bd24a68d700bfd841ea39309399a299a4",
+      "reference_candidate_sha256": "639c02bc01459730d95f566e3377fb1bd24a68d700bfd841ea39309399a299a4",
+      "bitwise_match": true
+    },
+    {
+      "window": 3,
+      "scored_tokens": 512,
+      "vocab": 248320,
+      "nll_sum": 1281.8662926333739,
+      "candidate_sha256": "40d6277911fd9340c5bd0dd5910210446f98f638203977fa85e0ee4a264b2020",
+      "reference_candidate_sha256": "40d6277911fd9340c5bd0dd5910210446f98f638203977fa85e0ee4a264b2020",
+      "bitwise_match": true
+    },
+    {
+      "window": 4,
+      "scored_tokens": 512,
+      "vocab": 248320,
+      "nll_sum": 1289.5162177786663,
+      "candidate_sha256": "0e09c7ace376f1fc971830b853b5bf98b5d9c633668266bc24ea7190939f2879",
+      "reference_candidate_sha256": "0e09c7ace376f1fc971830b853b5bf98b5d9c633668266bc24ea7190939f2879",
+      "bitwise_match": true
+    },
+    {
+      "window": 5,
+      "scored_tokens": 512,
+      "vocab": 248320,
+      "nll_sum": 1474.219529273418,
+      "candidate_sha256": "2b4b6f10d1b1b621c108b4da2a3afb68db0906f95749a580640870a924b0f973",
+      "reference_candidate_sha256": "2b4b6f10d1b1b621c108b4da2a3afb68db0906f95749a580640870a924b0f973",
+      "bitwise_match": true
+    },
+    {
+      "window": 6,
+      "scored_tokens": 512,
+      "vocab": 248320,
+      "nll_sum": 1358.2265894721581,
+      "candidate_sha256": "931104a708a748b558feab97acc9f3045a48d0c980c3d4669d1bc02ee2cd54c0",
+      "reference_candidate_sha256": "931104a708a748b558feab97acc9f3045a48d0c980c3d4669d1bc02ee2cd54c0",
+      "bitwise_match": true
+    },
+    {
+      "window": 7,
+      "scored_tokens": 512,
+      "vocab": 248320,
+      "nll_sum": 1343.9770296966296,
+      "candidate_sha256": "6d9424fc22a627b8e5d33cf506b3f0e1a95a5a12f62b9edfc1ff68cdc7a7fabe",
+      "reference_candidate_sha256": "6d9424fc22a627b8e5d33cf506b3f0e1a95a5a12f62b9edfc1ff68cdc7a7fabe",
+      "bitwise_match": true
+    },
+    {
+      "window": 8,
+      "scored_tokens": 512,
+      "vocab": 248320,
+      "nll_sum": 1817.743255834758,
+      "candidate_sha256": "6e9bba24b970620e8fff77d3c0df6ca8ab3b3057c9746c86c98f1e185d349749",
+      "reference_candidate_sha256": "6e9bba24b970620e8fff77d3c0df6ca8ab3b3057c9746c86c98f1e185d349749",
+      "bitwise_match": true
+    },
+    {
+      "window": 9,
+      "scored_tokens": 512,
+      "vocab": 248320,
+      "nll_sum": 1596.6210437625318,
+      "candidate_sha256": "9693fc1a96db661e62e4f8ba1e417fae606e3b3cb7ec4898634327945675429e",
+      "reference_candidate_sha256": "9693fc1a96db661e62e4f8ba1e417fae606e3b3cb7ec4898634327945675429e",
+      "bitwise_match": true
+    },
+    {
+      "window": 10,
+      "scored_tokens": 512,
+      "vocab": 248320,
+      "nll_sum": 1355.1160989671212,
+      "candidate_sha256": "25b526c4193fffc337cd619b5ee279c7c788d66a8c77ee90a5f5f07097d3d951",
+      "reference_candidate_sha256": "25b526c4193fffc337cd619b5ee279c7c788d66a8c77ee90a5f5f07097d3d951",
+      "bitwise_match": true
+    },
+    {
+      "window": 11,
+      "scored_tokens": 512,
+      "vocab": 248320,
+      "nll_sum": 1385.4859462413842,
+      "candidate_sha256": "508739765ea2d6f33764b150e7d0e2fbc523d21bf25199c9dccbf78f02374cf3",
+      "reference_candidate_sha256": "508739765ea2d6f33764b150e7d0e2fbc523d21bf25199c9dccbf78f02374cf3",
+      "bitwise_match": true
+    },
+    {
+      "window": 12,
+      "scored_tokens": 512,
+      "vocab": 248320,
+      "nll_sum": 1338.9629984724047,
+      "candidate_sha256": "a2af5113dfc7cc2d01491cc5325a4a0ba159606cbc557c81c260d2fffe36f62a",
+      "reference_candidate_sha256": "a2af5113dfc7cc2d01491cc5325a4a0ba159606cbc557c81c260d2fffe36f62a",
+      "bitwise_match": true
+    },
+    {
+      "window": 13,
+      "scored_tokens": 512,
+      "vocab": 248320,
+      "nll_sum": 1477.9187158675577,
+      "candidate_sha256": "540338be78c0478e5d8bad8368a813f7ec4416ace8b0925463ded43bd73a579c",
+      "reference_candidate_sha256": "540338be78c0478e5d8bad8368a813f7ec4416ace8b0925463ded43bd73a579c",
+      "bitwise_match": true
+    },
+    {
+      "window": 14,
+      "scored_tokens": 512,
+      "vocab": 248320,
+      "nll_sum": 1360.849961386539,
+      "candidate_sha256": "5ccfdfb6f8c0259eb577a79bdb3efcc1484760a18bb51b127826046437edb479",
+      "reference_candidate_sha256": "5ccfdfb6f8c0259eb577a79bdb3efcc1484760a18bb51b127826046437edb479",
+      "bitwise_match": true
+    },
+    {
+      "window": 15,
+      "scored_tokens": 512,
+      "vocab": 248320,
+      "nll_sum": 1570.8941194063264,
+      "candidate_sha256": "589946e125d774549b710910cf0bdc7e9da6eab2a42d2bee95472795c6fd6ae4",
+      "reference_candidate_sha256": "589946e125d774549b710910cf0bdc7e9da6eab2a42d2bee95472795c6fd6ae4",
+      "bitwise_match": true
+    }
+  ]
+}

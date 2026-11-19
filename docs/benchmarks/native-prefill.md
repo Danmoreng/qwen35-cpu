@@ -81,8 +81,8 @@ full-engine comparison measured native B1 decode at 118.33 tokens/s, whereas
 this paired baseline reaches 123.04 with the same executable. Absolute
 differences between those series are not an optimization result.
 
-The README updates the native row from this confirmation series and retains
-the earlier comparator measurements with an explicit source note. Use the
+The October README used this confirmation series for its native row and the
+earlier measurements for its comparators. Use the
 paired baseline above to quantify this change; small cross-engine differences
 across the two series should not be interpreted as a definitive ranking.
 

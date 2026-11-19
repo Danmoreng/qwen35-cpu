@@ -1,20 +1,17 @@
-# Current CPU comparison
+# October 2026 CPU comparison
 
-Measured on October 22, 2026. The README compares the calibrated
-H128/Q4-G32-DOT4 engine with four llama.cpp GGUFs and six ik_llama.cpp GGUFs.
-The initial eleven-candidate comparison shares one sequential performance
-series and scores all candidates independently against the same frozen BF16
-reference. The README now supplements that series with the later
-[native prefill optimization](native-prefill.md), measured against the unchanged
-native baseline on the same day. Comparator rows retain the original series.
-Use the paired native results to quantify that optimization, rather than
-attributing differences between series to code alone.
+The October 22 study compared the calibrated H128/Q4-G32-DOT4 engine with four
+llama.cpp GGUFs and six ik_llama.cpp GGUFs. All eleven configurations ran in
+one sequential speed series and were scored against the same frozen BF16
+reference. A [second native series](native-prefill.md) measured a prefill
+optimization against its baseline later that day. For current throughput on
+this laptop, see the [November comparison](ryzen-9955hx3d.md).
 
 ## Source revisions
 
 | Engine | Measured revision | Local changes |
 | --- | --- | --- |
-| Native, current README supplement | [`f928eec37ab3`](https://github.com/Danmoreng/qwen35-cpu/commit/f928eec37ab34739e03d4fa3d37fe34d44ff7229) | None; sixteen-token prefill reuse committed in this revision |
+| Native, paired prefill study | [`f928eec37ab3`](https://github.com/Danmoreng/qwen35-cpu/commit/f928eec37ab34739e03d4fa3d37fe34d44ff7229) | None; sixteen-token prefill reuse committed in this revision |
 | Native, initial full comparison | [`6d38cca33e54`](https://github.com/Danmoreng/qwen35-cpu/commit/6d38cca33e548aaeda2dd27b21fef689d47c7d79) | None |
 | llama.cpp b11815 | [`7170cad4d02f`](https://github.com/ggml-org/llama.cpp/commit/7170cad4d02f7907517613931840cbb2367399a3) | None |
 | ik_llama.cpp | [`98aca8692ae3`](https://github.com/ikawrakow/ik_llama.cpp/commit/98aca8692ae334e6e23e4d39ac43ce0d21029c35) | None for B1, prefill and quality; existing graph-capacity patch for B16 only |
@@ -214,7 +211,7 @@ Q8 representation. All other source, flags, weights and workload arguments are
 unchanged. Both variants run sequentially, alternating order, with one warmup
 and three measured runs, eight threads and affinity `0xff`. No quality run or
 compilation runs concurrently. CPU controls and desktop setup match the main
-series. The diagnostic build is not used in the README comparison.
+series. The diagnostic build is not used in the October comparison.
 
 | Current IK IQ4_KS_R4 variant | Prefill 512 tokens/s | Prefill 4,096 tokens/s | Decode B1 at P512 tokens/s |
 | --- | ---: | ---: | ---: |

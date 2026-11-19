@@ -1,0 +1,229 @@
+{
+  "raw_directory": "benchmarks/readme-2026-11-19/control",
+  "runner_metadata_sha256": "bd589e6d76358668a0f67c351a69d48aef3579d2f5b06f9e1c164bd3b11f1fcb",
+  "native_revisions": [
+    "f928eec37ab34739e03d4fa3d37fe34d44ff7229",
+    "8b0d6426aa4bf3a2fbc4f648d29eeb0b4b2fadb6"
+  ],
+  "binaries": {
+    "build-prefill-reuse/qwen35_cpu_bench": "adf3c5898a15f823999a58a4ca0114020ee1389b5dfd32cef1a5a32977d316b2",
+    "build-readme-refresh/qwen35_cpu_bench": "faa1b89c52a6b2467a8946b301b2cbc96989e905ba11151660b010022f6170e9"
+  },
+  "affinity": 255,
+  "runs": 3,
+  "warmup_runs": 1,
+  "inputs": "Same as manifest.json",
+  "arguments": "Use args from the matching headline_matrix_case in matrix.json. Substitute the executable below. The sequential runner appends --profile-json.",
+  "cases": [
+    {
+      "name": "october-H128-linux-b1-t8-p512-n128",
+      "executable": "build-prefill-reuse/qwen35_cpu_bench",
+      "headline_matrix_case": "native-H128-linux-b1-t8-p512-n128",
+      "samples": [
+        {
+          "run": 0,
+          "warmup": true,
+          "prefill_tps": 3079.87440729,
+          "decode_tps": 112.363681267,
+          "profile_sha256": "e28377f594ebb5522d871cfdebe74d05db1e95320bbabd20885d7aa3e5746b51"
+        },
+        {
+          "run": 1,
+          "warmup": false,
+          "prefill_tps": 3038.14764043,
+          "decode_tps": 112.332396394,
+          "profile_sha256": "cc3c509ef15caee0d72eabf1908864f25bc1ceeb20fa5919987419e149b610e7"
+        },
+        {
+          "run": 2,
+          "warmup": false,
+          "prefill_tps": 3052.33581489,
+          "decode_tps": 108.030861835,
+          "profile_sha256": "b2f5682b69e04507cb47170e20541f058255ce09755903d0a12514137bad1c17"
+        },
+        {
+          "run": 3,
+          "warmup": false,
+          "prefill_tps": 3055.30162173,
+          "decode_tps": 109.90169355,
+          "profile_sha256": "c829e992d2230753dd35be0c27ec9669f6207a3cbdacffd53adcbff404231435"
+        }
+      ]
+    },
+    {
+      "name": "native-H128-linux-b1-t8-p512-n128",
+      "executable": "build-readme-refresh/qwen35_cpu_bench",
+      "headline_matrix_case": "native-H128-linux-b1-t8-p512-n128",
+      "samples": [
+        {
+          "run": 0,
+          "warmup": true,
+          "prefill_tps": 3035.2437266,
+          "decode_tps": 107.71186835,
+          "profile_sha256": "3288d8fa8c69c6d5efbc037de2df777ec5bc8871e76911e0997be9a332c3d2f2"
+        },
+        {
+          "run": 1,
+          "warmup": false,
+          "prefill_tps": 3033.87156427,
+          "decode_tps": 108.116496513,
+          "profile_sha256": "05b7ccc53fd4844fd71135a15bc6d8122fb313f8985f53dcb4a5ef09170dcdea"
+        },
+        {
+          "run": 2,
+          "warmup": false,
+          "prefill_tps": 3026.34902005,
+          "decode_tps": 108.377530451,
+          "profile_sha256": "33038b030d81bb39161c485a68fa2c84596ab35d4e81ab4221f5740ba00c1a41"
+        },
+        {
+          "run": 3,
+          "warmup": false,
+          "prefill_tps": 2995.06955394,
+          "decode_tps": 108.754461121,
+          "profile_sha256": "edba9e2368cea8817552f699598e8e71192bb732b18d443da45ff2cd5021ce5c"
+        }
+      ]
+    },
+    {
+      "name": "october-H128-linux-b1-t8-p4096-n2",
+      "executable": "build-prefill-reuse/qwen35_cpu_bench",
+      "headline_matrix_case": "native-H128-linux-b1-t8-p4096-n2",
+      "samples": [
+        {
+          "run": 0,
+          "warmup": true,
+          "prefill_tps": 2690.25315469,
+          "decode_tps": 80.5587036107,
+          "profile_sha256": "336edd0d62b3da54bf843ff4e75b9e2a1d194bd5da7258db137d42d8e0fb1867"
+        },
+        {
+          "run": 1,
+          "warmup": false,
+          "prefill_tps": 2676.96938944,
+          "decode_tps": 81.5386140784,
+          "profile_sha256": "df1654cbad2beb9ab01815fb1f8bdd64334694998ec18a4c2af6569bc08c3a0b"
+        },
+        {
+          "run": 2,
+          "warmup": false,
+          "prefill_tps": 2674.58264599,
+          "decode_tps": 69.2232137832,
+          "profile_sha256": "a4c4e138a0e35e846acad01a7041364974bb427bca9ddec379b57dee3a312841"
+        },
+        {
+          "run": 3,
+          "warmup": false,
+          "prefill_tps": 2635.52134513,
+          "decode_tps": 80.3222077169,
+          "profile_sha256": "d08b5bdc432840ab8208426ca342510c14d7f8817d0839d096b31aef717bd3fb"
+        }
+      ]
+    },
+    {
+      "name": "native-H128-linux-b1-t8-p4096-n2",
+      "executable": "build-readme-refresh/qwen35_cpu_bench",
+      "headline_matrix_case": "native-H128-linux-b1-t8-p4096-n2",
+      "samples": [
+        {
+          "run": 0,
+          "warmup": true,
+          "prefill_tps": 2680.25890521,
+          "decode_tps": 85.0043054681,
+          "profile_sha256": "2e4a6405271e07db948e75d558e04a0f10e237eb9b7d23db98ab5a488f2e0923"
+        },
+        {
+          "run": 1,
+          "warmup": false,
+          "prefill_tps": 2661.69474046,
+          "decode_tps": 73.5604964833,
+          "profile_sha256": "5247033f4dafa33f32c18919757ed211657ab2acb8575414ade6a30776aee434"
+        },
+        {
+          "run": 2,
+          "warmup": false,
+          "prefill_tps": 2678.27042498,
+          "decode_tps": 86.3284112326,
+          "profile_sha256": "6e674e87d0bb20b22ba81145f987f955b155bd2b0b958f1678695bb8b94ad916"
+        },
+        {
+          "run": 3,
+          "warmup": false,
+          "prefill_tps": 2642.00065272,
+          "decode_tps": 72.9082920861,
+          "profile_sha256": "9944575d9fe3ba51a55eb1b440b240717b861fc903fe8ae1affa02b579059925"
+        }
+      ]
+    },
+    {
+      "name": "october-H128-linux-b16-t8-p512-n128",
+      "executable": "build-prefill-reuse/qwen35_cpu_bench",
+      "headline_matrix_case": "native-H128-linux-b16-t8-p512-n128",
+      "samples": [
+        {
+          "run": 0,
+          "warmup": true,
+          "prefill_tps": 3206.89282905,
+          "decode_tps": 574.525670483,
+          "profile_sha256": "7148fc0c3c37684516336f662faa715048a72438cc1cae02f7f4dd78d3dfad13"
+        },
+        {
+          "run": 1,
+          "warmup": false,
+          "prefill_tps": 3184.57530302,
+          "decode_tps": 573.801598778,
+          "profile_sha256": "51da86f70059188992b3c437184b22b2c700fa349dd0da7938e362aaf60e2c89"
+        },
+        {
+          "run": 2,
+          "warmup": false,
+          "prefill_tps": 3144.90791831,
+          "decode_tps": 573.373398206,
+          "profile_sha256": "45204a6a41f3bc7938138d7eaebea514da3253e4861f9cd637988abfdae7453d"
+        },
+        {
+          "run": 3,
+          "warmup": false,
+          "prefill_tps": 3157.78041784,
+          "decode_tps": 572.577313842,
+          "profile_sha256": "11cc90a68961ba63e07d7d9e4bf66c5213ab675316375d7b83085c43cf0080f7"
+        }
+      ]
+    },
+    {
+      "name": "native-H128-linux-b16-t8-p512-n128",
+      "executable": "build-readme-refresh/qwen35_cpu_bench",
+      "headline_matrix_case": "native-H128-linux-b16-t8-p512-n128",
+      "samples": [
+        {
+          "run": 0,
+          "warmup": true,
+          "prefill_tps": 3186.96635954,
+          "decode_tps": 576.453765631,
+          "profile_sha256": "ccf54c41289faa9b57c4bb0fbc6b1b01d618b5d3b2cc23f6df7af5f376ab0cea"
+        },
+        {
+          "run": 1,
+          "warmup": false,
+          "prefill_tps": 3182.47492238,
+          "decode_tps": 577.873938782,
+          "profile_sha256": "d76f4a9808472652bca6a58f500e21d326e3c50f3e450210af7b3473c8ed2843"
+        },
+        {
+          "run": 2,
+          "warmup": false,
+          "prefill_tps": 3195.68114429,
+          "decode_tps": 576.408429524,
+          "profile_sha256": "5501e1e5f85eb886764845290f344786115038d60a45c3966a694b597ff82c07"
+        },
+        {
+          "run": 3,
+          "warmup": false,
+          "prefill_tps": 3118.64528437,
+          "decode_tps": 572.836687451,
+          "profile_sha256": "9c014d166a6156fd87fe7316feb978017cdf6775fb803f8b91f5c378552c7d64"
+        }
+      ]
+    }
+  ]
+}

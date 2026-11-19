@@ -6,6 +6,7 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
+| `readme-2026-11-19` | [Ryzen 9 9955HX3D comparison](../benchmarks/ryzen-9955hx3d.md), fixed-token throughput, inputs and binary hashes |
 | `qwen35-4b-agent-2026-11-19` | [4B Pi Coding Agent on Ryzen](../benchmarks/qwen35-4b-pi-agent.md), per-request phase rates, browser scores, cache controls and BF16 quantization comparison |
 | `qwen35-4b-mtp-coding-2026-11-19` | [4B MTP depth for coding and tool calls](../benchmarks/qwen35-4b-mtp-coding.md), source fixtures, HTTP traces and shared-target timing samples |
 | `qwen35-4b-mtp-2026-11-19` | [Native 4B MTP on Ryzen](../benchmarks/qwen35-4b-mtp.md), sidecar sizes, forward errors, output parity and sequential timings |
@@ -22,8 +23,8 @@ build versions. Existing evidence files are preserved byte for byte.
 | `deltanet-xeon-2026-11-17` | [AVX-512 DeltaNet decode](../benchmarks/deltanet-xeon.md), paired timings and numerical validation |
 | `qev-avx2-cloud-2026-10-27` | [qev AVX2 tuning](../benchmarks/qev-avx2-cloud.md), large-chunk parity and paired timings |
 | `avx2-cloud-2026-10-27` | [AVX2 cloud VM tuning](../benchmarks/avx2-cloud.md), paired measurements and logit parity |
-| `native-prefill-reuse-2026-10-22` | Current native README/model-card speed, paired baseline and quality parity; [methodology](../benchmarks/native-prefill.md) |
-| `cpu-refresh-2026-10-22` | Comparator README/model-card speed, all quality scores and preceding native baseline; [methodology](../benchmarks/cpu.md) |
+| `native-prefill-reuse-2026-10-22` | October native speed, paired baseline and quality parity; [methodology](../benchmarks/native-prefill.md) |
+| `cpu-refresh-2026-10-22` | October comparator speed, WikiText-2 quality scores and native baseline; [methodology](../benchmarks/cpu.md) |
 | `current-cpu-2026-09-07`, `ik-batch16-2026-09-07` | September CPU speed baseline and earlier B16 validation |
 | `readme-bc256-2026-09-07`, `ik-linux-2026-09-07` | September quality baseline and comparator provenance |
 | `linux-i7-8750h-2026-09-08` | [Earlier second-CPU comparison](../benchmarks/cpu.md#earlier-second-cpu-comparison) |

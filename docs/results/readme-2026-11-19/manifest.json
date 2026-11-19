@@ -1,0 +1,97 @@
+{
+  "date": "2026-11-19",
+  "started_utc": "2026-11-19T21:43:01.0828999Z",
+  "host": {
+    "platform_profile": "max-power",
+    "ac_online": "1",
+    "scaling_driver": "amd-pstate-epp",
+    "governor": "powersave",
+    "epp": "balance_performance",
+    "cpu0_L3_size": "98304K",
+    "cpu0_L3_shared": "0-7,16-23",
+    "cpu": "AMD Ryzen 9 9955HX3D",
+    "kernel": "7.3.4-arch1-2",
+    "compiler": "c++ (GCC) 16.2.1 20260810",
+    "affinity": "0xff",
+    "threads": 8
+  },
+  "engine_revisions": {
+    "native": "8b0d6426aa4bf3a2fbc4f648d29eeb0b4b2fadb6",
+    "llama": "7170cad4d02f7907517613931840cbb2367399a3",
+    "ik": "98aca8692ae334e6e23e4d39ac43ce0d21029c35",
+    "ik_b16": "98aca8692ae334e6e23e4d39ac43ce0d21029c35"
+  },
+  "ik_b16_patch": "docs/results/cpu-refresh-2026-10-22/manifest.json#native_and_upstream_sources.ik_b16.diff",
+  "native_build_type": "Release",
+  "native_server_build": false,
+  "native_git_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sequential_runner": "scripts/benchmark-inference-seq.ps1",
+  "runs": 3,
+  "warmup_runs": 1,
+  "case_order": "forward on runs 0 and 2, reverse on 1 and 3",
+  "matrix": "matrix.json",
+  "runner_appended_args": [
+    "--profile-json",
+    "<output>/case-<zero-based matrix index>-run-<run>.json"
+  ],
+  "binaries": {
+    "build-ik-refresh-b16/bin/ik-fixed-cpu-bench": "747f2267f3ba312ef89bf645eacd3deaa27e5d22d341a95d35cde9933773498f",
+    "build-ik-refresh/bin/ik-fixed-cpu-bench": "f9444895d81b95abdf1a176aa7436a6e27b2a9d17bcbe90521aaa43f0a91639e",
+    "build-readme-refresh/qwen35_cpu_bench": "faa1b89c52a6b2467a8946b301b2cbc96989e905ba11151660b010022f6170e9",
+    "build-llama-refresh/bin/llama-fixed-cpu-bench": "350c52a1dadfb0593e0056a9dc1c48bd15fbed5d4e5035c0e303536e36618601"
+  },
+  "shared_libraries": {
+    "build-ik-refresh-b16/ik/src/libllama.so": "1974661a82f5a0bd2bcfc7a5e00e0c91351e3d213440ad2880b82eb41dca06a6",
+    "build-ik-refresh-b16/ik/ggml/src/libggml.so": "541950e36535065045cd7a43a04be56027a964368016be42883afeff5ab6db05",
+    "build-ik-refresh/ik/src/libllama.so": "7a041039bebade8ab185dce1bac63ef4b1381c1e01f60934e4316fef3ff77e44",
+    "build-ik-refresh/ik/ggml/src/libggml.so": "91bce206cd606717b6791dccf509b5045726bf411e3f64551e9fb2dc91d78061",
+    "build-llama-refresh/bin/libllama.so.0.7.0": "82c14c7c08286186f1315d7934922c9434479745f5d131e7fb850dbb0aad5961",
+    "build-llama-refresh/bin/libggml.so.0.27.0": "331bc7c6a2f054ea375540a8dec85d5750bc23c23c749961d1946ed7ad825065",
+    "build-llama-refresh/bin/libggml-cpu.so.0.27.0": "275369bdf5eb0c0c09b072fab29f91fc58dec8d9b67104c5b0e2b24862e0fe80",
+    "build-llama-refresh/bin/libggml-base.so.0.27.0": "2c9103f5cc31407e200ffae63275e3737d18527ca6c59cd2fee0d1222948b197"
+  },
+  "inputs": {
+    "models/qwen3.5-0.8b-linux/config.json": {
+      "bytes": 2907,
+      "sha256": "b90b86f35c8e6925ef74ee04d0e758f0a845c83a42089ad82bbaa948de9b4204"
+    },
+    "docs/results/cpu-refresh-2026-10-22/prompt-512.csv": {
+      "bytes": 2311,
+      "sha256": "6baa0783f9ad2adea59013c948cd15a0a465e870837bf9a60e57eb73ef39bd81"
+    },
+    "models/qwen3.5-0.8b-linux/tokenizer.json": {
+      "bytes": 12807982,
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+    },
+    "models/llama-comparison/Qwen3.5-0.8B-Q4_0-pure.gguf": {
+      "bytes": 435896352,
+      "sha256": "2e41f95fca5f3e3a8dc91c1407c572f3cff5d060cbfdf835cd2d4d9913f95e7d"
+    },
+    "models/ik-comparison/Qwen3.5-0.8B-IQ4_K_R4-pure.gguf": {
+      "bytes": 435896352,
+      "sha256": "420af5bcfb8f2d9faae05068e51f686bfb6912d89aa40e65a603de455f541c80"
+    },
+    "models/qwen3.5-0.8b-linux/tokenizer_config.json": {
+      "bytes": 16709,
+      "sha256": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c"
+    },
+    "models/llama-comparison/Qwen3.5-0.8B-Q4_K_M.gguf": {
+      "bytes": 532517120,
+      "sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517"
+    },
+    "models/qwen3.5-0.8b-linux/model.q35h": {
+      "bytes": 424964864,
+      "sha256": "013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a"
+    },
+    "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv": {
+      "bytes": 18715,
+      "sha256": "bb1582bd818d65ba153c31116895c24fd69d9edd822bb7c5fb8873055e6cd435"
+    },
+    "models/ik-comparison/Qwen3.5-0.8B-IQ4_KS_R4-pure.gguf": {
+      "bytes": 414992672,
+      "sha256": "033500e8a91d0761c05aeffd47e5ddb3f91b0a3c87048f397c36b27912a37cdc"
+    }
+  },
+  "raw_directory": "benchmarks/readme-2026-11-19/speed",
+  "runner_metadata_sha256": "5b73e02f4596d0feacbdcff03ba0d288ca3607f1e1ed3f3c4a9f32ba7aaf7890"
+}
