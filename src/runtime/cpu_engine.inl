@@ -145,7 +145,7 @@ struct CpuEngine::Impl {
   struct BatchScratch {
     std::vector<float> x, normed, projected, core, row, attention, residual;
     std::vector<float> post_norm, gate_up, mlp_hidden, mlp_output, final_hidden;
-    std::vector<float> logits;
+    std::vector<float> logits, verify_queries, verify_gates, verify_scores;
     std::vector<cpu::Q4_0ArgmaxResult> greedy_results;
     std::vector<int> greedy_tokens;
   } batch;
@@ -159,6 +159,45 @@ struct CpuEngine::Impl {
   // recurrent state after the pending token; suffix KV rows can be overwritten.
   std::vector<LinearAttentionState> draft_checkpoint;
   std::vector<std::vector<float>> draft_linear_inputs;
+  bool full_attention_verify5(Sequence &s, const LayerWeights &layer,
+                              FullAttentionState &state, std::string &error) {
+    const auto &d = model->impl_->dims;
+    const auto query_width = static_cast<std::size_t>(d.n_heads * d.head_dim);
+    const auto kv_width = static_cast<std::size_t>(d.n_kv_heads * d.head_dim);
+    const auto start = s.result.committed_tokens;
+    auto &scratch = context->decode.full;
+    batch.verify_queries.resize(5 * query_width);
+    batch.verify_gates.resize(5 * query_width);
+    batch.verify_scores.resize(5 * d.n_heads * (start + 5));
+    for (std::size_t t = 0; t < 5; ++t) {
+      const auto *q = batch.projected.data() + t * 2 * (query_width + kv_width);
+      const auto *k = q + 2 * query_width;
+      const auto rope = (start + t) * (d.rope_dim / 2);
+      if (!prepare_full_attention_row(layer, d, state, static_cast<int>(start + t),
+            s.state.rope_cosine.data() + rope, s.state.rope_sine.data() + rope,
+            q, k, k + kv_width, scratch, error))
+        return false;
+      std::copy_n(scratch.q_normed.data(), query_width, batch.verify_queries.data() + t * query_width);
+      std::copy_n(scratch.gate.data(), query_width, batch.verify_gates.data() + t * query_width);
+    }
+    const cpu::AttentionKvRows pages{state.pages.keys(), state.pages.values()};
+    struct Job {
+      cpu::VerifyAttention5 args;
+      cpu::Q8_0Backend backend;
+    } job{{batch.verify_queries.data(), batch.verify_gates.data(), state.k_cache_f16.data(),
+           state.v_cache_f16.data(), state.pages.width() ? &pages : nullptr, batch.verify_scores.data(),
+           batch.core.data(), static_cast<int>(start), d.n_heads, d.n_kv_heads,
+           1.0F / std::sqrt(static_cast<float>(d.head_dim))}, layer.full.o_proj.q8_0_backend};
+    const auto status = context->executor->parallel_for_rows(d.n_heads,
+      [](void *opaque, std::size_t begin, std::size_t end) noexcept {
+        auto &job = *static_cast<Job *>(opaque);
+        cpu::causal_attention_verify5(job.args, begin, end, job.backend);
+      }, &job);
+    if (status == cpu::CpuExecutorStatus::ok) return true;
+    error = std::string("Five-row attention executor failed: ") + cpu::cpu_executor_status_name(status);
+    return false;
+  }
+
   bool forward_batch(std::span<Sequence *> rows, std::string &error,
                      std::span<const std::int32_t> causal_inputs = {}) {
     const auto &d = model->impl_->dims;
@@ -200,7 +239,13 @@ struct CpuEngine::Impl {
       b.core.resize(count * core_width);
       // Each stateful kernel sees one request's state and absolute position;
       // no padded row can mutate state or access another request's scratch.
-      if (causal_inputs.empty() && config.parallel_state_batches &&
+      if (causal_inputs.size() == 5 && !layer.is_linear && d.head_dim == 256 &&
+          cpu::q8_0_backend_uses_avx2(layer.full.o_proj.q8_0_backend) &&
+          (!rows[0]->state.full_states[full_index].k_cache_f16.empty() ||
+           rows[0]->state.full_states[full_index].pages.width())) {
+        if (!full_attention_verify5(*rows[0], layer, rows[0]->state.full_states[full_index], error))
+          return false;
+      } else if (causal_inputs.empty() && config.parallel_state_batches &&
           count >= context->executor->thread_count()) {
         if (!state_batch(layer, rows, linear_index, full_index, width,
                          core_width, error))

@@ -216,59 +216,13 @@ bool run_linear_attention_step(CpuExecutionContext *cpu_context,
   return true;
 }
 
-bool run_full_attention_step(CpuExecutionContext *cpu_context,
-  const LayerWeights & layer,
-  const RuntimeDims & dims,
-  FullAttentionState & state,
-  const std::vector<float> & x,
-  const int position,
-  const float * rope_cosine,
-  const float * rope_sine,
-  std::vector<float> & out,
-  std::string & error_message,
-  const std::span<const float> projected = {},
-  const bool return_core = false,
-  CpuDecodeWorkspace::Full * row_workspace = nullptr) {
-  if ((!projected.empty() && (projected.size() != static_cast<std::size_t>((dims.n_heads + dims.n_kv_heads) * dims.head_dim * 2))) ||
-      (return_core && projected.empty())) {
-    error_message = "Invalid preprojected CPU attention row.";
-    return false;
-  }
-  CpuDecodeWorkspace::Full local_workspace;
-  auto & workspace = row_workspace != nullptr ? *row_workspace : cpu_context != nullptr
-    ? cpu_context->decode.full : local_workspace;
-  auto & q_full = workspace.q_full;
-  auto & k_flat = workspace.k_flat;
-  auto & v_flat = workspace.v_flat;
-  bool packed_projection = false;
-  const std::size_t full_q_out = static_cast<std::size_t>(dims.n_heads * dims.head_dim * 2);
-  const std::size_t full_kv_out = static_cast<std::size_t>(dims.n_kv_heads * dims.head_dim);
-  if (!projected.empty()) {
-    packed_projection = true;
-  }  else {
-    if (layer.full.qkv_proj_cpu.is_cpu_quantized()) {
-      auto & packed = workspace.packed;
-      if (!matvec_2d(cpu_context, layer.full.qkv_proj_cpu, x, packed, error_message)) {
-        return false;
-      }
-      const std::size_t expected = full_q_out + 2 * full_kv_out;
-      if (packed.size() != expected) {
-        error_message = "Packed full-attention projection output size mismatch.";
-        return false;
-      }
-      packed_projection = true;
-    } else {
-      if (!matvec_2d(cpu_context, layer.full.q_proj, x, q_full, error_message) ||
-          !matvec_2d(cpu_context, layer.full.k_proj, x, k_flat, error_message) ||
-          !matvec_2d(cpu_context, layer.full.v_proj, x, v_flat, error_message)) {
-        return false;
-      }
-    }
-  }
-
-  const float * q_values = packed_projection ? (projected.empty() ? workspace.packed.data() : projected.data()) : q_full.data();
-  const float * k_values = packed_projection ? q_values + full_q_out : k_flat.data();
-  const float * v_values = packed_projection ? k_values + full_kv_out : v_flat.data();
+// Prepare one causal row and append its KV entry. The verifier prepares all
+// five rows before attention; each query still has its own causal boundary.
+bool prepare_full_attention_row(const LayerWeights &layer, const RuntimeDims &dims,
+    FullAttentionState &state, int position, const float *rope_cosine,
+    const float *rope_sine, const float *q_values, const float *k_values,
+    const float *v_values, CpuDecodeWorkspace::Full &workspace, std::string &error_message) {
+  const auto full_kv_out = static_cast<std::size_t>(dims.n_kv_heads * dims.head_dim);
   const int q_span = dims.head_dim * 2;
   auto & q = workspace.q;
   q.resize(static_cast<std::size_t>(dims.n_heads * dims.head_dim));
@@ -322,8 +276,68 @@ bool run_full_attention_step(CpuExecutionContext *cpu_context,
       v_values, state.v_cache_f16.data() + offset, token_stride,
       layer.full.o_proj.q8_0_backend);
   }
+  return true;
+}
 
+bool run_full_attention_step(CpuExecutionContext *cpu_context,
+  const LayerWeights & layer,
+  const RuntimeDims & dims,
+  FullAttentionState & state,
+  const std::vector<float> & x,
+  const int position,
+  const float * rope_cosine,
+  const float * rope_sine,
+  std::vector<float> & out,
+  std::string & error_message,
+  const std::span<const float> projected = {},
+  const bool return_core = false,
+  CpuDecodeWorkspace::Full * row_workspace = nullptr) {
+  if ((!projected.empty() && (projected.size() != static_cast<std::size_t>((dims.n_heads + dims.n_kv_heads) * dims.head_dim * 2))) ||
+      (return_core && projected.empty())) {
+    error_message = "Invalid preprojected CPU attention row.";
+    return false;
+  }
+  CpuDecodeWorkspace::Full local_workspace;
+  auto & workspace = row_workspace != nullptr ? *row_workspace : cpu_context != nullptr
+    ? cpu_context->decode.full : local_workspace;
+  auto & q_full = workspace.q_full;
+  auto & k_flat = workspace.k_flat;
+  auto & v_flat = workspace.v_flat;
+  bool packed_projection = false;
+  const std::size_t full_q_out = static_cast<std::size_t>(dims.n_heads * dims.head_dim * 2);
+  const std::size_t full_kv_out = static_cast<std::size_t>(dims.n_kv_heads * dims.head_dim);
+  if (!projected.empty()) {
+    packed_projection = true;
+  }  else {
+    if (layer.full.qkv_proj_cpu.is_cpu_quantized()) {
+      auto & packed = workspace.packed;
+      if (!matvec_2d(cpu_context, layer.full.qkv_proj_cpu, x, packed, error_message)) {
+        return false;
+      }
+      const std::size_t expected = full_q_out + 2 * full_kv_out;
+      if (packed.size() != expected) {
+        error_message = "Packed full-attention projection output size mismatch.";
+        return false;
+      }
+      packed_projection = true;
+    } else {
+      if (!matvec_2d(cpu_context, layer.full.q_proj, x, q_full, error_message) ||
+          !matvec_2d(cpu_context, layer.full.k_proj, x, k_flat, error_message) ||
+          !matvec_2d(cpu_context, layer.full.v_proj, x, v_flat, error_message)) {
+        return false;
+      }
+    }
+  }
 
+  const float * q_values = packed_projection ? (projected.empty() ? workspace.packed.data() : projected.data()) : q_full.data();
+  const float * k_values = packed_projection ? q_values + full_q_out : k_flat.data();
+  const float * v_values = packed_projection ? k_values + full_kv_out : v_flat.data();
+  if (!prepare_full_attention_row(layer, dims, state, position, rope_cosine, rope_sine,
+                                  q_values, k_values, v_values, workspace, error_message))
+    return false;
+  const auto &q_normed = workspace.q_normed;
+  const auto &gate = workspace.gate;
+  const auto token_stride = full_kv_out;
   const float scale = 1.0f / std::sqrt(static_cast<float>(dims.head_dim));
   const int seq_len = position + 1;
   const std::size_t query_width =

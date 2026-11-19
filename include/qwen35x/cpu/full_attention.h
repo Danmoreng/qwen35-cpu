@@ -73,6 +73,20 @@ bool causal_attention_gqa4_rows(const Gqa4Attention &args,
   Q8_0Backend backend=Q8_0Backend::auto_select,
   Gqa4AttentionTimes *times=nullptr) noexcept;
 
+// Five consecutive verifier rows, FP16 KV and a 256-wide head. Each task
+// owns one query head across all five rows. Scratch has 5 * heads * stride
+// floats, where stride is position + 5. Future keys/values are masked.
+struct VerifyAttention5 {
+  const float *queries, *gates;
+  const std::uint16_t *keys, *values;
+  const AttentionKvRows *pages;
+  float *scores, *output;
+  int position, heads, kv_heads;
+  float scale;
+};
+void causal_attention_verify5(const VerifyAttention5 &args, std::size_t head_begin,
+    std::size_t head_end, Q8_0Backend backend) noexcept;
+
 // Decode-only GQA path that evaluates two query heads sharing one KV head
 // together. pair_begin/pair_end address adjacent query-head pairs.
 void causal_attention_decode_gqa_pairs(

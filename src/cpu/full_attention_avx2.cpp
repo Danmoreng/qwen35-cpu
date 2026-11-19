@@ -501,6 +501,92 @@ void causal_attention_batch_rows_avx2(
   }
 }
 
+void causal_attention_verify5_avx2(const VerifyAttention5 &a, std::size_t head_begin,
+    std::size_t head_end) noexcept {
+  constexpr int tokens = 5;
+  constexpr int dim = 256;
+  constexpr int block = 64;
+  const int stride = a.position + tokens;
+  const int kv_width = a.kv_heads * dim;
+  for (std::size_t head = head_begin; head < head_end; ++head) {
+    const auto kv_offset = (head / (a.heads / a.kv_heads)) * dim;
+    const float *queries[tokens];
+    float *scores[tokens], *outputs[tokens];
+    for (int t = 0; t < tokens; ++t) {
+      const auto index = t * a.heads + head;
+      queries[t] = a.queries + index * dim;
+      scores[t] = a.scores + index * stride;
+      outputs[t] = a.output + index * dim;
+    }
+
+    for (int pos = 0; pos < stride; ++pos) {
+      const auto *key = attention_cache_row(a.keys, a.pages ? a.pages->keys : nullptr,
+                                            pos, kv_width) + kv_offset;
+      // Match the two accumulators and reduction order of paired FP16 decode.
+      __m256 lo[tokens]{}, hi[tokens]{};
+      for (int col = 0; col < dim; col += 16) {
+        const __m256 k0 = _mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i *>(key + col)));
+        const __m256 k1 = _mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i *>(key + col + 8)));
+        for (int t = 0; t < tokens; ++t) {
+          lo[t] = _mm256_fmadd_ps(_mm256_loadu_ps(queries[t] + col), k0, lo[t]);
+          hi[t] = _mm256_fmadd_ps(_mm256_loadu_ps(queries[t] + col + 8), k1, hi[t]);
+        }
+      }
+      for (int t = 0; t < tokens; ++t)
+        scores[t][pos] = horizontal_sum_f32(_mm256_add_ps(lo[t], hi[t])) * a.scale;
+    }
+    for (int t = 0; t < tokens; ++t) {
+      const int length = a.position + t + 1;
+      normalize_softmax_avx2(scores[t], length, *std::max_element(scores[t], scores[t] + length));
+      std::fill_n(outputs[t], dim, 0.0F);
+    }
+
+    // The history is shared. Keep each value tile hot across all five queries.
+    const int common = a.position + 1;
+    for (int first = 0; first < common; first += block) {
+      const int end = std::min(first + block, common);
+      const std::uint16_t *values[block];
+      for (int pos = first; pos < end; ++pos)
+        values[pos - first] = attention_cache_row(a.values, a.pages ? a.pages->values : nullptr,
+                                                  pos, kv_width) + kv_offset;
+      for (int col = 0; col < dim; col += 16) {
+        __m256 lo[tokens], hi[tokens];
+        for (int t = 0; t < tokens; ++t) {
+          lo[t] = _mm256_loadu_ps(outputs[t] + col);
+          hi[t] = _mm256_loadu_ps(outputs[t] + col + 8);
+        }
+        for (int pos = first; pos < end; ++pos) {
+          const auto *value = values[pos - first] + col;
+          const __m256 v0 = _mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i *>(value)));
+          const __m256 v1 = _mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i *>(value + 8)));
+          for (int t = 0; t < tokens; ++t) {
+            const __m256 p = _mm256_set1_ps(scores[t][pos]);
+            lo[t] = _mm256_fmadd_ps(p, v0, lo[t]);
+            hi[t] = _mm256_fmadd_ps(p, v1, hi[t]);
+          }
+        }
+        for (int t = 0; t < tokens; ++t) {
+          _mm256_storeu_ps(outputs[t] + col, lo[t]);
+          _mm256_storeu_ps(outputs[t] + col + 8, hi[t]);
+        }
+      }
+    }
+    // Only preceding speculative rows can contribute to a query's tail.
+    for (int t = 0; t < tokens; ++t) {
+      for (int pos = common; pos < common + t; ++pos) {
+        const auto *value = attention_cache_row(a.values, a.pages ? a.pages->values : nullptr,
+                                                pos, kv_width) + kv_offset;
+        const __m256 p = _mm256_set1_ps(scores[t][pos]);
+        for (int col = 0; col < dim; col += 8) {
+          const __m256 v = _mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i *>(value + col)));
+          _mm256_storeu_ps(outputs[t] + col, _mm256_fmadd_ps(p, v, _mm256_loadu_ps(outputs[t] + col)));
+        }
+      }
+      apply_gate_avx2(outputs[t], a.gates + (t * a.heads + head) * dim, dim);
+    }
+  }
+}
+
 void causal_attention_decode_gqa_pairs_avx2(
   const float * queries,
   const float * gates,

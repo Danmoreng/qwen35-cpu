@@ -33,7 +33,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 - [Native Qwen3.5-4B on Ryzen](benchmarks/qwen35-4b-ryzen.md) compares 2B and 4B throughput, memory and task results and validates 4B against BF16.
 - [Native 4B MTP on Ryzen](benchmarks/qwen35-4b-mtp.md) compares BF16, Q8_0 and H128 sidecars, draft depths and lookup drafting.
 - [4B MTP depth for coding and tool calls](benchmarks/qwen35-4b-mtp-coding.md) tests one through four proposals with shared verification on the native API.
-- [4B Pi Coding Agent on Ryzen](benchmarks/qwen35-4b-pi-agent.md) compares native and ik_llama.cpp agent sessions, cache reuse, speculative decode and quantization fidelity.
+- [4B Pi Coding Agent on Ryzen](benchmarks/qwen35-4b-pi-agent.md) compares native and ik_llama.cpp agent sessions, cache reuse, quantization fidelity and [matched 4K–12K decode](benchmarks/qwen35-4b-pi-agent.md#matched-long-context-mtp-decode).
 - [AVX2 prefill on the i7-8750H](benchmarks/avx2-prefill-i7.md) measures query tile selection for long prompts.
 - [AVX2 cloud VM tuning](benchmarks/avx2-cloud.md): prompt processing, decode experiments and bitwise checks on an EPYC VM.
 - [Standard model calibration](benchmarks/calibration.md).

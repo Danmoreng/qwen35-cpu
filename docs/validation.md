@@ -248,7 +248,8 @@ source shards.
 The real-model HTTP regression verifies a long tool reply through the SSE
 endpoint, confirms that drafting continues beyond the output buffer capacity,
 and checks streamed byte-stop and output parity against ordinary decoding.
-Run it with the native 4B H128 weights and sidecar.
+Use the native 4B H128 weights and sidecar. Pass `--mtp-depth 4` to exercise
+the five-row verifier. The default depth is three.
 
 ```sh
 model=models/qwen3.5-4b

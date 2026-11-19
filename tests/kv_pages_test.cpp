@@ -1,10 +1,42 @@
 #include "qwen35x/cpu/full_attention_tiled.h"
 #include "qwen35x/cpu/kv_pages.h"
+#include <algorithm>
 #include <cmath>
 #include <cstring>
 #include <iostream>
 #include <stdexcept>
 using namespace qwen35x::cpu;
+static void test_verify5(const std::vector<std::uint16_t> &keys,
+                         const std::vector<std::uint16_t> &values, const AttentionKvRows &pages) {
+  constexpr int heads = 8, kv_heads = 2, dim = 256, width = heads * dim;
+  std::vector<float> queries(5 * width), gates(queries.size()), expected(queries.size()),
+      actual(queries.size()), scores(5 * heads * 513);
+  for (std::size_t i = 0; i < queries.size(); ++i) {
+    queries[i] = std::sin(static_cast<float>(i) * .027f);
+    gates[i] = std::cos(static_cast<float>(i) * .073f);
+  }
+  for (auto backend : {Q8_0Backend::scalar, Q8_0Backend::auto_select}) {
+    for (int start : {0, 59, 63, 64, 252, 255, 508}) {
+      const int stride = start + 5;
+      for (int t = 0; t < 5; ++t) {
+        causal_attention_decode_gqa_pairs(queries.data() + t * width, gates.data() + t * width,
+          nullptr, nullptr, keys.data(), values.data(), scores.data(), expected.data() + t * width,
+          stride, width, kv_heads * dim, start + t + 1, heads, kv_heads, dim, .0625f, 0, heads / 2, backend);
+      }
+      for (bool paged : {false, true}) {
+        std::fill(actual.begin(), actual.end(), -7.0F);
+        VerifyAttention5 job{queries.data(), gates.data(), paged ? nullptr : keys.data(),
+          paged ? nullptr : values.data(), paged ? &pages : nullptr, scores.data(), actual.data(),
+          start, heads, kv_heads, .0625f};
+        causal_attention_verify5(job, 0, 3, backend);
+        causal_attention_verify5(job, 3, heads, backend);
+        if (std::memcmp(actual.data(), expected.data(), actual.size() * sizeof(float)))
+          throw std::runtime_error("Five-row verification differs from independent causal decode");
+      }
+    }
+  }
+}
+
 int main() try {
   auto check = [](bool ok) {
     if (!ok)
@@ -59,6 +91,7 @@ int main() try {
                               Q8_0Backend::scalar);
   }
   AttentionKvRows pages{attention.keys(), attention.values()};
+  test_verify5(keys, values, pages);
   std::vector<float> q(3 * 2048), gate(q.size()), a(q.size()), b(q.size()),
       scores(24 * 513);
   for (std::size_t i = 0; i < q.size(); ++i) {

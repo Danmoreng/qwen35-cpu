@@ -155,6 +155,8 @@ void causal_attention_batch_rows_avx2(
   const bool reuse_score_row,
   const AttentionKvRows *pages) noexcept;
 
+void causal_attention_verify5_avx2(const VerifyAttention5 &, std::size_t, std::size_t) noexcept;
+
 void causal_attention_decode_gqa_pairs_avx2(
   const float * queries,
   const float * gates,
@@ -258,6 +260,24 @@ void causal_attention_batch_rows(
     queries, gates, k_cache, v_cache, k_cache_f16, v_cache_f16, scores, output, context_stride,
     query_width, kv_width, position_start, head_count, kv_head_count,
     head_dim, attention_scale, row_begin, row_end, reuse_score_row, pages);
+}
+
+void causal_attention_verify5(const VerifyAttention5 &a, std::size_t head_begin,
+    std::size_t head_end, Q8_0Backend backend) noexcept {
+#if QWEN35X_Q8_0_HAS_AVX2_TU
+  if (q8_0_backend_uses_avx2(backend)) {
+    detail::causal_attention_verify5_avx2(a, head_begin, head_end);
+    return;
+  }
+#endif
+  const std::size_t stride = static_cast<std::size_t>(a.position) + 5;
+  for (std::size_t row = 0; row < 5; ++row) {
+    const auto first = row * a.heads;
+    causal_attention_batch_rows(a.queries, a.gates, nullptr, nullptr, a.keys, a.values,
+      a.scores, a.output, stride, a.heads * 256, a.kv_heads * 256, a.position,
+      a.heads, a.kv_heads, 256, a.scale, first + head_begin, first + head_end,
+      backend, false, a.pages);
+  }
 }
 
 void causal_attention_decode_gqa_pairs(

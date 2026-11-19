@@ -137,6 +137,26 @@ During screening, a request-local controller explored MTP depths 2–4 and ranke
 
 The [optimization evidence](../results/qwen35-4b-agent-2026-11-19/native-optimization.json) records the measured runs, binary hashes, exact output checks and server commands. To reproduce, use the Pi fixture and fixed-request commands below with the new native binary at depths 2–4. The agent series uses depths three and four. The [long tool fixture](../../tests/fixtures/qwen35-mtp-long-tool.json) reproduces the isolated write. Local profiles and browser artifacts are under `benchmarks/ryzen-mtp-tuning/`.
 
+## Matched long-context MTP decode
+
+The five-row verifier computes attention for the pending token and four MTP proposals together. On the AVX2 FP16 KV path each query head shares a key or value tile across five positions. Each position retains its causal mask and the arithmetic order of single-row decode. The kernel supports contiguous and paged caches.
+
+Single-request decode in tokens/s on the Ryzen 5 7600, median of three measured runs after one warmup per configuration. All five configurations ran sequentially with the same six physical cores, at temperature zero and the same 16,384-token context capacity.
+
+| Prompt tokens | Native ordinary | ik ordinary | Previous native MTP-4 | New native MTP-4 | ik MTP-4 | Native MTP-4 gain |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 4,096 | 19.3 | 20.6 | 48.0 | 49.7 | 50.0 | +3.7% |
+| 8,192 | 15.8 | 18.4 | 33.1 | 40.1 | 42.7 | +21.3% |
+| 12,288 | 13.1 | 17.5 | 22.9 | 32.0 | 31.9 | +39.8% |
+
+Every prompt repeats `01234567` up to the exact length in the table. Each backend continued the pattern for the same 128 tokens using its own greedy decode. The harness checks the exact output bytes, both token counts and the length stop on every request. Each digit occupies one Qwen token. Decode throughput divides 127 tokens by the elapsed time from the first to the last nonempty SSE choice, excluding prefill and startup. The native target and MTP sidecar use H128/Q4-G32-DOT4. The ik_llama.cpp artifact uses IQ4_K_R4. Both artifacts came from the same target checkpoint.
+
+All MTP configurations accepted all 101 proposed tokens on every measured request. This high-acceptance workload isolates verification costs at matched sequence positions. Coding requests with partial matches can have different throughput. At 12,288 prompt tokens the native verifier took 4.45 s before and 2.87 s after the change for the 128-token continuation.
+
+A separate native check with the same continuation measured 58.4, 57.5 and 55.4 tok/s at 128, 512 and 1,024 prompt tokens before the change. The new kernel measured 58.6, 58.4 and 56.8 tok/s respectively.
+
+The [individual runs](../results/qwen35-4b-agent-2026-11-19/matched-context.csv) include phase timings and draft counts. The [manifest](../results/qwen35-4b-agent-2026-11-19/matched-context-manifest.json) records the binaries, checkpoint hashes, affinity and server commands. To reproduce, use the sequential runner with one matrix entry per server configuration. Each entry invokes `scripts/benchmark-pi-agent.py --config CONFIG --synthetic-context 4096 8192 12288 --synthetic-output 128`. CONFIG contains the recorded engine, depth and server command, omitting the final ephemeral port option. The runner appends the profile output path.
+
 ## Quantization fidelity
 
 A separate full-logit evaluation used the same 238 forced continuation

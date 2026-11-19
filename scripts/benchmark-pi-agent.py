@@ -292,10 +292,39 @@ def run_probe(observer):
                                                     "cache_prompt": cache})
 
 
+def run_context_probe(observer, lengths, generated):
+    # Qwen encodes ASCII digits individually. Whole cycles keep the expected
+    # continuation identical even when the prompt lengths differ.
+    cycle = "01234567"
+    expected = (cycle * ((generated + 7) // 8))[:generated]
+    for length in lengths:
+        if length <= 0 or length % len(cycle):
+            raise ValueError("Context length must be a positive multiple of eight")
+        stats = observer.complete("/v1/completions", {
+            "prompt": cycle * (length // len(cycle)), "max_tokens": generated,
+            "temperature": 0, "top_k": 1, "seed": 83, "cache_prompt": False})
+        raw = observer.output / f"http-{stats['request']:03}.sse"
+        chunks = [json.loads(line[6:]) for line in raw.read_bytes().splitlines()
+                  if line.startswith(b"data: ") and line != b"data: [DONE]"]
+        output = "".join(choice.get("text", "") for chunk in chunks
+                         for choice in chunk.get("choices", []))
+        usage = stats.get("usage", {})
+        if (output != expected or usage.get("prompt_tokens") != length
+                or usage.get("completion_tokens") != generated
+                or stats.get("finish") != "length" or stats.get("status") != 200):
+            raise RuntimeError(f"Fixed continuation mismatch at {length}: {output!r}")
+        stats["decode_tokens_per_second"] = ((generated - 1) * 1000 /
+            (stats["last_output_ms"] - stats["first_output_ms"]))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, required=True)
-    parser.add_argument("--fixture", type=Path)
+    workload = parser.add_mutually_exclusive_group()
+    workload.add_argument("--fixture", type=Path)
+    workload.add_argument("--synthetic-context", type=int, nargs="+",
+                          help="Exact prompt lengths for the matched digit continuation")
+    parser.add_argument("--synthetic-output", type=int, default=128)
     parser.add_argument("--profile-json", type=Path, required=True)
     args = parser.parse_args()
     config = json.loads(args.config.read_text())
@@ -316,7 +345,12 @@ def main():
                 turns = run_pi(observer, config, fixture, output)
             else:
                 turns = []
-                run_probe(observer)
+                if args.synthetic_context:
+                    if args.synthetic_output < 2:
+                        parser.error("--synthetic-output must be at least two")
+                    run_context_probe(observer, args.synthetic_context, args.synthetic_output)
+                else:
+                    run_probe(observer)
     requests = observer.requests
     metrics = {"http_requests": len(requests), "wall_ms": sum(r["wall_ms"] for r in requests),
                "prompt_tokens": sum(r.get("usage", {}).get("prompt_tokens", 0) for r in requests),

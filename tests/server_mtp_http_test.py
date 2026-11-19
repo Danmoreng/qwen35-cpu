@@ -18,6 +18,7 @@ def main():
     parser.add_argument("--model-dir", type=Path, required=True)
     parser.add_argument("--weights", type=Path, required=True)
     parser.add_argument("--mtp-weights", type=Path, required=True)
+    parser.add_argument("--mtp-depth", type=int, choices=(1, 2, 3, 4), default=3)
     args = parser.parse_args()
     with socket.socket() as sock:
         sock.bind(("127.0.0.1", 0))
@@ -44,7 +45,7 @@ def main():
         raise AssertionError("No terminal SSE event")
 
     command = [str(args.server.resolve()), "--model-dir", str(args.model_dir), "--weights", str(args.weights),
-               "--mtp-weights", str(args.mtp_weights), "--mtp-depth", "3", "--prefix-cache", "auto",
+               "--mtp-weights", str(args.mtp_weights), "--mtp-depth", str(args.mtp_depth), "--prefix-cache", "auto",
                "--threads", "6", "--residents", "1", "--batch-width", "1", "--port", str(port)]
     with tempfile.TemporaryFile(mode="w+b") as log:
         process = subprocess.Popen(command, stdout=log, stderr=log, env={**os.environ, "QWEN35_API_KEY": ""})

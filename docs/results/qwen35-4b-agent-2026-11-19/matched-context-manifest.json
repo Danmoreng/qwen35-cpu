@@ -1,0 +1,278 @@
+{
+  "platform": "AMD Ryzen 5 7600, Linux x86-64, six physical cores, taskset 0-5, one resident sequence, 16384-token context",
+  "baseline_revision": "5788ae2de1f2f47f9f5896c86bae49a4319948dd",
+  "source_diff_sha256": "19AC85CD83D5B52FBAC32B9F528B0200E2D132C642411BAFBAB3844E354B2172",
+  "ik_revision": "ecc288f7da01996cd5d2df66c85a741aeeff4731",
+  "source_files_sha256": {
+    "src/runtime/cpu_engine.inl": "7C151E7074DD94B987D12C806BF27CE552E662FD9547A713FF34CF6D62FB3366",
+    "src/runtime/layers.inl": "607A9FB7D92AAEDAE814034501236CFF2FC868E28CE3828EBA0D4F232E5E7F25",
+    "src/cpu/full_attention.cpp": "1BD5FE2AE2A17036F6CAE197F20D2348996CF5E065069211B357BE0F4B938637",
+    "src/cpu/full_attention_avx2.cpp": "E71E367779CEB8F61751BEBCE68690D97CA4CA814841DE0CFFAB338D630111AC",
+    "include/qwen35x/cpu/full_attention.h": "E48A5E76F3744148989986769D643B685F47017CE00CE582CBB3148E9F648CBD"
+  },
+  "sha256": {
+    "benchmarks/ryzen-mtp-context/server-before": "6c26d2b90ca0725f6fc87375c7a6d23fcd58dc26c4fd4b0e1e81b3238b90a9e6",
+    "benchmarks/ryzen-mtp-context/server-after": "58cdefb978280088bc7711eb8889554a933a288ab1604322532cf0e33a650768",
+    "benchmarks/qwen35-4b-agent-2026-11-19/ik-build/bin/llama-server": "d03816d8e0f60a7fcc6f0d462b1e8b155616b2685a93aaaa88a3f547f6b5b50a",
+    "benchmarks/qwen35-4b-agent-2026-11-19/4b-IQ4_K_R4.gguf": "6ef0cdeede3ece4d63f6b053984cd3761a5c4d80ae0f7899629c4fbf9642c14d",
+    "models/qwen3.5-4b/model-mse16.q35h": "7db1dd7be2e74444465f833d6b639d895ff09e0b8226fb06eb925a5729a85eae",
+    "models/qwen3.5-4b/mtp-h128.q35h": "6f0c69032785432e21ca8f16f371ad2913f7af3b082632fddf28d60c9b7ecd37",
+    "scripts/benchmark-pi-agent.py": "450d7c3caf155940da93cc2442298a902bb33fd37cf3faeda23b26f7877492cb",
+    "scripts/benchmark-inference-seq.ps1": "4fb8a8c55a904c5bcc4b16f79eb8f9109844806a51eedb02b8120cd19dad3df2"
+  },
+  "server_commands": {
+    "before": [
+      "taskset",
+      "-c",
+      "0-5",
+      "/home/sebastian/Development/qwen35-cpu/benchmarks/ryzen-mtp-context/server-before",
+      "--model-dir",
+      "/home/sebastian/Development/qwen35-cpu/models/qwen3.5-4b",
+      "--weights",
+      "/home/sebastian/Development/qwen35-cpu/models/qwen3.5-4b/model-mse16.q35h",
+      "--mtp-weights",
+      "/home/sebastian/Development/qwen35-cpu/models/qwen3.5-4b/mtp-h128.q35h",
+      "--mtp-depth",
+      "4",
+      "--threads",
+      "6",
+      "--residents",
+      "1",
+      "--batch-width",
+      "1",
+      "--max-context",
+      "16384",
+      "--prefix-cache",
+      "auto",
+      "--prefix-cache-mib",
+      "512",
+      "--port",
+      "<ephemeral-port>"
+    ],
+    "ik": [
+      "taskset",
+      "-c",
+      "0-5",
+      "/home/sebastian/Development/qwen35-cpu/benchmarks/qwen35-4b-agent-2026-11-19/ik-build/bin/llama-server",
+      "-m",
+      "/home/sebastian/Development/qwen35-cpu/benchmarks/qwen35-4b-agent-2026-11-19/4b-IQ4_K_R4.gguf",
+      "--host",
+      "127.0.0.1",
+      "-ngl",
+      "0",
+      "-t",
+      "6",
+      "-tb",
+      "6",
+      "-td",
+      "6",
+      "-tbd",
+      "6",
+      "-c",
+      "16384",
+      "-np",
+      "1",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "--jinja",
+      "--reasoning",
+      "off",
+      "--cache-ram",
+      "512",
+      "--ctx-checkpoints",
+      "32",
+      "--spec-type",
+      "mtp:n_max=4,p_min=0.0",
+      "--port",
+      "<ephemeral-port>"
+    ],
+    "after": [
+      "taskset",
+      "-c",
+      "0-5",
+      "/home/sebastian/Development/qwen35-cpu/benchmarks/ryzen-mtp-context/server-after",
+      "--model-dir",
+      "/home/sebastian/Development/qwen35-cpu/models/qwen3.5-4b",
+      "--weights",
+      "/home/sebastian/Development/qwen35-cpu/models/qwen3.5-4b/model-mse16.q35h",
+      "--mtp-weights",
+      "/home/sebastian/Development/qwen35-cpu/models/qwen3.5-4b/mtp-h128.q35h",
+      "--mtp-depth",
+      "4",
+      "--threads",
+      "6",
+      "--residents",
+      "1",
+      "--batch-width",
+      "1",
+      "--max-context",
+      "16384",
+      "--prefix-cache",
+      "auto",
+      "--prefix-cache-mib",
+      "512",
+      "--port",
+      "<ephemeral-port>"
+    ],
+    "native-ordinary": [
+      "taskset",
+      "-c",
+      "0-5",
+      "/home/sebastian/Development/qwen35-cpu/benchmarks/ryzen-mtp-context/server-after",
+      "--model-dir",
+      "/home/sebastian/Development/qwen35-cpu/models/qwen3.5-4b",
+      "--weights",
+      "/home/sebastian/Development/qwen35-cpu/models/qwen3.5-4b/model-mse16.q35h",
+      "--mtp-weights",
+      "/home/sebastian/Development/qwen35-cpu/models/qwen3.5-4b/mtp-h128.q35h",
+      "--mtp-depth",
+      "4",
+      "--threads",
+      "6",
+      "--residents",
+      "1",
+      "--batch-width",
+      "1",
+      "--max-context",
+      "16384",
+      "--prefix-cache",
+      "auto",
+      "--prefix-cache-mib",
+      "512",
+      "--port",
+      "<ephemeral-port>"
+    ],
+    "ik-ordinary": [
+      "taskset",
+      "-c",
+      "0-5",
+      "/home/sebastian/Development/qwen35-cpu/benchmarks/qwen35-4b-agent-2026-11-19/ik-build/bin/llama-server",
+      "-m",
+      "/home/sebastian/Development/qwen35-cpu/benchmarks/qwen35-4b-agent-2026-11-19/4b-IQ4_K_R4.gguf",
+      "--host",
+      "127.0.0.1",
+      "-ngl",
+      "0",
+      "-t",
+      "6",
+      "-tb",
+      "6",
+      "-td",
+      "6",
+      "-tbd",
+      "6",
+      "-c",
+      "16384",
+      "-np",
+      "1",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "--jinja",
+      "--reasoning",
+      "off",
+      "--cache-ram",
+      "512",
+      "--ctx-checkpoints",
+      "32",
+      "--spec-type",
+      "none",
+      "--port",
+      "<ephemeral-port>"
+    ]
+  },
+  "case_settings": {
+    "before": {
+      "engine": "native",
+      "depth": 4
+    },
+    "ik": {
+      "engine": "ik",
+      "depth": 4
+    },
+    "after": {
+      "engine": "native",
+      "depth": 4
+    },
+    "native-ordinary": {
+      "engine": "native",
+      "depth": 0
+    },
+    "ik-ordinary": {
+      "engine": "ik",
+      "depth": 0
+    }
+  },
+  "benchmark_flags": [
+    "--synthetic-context",
+    4096,
+    8192,
+    12288,
+    "--synthetic-output",
+    128
+  ],
+  "runner": "scripts/benchmark-inference-seq.ps1",
+  "raw_root": "benchmarks/ryzen-mtp-context/matched",
+  "timing": "127 output tokens divided by elapsed seconds between first and last nonempty SSE choice; excludes prefill.",
+  "warmups_per_case": 1,
+  "measured_runs_per_case": 3,
+  "output_sha256": "8c47d8dbc626b56a6c2aa57818843ee0f78b35e06055972f226ab1a2d92272a8",
+  "prompt_sha256": {
+    "4096": "d51cd98258a8b1f80ee13827975ce7fe54c75f0cecacd9fd62b92d49a3ae0ffd",
+    "8192": "4d81db86c7129eefa10f63e50c88c5f2eaa829b7278e337d55a6cfaa38f00f21",
+    "12288": "f632287856c05d12fa68e84f1805bd3c19c228f736940b3bf43d9649614a260c"
+  },
+  "short_context_control": {
+    "raw_root": "benchmarks/ryzen-mtp-context/short",
+    "order": "Warmup then three measured runs, same 128 output tokens and timing method.",
+    "decode_tps": {
+      "before": {
+        "128": [
+          57.8173,
+          58.3042,
+          58.4074,
+          58.4598
+        ],
+        "512": [
+          56.481,
+          57.3734,
+          57.4911,
+          58.1266
+        ],
+        "1024": [
+          55.2213,
+          55.3963,
+          55.4138,
+          55.3653
+        ]
+      },
+      "after": {
+        "128": [
+          58.8465,
+          58.5904,
+          58.5868,
+          58.6553
+        ],
+        "512": [
+          58.0658,
+          57.959,
+          58.4023,
+          58.6143
+        ],
+        "1024": [
+          56.7098,
+          56.7716,
+          56.8199,
+          56.9304
+        ]
+      }
+    }
+  }
+}
