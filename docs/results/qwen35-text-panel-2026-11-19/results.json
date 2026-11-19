@@ -1,0 +1,714 @@
+{
+  "cpu": "AMD Ryzen 5 7600",
+  "threads": 6,
+  "logical_cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "affinity_mask": 63,
+  "warmup_runs": 1,
+  "runs": 3,
+  "engine_revision": "4fdd25fc30459bccd9df333c06c8f2ae88996f1d",
+  "python_version": "Python 3.14.7",
+  "server_sha256": "fe7e2e6730e79572b3a815b06a5898ea8f462b74bc78340603c53aada3bea94a",
+  "driver_sha256": "213d8c6b923ceea47527b689240f64ef47964bafa5087ff733e7f6b46eb34b24",
+  "panel_sha256": "e0b72156221f2c59276f68340e9dbe2b529c6299ad7f026f6a53604a69b89943",
+  "inputs": {
+    "models/qwen3.5-0.8b/config.json": {
+      "bytes": 2907,
+      "sha256": "b90b86f35c8e6925ef74ee04d0e758f0a845c83a42089ad82bbaa948de9b4204"
+    },
+    "models/qwen3.5-0.8b/model.q35h": {
+      "bytes": 424964864,
+      "sha256": "013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a"
+    },
+    "models/qwen3.5-0.8b/tokenizer.json": {
+      "bytes": 12807982,
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+    },
+    "models/qwen3.5-0.8b/tokenizer_config.json": {
+      "bytes": 16709,
+      "sha256": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c"
+    },
+    "models/qwen3.5-2b/config.json": {
+      "bytes": 2908,
+      "sha256": "ed1c1723241f23f7f4e23430759cbd7dcfb4103cbdfe052bfe7626b57c2615b4"
+    },
+    "models/qwen3.5-2b/model.q35h": {
+      "bytes": 1060442880,
+      "sha256": "1084c3a2751d3813a2aa686337f717e56291e6a1a79ff8be1b6d1665d22892a3"
+    },
+    "models/qwen3.5-2b/tokenizer.json": {
+      "bytes": 12807982,
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+    },
+    "models/qwen3.5-2b/tokenizer_config.json": {
+      "bytes": 16709,
+      "sha256": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c"
+    }
+  },
+  "source_model_revisions": {
+    "2b": "15852e8c16360a2fea060d615a32b45270f8a8fc"
+  },
+  "raw_results": "benchmarks/qwen35-text-panel-2026-11-19/run",
+  "cases": {
+    "0.8b": {
+      "model": "Qwen3.5-0.8B-H128-Q4-G32-DOT4",
+      "server_command": [
+        "build/qwen35_cpu_server",
+        "--model-dir",
+        "models/qwen3.5-0.8b",
+        "--weights",
+        "models/qwen3.5-0.8b/model.q35h",
+        "--threads",
+        "6",
+        "--residents",
+        "1",
+        "--batch-width",
+        "1",
+        "--max-context",
+        "4096",
+        "--prefix-cache",
+        "off",
+        "--port",
+        "<loopback-port>"
+      ],
+      "matrix": {
+        "name": "0.8b",
+        "executable": "/usr/bin/python3",
+        "args": [
+          "scripts/benchmark-text-panel.py",
+          "--server",
+          "build/qwen35_cpu_server",
+          "--model-dir",
+          "models/qwen3.5-0.8b",
+          "--weights",
+          "models/qwen3.5-0.8b/model.q35h",
+          "--panel",
+          "docs/results/qwen35-text-panel-2026-11-19/panel.json"
+        ]
+      },
+      "outputs_identical_including_warmup": true,
+      "observations": [
+        {
+          "id": "invoice",
+          "kind": "edit",
+          "finish_reason": "stop",
+          "completion_tokens": 16,
+          "text": "Bitte schicken Sie mir die Rechnung bis Freitag, ich überweise sie dann.",
+          "passed": false
+        },
+        {
+          "id": "appointment",
+          "kind": "edit",
+          "finish_reason": "stop",
+          "completion_tokens": 9,
+          "text": "Der Termin ist am Mittwoch nicht am Donnerstag",
+          "passed": false
+        },
+        {
+          "id": "apology",
+          "kind": "edit",
+          "finish_reason": "stop",
+          "completion_tokens": 12,
+          "text": "Es tut mir leid, dass ich zu spät bin.",
+          "passed": true
+        },
+        {
+          "id": "order",
+          "kind": "edit",
+          "finish_reason": "stop",
+          "completion_tokens": 11,
+          "text": "Wir haben drei Pakete bestellt und zwei bekommen.",
+          "passed": true
+        },
+        {
+          "id": "address",
+          "kind": "edit",
+          "finish_reason": "stop",
+          "completion_tokens": 8,
+          "text": "ich weiß nicht ob die Adresse stimmt",
+          "passed": false
+        },
+        {
+          "id": "waiting",
+          "kind": "edit",
+          "finish_reason": "stop",
+          "completion_tokens": 12,
+          "text": "Wen du noch fragen hast, melde dich.",
+          "passed": false
+        },
+        {
+          "id": "closing",
+          "kind": "edit",
+          "finish_reason": "stop",
+          "completion_tokens": 7,
+          "text": "Vielen Dank für Ihre Hilfe",
+          "passed": false
+        },
+        {
+          "id": "report",
+          "kind": "edit",
+          "finish_reason": "stop",
+          "completion_tokens": 14,
+          "text": "Ich habe den Bericht gelesen, aber noch keine Rückmeldung gegeben.",
+          "passed": true
+        },
+        {
+          "id": "rename",
+          "kind": "python",
+          "finish_reason": "stop",
+          "completion_tokens": 18,
+          "text": "def bill(prices):\n    total = sum(prices)\n    return total",
+          "passed": false
+        },
+        {
+          "id": "boundary",
+          "kind": "python",
+          "finish_reason": "stop",
+          "completion_tokens": 13,
+          "text": "def allowed(age):\n    return age > 18",
+          "passed": false
+        },
+        {
+          "id": "argument",
+          "kind": "python",
+          "finish_reason": "stop",
+          "completion_tokens": 12,
+          "text": "def double(n):\n    return n * 2",
+          "passed": false
+        },
+        {
+          "id": "filter",
+          "kind": "python",
+          "finish_reason": "stop",
+          "completion_tokens": 25,
+          "text": "def positive(xs):\n    return [x for x in xs if x > 0 or x == 0]",
+          "passed": false
+        },
+        {
+          "id": "guard",
+          "kind": "python",
+          "finish_reason": "stop",
+          "completion_tokens": 18,
+          "text": "```python\nif not xs: return None\nreturn xs[0]\n```",
+          "passed": false
+        },
+        {
+          "id": "default",
+          "kind": "python",
+          "finish_reason": "stop",
+          "completion_tokens": 19,
+          "text": "```python\ndef take(xs, limit):\n    return xs[:limit]\n```",
+          "passed": false
+        },
+        {
+          "id": "comprehension",
+          "kind": "python",
+          "finish_reason": "stop",
+          "completion_tokens": 22,
+          "text": "def transform(xs):\n    return [x**2 for x in xs if x > 0]",
+          "passed": true
+        },
+        {
+          "id": "keyword",
+          "kind": "python",
+          "finish_reason": "stop",
+          "completion_tokens": 38,
+          "text": "def sorted_copy(xs, reverse=False):\n    return sorted(xs, reverse=reverse)\n\ndef sorted_copy(xs, reverse=False):\n    return sorted(xs, reverse=reverse)",
+          "passed": false
+        },
+        {
+          "id": "units",
+          "kind": "json",
+          "finish_reason": "stop",
+          "completion_tokens": 26,
+          "text": "{\n  \"artikel\": \"Wir bestellen 12 Filter.\",\n  \"anzahl\": 12\n}",
+          "passed": false
+        },
+        {
+          "id": "boolean",
+          "kind": "json",
+          "finish_reason": "stop",
+          "completion_tokens": 15,
+          "text": "{\"extrahiert\": true, \"betrag\": 49}",
+          "passed": false
+        },
+        {
+          "id": "optional",
+          "kind": "json",
+          "finish_reason": "stop",
+          "completion_tokens": 25,
+          "text": "{\"extrahiert\": \"Der Termin ist in Mainz, das Datum steht noch nicht fest.\", \"datum\": null}",
+          "passed": false
+        },
+        {
+          "id": "array",
+          "kind": "json",
+          "finish_reason": "stop",
+          "completion_tokens": 20,
+          "text": "{\n  \"Schlüsselnamen\": \"Es kommen Ava, Ben und Cem.\"\n}",
+          "passed": false
+        },
+        {
+          "id": "nested",
+          "kind": "json",
+          "finish_reason": "stop",
+          "completion_tokens": 22,
+          "text": "{\n  \"name\": \"Ada\",\n  \"contact\": \"Köln\"\n}",
+          "passed": false
+        },
+        {
+          "id": "calendar",
+          "kind": "json",
+          "finish_reason": "stop",
+          "completion_tokens": 34,
+          "text": "{\n  \"datum\": \"2027-05-07\",\n  \"uhrzeit\": \"09:05\"\n}",
+          "passed": true
+        },
+        {
+          "id": "cents",
+          "kind": "json",
+          "finish_reason": "stop",
+          "completion_tokens": 28,
+          "text": "{\n  \"extrahiert_cent\": 5,\n  \"waehrung_iso\": \"DE-DE\"\n}",
+          "passed": false
+        },
+        {
+          "id": "selection",
+          "kind": "json",
+          "finish_reason": "stop",
+          "completion_tokens": 38,
+          "text": "{\n  \"available_products\": [\n    \"Tee verfügbar\",\n    \"Reis ausverkauft\",\n    \"Salz verfügbar\"\n  ]\n}",
+          "passed": false
+        }
+      ],
+      "measured_runs": [
+        {
+          "http_p50_ms": 188.9640640001744,
+          "http_p95_ms": 355.47168500124826,
+          "server_peak_rss_bytes": 543117312,
+          "request_ms": [
+            179.325,
+            111.203,
+            142.259,
+            135.937,
+            107.985,
+            140.702,
+            96.731,
+            153.221,
+            191.268,
+            141.6,
+            128.769,
+            245.6,
+            191.075,
+            186.853,
+            226.003,
+            357.633,
+            246.877,
+            160.805,
+            248.256,
+            194.827,
+            217.507,
+            327.142,
+            265.142,
+            355.472
+          ]
+        },
+        {
+          "http_p50_ms": 190.69879349990515,
+          "http_p95_ms": 357.94296499989287,
+          "server_peak_rss_bytes": 542928896,
+          "request_ms": [
+            351.106,
+            107.601,
+            131.36,
+            123.638,
+            98.327,
+            129.078,
+            89.751,
+            152.759,
+            191.845,
+            141.705,
+            128.782,
+            247.628,
+            189.553,
+            186.564,
+            226.381,
+            357.943,
+            246.364,
+            160.32,
+            248.166,
+            194.844,
+            219.738,
+            324.404,
+            266.495,
+            358.924
+          ]
+        },
+        {
+          "http_p50_ms": 187.99115900037577,
+          "http_p95_ms": 356.72524700021313,
+          "server_peak_rss_bytes": 543350784,
+          "request_ms": [
+            185.172,
+            106.089,
+            128.647,
+            124.143,
+            99.188,
+            128.793,
+            88.98,
+            152.609,
+            190.207,
+            141.376,
+            128.799,
+            246.047,
+            189.349,
+            186.633,
+            225.735,
+            371.734,
+            262.428,
+            173.652,
+            255.879,
+            195.082,
+            217.97,
+            324.675,
+            264.994,
+            356.725
+          ]
+        }
+      ]
+    },
+    "2b": {
+      "model": "Qwen3.5-2B-H128-Q4-G32-DOT4",
+      "server_command": [
+        "build/qwen35_cpu_server",
+        "--model-dir",
+        "models/qwen3.5-2b",
+        "--weights",
+        "models/qwen3.5-2b/model.q35h",
+        "--threads",
+        "6",
+        "--residents",
+        "1",
+        "--batch-width",
+        "1",
+        "--max-context",
+        "4096",
+        "--prefix-cache",
+        "off",
+        "--port",
+        "<loopback-port>"
+      ],
+      "matrix": {
+        "name": "2b",
+        "executable": "/usr/bin/python3",
+        "args": [
+          "scripts/benchmark-text-panel.py",
+          "--server",
+          "build/qwen35_cpu_server",
+          "--model-dir",
+          "models/qwen3.5-2b",
+          "--weights",
+          "models/qwen3.5-2b/model.q35h",
+          "--panel",
+          "docs/results/qwen35-text-panel-2026-11-19/panel.json"
+        ]
+      },
+      "outputs_identical_including_warmup": true,
+      "observations": [
+        {
+          "id": "invoice",
+          "kind": "edit",
+          "finish_reason": "stop",
+          "completion_tokens": 17,
+          "text": "bitte schick mir die Rechnung bis Freitag, ich überweise sie dann.",
+          "passed": false
+        },
+        {
+          "id": "appointment",
+          "kind": "edit",
+          "finish_reason": "stop",
+          "completion_tokens": 10,
+          "text": "Der Termin ist am Mittwoch nicht am Donnerstag.",
+          "passed": false
+        },
+        {
+          "id": "apology",
+          "kind": "edit",
+          "finish_reason": "stop",
+          "completion_tokens": 11,
+          "text": "Es tut mir leid, dass ich zu spät bin",
+          "passed": false
+        },
+        {
+          "id": "order",
+          "kind": "edit",
+          "finish_reason": "stop",
+          "completion_tokens": 11,
+          "text": "Wir haben drei Pakete bestellt und zwei bekommen.",
+          "passed": true
+        },
+        {
+          "id": "address",
+          "kind": "edit",
+          "finish_reason": "stop",
+          "completion_tokens": 10,
+          "text": "ich weiß nicht, ob die Adresse noch stimmt",
+          "passed": false
+        },
+        {
+          "id": "waiting",
+          "kind": "edit",
+          "finish_reason": "stop",
+          "completion_tokens": 11,
+          "text": "Wenn du noch Fragen hast, melde dich.",
+          "passed": false
+        },
+        {
+          "id": "closing",
+          "kind": "edit",
+          "finish_reason": "stop",
+          "completion_tokens": 7,
+          "text": "vielen Dank für ihre Hilfe",
+          "passed": false
+        },
+        {
+          "id": "report",
+          "kind": "edit",
+          "finish_reason": "stop",
+          "completion_tokens": 13,
+          "text": "ich habe den Bericht gelesen, aber noch keine Rückmeldung gegeben",
+          "passed": false
+        },
+        {
+          "id": "rename",
+          "kind": "python",
+          "finish_reason": "stop",
+          "completion_tokens": 23,
+          "text": "```python\ndef bill(prices):\n    subtotal = sum(prices)\n    return subtotal\n```",
+          "passed": true
+        },
+        {
+          "id": "boundary",
+          "kind": "python",
+          "finish_reason": "stop",
+          "completion_tokens": 18,
+          "text": "```python\ndef allowed(age):\n    return age >= 18\n```",
+          "passed": true
+        },
+        {
+          "id": "argument",
+          "kind": "python",
+          "finish_reason": "stop",
+          "completion_tokens": 17,
+          "text": "```python\ndef double(n):\n    return n * 2\n```",
+          "passed": false
+        },
+        {
+          "id": "filter",
+          "kind": "python",
+          "finish_reason": "stop",
+          "completion_tokens": 30,
+          "text": "```python\ndef positive(xs):\n    return [x for x in xs if x > 0 or x == 0]\n```",
+          "passed": false
+        },
+        {
+          "id": "guard",
+          "kind": "python",
+          "finish_reason": "stop",
+          "completion_tokens": 24,
+          "text": "```python\nif not xs: return None\ndef first(xs):\n    return xs[0]\n```",
+          "passed": false
+        },
+        {
+          "id": "default",
+          "kind": "python",
+          "finish_reason": "stop",
+          "completion_tokens": 19,
+          "text": "```python\ndef take(xs, limit):\n    return xs[:limit]\n```",
+          "passed": false
+        },
+        {
+          "id": "comprehension",
+          "kind": "python",
+          "finish_reason": "stop",
+          "completion_tokens": 27,
+          "text": "```python\ndef transform(xs):\n    return [x**2 for x in xs if x > 0]\n```",
+          "passed": true
+        },
+        {
+          "id": "keyword",
+          "kind": "python",
+          "finish_reason": "stop",
+          "completion_tokens": 24,
+          "text": "```python\ndef sorted_copy(xs, reverse=False):\n    return sorted(xs, reverse=reverse)\n```",
+          "passed": false
+        },
+        {
+          "id": "units",
+          "kind": "json",
+          "finish_reason": "stop",
+          "completion_tokens": 30,
+          "text": "```json\n{\n  \"article\": \"Wir bestellen 12 Filter.\",\n  \"count\": 12\n}\n```",
+          "passed": false
+        },
+        {
+          "id": "boolean",
+          "kind": "json",
+          "finish_reason": "stop",
+          "completion_tokens": 19,
+          "text": "{\n  \"bezahlt\": false,\n  \"betrag\": 0\n}",
+          "passed": false
+        },
+        {
+          "id": "optional",
+          "kind": "json",
+          "finish_reason": "stop",
+          "completion_tokens": 19,
+          "text": "{\n  \"ort\": \"Mainz\",\n  \"datum\": null\n}",
+          "passed": true
+        },
+        {
+          "id": "array",
+          "kind": "json",
+          "finish_reason": "stop",
+          "completion_tokens": 20,
+          "text": "{\n  \"Schlüssel namen\": \"Es kommen Ava, Ben und Cem.\"\n}",
+          "passed": false
+        },
+        {
+          "id": "nested",
+          "kind": "json",
+          "finish_reason": "length",
+          "completion_tokens": 256,
+          "text": "{\n  \"name\": \"Kontakt: Ada, Köln.\",\n  \"object\": {\n    \"name\": \"Kontakt: Ada, Köln.\",\n    \"object\": {\n      \"name\": \"Kontakt: Ada, Köln.\",\n      \"object\": {\n        \"name\": \"Kontakt: Ada, Köln.\",\n        \"object\": {\n          \"name\": \"Kontakt: Ada, Köln.\",\n          \"object\": {\n            \"name\": \"Kontakt: Ada, Köln.\",\n            \"object\": {\n              \"name\": \"Kontakt: Ada, Köln.\",\n              \"object\": {\n                \"name\": \"Kontakt: Ada, Köln.\",\n                \"object\": {\n                  \"name\": \"Kontakt: Ada, Köln.\",\n                  \"object\": {\n                    \"name\": \"Kontakt: Ada, Köln.\",\n                    \"object\": {\n                      \"name\": \"Kontakt: Ada, Köln.\",\n                      \"object\": {\n                        \"name\": \"Kontakt: Ada, Köln.\",\n                        \"object\": {\n                          \"name\": \"Kontakt: Ada, Köln.\",\n                          \"object\": {\n                            \"name\": \"Kontakt",
+          "passed": false
+        },
+        {
+          "id": "calendar",
+          "kind": "json",
+          "finish_reason": "stop",
+          "completion_tokens": 34,
+          "text": "{\n  \"datum\": \"2027-05-07\",\n  \"uhrzeit\": \"09:05\"\n}",
+          "passed": true
+        },
+        {
+          "id": "cents",
+          "kind": "json",
+          "finish_reason": "stop",
+          "completion_tokens": 27,
+          "text": "```json\n{\n  \"cent\": 5,\n  \"waehrung\": \"EUR\"\n}\n```",
+          "passed": false
+        },
+        {
+          "id": "selection",
+          "kind": "json",
+          "finish_reason": "stop",
+          "completion_tokens": 88,
+          "text": "```json\n[\n  {\n    \"produkt\": \"Tee\",\n    \"status\": \"verfügbar\"\n  },\n  {\n    \"produkt\": \"Reis\",\n    \"status\": \"ausverkauft\"\n  },\n  {\n    \"produkt\": \"Salz\",\n    \"status\": \"verfügbar\"\n  }\n]\n```",
+          "passed": false
+        }
+      ],
+      "measured_runs": [
+        {
+          "http_p50_ms": 467.44382250017225,
+          "http_p95_ms": 1837.1253309996973,
+          "server_peak_rss_bytes": 1186381824,
+          "request_ms": [
+            426.782,
+            264.716,
+            277.821,
+            287.482,
+            264.608,
+            279.655,
+            214.852,
+            353.313,
+            550.898,
+            436.727,
+            423.366,
+            721.427,
+            590.965,
+            436.711,
+            630.506,
+            568.955,
+            661.349,
+            456.549,
+            478.339,
+            484.923,
+            5223.817,
+            767.224,
+            604.446,
+            1837.125
+          ]
+        },
+        {
+          "http_p50_ms": 457.5418849999551,
+          "http_p95_ms": 1842.1553610005503,
+          "server_peak_rss_bytes": 1186402304,
+          "request_ms": [
+            453.409,
+            264.792,
+            277.964,
+            287.412,
+            264.765,
+            277.923,
+            204.316,
+            335.948,
+            543.268,
+            429.031,
+            397.995,
+            699.891,
+            574.33,
+            444.018,
+            630.549,
+            570.744,
+            663.417,
+            456.25,
+            467.383,
+            458.834,
+            5246.51,
+            804.266,
+            605.342,
+            1842.155
+          ]
+        },
+        {
+          "http_p50_ms": 458.20265099973767,
+          "http_p95_ms": 1879.075835000549,
+          "server_peak_rss_bytes": 1186340864,
+          "request_ms": [
+            431.615,
+            288.428,
+            299.648,
+            298.629,
+            264.957,
+            277.782,
+            204.514,
+            337.237,
+            541.2,
+            428.907,
+            396.422,
+            679.082,
+            562.022,
+            439.671,
+            670.316,
+            569.66,
+            661.43,
+            455.265,
+            466.197,
+            461.141,
+            5196.036,
+            768.347,
+            603.767,
+            1879.076
+          ]
+        }
+      ]
+    }
+  }
+}

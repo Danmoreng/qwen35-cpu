@@ -102,7 +102,21 @@ calibrated standard.
 
 ## Qwen3.5-2B
 
-Use the same packer and engine with the official 2B checkpoint and tokenizer.
+Qwen3.5-2B is the second native H128/Q4-G32-DOT4 model option. Use the
+official 2B tokenizer and the model-specific calibrated MSE16 fit. The
+validated `model.q35h` is 1,060,442,880 bytes with SHA-256
+`1084c3a2751d3813a2aa686337f717e56291e6a1a79ff8be1b6d1665d22892a3`.
+The following command serves the calibrated file once it has been placed in
+the model directory alongside the tokenizer assets.
+
+```sh
+build/qwen35_cpu_server --model-dir models/qwen3.5-2b \
+  --weights models/qwen3.5-2b/model.q35h --threads 6
+```
+
+The [Ryzen text panel](benchmarks/qwen35-text-panel.md) compares the two native
+models on fixed German correction, Python edit and JSON extraction tasks.
+
 The following Linux commands build an unweighted MSE16 baseline.
 
 ```sh

@@ -1,0 +1,177 @@
+[
+  {
+    "id": "invoice",
+    "kind": "edit",
+    "prompt": "Korrigiere Rechtschreibung, Großschreibung und nötige Satzzeichen. Lass die Wortwahl unverändert. Antworte nur mit dem korrigierten Text.\n\nbitte schick mir die rechnung bis freitag ich überweise sie dann",
+    "expected": "Bitte schick mir die Rechnung bis Freitag. Ich überweise sie dann."
+  },
+  {
+    "id": "appointment",
+    "kind": "edit",
+    "prompt": "Korrigiere Rechtschreibung, Großschreibung und nötige Satzzeichen. Lass die Wortwahl unverändert. Antworte nur mit dem korrigierten Text.\n\nder termin ist am mittwoch nicht am donnerstag",
+    "expected": "Der Termin ist am Mittwoch, nicht am Donnerstag."
+  },
+  {
+    "id": "apology",
+    "kind": "edit",
+    "prompt": "Korrigiere Rechtschreibung, Großschreibung und nötige Satzzeichen. Lass die Wortwahl unverändert. Antworte nur mit dem korrigierten Text.\n\nes tut mir leit das ich zu spät bin",
+    "expected": "Es tut mir leid, dass ich zu spät bin."
+  },
+  {
+    "id": "order",
+    "kind": "edit",
+    "prompt": "Korrigiere Rechtschreibung, Großschreibung und nötige Satzzeichen. Lass die Wortwahl unverändert. Antworte nur mit dem korrigierten Text.\n\nwir haben drei pakete bestelt und zwei bekomen",
+    "expected": "Wir haben drei Pakete bestellt und zwei bekommen."
+  },
+  {
+    "id": "address",
+    "kind": "edit",
+    "prompt": "Korrigiere Rechtschreibung, Großschreibung und nötige Satzzeichen. Lass die Wortwahl unverändert. Antworte nur mit dem korrigierten Text.\n\nich weis nicht ob die adresse noch stimt",
+    "expected": "Ich weiß nicht, ob die Adresse noch stimmt."
+  },
+  {
+    "id": "waiting",
+    "kind": "edit",
+    "prompt": "Korrigiere Rechtschreibung, Großschreibung und nötige Satzzeichen. Lass die Wortwahl unverändert. Antworte nur mit dem korrigierten Text.\n\nwen du noch fragen hast dan melde dich",
+    "expected": "Wenn du noch Fragen hast, dann melde dich."
+  },
+  {
+    "id": "closing",
+    "kind": "edit",
+    "prompt": "Korrigiere Rechtschreibung, Großschreibung und nötige Satzzeichen. Lass die Wortwahl unverändert. Antworte nur mit dem korrigierten Text.\n\nvielen dank für ihre hilfe",
+    "expected": "Vielen Dank für Ihre Hilfe."
+  },
+  {
+    "id": "report",
+    "kind": "edit",
+    "prompt": "Korrigiere Rechtschreibung, Großschreibung und nötige Satzzeichen. Lass die Wortwahl unverändert. Antworte nur mit dem korrigierten Text.\n\nich habe den bericht gelessen aber noch keine rükmeldung gegeben",
+    "expected": "Ich habe den Bericht gelesen, aber noch keine Rückmeldung gegeben."
+  },
+  {
+    "id": "rename",
+    "kind": "python",
+    "prompt": "Bearbeite diesen Python-Code. Gib nur den vollständigen Python-Code aus. Benenne ausschließlich die Variable total in subtotal um, in Zuweisung und Rückgabe.\n\ndef bill(prices):\n    total = sum(prices)\n    return total",
+    "expected": "def bill(prices):\n    subtotal = sum(prices)\n    return subtotal"
+  },
+  {
+    "id": "boundary",
+    "kind": "python",
+    "prompt": "Bearbeite diesen Python-Code. Gib nur den vollständigen Python-Code aus. Ändere ausschließlich die Bedingung: 18 soll bereits erlaubt sein.\n\ndef allowed(age):\n    return age > 18",
+    "expected": "def allowed(age):\n    return age >= 18"
+  },
+  {
+    "id": "argument",
+    "kind": "python",
+    "prompt": "Bearbeite diesen Python-Code. Gib nur den vollständigen Python-Code aus. Benenne ausschließlich den Parameter n in count um, einschließlich seiner Verwendung.\n\ndef double(n):\n    return n * 2",
+    "expected": "def double(count):\n    return count * 2"
+  },
+  {
+    "id": "filter",
+    "kind": "python",
+    "prompt": "Bearbeite diesen Python-Code. Gib nur den vollständigen Python-Code aus. Ersetze ausschließlich den Vergleich so, dass auch 0 enthalten ist.\n\ndef positive(xs):\n    return [x for x in xs if x > 0]",
+    "expected": "def positive(xs):\n    return [x for x in xs if x >= 0]"
+  },
+  {
+    "id": "guard",
+    "kind": "python",
+    "prompt": "Bearbeite diesen Python-Code. Gib nur den vollständigen Python-Code aus. Füge als erste Anweisung `if not xs: return None` hinzu, restlichen Code beibehalten.\n\ndef first(xs):\n    return xs[0]",
+    "expected": "def first(xs):\n    if not xs:\n        return None\n    return xs[0]"
+  },
+  {
+    "id": "default",
+    "kind": "python",
+    "prompt": "Bearbeite diesen Python-Code. Gib nur den vollständigen Python-Code aus. Ergänze für limit ausschließlich den Standardwert 10.\n\ndef take(xs, limit):\n    return xs[:limit]",
+    "expected": "def take(xs, limit=10):\n    return xs[:limit]"
+  },
+  {
+    "id": "comprehension",
+    "kind": "python",
+    "prompt": "Bearbeite diesen Python-Code. Gib nur den vollständigen Python-Code aus. Ändere die List Comprehension ausschließlich so, dass jeder enthaltene Wert quadriert wird.\n\ndef transform(xs):\n    return [x for x in xs if x > 0]",
+    "expected": "def transform(xs):\n    return [x ** 2 for x in xs if x > 0]"
+  },
+  {
+    "id": "keyword",
+    "kind": "python",
+    "prompt": "Bearbeite diesen Python-Code. Gib nur den vollständigen Python-Code aus. Füge nach dem Parameter xs das Trennzeichen * ein, damit reverse nur als Keyword übergeben wird.\n\ndef sorted_copy(xs, reverse=False):\n    return sorted(xs, reverse=reverse)",
+    "expected": "def sorted_copy(xs, *, reverse=False):\n    return sorted(xs, reverse=reverse)"
+  },
+  {
+    "id": "units",
+    "kind": "json",
+    "prompt": "Extrahiere artikel (String) und anzahl (Integer): 'Wir bestellen 12 Filter.'\nGib ausschließlich ein gültiges JSON-Objekt mit den genannten Schlüsseln aus, ohne Markdown.",
+    "expected": {
+      "artikel": "Filter",
+      "anzahl": 12
+    }
+  },
+  {
+    "id": "boolean",
+    "kind": "json",
+    "prompt": "Extrahiere bezahlt (Boolean) und betrag (Integer in Euro): 'Die Rechnung über 49 Euro ist noch offen.'\nGib ausschließlich ein gültiges JSON-Objekt mit den genannten Schlüsseln aus, ohne Markdown.",
+    "expected": {
+      "bezahlt": false,
+      "betrag": 49
+    }
+  },
+  {
+    "id": "optional",
+    "kind": "json",
+    "prompt": "Extrahiere ort (String) und datum (YYYY-MM-DD, sonst null): 'Der Termin ist in Mainz, das Datum steht noch nicht fest.'\nGib ausschließlich ein gültiges JSON-Objekt mit den genannten Schlüsseln aus, ohne Markdown.",
+    "expected": {
+      "ort": "Mainz",
+      "datum": null
+    }
+  },
+  {
+    "id": "array",
+    "kind": "json",
+    "prompt": "Schlüssel namen, Liste in der ursprünglichen Reihenfolge: 'Es kommen Ava, Ben und Cem.'\nGib ausschließlich ein gültiges JSON-Objekt mit den genannten Schlüsseln aus, ohne Markdown.",
+    "expected": {
+      "namen": [
+        "Ava",
+        "Ben",
+        "Cem"
+      ]
+    }
+  },
+  {
+    "id": "nested",
+    "kind": "json",
+    "prompt": "Wandle in ein Objekt mit kontakt als verschachteltem Objekt mit name und ort um: 'Kontakt: Ada, Köln.'\nGib ausschließlich ein gültiges JSON-Objekt mit den genannten Schlüsseln aus, ohne Markdown.",
+    "expected": {
+      "kontakt": {
+        "name": "Ada",
+        "ort": "Köln"
+      }
+    }
+  },
+  {
+    "id": "calendar",
+    "kind": "json",
+    "prompt": "Extrahiere datum (YYYY-MM-DD) und uhrzeit (HH:MM): 'Treffen am 7. Mai 2027 um 9 Uhr 5.'\nGib ausschließlich ein gültiges JSON-Objekt mit den genannten Schlüsseln aus, ohne Markdown.",
+    "expected": {
+      "datum": "2027-05-07",
+      "uhrzeit": "09:05"
+    }
+  },
+  {
+    "id": "cents",
+    "kind": "json",
+    "prompt": "Extrahiere cent (Integer) und waehrung (ISO-Code): 'Der Artikel kostet 2 Euro und 5 Cent.'\nGib ausschließlich ein gültiges JSON-Objekt mit den genannten Schlüsseln aus, ohne Markdown.",
+    "expected": {
+      "cent": 205,
+      "waehrung": "EUR"
+    }
+  },
+  {
+    "id": "selection",
+    "kind": "json",
+    "prompt": "Gib nur die verfügbaren Produkte als Liste unter lieferbar aus, in Textreihenfolge: 'Tee verfügbar, Reis ausverkauft, Salz verfügbar.'\nGib ausschließlich ein gültiges JSON-Objekt mit den genannten Schlüsseln aus, ohne Markdown.",
+    "expected": {
+      "lieferbar": [
+        "Tee",
+        "Salz"
+      ]
+    }
+  }
+]
