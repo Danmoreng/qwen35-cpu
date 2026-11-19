@@ -5,6 +5,8 @@ using models quantized from the same Qwen3.5-4B snapshot. It measures a
 complete file-editing session, a fixed cold/warm continuation and offline
 browser checks.
 
+The [optimized native verifier and tool checkpoints](#optimized-native-verifier-and-tool-checkpoints) section gives the follow-up results on the same machine.
+
 ## Agent sessions
 
 The table reports the median elapsed time for all four user turns across
@@ -97,6 +99,43 @@ buffer without a stall.
 | Native, MTP depth 3 with prefix reuse | 276.0 | 23.8 | 41.3 |
 | ik_llama.cpp, MTP off | 327.8 | 21.1 | 21.1 |
 | ik_llama.cpp, MTP depth 4 | 272.7 | 28.3 | 48.1 |
+
+## Optimized native verifier and tool checkpoints
+
+A second series used native commit `2465c50`. The CPU, model files, Pi version, browser fixture, six-core affinity, sampling settings and 512 MiB cache matched the comparison above. Each configuration ran sequentially with one warmup and three measured passes. All times in the next two tables are medians. Agent decode rates use the native phase counter and fixed continuations use the first and last streamed tokens.
+
+| Native agent configuration | Four turns | New prefill tokens | Cached input | Prefill time | Decode time | Agent decode, tok/s |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Previous MTP-3 | 328.81 s | 21,147 | 51.1% | 91.35 s | 237.10 s | 27.6 |
+| Optimized MTP-3 | 243.27 s | 11,903 | 72.5% | 50.29 s | 192.64 s | 34.0 |
+| Optimized MTP-4 | 234.33 s | 11,903 | 72.5% | 50.34 s | 183.81 s | 35.7 |
+
+At depth four the native agent used 28.7% less elapsed time than the previous depth-three implementation. At logical prompts of 4K–8K, optimized native depth three measured 31.9 decode tokens/s and depth four measured 33.9. The earlier native MTP-3 and ik_llama.cpp MTP-4 comparison measured 26.6 and 42.3 tokens/s in this band.
+
+Each measured native run matched all 14 baseline responses and all four filesystem checkpoints, including the missing file on turns one and two. Pi generated 6,572 tokens and the final game passed 0/12 browser checks. The longer tool checkpoints served 31,339 of 43,242 input tokens. The original cache served 22,095. The final 8,077-token prompt restored 7,507 tokens. A change of user turn did lose one earlier 889-token hit under the same cache budget.
+
+The earlier ik_llama.cpp MTP-4 session took 203.13 s, generated 5,147 tokens and passed 0/12 checks. Its agent followed a different sequence of tool calls. The following fixed-request series reran both engines on the same two prompts with a 144-token output limit. The cold continuations differed between engines. The warm continuation was byte-identical across all native and ik_llama.cpp modes.
+
+| Backend | Cold decode, tok/s | Warm decode, tok/s | First warm output | Full warm request |
+| --- | ---: | ---: | ---: | ---: |
+| Previous native ordinary | 20.2 | 20.1 | 80 ms | 7.196 s |
+| Optimized native ordinary | 20.3 | 20.3 | 80 ms | 7.136 s |
+| Previous native MTP-3 | 24.5 | 43.3 | 81 ms | 3.403 s |
+| Optimized native MTP-2 | 33.8 | 39.3 | 80 ms | 3.721 s |
+| Optimized native MTP-3 | 32.7 | 45.7 | 83 ms | 3.212 s |
+| Optimized native MTP-4 | 32.2 | 47.0 | 80 ms | 3.122 s |
+| ik_llama.cpp MTP-2 | 30.8 | 39.9 | 154 ms | 3.758 s |
+| ik_llama.cpp MTP-4 | 28.6 | 48.5 | 155 ms | 3.111 s |
+
+At depth four, cold prefill measured 276.3 tok/s on native and 268.0 tok/s on ik_llama.cpp using the backend phase counters. The complete warm requests finished 11 ms apart in the median.
+
+The verifier retains accepted target KV rows and saves the middle linear-layer input projections. After a partial match it can advance the recurrent state without a second target-model forward. An instrumented baseline on the complete 1,857-token tool write spent 6.64 s replaying accepted positions and 0.94 s copying recurrent checkpoints. Transformer matrix projections excluding the output head took 21.29 s, the vocabulary projection took 3.56 s, full attention took 4.41 s, linear attention took 1.43 s and target token selection took 4.42 s. The counters cover the verifier. The separate MTP proposal phase took 16.74 s.
+
+Additional changes batch two, three and five independently prepared Q4 DOT4 inputs on AVX-512 VNNI, use a 16-output-row tile for four input rows, and process attention values in context blocks. Greedy JSON selection tests the highest finite logit before building the fallback heap. A tool result can now extend the retained chat checkpoint. The engine releases the consumed handle when a larger snapshot needs its cache space.
+
+During screening, a request-local controller explored MTP depths 2–4 and ranked them by elapsed time per committed token. On the complete tool write it took 50.75 s, compared with 49.75 s for fixed depth four. Parallel recurrent checkpoint copying and a 32-output-row tile also stayed experimental. Screening timings are retained separately from the repeated comparisons.
+
+The [optimization evidence](../results/qwen35-4b-agent-2026-11-19/native-optimization.json) records the measured runs, binary hashes, exact output checks and server commands. To reproduce, use the Pi fixture and fixed-request commands below with the new native binary at depths 2–4. The agent series uses depths three and four. The [long tool fixture](../../tests/fixtures/qwen35-mtp-long-tool.json) reproduces the isolated write. Local profiles and browser artifacts are under `benchmarks/ryzen-mtp-tuning/`.
 
 ## Quantization fidelity
 
