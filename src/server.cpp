@@ -104,8 +104,8 @@ class Service {
   std::size_t outstanding_ = 0;
   std::thread worker_;
   void configure_cache(CpuRequestSpec &spec, std::size_t candidate) {
-    if (!automatic_prefix_ || !prefix_budget_ || spec.draft_mode == CpuDraftMode::mtp) return;
-    spec.prefix = engine_->find_prefix(spec.prompt_tokens, spec.trust_namespace);
+    if (!automatic_prefix_ || !prefix_budget_) return;
+    spec.prefix = engine_->find_prefix(spec.prompt_tokens, spec.trust_namespace, spec.draft_mode);
     if (candidate >= 32 && (!spec.prefix || spec.prefix->token_count() < candidate))
       spec.register_prefix_tokens = candidate;
   }

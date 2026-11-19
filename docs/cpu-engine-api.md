@@ -152,11 +152,19 @@ overwrites committed MTP KV rows with the corresponding target features after
 verification. A multi-request batch uses ordinary target decoding and advances
 the MTP cache so a later single-request turn can resume drafting.
 
-MTP requests use cold prompt prefill. They support constrained sampling, with
-the live constraint advancing on each selected target token. A constraint can
+For MTP, pass `CpuDraftMode::mtp` to `register_prefix` and `find_prefix`.
+Serving requests that set `register_prefix_tokens` derive the snapshot kind
+from the request's draft mode. An MTP snapshot holds committed sidecar
+attention KV alongside the target snapshot and its normalized final hidden
+row. Restoration copies the sidecar rows into request-local state and uses
+the existing final hidden row. The shared prefix budget counts the sidecar
+rows. The same prompt and namespace can hold both snapshot kinds.
+
+MTP supports constrained sampling, with the live constraint advancing on each
+selected target token. A constraint can
 provide a private copy via `fork_for_greedy_draft()` for grammar-guided
 proposals. The HTTP JSON and tool-call grammar provides this copy.
-Prefix snapshots, forced tokens and logit callbacks require the ordinary
+Forced tokens and logit callbacks require the ordinary
 request path. The benchmark profile records MTP prefill overhead, proposal,
 verification and cache-repair times separately. In
 `mtp_batches_by_proposals`, the four elements count verification forwards

@@ -72,9 +72,11 @@ struct CpuPrefix::Impl {
   std::shared_ptr<const CpuModel> model;
   CpuPrefixCacheSnapshot snapshot;
   std::vector<float> final_hidden;
+  std::vector<std::uint16_t> mtp_keys, mtp_values;
   std::string trust_namespace;
   std::size_t prefill_chunk_size = 0, bytes = 0;
   bool paged_kv = false;
+  bool has_mtp() const noexcept { return !mtp_keys.empty(); }
 };
 
 struct CpuEngine::Impl {
@@ -103,6 +105,10 @@ struct CpuEngine::Impl {
   CpuRequestId last_prefill = 0, last_decode = 0;
   std::vector<std::shared_ptr<const CpuPrefix>> prefixes;
   std::size_t prefix_bytes = 0;
+  bool supports_mtp() const noexcept {
+    return model->impl_->mtp && model->supports_selected_logits() &&
+           cpu::q8_0_backend_uses_avx2(model->impl_->backend);
+  }
   bool prefix_room(std::size_t bytes, std::string &error) {
     if (bytes > config.max_prefix_bytes) {
       error = "Prefix exceeds the hybrid snapshot budget.";
@@ -271,7 +277,8 @@ struct CpuEngine::Impl {
     const auto &d = model->impl_->dims;
     const auto capacity =
         s.spec.prompt_tokens.size() + s.spec.max_new_tokens - 1;
-    if (s.spec.draft_mode == CpuDraftMode::mtp && s.spec.max_new_tokens > 2) {
+    if (s.spec.draft_mode == CpuDraftMode::mtp &&
+        (s.spec.max_new_tokens > 2 || s.spec.prefix || s.spec.register_prefix_tokens)) {
       s.mtp = std::make_unique<MtpState>();
       s.mtp->target_hidden.resize(d.hidden);
       const auto values = capacity * static_cast<std::size_t>(d.n_kv_heads) * d.head_dim;
@@ -306,8 +313,7 @@ struct CpuEngine::Impl {
             capacity * static_cast<std::size_t>(d.n_kv_heads) * d.head_dim;
         if (config.shared_kv_pages) {
           state.pages=cpu::KvPagesF16(static_cast<std::size_t>(d.n_kv_heads)*d.head_dim,capacity);
-        } else if (config.kv_cache_bits == 16 ||
-                   (!config.kv_cache_bits && cpu::q8_0_backend_uses_avx2(model->impl_->backend))) {
+        } else if (prefix_uses_fp16()) {
           state.k_cache_f16.resize(values);
           state.v_cache_f16.resize(values);
         } else {
@@ -330,10 +336,17 @@ struct CpuEngine::Impl {
       const auto start = std::chrono::steady_clock::now();
       const auto count = s.spec.prefix->token_count();
       const auto &d = model->impl_->dims;
-      if (!restore_cpu_prefix_state(s.spec.prefix->impl_->snapshot, s.state,
+      const auto &prefix = *s.spec.prefix->impl_;
+      if (!restore_cpu_prefix_state(prefix.snapshot, s.state,
                                     count, d.n_kv_heads * d.head_dim)) {
         error = "Invalid complete hybrid prefix snapshot.";
         return false;
+      }
+      if (s.mtp) {
+        auto &attention = s.mtp->attention;
+        std::copy(prefix.mtp_keys.begin(), prefix.mtp_keys.end(), attention.k_cache_f16.begin());
+        std::copy(prefix.mtp_values.begin(), prefix.mtp_values.end(), attention.v_cache_f16.begin());
+        s.mtp->target_hidden = prefix.final_hidden;
       }
       s.result.prefix_restore_ms = elapsed_ms(start);
       s.result.cached_prefix_tokens = count;
@@ -783,11 +796,9 @@ CpuRequestId CpuEngine::submit(CpuRequestSpec spec, std::string &error) {
   }
   const bool selected=!spec.selected_logit_tokens.empty() || spec.selected_logits_callback;
   if (spec.draft_mode == CpuDraftMode::mtp &&
-      (!impl_->model->impl_->mtp || !impl_->model->supports_selected_logits() ||
-       !cpu::q8_0_backend_uses_avx2(impl_->model->impl_->backend) ||
-       spec.prefix || spec.register_prefix_tokens || spec.logits_callback || selected ||
+      (!impl_->supports_mtp() || spec.logits_callback || selected ||
        !spec.forced_output_tokens.empty())) {
-    error = "MTP requires a 4B sidecar and AVX2-capable Q4 DOT4 generation without prefix restore or forced readout.";
+    error = "MTP requires a 4B sidecar and AVX2-capable Q4 DOT4 generation without forced readout.";
     return 0;
   }
   if (spec.sampling_constraint && (selected || !spec.forced_output_tokens.empty())) {
@@ -825,11 +836,13 @@ CpuRequestId CpuEngine::submit(CpuRequestSpec spec, std::string &error) {
           prefix.trust_namespace != spec.trust_namespace ||
           prefix.prefill_chunk_size != impl_->config.prefill_chunk_size ||
           prefix.paged_kv != impl_->config.shared_kv_pages ||
+          prefix.snapshot.use_f16_cache != impl_->prefix_uses_fp16() ||
+          prefix.has_mtp() != (spec.draft_mode == CpuDraftMode::mtp) ||
           prefix.snapshot.prefix_tokens.size() > spec.prompt_tokens.size() ||
           !std::equal(prefix.snapshot.prefix_tokens.begin(),
                       prefix.snapshot.prefix_tokens.end(),
                       spec.prompt_tokens.begin())) {
-        error = "Prefix model, configuration, namespace or token identity "
+        error = "Prefix model, configuration, draft kind, namespace or token identity "
                 "mismatch.";
         return 0;
       }
@@ -958,8 +971,11 @@ CpuEngineStats CpuEngine::stats() const {
     for(const auto &state:s->state.full_states)count_state(state);
     if (s->mtp) count_state(s->mtp->attention);
   }
-  for(const auto &prefix:impl_->prefixes)
+  for (const auto &prefix : impl_->prefixes) {
     for(const auto &state:prefix->impl_->snapshot.full_states)count_state(state);
+    stats.physical_kv_bytes += (prefix->impl_->mtp_keys.size() + prefix->impl_->mtp_values.size()) *
+                               sizeof(std::uint16_t);
+  }
   return stats;
 }
 

@@ -6,6 +6,111 @@
 #include <stdexcept>
 using namespace qwen35x;
 
+static void check_mtp_prefixes(const std::shared_ptr<const CpuModel> &model,
+                               CpuEngineConfig config) {
+  std::string error;
+  auto check = [&](bool ok, const char *what) {
+    if (!ok) throw std::runtime_error(std::string(what) + " " + error);
+  };
+  config.prefill_chunk_size = 64;
+  config.max_queued_requests = 3;
+  config.max_resident_requests = 3;
+  config.max_prefill_requests = 2;
+  auto engine = CpuEngine::create(model, config, error);
+  check(bool(engine), "MTP prefix engine");
+  auto run = [&](CpuEngine &engine, const std::vector<CpuRequestSpec> &specs) {
+    std::vector<CpuRequestId> ids;
+    for (const auto &spec : specs) {
+      ids.push_back(engine.submit(spec, error));
+      check(ids.back() != 0, "MTP prefix submit");
+    }
+    std::vector<CpuRequestResult> results(ids.size());
+    for (unsigned tick = 0; tick < 300; ++tick) {
+      bool progressed = false;
+      check(engine.step(progressed, error) && progressed, "MTP prefix step");
+      for (std::size_t i = 0; i < ids.size(); ++i) {
+        if (!ids[i]) continue;
+        check(engine.result(ids[i], results[i]), "MTP prefix result");
+        std::vector<std::int32_t> ignored;
+        check(engine.read_output(ids[i], config.max_buffered_tokens, ignored, error), "MTP prefix drain");
+        if (results[i].status == CpuRequestStatus::complete) {
+          check(engine.release(ids[i]), "MTP prefix release");
+          ids[i] = 0;
+        }
+      }
+      if (std::all_of(ids.begin(), ids.end(), [](auto id) { return id == 0; }))
+        return results;
+    }
+    throw std::runtime_error("MTP prefix requests did not finish");
+  };
+
+  CpuRequestSpec req;
+  req.prompt_tokens.resize(128, 2233);
+  req.prompt_tokens.back() = 13;
+  req.trust_namespace = "explicit-mtp-prefix";
+  req.max_new_tokens = 12;
+  req.draft_mode = CpuDraftMode::mtp;
+  const auto target = engine->register_prefix(req.prompt_tokens, req.trust_namespace, error);
+  check(target && !engine->find_prefix(req.prompt_tokens, req.trust_namespace, req.draft_mode),
+        "Target-only prefix must miss MTP lookup");
+  req.prefix = target;
+  check(!engine->submit(req, error), "MTP must reject a target-only snapshot");
+  req.prefix.reset();
+  const auto mtp = engine->register_prefix(req.prompt_tokens, req.trust_namespace, error, req.draft_mode);
+  check(mtp && mtp->size_bytes() > target->size_bytes(), "MTP KV must count against the prefix budget");
+  check(engine->find_prefix(req.prompt_tokens, req.trust_namespace) == target &&
+        engine->find_prefix(req.prompt_tokens, req.trust_namespace, req.draft_mode) == mtp &&
+        !engine->find_prefix(req.prompt_tokens, "other", req.draft_mode), "MTP prefix lookup identity");
+  for (float temperature : {0.0f, 0.7f}) {
+    req.sampling.temperature = temperature;
+    req.sampling.seed = 91;
+    req.sampling.top_k = 40;
+    req.sampling.top_p = 0.9f;
+    for (bool full : {true, false}) {
+      auto cold = req;
+      if (!full) cold.prompt_tokens.insert(cold.prompt_tokens.end(), {785, 2747, 315, 279});
+      const auto expected = run(*engine, {cold}).front();
+      const auto before = engine->stats();
+      cold.prefix = mtp;
+      const auto warm = run(*engine, {cold}).front();
+      check(warm.cached_prefix_tokens == 128 && warm.prefill_tokens == (full ? 0 : 4) &&
+            warm.output_tokens == expected.output_tokens, "Cold and warm MTP parity");
+      check(engine->stats().proposed_tokens > before.proposed_tokens, "MTP did not draft after restore");
+    }
+  }
+
+  req.sampling.temperature = 0;
+  req.trust_namespace = "automatic-mtp-prefix";
+  req.register_prefix_tokens = 64;
+  auto ordinary = req;
+  ordinary.draft_mode = CpuDraftMode::off;
+  const auto mixed = run(*engine, {req, ordinary, req});
+  check(mixed[0].prefix_written_tokens == 64 && mixed[1].prefix_written_tokens == 64 &&
+        mixed[2].cached_prefix_tokens == 64, "MTP and target-only single-flight builds");
+  check(mixed[2].output_tokens == mixed[0].output_tokens, "MTP single-flight output parity");
+  req.prefix = engine->find_prefix(req.prompt_tokens, req.trust_namespace, req.draft_mode);
+  req.register_prefix_tokens = 128;
+  const auto extended = run(*engine, {req}).front();
+  check(extended.cached_prefix_tokens == 64 && extended.prefix_written_tokens == 64 &&
+        extended.output_tokens == mixed[0].output_tokens, "Extend a restored MTP snapshot");
+  req.prefix = engine->find_prefix(req.prompt_tokens, req.trust_namespace, req.draft_mode);
+  req.register_prefix_tokens = 0;
+  req.max_new_tokens = 1;
+  const auto short_hit = run(*engine, {req}).front();
+  check(short_hit.cached_prefix_tokens == 128 && short_hit.output_tokens.front() == mixed[0].output_tokens.front(),
+        "Short request can reuse an MTP snapshot");
+
+  config.max_prefix_bytes = target->size_bytes();
+  auto bounded = CpuEngine::create(model, config, error);
+  check(bool(bounded), "Budgeted MTP prefix engine");
+  req.prefix.reset();
+  req.max_new_tokens = 12;
+  req.register_prefix_tokens = 128;
+  const auto fallback = run(*bounded, {req}).front();
+  check(fallback.prefix_written_tokens == 0 && bounded->stats().prefix_build_fallbacks == 1 &&
+        fallback.output_tokens == mixed[0].output_tokens, "MTP budget fallback");
+}
+
 int main(int argc, char **argv) try {
   if (argc != 3 && argc != 4)
     throw std::runtime_error("Usage: cpu_draft_model_test MODEL_DIR WEIGHTS [MTP_SIDECAR]");
@@ -163,8 +268,9 @@ int main(int argc, char **argv) try {
         require(serving_stats.physical_kv_bytes == 0, "MTP serving KV was retained after retirement");
       }
     }
+    if (!load.mtp_weights_path.empty()) check_mtp_prefixes(model, cfg);
   }
   std::cout << "Verified acceptance, rollback, cooldown, stop sequences, seeded sampling and both KV layouts\n";
   if (!load.mtp_weights_path.empty())
-    std::cout << "Verified MTP sampling, multi-request fallback, streaming and KV retirement\n";
+    std::cout << "Verified MTP sampling, multi-request fallback, streaming, KV retirement and prefix reuse\n";
 } catch(const std::exception &e) {std::cerr << e.what() << '\n'; return 1;}

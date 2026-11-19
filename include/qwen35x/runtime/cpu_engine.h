@@ -179,15 +179,17 @@ public:
   CpuEngine(const CpuEngine &) = delete;
   CpuEngine &operator=(const CpuEngine &) = delete;
   CpuRequestId submit(CpuRequestSpec spec, std::string &error);
-  // Explicit synchronous build, deduplicated by exact tokens and namespace.
-  // Budgets include KV, DeltaNet, convolution, token IDs and final hidden data.
+  // Explicit synchronous build, deduplicated by exact tokens, namespace and
+  // snapshot kind. Pass mtp to include the sidecar's committed attention KV.
   std::shared_ptr<const CpuPrefix>
   register_prefix(std::span<const std::int32_t> tokens,
-                  std::string trust_namespace, std::string &error);
+                  std::string trust_namespace, std::string &error,
+                  CpuDraftMode draft_mode = CpuDraftMode::off);
   // Longest retained exact match in this engine/namespace; updates LRU order.
   // Does not build state or run inference. The returned handle pins its storage.
   std::shared_ptr<const CpuPrefix>
-  find_prefix(std::span<const std::int32_t> tokens, const std::string &trust_namespace);
+  find_prefix(std::span<const std::int32_t> tokens, const std::string &trust_namespace,
+              CpuDraftMode draft_mode = CpuDraftMode::off);
   // One prefill chunk or decode step. Opt-in drafting may deliver up to five tokens.
   bool advance(CpuRequestId id, std::string &error);
   // One decode row per distinct active request, in the supplied row order.

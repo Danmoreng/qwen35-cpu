@@ -231,7 +231,7 @@ int main(int argc, char **argv) try {
     const auto start = Clock::now();
     prefix = engine->register_prefix(
         std::span<const std::int32_t>(spec.prompt_tokens.data(), prefix_tokens),
-        "benchmark", error);
+        "benchmark", error, spec.draft_mode);
     check(bool(prefix));
     prefix_build_ms = ms(start);
   }

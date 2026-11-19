@@ -325,6 +325,9 @@ turn. A later turn can reuse an existing snapshot and publish a longer one.
 Automatic builds require at least 32 tokens. Concurrent matching builds share
 one leader. Snapshots retain FP16 KV, private FP32 recurrent/convolution state
 and the final hidden state; a cached sampled answer is never reused.
+MTP snapshots also retain the sidecar's FP16 attention KV. The cache budget
+includes those rows. Lookup and single-flight builds match the draft snapshot
+kind, so a server can interleave MTP and ordinary requests in one namespace.
 
 On completion routes, `cache_prompt: false` bypasses automatic reuse/builds for
 that request. `prefix_tokens` remains an explicit override: a positive value
@@ -491,7 +494,6 @@ For experimental learned 4B drafting, start the server with the native 4B
 checkpoint and `--mtp-weights FILE`. Select `"draft": "mtp"` in a chat
 completion or a raw completion. `--mtp-depth 1|2|3|4` sets the proposal limit
 and defaults to one.
-MTP requests prefill their own KV cache and bypass automatic prefix reuse.
 Chat function tools and JSON schemas use a private grammar for proposed
 tokens and the target grammar for the emitted result. When an MTP sidecar is
 loaded, `GET /v1/cache` includes cumulative draft counters and the four
