@@ -24,6 +24,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 - [Fine-tune serving](benchmarks/finetune-serving.md) compares Prism and QEV against BF16 and tests shared decision prefill.
 - [Batches API throughput](benchmarks/batch-api.md) compares serial and concurrent processing of 16 German text corrections.
 - [Speculative text decoding](benchmarks/text-drafting.md) compares prompt and input-source lookup on single-stream editing and generation.
+- [Adaptive drafting on Ryzen](benchmarks/adaptive-drafting-ryzen.md) measures 2B text drafting and the low-acceptance fallback.
 - [AVX-512 DeltaNet decode](benchmarks/deltanet-xeon.md) measures single-stream generation on a Xeon VM.
 - [Parallel batch decode on Zen 4](benchmarks/zen4-batch-decode.md) measures the DeltaNet dispatch change with 0.8B and 2B.
 - [Native prefill optimization](benchmarks/native-prefill.md): paired measurements and bitwise quality checks.

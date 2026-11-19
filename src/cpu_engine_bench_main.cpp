@@ -330,6 +330,7 @@ int main(int argc, char **argv) try {
       << ",\"prefix_cache_bytes\":" << (prefix ? prefix->size_bytes() : 0)
       << ",\"draft_rounds\":" << stats.draft_rounds << ",\"proposed_tokens\":" << stats.proposed_tokens
       << ",\"accepted_draft_tokens\":" << stats.accepted_draft_tokens << ",\"replayed_tokens\":" << stats.replayed_tokens
+      << ",\"draft_cooldowns\":" << stats.draft_cooldowns
       << ",\"decode_time_ms\":" << decode_ms
       << ",\"tokens_per_second\":" << throughput
       << ",\"per_request_tokens_per_second\":" << throughput / batch_size

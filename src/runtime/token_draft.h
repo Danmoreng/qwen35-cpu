@@ -12,8 +12,11 @@ struct DraftProposal {
 
 // Index only suffixes with a known successor. All vocabulary IDs fit in 18 bits.
 class TokenDraft {
+  static constexpr std::size_t acceptance_window = 12;
+  static constexpr std::size_t cooldown_tokens = 16;
   std::unordered_map<std::uint64_t, std::size_t> successor_;
   std::size_t indexed_ = 3, cursor_ = 0;
+  std::size_t proposed_ = 0, accepted_ = 0, resume_at_ = 0;
 
   template<class TokenAt>
   static std::uint64_t key(TokenAt at, std::size_t end) {
@@ -22,6 +25,8 @@ class TokenDraft {
   }
 
 public:
+  bool ready(std::size_t generated) const { return generated >= resume_at_; }
+
   DraftProposal propose(const CpuRequestSpec &spec, std::span<const std::int32_t> output,
                         std::size_t limit) {
     DraftProposal result;
@@ -65,8 +70,16 @@ public:
     return result;
   }
 
-  void accepted(const DraftProposal &proposal, std::size_t length) {
+  bool record_verification(const DraftProposal &proposal, std::size_t length,
+                           std::size_t generated) {
     cursor_ = proposal.source_offset + length;
+    proposed_ += proposal.count;
+    accepted_ += length;
+    if (proposed_ < acceptance_window) return false;
+    const bool low_acceptance = accepted_ * 3 < proposed_;
+    proposed_ = accepted_ = 0;
+    if (low_acceptance) resume_at_ = generated + cooldown_tokens;
+    return low_acceptance;
   }
 };
 } // namespace qwen35x::detail

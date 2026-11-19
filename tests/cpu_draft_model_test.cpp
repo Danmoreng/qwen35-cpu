@@ -1,5 +1,6 @@
 #include "qwen35x/compiler/compiler.h"
 #include "qwen35x/runtime/cpu_engine.h"
+#include <algorithm>
 #include <iostream>
 #include <stdexcept>
 using namespace qwen35x;
@@ -71,7 +72,26 @@ int main(int argc, char **argv) try {
         if (r.status == CpuRequestStatus::complete && streamed.size()==r.output_tokens.size()) break;
       }
       require(streamed==expected && queued->stats().draft_rounds>0,"serving parity");
+
+      req.draft_mode = CpuDraftMode::off;
+      req.draft_source_tokens.clear();
+      req.max_new_tokens = 48;
+      const auto continuation = run(req);
+      std::int32_t decoy = 0;
+      while (std::find(continuation.begin(), continuation.end(), decoy) != continuation.end())
+        ++decoy;
+      req.draft_mode = CpuDraftMode::input;
+      for (std::size_t i = 0; i < continuation.size(); i += 2) {
+        req.draft_source_tokens.push_back(continuation[i]);
+        if (i + 1 < continuation.size())
+          req.draft_source_tokens.push_back(continuation[i + 1]);
+        req.draft_source_tokens.push_back(decoy);
+      }
+      const auto before_cooldown = engine->stats();
+      require(run(req) == continuation, "cooldown output parity");
+      require(engine->stats().draft_cooldowns > before_cooldown.draft_cooldowns,
+              "cooldown did not run");
     }
   }
-  std::cout << "Verified full acceptance, each rejection position, stop sequences, seeded sampling and both KV layouts\n";
+  std::cout << "Verified acceptance, rollback, cooldown, stop sequences, seeded sampling and both KV layouts\n";
 } catch(const std::exception &e) {std::cerr << e.what() << '\n'; return 1;}

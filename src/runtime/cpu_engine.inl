@@ -427,7 +427,8 @@ struct CpuEngine::Impl {
       if (terminal(s)) break;
     }
     stats.accepted_draft_tokens += accepted;
-    s.draft.accepted(proposal, accepted);
+    if (!terminal(s) && s.draft.record_verification(proposal, accepted, s.result.generated_tokens))
+      ++stats.draft_cooldowns;
     if (used < width && !terminal(s)) {
       s.state.linear_states.swap(draft_checkpoint);
       for (auto &full : s.state.full_states)
@@ -499,7 +500,7 @@ struct CpuEngine::Impl {
         &s.counts, s.spec.sampling.repetition_penalty, -1, greedy};
     bool predict = true, ok;
     const auto start = std::chrono::steady_clock::now();
-    if (!prefill && s.spec.draft_mode != CpuDraftMode::off &&
+    if (!prefill && s.spec.draft_mode != CpuDraftMode::off && s.draft.ready(s.result.generated_tokens) &&
         s.spec.forced_output_tokens.empty() && !s.spec.logits_callback && !s.spec.sampling_constraint &&
         !model->impl_->gguf && model->supports_selected_logits() &&
         cpu::q8_0_backend_uses_avx2(model->impl_->backend)) {

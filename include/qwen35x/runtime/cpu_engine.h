@@ -154,6 +154,7 @@ struct CpuEngineStats {
   std::uint64_t prefix_hits = 0, prefix_cached_tokens = 0, prefix_evictions = 0;
   std::size_t prefix_entries = 0, prefix_bytes = 0;
   std::size_t physical_kv_bytes = 0;
+  std::size_t draft_cooldowns = 0;
 };
 
 // One owner calls these methods serially. Each engine owns one executor and

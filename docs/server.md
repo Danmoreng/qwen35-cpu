@@ -482,6 +482,11 @@ a correctness test, not a server throughput measurement.
 
 OpenAI-style `/v1/chat/completions` and `/v1/completions` accept optional `"draft": "ngram"` or `"draft": "input"`. Omit the field or use `"off"` for ordinary decode. Input mode can additionally receive a `draft_source` string containing the document to follow. Keep the document in the prompt as well. Both methods support greedy and temperature sampling with the usual top-k, top-p, repetition penalty and seed. The native CLI exposes the same modes via `--draft off|ngram|input` and `--draft-source-file FILE`.
 
+For each request, sustained low acceptance pauses lookup for the next 16
+generated tokens. Ordinary decode continues during the pause and automatic
+lookup resumes afterward. See the [drafting API](cpu-engine-api.md#text-drafts)
+for the acceptance threshold and counters.
+
 In this request the transcript supplies candidate tokens and the target model decides which corrections to make.
 
 ```json

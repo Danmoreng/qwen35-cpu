@@ -121,4 +121,15 @@ The n-gram mode indexes three-token sequences with known successors in the promp
 
 The request owner verifies one pending token and up to three candidates. Matrix projections are batched. Attention and the recurrent state advance in causal order. Every returned token is selected by the target model using the request's penalties and RNG. Unused draft positions consume no random samples. On a rejection, the engine keeps the selected replacement, restores convolution and DeltaNet state after the pending token, and replays any accepted prefix. The engine overwrites contiguous KV rows and truncates paged KV. Stop conditions and available output buffer space bound each round.
 
-One `advance()` may now deliver up to four tokens when explicitly enabled. `decode_forwards` counts committed decode positions. Engine stats separately expose draft rounds, proposed and accepted tokens, and replayed positions. The verifier retains a recurrent checkpoint per active engine (about 18 MiB plus convolution state) and may hold four vocabulary rows for sampling. Request-local lookup indices grow with the indexed text.
+After a window of at least twelve proposed tokens, acceptance below one third
+pauses draft lookup for the next 16 generated tokens in that request.
+The engine emits those tokens with ordinary decode and then tries lookup
+again. Each window starts with fresh acceptance counts.
+
+One `advance()` may deliver up to four tokens when drafting is enabled.
+`decode_forwards` counts committed decode positions. Engine stats expose
+draft rounds, proposed and accepted tokens, replayed positions, and
+`draft_cooldowns` for pauses started. The verifier retains one recurrent
+checkpoint per active engine (18 MiB for 0.8B and 2B, 48 MiB for 4B, plus
+convolution state) and may hold four vocabulary rows for sampling.
+Request-local lookup indices grow with the indexed text.
