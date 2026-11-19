@@ -58,7 +58,7 @@ int main(int argc, char **argv) try {
         "[--threads N] [--max-context N] [--max-new-tokens N]\n"
         "[--temperature F] [--top-p F] [--top-k N] [--repetition-penalty F] [--seed N]\n"
         "[--draft off|ngram|input|mtp] [--draft-source-file FILE]\n"
-        "[--mtp-weights FILE] [--mtp-depth 1..3] (4B MTP only)\n"
+        "[--mtp-weights FILE] [--mtp-depth 1..4] (4B MTP only)\n"
         "[--tokenize-out FILE] [--forced-tokens-file FILE --logits-out FILE]\n"
         "Raw text completion; supply your own rendered chat template. Default: greedy.\n";
       return 0;

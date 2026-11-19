@@ -1,0 +1,1126 @@
+{
+  "cpu": "AMD Ryzen 5 7600",
+  "cpu_mask": 63,
+  "threads": 6,
+  "compiler": "GCC 16.2.1 Release",
+  "candidate_base": "04c539ef30b30e0b73e9634d5f50176cb268c981",
+  "candidate_git_diff_sha256": "7ca842d536ebcc4b66197e9a5b8abfae333fb61349c15bcc0cd530497f6dcd43",
+  "command": [
+    "scripts/benchmark-inference-seq.ps1",
+    "-Runs",
+    "3",
+    "-WarmupRuns",
+    "1",
+    "-Affinity",
+    "63"
+  ],
+  "baseline_traces": [
+    {
+      "id": "rename",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 65,
+            "completion_tokens": 18,
+            "total_tokens": 83,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "stop",
+          "content": "def bill(prices):\n    subtotal = sum(prices)\n    return subtotal",
+          "unexpected_calls": []
+        }
+      ]
+    },
+    {
+      "id": "boundary",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 59,
+            "completion_tokens": 13,
+            "total_tokens": 72,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "stop",
+          "content": "def allowed(age):\n    return age >= 18",
+          "unexpected_calls": []
+        }
+      ]
+    },
+    {
+      "id": "argument",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 56,
+            "completion_tokens": 12,
+            "total_tokens": 68,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "stop",
+          "content": "def double(count):\n    return count * 2",
+          "unexpected_calls": []
+        }
+      ]
+    },
+    {
+      "id": "filter",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 65,
+            "completion_tokens": 20,
+            "total_tokens": 85,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "stop",
+          "content": "def positive(xs):\n    return [x for x in xs if x >= 0]",
+          "unexpected_calls": []
+        }
+      ]
+    },
+    {
+      "id": "guard",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 66,
+            "completion_tokens": 27,
+            "total_tokens": 93,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "stop",
+          "content": "```python\ndef first(xs):\n    if not xs:\n        return None\n    return xs[0]\n```",
+          "unexpected_calls": []
+        }
+      ]
+    },
+    {
+      "id": "default",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 56,
+            "completion_tokens": 22,
+            "total_tokens": 78,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "stop",
+          "content": "```python\ndef take(xs, limit=10):\n    return xs[:limit]\n```",
+          "unexpected_calls": []
+        }
+      ]
+    },
+    {
+      "id": "comprehension",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 71,
+            "completion_tokens": 28,
+            "total_tokens": 99,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "stop",
+          "content": "```python\ndef transform(xs):\n    return [x ** 2 for x in xs if x > 0]\n```",
+          "unexpected_calls": []
+        }
+      ]
+    },
+    {
+      "id": "keyword",
+      "passed": false,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 71,
+            "completion_tokens": 17,
+            "total_tokens": 88,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "stop",
+          "content": "def sorted_copy(xs, *):\n    return sorted(xs, reverse=*)",
+          "unexpected_calls": []
+        }
+      ]
+    },
+    {
+      "id": "code-invoice-edit",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 110,
+            "completion_tokens": 72,
+            "total_tokens": 182,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "stop",
+          "content": "from decimal import Decimal\n\ndef subtotal(items):\n    amount = Decimal(\"0.00\")\n    for item in items:\n        amount += item.price * item.quantity\n    return amount\n\ndef receipt(items, tax_rate):\n    net = subtotal(items)\n    return {\"net\": net, \"tax\": net * tax_rate}",
+          "unexpected_calls": []
+        }
+      ]
+    },
+    {
+      "id": "code-normalize",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 126,
+            "completion_tokens": 87,
+            "total_tokens": 213,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "stop",
+          "content": "def normalize_label(text):\n    return text.strip().lower().replace(\" \", \"-\")\n\ndef label_records(records):\n    labels = []\n    for record in records:\n        label = normalize_label(record[\"name\"])\n        if label:\n            labels.append(label)\n    return labels\n\ndef first_label(records):\n    labels = label_records(records)\n    return labels[0] if labels else None",
+          "unexpected_calls": []
+        }
+      ]
+    },
+    {
+      "id": "tool-read-route",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 257,
+            "completion_tokens": 19,
+            "total_tokens": 276,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "tool_calls",
+          "content": null,
+          "call": {
+            "name": "read_fixture",
+            "arguments": {
+              "path": "cli.py"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tool-ticket-result",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 206,
+            "completion_tokens": 21,
+            "total_tokens": 227,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "tool_calls",
+          "content": null,
+          "call": {
+            "name": "lookup_ticket",
+            "arguments": {
+              "id": "BUG-17"
+            }
+          }
+        },
+        {
+          "usage": {
+            "prompt_tokens": 96,
+            "completion_tokens": 2,
+            "total_tokens": 98,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "stop",
+          "content": "queued",
+          "unexpected_calls": []
+        }
+      ]
+    },
+    {
+      "id": "tool-auto-direct",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 219,
+            "completion_tokens": 10,
+            "total_tokens": 229,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "stop",
+          "content": "5",
+          "unexpected_calls": []
+        }
+      ]
+    },
+    {
+      "id": "tool-edit-source",
+      "passed": false,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 222,
+            "completion_tokens": 19,
+            "total_tokens": 241,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "tool_calls",
+          "content": null,
+          "call": {
+            "name": "read_fixture",
+            "arguments": {
+              "path": "invoice.py"
+            }
+          }
+        },
+        {
+          "usage": {
+            "prompt_tokens": 115,
+            "completion_tokens": 19,
+            "total_tokens": 134,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "stop",
+          "content": "{\"type\":\"tool_call\",\"name\":\"read_fixture\",\"arguments\":{\"path\":\"invoice.py\"}}",
+          "unexpected_calls": []
+        }
+      ]
+    },
+    {
+      "id": "tool-read-then-check",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 231,
+            "completion_tokens": 21,
+            "total_tokens": 252,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "tool_calls",
+          "content": null,
+          "call": {
+            "name": "read_fixture",
+            "arguments": {
+              "path": "math_utils.py"
+            }
+          }
+        },
+        {
+          "usage": {
+            "prompt_tokens": 297,
+            "completion_tokens": 19,
+            "total_tokens": 316,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "tool_calls",
+          "content": null,
+          "call": {
+            "name": "run_checks",
+            "arguments": {
+              "suite": "math_utils"
+            }
+          }
+        },
+        {
+          "usage": {
+            "prompt_tokens": 172,
+            "completion_tokens": 2,
+            "total_tokens": 174,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "stop",
+          "content": "PASS",
+          "unexpected_calls": []
+        }
+      ]
+    },
+    {
+      "id": "tool-check-sampled",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 196,
+            "completion_tokens": 18,
+            "total_tokens": 214,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "tool_calls",
+          "content": null,
+          "call": {
+            "name": "run_checks",
+            "arguments": {
+              "suite": "cli"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tool-search-arguments",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 223,
+            "completion_tokens": 23,
+            "total_tokens": 246,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "tool_calls",
+          "content": null,
+          "call": {
+            "name": "search_source",
+            "arguments": {
+              "path": "invoice.py",
+              "query": "subtotal"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prose-greedy",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 38,
+            "completion_tokens": 96,
+            "total_tokens": 134,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "length",
+          "content": "The salt air at Blackwood Point tasted like iron and old memories. Elias Thorne, the keeper of the lighthouse for forty years, stood on the jagged granite ledge, wiping the lens of his lantern with a cloth that had seen better decades. Below, the Atlantic churned against the rocks, sending up a spray that stung his eyes.\n\nIt was a Tuesday, a day usually spent in the rhythmic hum of the generator and the endless patrol of the horizon",
+          "unexpected_calls": []
+        }
+      ]
+    },
+    {
+      "id": "prose-sampled",
+      "passed": true,
+      "turns": [
+        {
+          "usage": {
+            "prompt_tokens": 38,
+            "completion_tokens": 96,
+            "total_tokens": 134,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "finish": "length",
+          "content": "The salt air tasted of rust and old pennies, a flavor Elias had known since he was a boy. At 4:00 AM, the world of the Lighthouse of St. Catherina's Point was silent, save for the rhythmic *thump-hiss* of the great Fresnel lens turning and the relentless crash of waves against the jagged granite base.\n\nElias rubbed his eyes, his shaggy hair plastered to his forehead.",
+          "unexpected_calls": []
+        }
+      ]
+    }
+  ],
+  "cases": {
+    "off": {
+      "depth": 0,
+      "measured_runs": 3,
+      "exact_response_parity": true,
+      "server_command": [
+        "build-mtp-coding-candidate/qwen35_cpu_server",
+        "--model-dir",
+        "models/qwen3.5-4b",
+        "--weights",
+        "models/qwen3.5-4b/model-mse16.q35h",
+        "--mtp-weights",
+        "models/qwen3.5-4b/mtp-h128.q35h",
+        "--mtp-depth",
+        "1",
+        "--threads",
+        "6",
+        "--residents",
+        "1",
+        "--batch-width",
+        "1",
+        "--max-context",
+        "4096",
+        "--prefix-cache",
+        "off",
+        "--port",
+        "<loopback-port>"
+      ],
+      "panel_medians": {
+        "python": {
+          "tasks": 10,
+          "passed": 9,
+          "requests": 10,
+          "http_ms": 16691.057462998288,
+          "output_tokens": 316,
+          "output_tokens_per_http_second": 18.932293576996383,
+          "proposed": 0,
+          "accepted": 0,
+          "verification_batches": 0,
+          "verification_by_proposals": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tool": {
+          "tasks": 7,
+          "passed": 6,
+          "requests": 11,
+          "http_ms": 15494.735090993345,
+          "output_tokens": 173,
+          "output_tokens_per_http_second": 11.165082783542395,
+          "proposed": 0,
+          "accepted": 0,
+          "verification_batches": 0,
+          "verification_by_proposals": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "prose": {
+          "tasks": 2,
+          "passed": 2,
+          "requests": 2,
+          "http_ms": 8951.084886997705,
+          "output_tokens": 192,
+          "output_tokens_per_http_second": 21.44991388461728,
+          "proposed": 0,
+          "accepted": 0,
+          "verification_batches": 0,
+          "verification_by_proposals": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixture_median_http_ms": {
+        "rename": 1037.149,
+        "boundary": 760.148,
+        "argument": 682.172,
+        "filter": 1098.155,
+        "guard": 1425.921,
+        "default": 1145.706,
+        "comprehension": 1478.652,
+        "keyword": 992.15,
+        "code-invoice-edit": 3705.626,
+        "code-normalize": 4285.781,
+        "tool-read-route": 1822.592,
+        "tool-ticket-result": 2062.282,
+        "tool-auto-direct": 1181.426,
+        "tool-edit-source": 2830.901,
+        "tool-read-then-check": 4288.174,
+        "tool-check-sampled": 1438.594,
+        "tool-search-arguments": 1832.631,
+        "prose-greedy": 4391.119,
+        "prose-sampled": 4560.849
+      }
+    },
+    "mtp-1": {
+      "depth": 1,
+      "measured_runs": 3,
+      "exact_response_parity": true,
+      "server_command": [
+        "build-mtp-coding-candidate/qwen35_cpu_server",
+        "--model-dir",
+        "models/qwen3.5-4b",
+        "--weights",
+        "models/qwen3.5-4b/model-mse16.q35h",
+        "--mtp-weights",
+        "models/qwen3.5-4b/mtp-h128.q35h",
+        "--mtp-depth",
+        "1",
+        "--threads",
+        "6",
+        "--residents",
+        "1",
+        "--batch-width",
+        "1",
+        "--max-context",
+        "4096",
+        "--prefix-cache",
+        "off",
+        "--port",
+        "<loopback-port>"
+      ],
+      "panel_medians": {
+        "python": {
+          "tasks": 10,
+          "passed": 9,
+          "requests": 10,
+          "http_ms": 13901.819806003914,
+          "output_tokens": 316,
+          "output_tokens_per_http_second": 22.730836999018358,
+          "proposed": 157,
+          "accepted": 154,
+          "verification_batches": 157,
+          "verification_by_proposals": [
+            157,
+            0,
+            0,
+            0
+          ]
+        },
+        "tool": {
+          "tasks": 7,
+          "passed": 6,
+          "requests": 11,
+          "http_ms": 14570.7788800064,
+          "output_tokens": 173,
+          "output_tokens_per_http_second": 11.873078400591583,
+          "proposed": 84,
+          "accepted": 83,
+          "verification_batches": 84,
+          "verification_by_proposals": [
+            84,
+            0,
+            0,
+            0
+          ]
+        },
+        "prose": {
+          "tasks": 2,
+          "passed": 2,
+          "requests": 2,
+          "http_ms": 8943.472456001473,
+          "output_tokens": 192,
+          "output_tokens_per_http_second": 21.468171445103444,
+          "proposed": 119,
+          "accepted": 69,
+          "verification_batches": 119,
+          "verification_by_proposals": [
+            119,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixture_median_http_ms": {
+        "rename": 896.544,
+        "boundary": 631.08,
+        "argument": 598.181,
+        "filter": 928.704,
+        "guard": 1207.112,
+        "default": 957.924,
+        "comprehension": 1221.226,
+        "keyword": 819.831,
+        "code-invoice-edit": 3219.718,
+        "code-normalize": 3347.254,
+        "tool-read-route": 1746.312,
+        "tool-ticket-result": 1925.758,
+        "tool-auto-direct": 1161.682,
+        "tool-edit-source": 2636.944,
+        "tool-read-then-check": 4072.093,
+        "tool-check-sampled": 1347.535,
+        "tool-search-arguments": 1670.557,
+        "prose-greedy": 4296.118,
+        "prose-sampled": 4647.354
+      }
+    },
+    "mtp-2": {
+      "depth": 2,
+      "measured_runs": 3,
+      "exact_response_parity": true,
+      "server_command": [
+        "build-mtp-coding-candidate/qwen35_cpu_server",
+        "--model-dir",
+        "models/qwen3.5-4b",
+        "--weights",
+        "models/qwen3.5-4b/model-mse16.q35h",
+        "--mtp-weights",
+        "models/qwen3.5-4b/mtp-h128.q35h",
+        "--mtp-depth",
+        "2",
+        "--threads",
+        "6",
+        "--residents",
+        "1",
+        "--batch-width",
+        "1",
+        "--max-context",
+        "4096",
+        "--prefix-cache",
+        "off",
+        "--port",
+        "<loopback-port>"
+      ],
+      "panel_medians": {
+        "python": {
+          "tasks": 10,
+          "passed": 9,
+          "requests": 10,
+          "http_ms": 12298.091783999553,
+          "output_tokens": 316,
+          "output_tokens_per_http_second": 25.695043227042117,
+          "proposed": 218,
+          "accepted": 203,
+          "verification_batches": 109,
+          "verification_by_proposals": [
+            0,
+            109,
+            0,
+            0
+          ]
+        },
+        "tool": {
+          "tasks": 7,
+          "passed": 6,
+          "requests": 11,
+          "http_ms": 13795.039189990348,
+          "output_tokens": 173,
+          "output_tokens_per_http_second": 12.540740016565408,
+          "proposed": 113,
+          "accepted": 111,
+          "verification_batches": 57,
+          "verification_by_proposals": [
+            1,
+            56,
+            0,
+            0
+          ]
+        },
+        "prose": {
+          "tasks": 2,
+          "passed": 2,
+          "requests": 2,
+          "http_ms": 10647.324868001306,
+          "output_tokens": 192,
+          "output_tokens_per_http_second": 18.032698577369683,
+          "proposed": 208,
+          "accepted": 86,
+          "verification_batches": 104,
+          "verification_by_proposals": [
+            0,
+            104,
+            0,
+            0
+          ]
+        }
+      },
+      "fixture_median_http_ms": {
+        "rename": 777.84,
+        "boundary": 549.364,
+        "argument": 630.56,
+        "filter": 817.198,
+        "guard": 1087.395,
+        "default": 919.449,
+        "comprehension": 1005.015,
+        "keyword": 801.687,
+        "code-invoice-edit": 2888.452,
+        "code-normalize": 2838.689,
+        "tool-read-route": 1645.252,
+        "tool-ticket-result": 1910.616,
+        "tool-auto-direct": 1076.893,
+        "tool-edit-source": 2356.461,
+        "tool-read-then-check": 3898.284,
+        "tool-check-sampled": 1292.769,
+        "tool-search-arguments": 1594.18,
+        "prose-greedy": 4916.945,
+        "prose-sampled": 5733.401
+      }
+    },
+    "mtp-3": {
+      "depth": 3,
+      "measured_runs": 3,
+      "exact_response_parity": true,
+      "server_command": [
+        "build-mtp-coding-candidate/qwen35_cpu_server",
+        "--model-dir",
+        "models/qwen3.5-4b",
+        "--weights",
+        "models/qwen3.5-4b/model-mse16.q35h",
+        "--mtp-weights",
+        "models/qwen3.5-4b/mtp-h128.q35h",
+        "--mtp-depth",
+        "3",
+        "--threads",
+        "6",
+        "--residents",
+        "1",
+        "--batch-width",
+        "1",
+        "--max-context",
+        "4096",
+        "--prefix-cache",
+        "off",
+        "--port",
+        "<loopback-port>"
+      ],
+      "panel_medians": {
+        "python": {
+          "tasks": 10,
+          "passed": 9,
+          "requests": 10,
+          "http_ms": 9893.614011001773,
+          "output_tokens": 316,
+          "output_tokens_per_http_second": 31.939794664377004,
+          "proposed": 252,
+          "accepted": 229,
+          "verification_batches": 84,
+          "verification_by_proposals": [
+            0,
+            0,
+            84,
+            0
+          ]
+        },
+        "tool": {
+          "tasks": 7,
+          "passed": 6,
+          "requests": 11,
+          "http_ms": 12500.852254994243,
+          "output_tokens": 173,
+          "output_tokens_per_http_second": 13.839056447602154,
+          "proposed": 134,
+          "accepted": 124,
+          "verification_batches": 48,
+          "verification_by_proposals": [
+            3,
+            4,
+            41,
+            0
+          ]
+        },
+        "prose": {
+          "tasks": 2,
+          "passed": 2,
+          "requests": 2,
+          "http_ms": 10609.10344399963,
+          "output_tokens": 192,
+          "output_tokens_per_http_second": 18.097664992473298,
+          "proposed": 304,
+          "accepted": 88,
+          "verification_batches": 102,
+          "verification_by_proposals": [
+            0,
+            2,
+            100,
+            0
+          ]
+        }
+      },
+      "fixture_median_http_ms": {
+        "rename": 674.649,
+        "boundary": 459.62,
+        "argument": 570.927,
+        "filter": 713.445,
+        "guard": 875.544,
+        "default": 651.572,
+        "comprehension": 869.299,
+        "keyword": 737.294,
+        "code-invoice-edit": 2022.016,
+        "code-normalize": 2291.329,
+        "tool-read-route": 1461.506,
+        "tool-ticket-result": 1594.444,
+        "tool-auto-direct": 1026.66,
+        "tool-edit-source": 2317.374,
+        "tool-read-then-check": 3665.167,
+        "tool-check-sampled": 1078.561,
+        "tool-search-arguments": 1351.606,
+        "prose-greedy": 5154.115,
+        "prose-sampled": 5454.989
+      }
+    },
+    "mtp-4": {
+      "depth": 4,
+      "measured_runs": 3,
+      "exact_response_parity": true,
+      "server_command": [
+        "build-mtp-coding-candidate/qwen35_cpu_server",
+        "--model-dir",
+        "models/qwen3.5-4b",
+        "--weights",
+        "models/qwen3.5-4b/model-mse16.q35h",
+        "--mtp-weights",
+        "models/qwen3.5-4b/mtp-h128.q35h",
+        "--mtp-depth",
+        "4",
+        "--threads",
+        "6",
+        "--residents",
+        "1",
+        "--batch-width",
+        "1",
+        "--max-context",
+        "4096",
+        "--prefix-cache",
+        "off",
+        "--port",
+        "<loopback-port>"
+      ],
+      "panel_medians": {
+        "python": {
+          "tasks": 10,
+          "passed": 9,
+          "requests": 10,
+          "http_ms": 10803.735343994049,
+          "output_tokens": 316,
+          "output_tokens_per_http_second": 29.249142999015515,
+          "proposed": 280,
+          "accepted": 242,
+          "verification_batches": 70,
+          "verification_by_proposals": [
+            0,
+            0,
+            0,
+            70
+          ]
+        },
+        "tool": {
+          "tasks": 7,
+          "passed": 6,
+          "requests": 11,
+          "http_ms": 12442.05625000177,
+          "output_tokens": 173,
+          "output_tokens_per_http_second": 13.90445409696451,
+          "proposed": 145,
+          "accepted": 133,
+          "verification_batches": 38,
+          "verification_by_proposals": [
+            0,
+            2,
+            3,
+            33
+          ]
+        },
+        "prose": {
+          "tasks": 2,
+          "passed": 2,
+          "requests": 2,
+          "http_ms": 13249.512212001719,
+          "output_tokens": 192,
+          "output_tokens_per_http_second": 14.491099515805715,
+          "proposed": 399,
+          "accepted": 89,
+          "verification_batches": 101,
+          "verification_by_proposals": [
+            0,
+            2,
+            1,
+            98
+          ]
+        }
+      },
+      "fixture_median_http_ms": {
+        "rename": 684.859,
+        "boundary": 594.625,
+        "argument": 651.234,
+        "filter": 645.253,
+        "guard": 970.371,
+        "default": 778.975,
+        "comprehension": 901.836,
+        "keyword": 668.02,
+        "code-invoice-edit": 2484.018,
+        "code-normalize": 2406.16,
+        "tool-read-route": 1442.577,
+        "tool-ticket-result": 1735.114,
+        "tool-auto-direct": 1009.944,
+        "tool-edit-source": 2205.51,
+        "tool-read-then-check": 3548.334,
+        "tool-check-sampled": 1105.221,
+        "tool-search-arguments": 1403.277,
+        "prose-greedy": 6508.672,
+        "prose-sampled": 6762.079
+      }
+    }
+  },
+  "matrix": [
+    {
+      "name": "off",
+      "executable": "/usr/bin/python3",
+      "args": [
+        "scripts/benchmark-mtp-coding.py",
+        "--server",
+        "build-mtp-coding-candidate/qwen35_cpu_server",
+        "--model-dir",
+        "models/qwen3.5-4b",
+        "--weights",
+        "models/qwen3.5-4b/model-mse16.q35h",
+        "--mtp-weights",
+        "models/qwen3.5-4b/mtp-h128.q35h",
+        "--fixtures",
+        "docs/results/qwen35-4b-mtp-coding-2026-11-19/fixtures.json",
+        "--text-panel",
+        "docs/results/qwen35-text-panel-2026-11-19/panel.json",
+        "--depth",
+        "0"
+      ]
+    },
+    {
+      "name": "mtp-1",
+      "executable": "/usr/bin/python3",
+      "args": [
+        "scripts/benchmark-mtp-coding.py",
+        "--server",
+        "build-mtp-coding-candidate/qwen35_cpu_server",
+        "--model-dir",
+        "models/qwen3.5-4b",
+        "--weights",
+        "models/qwen3.5-4b/model-mse16.q35h",
+        "--mtp-weights",
+        "models/qwen3.5-4b/mtp-h128.q35h",
+        "--fixtures",
+        "docs/results/qwen35-4b-mtp-coding-2026-11-19/fixtures.json",
+        "--text-panel",
+        "docs/results/qwen35-text-panel-2026-11-19/panel.json",
+        "--depth",
+        "1"
+      ]
+    },
+    {
+      "name": "mtp-2",
+      "executable": "/usr/bin/python3",
+      "args": [
+        "scripts/benchmark-mtp-coding.py",
+        "--server",
+        "build-mtp-coding-candidate/qwen35_cpu_server",
+        "--model-dir",
+        "models/qwen3.5-4b",
+        "--weights",
+        "models/qwen3.5-4b/model-mse16.q35h",
+        "--mtp-weights",
+        "models/qwen3.5-4b/mtp-h128.q35h",
+        "--fixtures",
+        "docs/results/qwen35-4b-mtp-coding-2026-11-19/fixtures.json",
+        "--text-panel",
+        "docs/results/qwen35-text-panel-2026-11-19/panel.json",
+        "--depth",
+        "2"
+      ]
+    },
+    {
+      "name": "mtp-3",
+      "executable": "/usr/bin/python3",
+      "args": [
+        "scripts/benchmark-mtp-coding.py",
+        "--server",
+        "build-mtp-coding-candidate/qwen35_cpu_server",
+        "--model-dir",
+        "models/qwen3.5-4b",
+        "--weights",
+        "models/qwen3.5-4b/model-mse16.q35h",
+        "--mtp-weights",
+        "models/qwen3.5-4b/mtp-h128.q35h",
+        "--fixtures",
+        "docs/results/qwen35-4b-mtp-coding-2026-11-19/fixtures.json",
+        "--text-panel",
+        "docs/results/qwen35-text-panel-2026-11-19/panel.json",
+        "--depth",
+        "3"
+      ]
+    },
+    {
+      "name": "mtp-4",
+      "executable": "/usr/bin/python3",
+      "args": [
+        "scripts/benchmark-mtp-coding.py",
+        "--server",
+        "build-mtp-coding-candidate/qwen35_cpu_server",
+        "--model-dir",
+        "models/qwen3.5-4b",
+        "--weights",
+        "models/qwen3.5-4b/model-mse16.q35h",
+        "--mtp-weights",
+        "models/qwen3.5-4b/mtp-h128.q35h",
+        "--fixtures",
+        "docs/results/qwen35-4b-mtp-coding-2026-11-19/fixtures.json",
+        "--text-panel",
+        "docs/results/qwen35-text-panel-2026-11-19/panel.json",
+        "--depth",
+        "4"
+      ]
+    }
+  ],
+  "raw_results": "benchmarks/qwen35-4b-mtp-coding-2026-11-19/paired",
+  "sha256": {
+    "docs/results/qwen35-4b-mtp-coding-2026-11-19/fixtures.json": "c99a86db94c275d55c3be5987dabe8a294e125009567199fb9fc0cb5eadcffc6",
+    "docs/results/qwen35-text-panel-2026-11-19/panel.json": "e0b72156221f2c59276f68340e9dbe2b529c6299ad7f026f6a53604a69b89943",
+    "scripts/benchmark-mtp-coding.py": "cbc54521ade68c60f0ba5729fe51495d08da6ce3bf17a6588021330c76c0801d",
+    "build-mtp-coding-candidate/qwen35_cpu_server": "6f06ff302abd5ca1a427999adc2de5d180e20ee89df3e2c88cde974fa6a8a8b6",
+    "scripts/benchmark-text-panel.py": "213d8c6b923ceea47527b689240f64ef47964bafa5087ff733e7f6b46eb34b24"
+  },
+  "native_inputs": {
+    "models/qwen3.5-4b/config.json": {
+      "bytes": 3161,
+      "sha256": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670"
+    },
+    "models/qwen3.5-4b/model-mse16.q35h": {
+      "bytes": 2369080576,
+      "sha256": "7db1dd7be2e74444465f833d6b639d895ff09e0b8226fb06eb925a5729a85eae"
+    },
+    "models/qwen3.5-4b/mtp-h128.q35h": {
+      "bytes": 67884736,
+      "sha256": "6f0c69032785432e21ca8f16f371ad2913f7af3b082632fddf28d60c9b7ecd37"
+    },
+    "models/qwen3.5-4b/tokenizer.json": {
+      "bytes": 12807982,
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+    },
+    "models/qwen3.5-4b/tokenizer_config.json": {
+      "bytes": 16710,
+      "sha256": "316230d6a809701f4db5ea8f8fc862bc3a6f3229c937c174e674ff3ca0a64ac8"
+    }
+  },
+  "change_sha256": {
+    "include/qwen35x/runtime/cpu_engine.h": "743e4e9263756026f05b658ce22cd460f15c79c43deb087992a66476cb8988bc",
+    "src/runtime/token_draft.h": "2b1e4b855303b35a20e1b63f3c5e2279c0a0e411344a9977d0061e87a7bc9a9b",
+    "src/runtime/cpu_engine.inl": "58389d73ed2145fde2988d351f45c227017d23b892f3b48c23697545d055949c",
+    "src/server_constraint.h": "7c9845d5a4f26ca29c9e8f667027730c04f85cd2e675d3e62e23d0a5046993a6",
+    "src/server.cpp": "de535be579bfee60b3f57b7be15e7f49776dec58edc7f622691fc18f3e886944",
+    "src/main.cpp": "f1fd869e268cf82261c943d6f2fdccf3a6bc7a376bcc330b7b10bff4a7f4c205",
+    "src/cpu_engine_bench_main.cpp": "17a651eb4c92acedbb9ca47679e508785e0d764056cd9c046bc52a346129efc1"
+  }
+}

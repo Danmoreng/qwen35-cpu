@@ -1,6 +1,7 @@
 #pragma once
 
 #include "qwen35x/runtime/options.h"
+#include <array>
 #include <span>
 #include <string_view>
 #include <stdexcept>
@@ -88,7 +89,11 @@ public:
   virtual ~CpuSamplingConstraint() = default;
   virtual bool apply(float *logits, std::size_t count, std::string &error) = 0;
   virtual bool accept(std::int32_t token, std::string &error) = 0;
+  // Optional private state for greedy drafting. The input scores already
+  // include the draft repetition penalty.
+  virtual std::unique_ptr<CpuSamplingConstraint> fork_for_greedy_draft() const { return {}; }
 };
+inline constexpr std::size_t max_mtp_draft_tokens = 4;
 enum class CpuDraftMode { off, ngram, input, mtp };
 inline CpuDraftMode parse_cpu_draft_mode(std::string_view value) {
   if (value == "off") return CpuDraftMode::off;
@@ -158,6 +163,8 @@ struct CpuEngineStats {
   std::size_t physical_kv_bytes = 0;
   std::size_t draft_cooldowns = 0;
   double mtp_prefill_ms = 0, mtp_draft_ms = 0, mtp_verify_ms = 0, mtp_repair_ms = 0;
+  // Index zero counts one proposal plus the pending token, and so on.
+  std::array<std::size_t, max_mtp_draft_tokens> mtp_batches_by_proposals{};
 };
 
 // One owner calls these methods serially. Each engine owns one executor and
@@ -181,7 +188,7 @@ public:
   // Does not build state or run inference. The returned handle pins its storage.
   std::shared_ptr<const CpuPrefix>
   find_prefix(std::span<const std::int32_t> tokens, const std::string &trust_namespace);
-  // One prefill chunk or decode step. Opt-in drafting may deliver up to four tokens.
+  // One prefill chunk or decode step. Opt-in drafting may deliver up to five tokens.
   bool advance(CpuRequestId id, std::string &error);
   // One decode row per distinct active request, in the supplied row order.
   // Prompts must be initialized first. Empty batches are a no-op; B=1 keeps

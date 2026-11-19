@@ -225,7 +225,10 @@ build/cpu_draft_model_test "$model" "$weights"
 Pass a fourth argument to validate an optional 4B MTP sidecar. This exercises
 target output parity with greedy and seeded sampling, rejections, stop
 sequences, scheduler backpressure, both target KV layouts and cache
-retirement. The numerical probe separately compares the BF16 MTP forward
+retirement. It checks a shared forward with four proposed tokens. The
+[coding and tool-call benchmark](benchmarks/qwen35-4b-mtp-coding.md)
+exercises private proposal grammar, target grammar and multi-turn outputs.
+The numerical probe separately compares the BF16 MTP forward
 with a PyTorch calculation over the source tensors.
 
 ```sh

@@ -144,7 +144,7 @@ struct CpuEngine::Impl {
     std::vector<int> greedy_tokens;
   } batch;
   MtpWorkspace mtp_scratch;
-  std::vector<float> mtp_prefill_hidden;
+  std::vector<float> mtp_prefill_hidden, mtp_logits;
 
 #include "cpu_engine_greedy.inl"
 #include "cpu_engine_state_batch.inl"
@@ -428,14 +428,45 @@ struct CpuEngine::Impl {
     const auto position = s.result.committed_tokens;
     auto previous = std::span<const float>(s.mtp->target_hidden);
     std::int32_t token = s.pending_token;
-    proposal.count = std::min({room, config.mtp_max_tokens, proposal.tokens.size()});
-    for (std::size_t row = 0; row < proposal.count; ++row) {
+    const auto limit = std::min({room, config.mtp_max_tokens, proposal.tokens.size()});
+    auto constraint = s.spec.sampling_constraint
+        ? s.spec.sampling_constraint->fork_for_greedy_draft() : nullptr;
+    for (std::size_t row = 0; row < limit; ++row) {
       if (!mtp_forward(context.get(), *m.mtp, m.weights.embed_tokens, m.dims, s.state,
-            *s.mtp, mtp_scratch, position + row, token, previous, error) ||
-          !greedy_q4_token(context.get(), m.weights.embed_tokens, mtp_scratch.head_hidden,
-            s.counts, s.spec.sampling.repetition_penalty, token, error))
+            *s.mtp, mtp_scratch, position + row, token, previous, error))
         return false;
-      proposal.tokens[row] = token;
+      if (constraint) {
+        if (!compute_next_logits_from_embedding(context.get(), m.weights.embed_tokens,
+                                                 mtp_scratch.head_hidden, mtp_logits, error))
+          return false;
+        const float penalty = s.spec.sampling.repetition_penalty;
+        if (penalty > 1.0F) {
+          const auto penalize = [penalty](float &value) {
+            value = value > 0 ? value / penalty : value * penalty;
+          };
+          for (std::size_t i = 0; i < mtp_logits.size(); ++i)
+            if (s.counts[i] > 0) penalize(mtp_logits[i]);
+          for (std::size_t i = 0; i < row; ++i) {
+            const auto prior = proposal.tokens[i];
+            const auto end = proposal.tokens.begin() + i;
+            if (!s.counts[prior] && std::find(proposal.tokens.begin(), end, prior) == end)
+              penalize(mtp_logits[prior]);
+          }
+        }
+        // A proposal may fail to extend its private grammar. The target can
+        // still continue from its live grammar by verifying the shorter prefix.
+        std::string draft_error;
+        if (!constraint->apply(mtp_logits.data(), mtp_logits.size(), draft_error)) break;
+        const auto best = std::max_element(mtp_logits.begin(), mtp_logits.end());
+        token = static_cast<std::int32_t>(best - mtp_logits.begin());
+        if (!std::isfinite(*best) || !constraint->accept(token, draft_error)) break;
+      } else if (!greedy_q4_token(context.get(), m.weights.embed_tokens, mtp_scratch.head_hidden,
+                                 s.counts, s.spec.sampling.repetition_penalty, token, error)) {
+        return false;
+      }
+      proposal.tokens[proposal.count++] = token;
+      if (constraint && std::find(s.spec.stop_token_ids.begin(), s.spec.stop_token_ids.end(), token) !=
+                            s.spec.stop_token_ids.end()) break;
       previous = mtp_scratch.head_hidden;
     }
     stats.mtp_draft_ms += elapsed_ms(start);
@@ -457,9 +488,9 @@ struct CpuEngine::Impl {
 
   bool verify_draft(Sequence &s, const detail::DraftProposal &proposal, std::string &error) {
     const auto started = s.mtp ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
-    std::array<Sequence *, 4> rows;
+    std::array<Sequence *, max_mtp_draft_tokens + 1> rows;
     rows.fill(&s);
-    std::array<std::int32_t, 4> input{s.pending_token};
+    std::array<std::int32_t, max_mtp_draft_tokens + 1> input{s.pending_token};
     std::copy_n(proposal.tokens.begin(), proposal.count, input.begin()+1);
     const auto width = proposal.count + 1;
     draft_checkpoint.resize(s.state.linear_states.size());
@@ -497,6 +528,7 @@ struct CpuEngine::Impl {
       }
     }
     if (s.mtp) {
+      ++stats.mtp_batches_by_proposals[proposal.count - 1];
       stats.mtp_verify_ms += elapsed_ms(started);
       if (!terminal(s)) {
         // The first draft KV row used the actual target hidden state. Any
@@ -575,8 +607,9 @@ struct CpuEngine::Impl {
     const auto start = std::chrono::steady_clock::now();
     const bool lookup_draft = s.spec.draft_mode == CpuDraftMode::ngram ||
                              s.spec.draft_mode == CpuDraftMode::input;
-    if (!prefill && (s.mtp || (lookup_draft && s.draft.ready(s.result.generated_tokens))) &&
-        s.spec.forced_output_tokens.empty() && !s.spec.logits_callback && !s.spec.sampling_constraint &&
+    if (!prefill && (s.mtp || (lookup_draft && !s.spec.sampling_constraint &&
+                             s.draft.ready(s.result.generated_tokens))) &&
+        s.spec.forced_output_tokens.empty() && !s.spec.logits_callback &&
         !model->impl_->gguf && model->supports_selected_logits() &&
         cpu::q8_0_backend_uses_avx2(model->impl_->backend)) {
       auto room = s.spec.max_new_tokens - s.result.generated_tokens;
@@ -687,7 +720,7 @@ CpuEngine::create(std::shared_ptr<const CpuModel> model,
           static_cast<std::size_t>(std::numeric_limits<int>::max()) ||
       !config.max_prefill_requests || config.max_prefill_requests > 8 ||
       config.prefill_chunk_size > 2048 ||
-      !config.mtp_max_tokens || config.mtp_max_tokens > 3 ||
+      !config.mtp_max_tokens || config.mtp_max_tokens > max_mtp_draft_tokens ||
       (config.kv_cache_bits != 0 && config.kv_cache_bits != 16 && config.kv_cache_bits != 32) ||
       (config.shared_kv_pages && config.kv_cache_bits == 32) ||
       (model && config.shared_kv_pages && !cpu::q8_0_backend_uses_avx2(model->impl_->backend)) ||
@@ -753,8 +786,8 @@ CpuRequestId CpuEngine::submit(CpuRequestSpec spec, std::string &error) {
       (!impl_->model->impl_->mtp || !impl_->model->supports_selected_logits() ||
        !cpu::q8_0_backend_uses_avx2(impl_->model->impl_->backend) ||
        spec.prefix || spec.register_prefix_tokens || spec.logits_callback || selected ||
-       spec.sampling_constraint || !spec.forced_output_tokens.empty())) {
-    error = "MTP requires a 4B sidecar, an AVX2-capable backend and ordinary generation with a Q4 DOT4 head.";
+       !spec.forced_output_tokens.empty())) {
+    error = "MTP requires a 4B sidecar and AVX2-capable Q4 DOT4 generation without prefix restore or forced readout.";
     return 0;
   }
   if (spec.sampling_constraint && (selected || !spec.forced_output_tokens.empty())) {

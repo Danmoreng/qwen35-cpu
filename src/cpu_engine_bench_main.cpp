@@ -335,6 +335,9 @@ int main(int argc, char **argv) try {
       << ",\"draft_cooldowns\":" << stats.draft_cooldowns
       << ",\"mtp_prefill_ms\":" << stats.mtp_prefill_ms << ",\"mtp_draft_ms\":" << stats.mtp_draft_ms
       << ",\"mtp_verify_ms\":" << stats.mtp_verify_ms << ",\"mtp_repair_ms\":" << stats.mtp_repair_ms
+      << ",\"mtp_batches_by_proposals\":[" << stats.mtp_batches_by_proposals[0] << ','
+      << stats.mtp_batches_by_proposals[1] << ',' << stats.mtp_batches_by_proposals[2] << ','
+      << stats.mtp_batches_by_proposals[3] << ']'
       << ",\"decode_time_ms\":" << decode_ms
       << ",\"tokens_per_second\":" << throughput
       << ",\"per_request_tokens_per_second\":" << throughput / batch_size

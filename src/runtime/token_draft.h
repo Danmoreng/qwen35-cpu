@@ -6,12 +6,13 @@
 
 namespace qwen35x::detail {
 struct DraftProposal {
-  std::array<std::int32_t, 3> tokens{};
+  std::array<std::int32_t, max_mtp_draft_tokens> tokens{};
   std::size_t count = 0, source_offset = 0;
 };
 
 // Index only suffixes with a known successor. All vocabulary IDs fit in 18 bits.
 class TokenDraft {
+  static constexpr std::size_t max_lookup_tokens = 3;
   static constexpr std::size_t acceptance_window = 12;
   static constexpr std::size_t cooldown_tokens = 16;
   std::unordered_map<std::uint64_t, std::size_t> successor_;
@@ -65,7 +66,7 @@ public:
     if (source_mode && output.size() == 1 && start == size && !spec.draft_source_tokens.empty())
       start = 0;
     result.source_offset = start;
-    result.count = std::min({limit, result.tokens.size(), size - start});
+    result.count = std::min({limit, max_lookup_tokens, size - start});
     for (std::size_t i = 0; i < result.count; ++i) result.tokens[i] = at(start+i);
     return result;
   }

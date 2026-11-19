@@ -1,0 +1,280 @@
+{
+  "tools": {
+    "read_fixture": {
+      "type": "function",
+      "function": {
+        "name": "read_fixture",
+        "description": "Read the text of a source file in the fixture project.",
+        "strict": true,
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "enum": [
+                "cli.py",
+                "invoice.py",
+                "math_utils.py"
+              ]
+            }
+          },
+          "required": [
+            "path"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "lookup_ticket": {
+      "type": "function",
+      "function": {
+        "name": "lookup_ticket",
+        "description": "Fetch a ticket record by its ID.",
+        "strict": true,
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "enum": [
+                "BUG-17",
+                "DOC-9"
+              ]
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "run_checks": {
+      "type": "function",
+      "function": {
+        "name": "run_checks",
+        "description": "Retrieve a fixture test result for a named module.",
+        "strict": true,
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "suite": {
+              "type": "string",
+              "enum": [
+                "invoice",
+                "math_utils",
+                "cli"
+              ]
+            }
+          },
+          "required": [
+            "suite"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "search_source": {
+      "type": "function",
+      "function": {
+        "name": "search_source",
+        "description": "Find a literal search term in one fixture source file.",
+        "strict": true,
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "enum": [
+                "cli.py",
+                "invoice.py",
+                "math_utils.py"
+              ]
+            },
+            "query": {
+              "type": "string",
+              "enum": [
+                "subtotal",
+                "main",
+                "square"
+              ]
+            }
+          },
+          "required": [
+            "path",
+            "query"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  "tasks": [
+    {
+      "id": "code-invoice-edit",
+      "kind": "python",
+      "sampled": true,
+      "max_tokens": 160,
+      "prompt": "Rename invoice_total to subtotal in the function and the call site. Preserve everything else. Output only the complete Python code.\n\nfrom decimal import Decimal\n\ndef invoice_total(items):\n    amount = Decimal(\"0.00\")\n    for item in items:\n        amount += item.price * item.quantity\n    return amount\n\ndef receipt(items, tax_rate):\n    net = invoice_total(items)\n    return {\"net\": net, \"tax\": net * tax_rate}",
+      "expected": "from decimal import Decimal\n\ndef subtotal(items):\n    amount = Decimal(\"0.00\")\n    for item in items:\n        amount += item.price * item.quantity\n    return amount\n\ndef receipt(items, tax_rate):\n    net = subtotal(items)\n    return {\"net\": net, \"tax\": net * tax_rate}"
+    },
+    {
+      "id": "code-normalize",
+      "kind": "python",
+      "max_tokens": 144,
+      "prompt": "Return only the entire revised Python module. In normalize_label, strip surrounding whitespace and lowercase the string before replacing spaces. Keep the rest of the module unchanged.\n\ndef normalize_label(text):\n    return text.replace(\" \", \"-\")\n\ndef label_records(records):\n    labels = []\n    for record in records:\n        label = normalize_label(record[\"name\"])\n        if label:\n            labels.append(label)\n    return labels\n\ndef first_label(records):\n    labels = label_records(records)\n    return labels[0] if labels else None",
+      "expected": "def normalize_label(text):\n    return text.strip().lower().replace(\" \", \"-\")\n\ndef label_records(records):\n    labels = []\n    for record in records:\n        label = normalize_label(record[\"name\"])\n        if label:\n            labels.append(label)\n    return labels\n\ndef first_label(records):\n    labels = label_records(records)\n    return labels[0] if labels else None"
+    },
+    {
+      "id": "tool-read-route",
+      "kind": "tool",
+      "prompt": "Use the appropriate tool to read the fixture source file cli.py.",
+      "tools": [
+        "lookup_ticket",
+        "read_fixture",
+        "run_checks"
+      ],
+      "choice": "required",
+      "calls": [
+        {
+          "name": "read_fixture",
+          "arguments": {
+            "path": "cli.py"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tool-ticket-result",
+      "kind": "tool",
+      "prompt": "Look up BUG-17 with the tool, then reply with only its status value.",
+      "tools": [
+        "read_fixture",
+        "lookup_ticket"
+      ],
+      "choice": "required",
+      "calls": [
+        {
+          "name": "lookup_ticket",
+          "arguments": {
+            "id": "BUG-17"
+          },
+          "result": "{\"status\":\"queued\",\"severity\":\"low\"}"
+        }
+      ],
+      "expected": "queued",
+      "final_without_tools": true
+    },
+    {
+      "id": "tool-auto-direct",
+      "kind": "tool",
+      "prompt": "What is 2 + 3? No tool is needed. Reply with only the digit.",
+      "tools": [
+        "read_fixture",
+        "lookup_ticket"
+      ],
+      "expected": "5"
+    },
+    {
+      "id": "tool-edit-source",
+      "kind": "tool",
+      "prompt": "Read invoice.py with the tool, then return only the complete revised Python code. Change the default value of units from 1 to 2. Keep the rest unchanged.",
+      "tools": [
+        "read_fixture",
+        "run_checks"
+      ],
+      "choice": "required",
+      "calls": [
+        {
+          "name": "read_fixture",
+          "arguments": {
+            "path": "invoice.py"
+          },
+          "result": "def invoice(price, units=1):\n    return price * units\n"
+        }
+      ],
+      "expected_kind": "python",
+      "expected": "def invoice(price, units=2):\n    return price * units",
+      "final_without_tools": true
+    },
+    {
+      "id": "tool-read-then-check",
+      "kind": "tool",
+      "prompt": "Use tools in this order. First read math_utils.py. Then run the math_utils check suite. After the check result, report only its status value.",
+      "tools": [
+        "read_fixture",
+        "run_checks"
+      ],
+      "choice": "auto",
+      "calls": [
+        {
+          "name": "read_fixture",
+          "arguments": {
+            "path": "math_utils.py"
+          },
+          "result": "def square(n):\n    return n * n\n"
+        },
+        {
+          "name": "run_checks",
+          "arguments": {
+            "suite": "math_utils"
+          },
+          "result": "{\"status\":\"PASS\",\"count\":3}"
+        }
+      ],
+      "expected": "PASS",
+      "final_without_tools": true
+    },
+    {
+      "id": "tool-check-sampled",
+      "kind": "tool",
+      "prompt": "Run the fixture check suite for the cli module using the tool.",
+      "tools": [
+        "run_checks",
+        "lookup_ticket"
+      ],
+      "choice": "required",
+      "calls": [
+        {
+          "name": "run_checks",
+          "arguments": {
+            "suite": "cli"
+          }
+        }
+      ],
+      "sampled": true
+    },
+    {
+      "id": "tool-search-arguments",
+      "kind": "tool",
+      "prompt": "Use the appropriate search tool to find the literal subtotal in invoice.py.",
+      "tools": [
+        "read_fixture",
+        "search_source"
+      ],
+      "choice": "required",
+      "calls": [
+        {
+          "name": "search_source",
+          "arguments": {
+            "path": "invoice.py",
+            "query": "subtotal"
+          }
+        }
+      ]
+    },
+    {
+      "id": "prose-greedy",
+      "kind": "prose",
+      "max_tokens": 96,
+      "prompt": "Write a short adventure story in English about a lighthouse keeper who finds a letter washed ashore. Start with the scene itself."
+    },
+    {
+      "id": "prose-sampled",
+      "kind": "prose",
+      "max_tokens": 96,
+      "sampled": true,
+      "prompt": "Write a short adventure story in English about a lighthouse keeper who finds a letter washed ashore. Start with the scene itself."
+    }
+  ]
+}

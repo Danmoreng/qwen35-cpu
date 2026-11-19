@@ -95,6 +95,7 @@ class Service {
   bool selected_decision_head_ = false;
   bool automatic_prefix_ = true;
   std::size_t prefix_budget_ = 0;
+  bool mtp_enabled_ = false;
   Json cache_snapshot_;
   std::mutex mutex_;
   std::condition_variable wake_;
@@ -110,11 +111,19 @@ class Service {
   }
   Json cache_stats() const {
     const auto s = engine_->stats();
-    return {{"enabled", automatic_prefix_}, {"budget_bytes", prefix_budget_},
+    Json result = {{"enabled", automatic_prefix_}, {"budget_bytes", prefix_budget_},
       {"shared_prefill_ticks", s.shared_prefill_ticks}, {"shared_prefill_requests", s.shared_prefill_requests},
       {"entries", s.prefix_entries}, {"bytes", s.prefix_bytes}, {"hits", s.prefix_hits},
       {"cached_tokens", s.prefix_cached_tokens}, {"builds", s.prefix_builds},
       {"evictions", s.prefix_evictions}, {"budget_fallbacks", s.prefix_build_fallbacks}};
+    if (mtp_enabled_) {
+      result["draft"] = {{"proposed_tokens", s.proposed_tokens},
+        {"accepted_tokens", s.accepted_draft_tokens},
+        {"mtp_batches_by_proposals", s.mtp_batches_by_proposals},
+        {"mtp_prefill_ms", s.mtp_prefill_ms}, {"mtp_draft_ms", s.mtp_draft_ms},
+        {"mtp_verify_ms", s.mtp_verify_ms}, {"mtp_repair_ms", s.mtp_repair_ms}};
+    }
+    return result;
   }
   void configure_readout(CpuRequestSpec &spec, const std::shared_ptr<Job> &job) {
     spec.max_new_tokens = 1;
@@ -367,7 +376,8 @@ class Service {
   }
 public:
   Service(const CpuLoadOptions &load, CpuEngineConfig &config, bool auto_decision_head, bool automatic_prefix, std::size_t fixed_width)
-      : max_context_(config.max_context), automatic_prefix_(automatic_prefix), prefix_budget_(config.max_prefix_bytes) {
+      : max_context_(config.max_context), automatic_prefix_(automatic_prefix),
+        prefix_budget_(config.max_prefix_bytes), mtp_enabled_(!load.mtp_weights_path.empty()) {
     std::string error;
     if (!QwenTokenizer::load_from_hf_directory(load.model_dir, tokenizer_, error)) throw std::runtime_error(error);
     classifier_ = server::Classifier::load(load.model_dir, tokenizer_);
@@ -432,7 +442,7 @@ int main(int argc, char **argv) try {
     const std::string key = argv[i];
     if (key == "--help") {
       std::cout << "Qwen3.5 CPU HTTP server\n--model-dir DIR [--weights FILE] [--threads auto|N] [--batch-width auto|N] [--batch-db PATH]\n"
-        "[--mtp-weights FILE] [--mtp-depth 1..3] (4B MTP only)\n"
+        "[--mtp-weights FILE] [--mtp-depth 1..4] (4B MTP only)\n"
         "[--host 127.0.0.1] [--port 8080] [--max-context 8192] [--residents 16]\n"
         "[--decision-encoding joint|per_question] (qev_config.json required)\n"
         "[--prefill-requests 1..8] [--decision-head auto|full] [--prefill-chunk N] (1..2048; default adaptive)\n"

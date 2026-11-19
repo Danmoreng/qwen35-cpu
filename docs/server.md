@@ -489,9 +489,13 @@ for the acceptance threshold and counters.
 
 For experimental learned 4B drafting, start the server with the native 4B
 checkpoint and `--mtp-weights FILE`. Select `"draft": "mtp"` in a chat
-completion or a raw completion. `--mtp-depth 1|2|3` sets the proposal limit
+completion or a raw completion. `--mtp-depth 1|2|3|4` sets the proposal limit
 and defaults to one.
 MTP requests prefill their own KV cache and bypass automatic prefix reuse.
+Chat function tools and JSON schemas use a private grammar for proposed
+tokens and the target grammar for the emitted result. When an MTP sidecar is
+loaded, `GET /v1/cache` includes cumulative draft counters and the four
+verification counts indexed by one through four proposals.
 See the [4B packing instructions](quantization.md#optional-4b-mtp-weights).
 
 In this request the transcript supplies candidate tokens and the target model decides which corrections to make.

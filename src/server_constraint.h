@@ -68,6 +68,11 @@ class JsonConstraint final : public CpuSamplingConstraint {
 public:
   JsonConstraint(std::shared_ptr<const ByteGrammar> grammar, std::shared_ptr<const TokenVocabulary> vocab, bool greedy)
       : grammar_(std::move(grammar)), vocab_(std::move(vocab)), state_(grammar_->initial()), greedy_(greedy) {}
+  std::unique_ptr<CpuSamplingConstraint> fork_for_greedy_draft() const override {
+    auto draft = std::make_unique<JsonConstraint>(*this);
+    draft->greedy_ = true;
+    return draft;
+  }
   bool complete() const { return grammar_->complete(state_); }
   bool apply(float *logits, std::size_t count, std::string &error) override {
     try {

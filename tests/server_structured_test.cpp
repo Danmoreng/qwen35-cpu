@@ -52,6 +52,13 @@ int main() try {
   }
   JsonConstraint incomplete(enum_grammar, vocab, false); std::string error;
   check(!incomplete.accept(6, error), "EOS accepted before complete output");
+  auto speculative = incomplete.fork_for_greedy_draft();
+  for (int token : {0, 1, 3, 4, 6})
+    check(speculative->accept(token, error), "Draft grammar rejected a valid prefix");
+  check(!incomplete.complete(), "Draft grammar advanced live target state");
+  for (int token : {0, 1, 2, 4})
+    check(incomplete.accept(token, error), "Target grammar could not take a different branch");
+  check(incomplete.complete(), "Target grammar could not complete after a draft");
   std::vector<float> empty(8, -std::numeric_limits<float>::infinity());
   check(!incomplete.apply(empty.data(), empty.size(), error), "All-masked logits accepted");
   const Json args = object_schema({{"city", {{"type", "string"}, {"enum", {"Berlin"}}}}}, {"city"});

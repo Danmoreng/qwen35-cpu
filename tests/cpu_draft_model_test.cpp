@@ -22,7 +22,7 @@ int main(int argc, char **argv) try {
   require(bool(model), "weights");
   for (bool paged : {false,true}) {
     CpuEngineConfig cfg; cfg.threads = 3; cfg.max_context = 512; cfg.shared_kv_pages = paged;
-    cfg.mtp_max_tokens = 2;
+    cfg.mtp_max_tokens = 4;
     auto engine = CpuEngine::create(model, cfg, error);
     require(bool(engine), "engine");
     auto run = [&](CpuRequestSpec spec) {
@@ -105,6 +105,8 @@ int main(int argc, char **argv) try {
         const auto accepted = after_mtp.accepted_draft_tokens - before_mtp.accepted_draft_tokens;
         require(proposed > 0 && accepted > 0 && accepted < proposed,
                 "MTP did not exercise acceptance and rejection");
+        require(after_mtp.mtp_batches_by_proposals.back() > before_mtp.mtp_batches_by_proposals.back(),
+                "MTP did not verify four proposals in one forward");
         req.stop_token_sequences = {{continuation[2], continuation[3]}};
         const auto mtp_stopped = run(req);
         req.draft_mode = CpuDraftMode::off;

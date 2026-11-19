@@ -6,6 +6,7 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
+| `qwen35-4b-mtp-coding-2026-11-19` | [4B MTP depth for coding and tool calls](../benchmarks/qwen35-4b-mtp-coding.md), source fixtures, HTTP traces and shared-target timing samples |
 | `qwen35-4b-mtp-2026-11-19` | [Native 4B MTP on Ryzen](../benchmarks/qwen35-4b-mtp.md), sidecar sizes, forward errors, output parity and sequential timings |
 | `qwen35-2b-adaptive-draft-2026-11-19` | [Adaptive drafting on Ryzen](../benchmarks/adaptive-drafting-ryzen.md), paired 2B latency, acceptance, output parity and stress fixtures |
 | `qwen35-4b-ryzen-2026-11-19` | [Native Qwen3.5-4B on Ryzen](../benchmarks/qwen35-4b-ryzen.md), throughput, memory, task panel and BF16 reference |

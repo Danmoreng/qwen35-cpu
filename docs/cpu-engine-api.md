@@ -119,19 +119,19 @@ Set `CpuRequestSpec::draft_mode` to `CpuDraftMode::ngram` or `CpuDraftMode::inpu
 
 The n-gram mode indexes three-token sequences with known successors in the prompt and already generated output. A match proposes up to three continuation tokens from the most recent occurrence. Input mode follows a cursor in the source, realigns locally after edits and uses a three-token lookup to find more distant matches. Supply `draft_source_tokens` for a particular document. An empty source selects the prompt. Include the document in the prompt so the model can read it. The separate source guides the draft lookup.
 
-The request owner verifies one pending token and up to three candidates. Matrix projections are batched. Attention and the recurrent state advance in causal order. Every returned token is selected by the target model using the request's penalties and RNG. Unused draft positions consume no random samples. On a rejection, the engine keeps the selected replacement, restores convolution and DeltaNet state after the pending token, and replays any accepted prefix. The engine overwrites contiguous KV rows and truncates paged KV. Stop conditions and available output buffer space bound each round.
+The request owner verifies one pending token and the candidate block in a single batched target forward. Lookup drafting proposes up to three candidates and MTP up to four. Attention and the recurrent state advance in causal order. Every returned token is selected by the target model using the request's penalties and RNG. Unused draft positions consume no random samples. On a rejection, the engine keeps the selected replacement, restores convolution and DeltaNet state after the pending token, and replays any accepted prefix. The engine overwrites contiguous KV rows and truncates paged KV. Stop conditions and available output buffer space bound each round.
 
 After a window of at least twelve proposed tokens, acceptance below one third
 pauses draft lookup for the next 16 generated tokens in that request.
 The engine emits those tokens with ordinary decode and then tries lookup
 again. Each window starts with fresh acceptance counts.
 
-One `advance()` may deliver up to four tokens when drafting is enabled.
+One `advance()` may deliver up to five tokens when MTP drafting is enabled.
 `decode_forwards` counts committed decode positions. Engine stats expose
 draft rounds, proposed and accepted tokens, replayed positions, and
 `draft_cooldowns` for pauses started. The verifier retains one recurrent
 checkpoint per active engine (18 MiB for 0.8B and 2B, 48 MiB for 4B, plus
-convolution state) and may hold four vocabulary rows for sampling.
+convolution state) and may hold five vocabulary rows for sampling.
 Request-local lookup indices grow with the indexed text.
 
 ### Learned MTP drafts for 4B
@@ -140,7 +140,8 @@ Load the [4B MTP sidecar](quantization.md#optional-4b-mtp-weights) via
 `CpuLoadOptions::mtp_weights_path` and select `CpuDraftMode::mtp`. The
 experimental path uses the native 4B Q4 DOT4 output head with an AVX2-capable
 backend. `CpuEngineConfig::mtp_max_tokens` defaults to one candidate token
-and also accepts two or three.
+and accepts up to four. Three proposals use one target forward with four
+causal rows including the pending token.
 
 The trained block combines the target's normalized hidden state with the
 following token's embedding and writes to a request-private FP16 KV cache.
@@ -151,7 +152,12 @@ overwrites committed MTP KV rows with the corresponding target features after
 verification. A multi-request batch uses ordinary target decoding and advances
 the MTP cache so a later single-request turn can resume drafting.
 
-MTP requests use cold prompt prefill and ordinary text generation. Prefix
-snapshots, forced tokens, logit callbacks and constrained sampling require
-the ordinary request path. The benchmark profile records MTP prefill overhead,
-proposal, verification and cache-repair times separately.
+MTP requests use cold prompt prefill. They support constrained sampling, with
+the live constraint advancing on each selected target token. A constraint can
+provide a private copy via `fork_for_greedy_draft()` for grammar-guided
+proposals. The HTTP JSON and tool-call grammar provides this copy.
+Prefix snapshots, forced tokens and logit callbacks require the ordinary
+request path. The benchmark profile records MTP prefill overhead, proposal,
+verification and cache-repair times separately. In
+`mtp_batches_by_proposals`, the four elements count verification forwards
+with one through four proposed tokens.
