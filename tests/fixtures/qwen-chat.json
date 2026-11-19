@@ -142,6 +142,88 @@
         }
       ],
       "prompt": "<|im_start|>user\nFirst<|im_end|>\n<|im_start|>assistant\nA<|im_end|>\n<|im_start|>user\nSecond<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nB<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    },
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": " Be precise. "
+        },
+        {
+          "role": "user",
+          "content": "Measure Ω."
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "reasoning_content": "  Use the meter.  ",
+          "tool_calls": [
+            {
+              "id": "call_1",
+              "type": "function",
+              "function": {
+                "name": "measure",
+                "arguments": "{\"name\": \"Größe\", \"scale\": 1.0, \"flags\": [true, false]}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "content": " 12.5 ",
+          "tool_call_id": "call_1"
+        }
+      ],
+      "prompt": "<|im_start|>system\n# Tools\n\nYou have access to the following functions:\n\n<tools>\n{\"type\": \"function\", \"function\": {\"name\": \"measure\", \"description\": \"Maß für Δ\", \"parameters\": {\"type\": \"object\", \"properties\": {\"name\": {\"type\": \"string\"}, \"scale\": {\"type\": \"number\"}, \"flags\": {\"type\": \"array\", \"items\": {\"type\": \"boolean\"}}}, \"required\": [\"name\", \"scale\", \"flags\"], \"additionalProperties\": false}}}\n</tools>\n\nIf you choose to call a function ONLY reply in the following format with NO suffix:\n\n<tool_call>\n<function=example_function_name>\n<parameter=example_parameter_1>\nvalue_1\n</parameter>\n<parameter=example_parameter_2>\nThis is the value for the second parameter\nthat can span\nmultiple lines\n</parameter>\n</function>\n</tool_call>\n\n<IMPORTANT>\nReminder:\n- Function calls MUST follow the specified format: an inner <function=...></function> block must be nested within <tool_call></tool_call> XML tags\n- Required parameters MUST be specified\n- You may provide optional reasoning for your function call in natural language BEFORE the function call, but NOT after\n- If there is no function call available, answer the question like normal with your current knowledge and do not tell the user about function calls\n</IMPORTANT>\n\nBe precise.<|im_end|>\n<|im_start|>user\nMeasure Ω.<|im_end|>\n<|im_start|>assistant\n<think>\nUse the meter.\n</think>\n\n<tool_call>\n<function=measure>\n<parameter=name>\nGröße\n</parameter>\n<parameter=scale>\n1.0\n</parameter>\n<parameter=flags>\n[true, false]\n</parameter>\n</function>\n</tool_call><|im_end|>\n<|im_start|>user\n<tool_response>\n12.5\n</tool_response><|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "measure",
+            "description": "Maß für Δ",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "scale": {
+                  "type": "number"
+                },
+                "flags": {
+                  "type": "array",
+                  "items": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "required": [
+                "name",
+                "scale",
+                "flags"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Hello"
+            }
+          ]
+        }
+      ],
+      "prompt": "<|im_start|>user\nHello<|im_end|>\n<|im_start|>assistant\n<think>\n",
+      "chat_template_kwargs": {
+        "enable_thinking": true
+      }
     }
   ]
 }

@@ -43,6 +43,22 @@ source and output hashes. `quality.json` records task scores and per-case
 predictions. Running an evaluation produces a report without enforcing a
 universal acceptable quality threshold.
 
+## Serving a fine-tune with its training template
+
+Send message lists to `/v1/chat/completions` for native rendering. An adapter's
+own template takes precedence during import, including a template embedded in
+its tokenizer configuration. An adapter without a template inherits the base
+template. For example, a fine-tune that reads a `mode` variable accepts
+`"chat_template_kwargs": {"mode": "classify"}`. Template changes take effect
+when the server next loads the package. Supported templates use the native
+Jinja interpreter's built-in filters and functions. Templates requiring a
+custom Python filter can be rendered by the caller and submitted as raw text.
+
+The chat renderer supports native 0.8B, 2B and 4B checkpoints. The fine-tune
+importer above currently accepts the tied-head 0.8B architecture. Use
+`/v1/completions` for preformatted training examples and `/v1/systemone`
+for QEV's decision protocol. See the [server guide](server.md#chat-completions).
+
 ## Task panels
 
 A panel contains a `task`, a Python `str.format` prompt template, and `cases`

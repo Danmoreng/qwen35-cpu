@@ -28,7 +28,7 @@ def snapshot(source, revision):
     from huggingface_hub import model_info, snapshot_download
     sha = model_info(source, revision=revision).sha
     root = snapshot_download(source, revision=sha, allow_patterns=[
-        *ASSETS, "README.md", "LICENSE*", "adapter_config.json", "*.safetensors", "model.safetensors.index.json"])
+        *ASSETS, "chat_templates/*.jinja", "README.md", "LICENSE*", "adapter_config.json", "*.safetensors", "model.safetensors.index.json"])
     return Path(root), sha
 
 
@@ -38,6 +38,32 @@ def read(path):
 
 def write(path, data):
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def copy_model_assets(source, base, package):
+    # A fine-tune can override a base file template inside tokenizer_config.
+    # Select the template family before copying individual tokenizer assets.
+    source_config = source / "tokenizer_config.json"
+    embedded = read(source_config).get("chat_template") if source_config.is_file() else None
+    has_files = (source / "chat_template.jinja").is_file() or any((source / "chat_templates").glob("*.jinja"))
+    template_root = source if embedded or has_files else base
+    for name in ASSETS:
+        origin = source / name if (source / name).is_file() else base / name
+        if name == "chat_template.jinja":
+            origin = template_root / name
+        if origin.is_file():
+            shutil.copyfile(origin, package / name)
+    for template in sorted((template_root / "chat_templates").glob("*.jinja")):
+        destination = package / "chat_templates" / template.name
+        destination.parent.mkdir(exist_ok=True)
+        shutil.copyfile(template, destination)
+    if template_root == base and source != base and source_config.is_file():
+        config = read(package / "tokenizer_config.json")
+        base_config_file = base / "tokenizer_config.json"
+        base_config = read(base_config_file) if base_config_file.is_file() else {}
+        if not config.get("chat_template") and base_config.get("chat_template"):
+            config["chat_template"] = base_config["chat_template"]
+            write(package / "tokenizer_config.json", config)
 
 
 def validate_head(root):
@@ -169,10 +195,7 @@ def main():
             merge_adapter(base, source, checkpoint)
         package = work / "package"
         package.mkdir()
-        for name in ASSETS:
-            origin = source / name if (source / name).is_file() else base / name
-            if origin.is_file():
-                shutil.copyfile(origin, package / name)
+        copy_model_assets(source, base, package)
         for group, root in ([("BASE", base), ("ADAPTER", source)] if adapter else [("SOURCE", source)]):
             for file in [root / "README.md", *root.glob("LICENSE*"), root / "NOTICE"]:
                 if file.is_file():
@@ -182,6 +205,8 @@ def main():
             for name in ASSETS:
                 if name != "config.json" and (package / name).is_file():
                     shutil.copyfile(package / name, checkpoint / name)
+            if (package / "chat_templates").is_dir():
+                shutil.copytree(package / "chat_templates", checkpoint / "chat_templates", dirs_exist_ok=True)
         if args.classifier_profile:
             shutil.copyfile(args.classifier_profile, package / "classifier.json")
         command = [args.packer, "--hf-model-dir", str(checkpoint),
@@ -203,7 +228,8 @@ def main():
         for group, origin in [("source", source), ("base", base)] if adapter else [("source", source)]:
             manifest["sources"][group] = {f.name: digest(f) for f in sorted(origin.iterdir())
                                           if f.is_file() and f.suffix in (".json", ".safetensors", ".jinja")}
-        manifest["files"] = {f.name: digest(f) for f in sorted(package.iterdir())}
+        manifest["files"] = {f.relative_to(package).as_posix(): digest(f)
+                             for f in sorted(package.rglob("*")) if f.is_file()}
         write(package / "import.json", manifest)
         package.rename(args.output)
 

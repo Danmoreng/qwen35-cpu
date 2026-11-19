@@ -13,13 +13,22 @@ template<class F> void rejects(F f) {
 int main(int argc, char **argv) try {
   check(argc == 2, "Expected template fixtures");
   std::ifstream file(argv[1]); Json fixtures; file >> fixtures;
-  for (const auto &c : fixtures.at("cases"))
-    check(chat_prompt(c.at("messages")) == c.at("prompt").get<std::string>(), "Qwen template differs from pinned Jinja reference");
+  for (auto test : fixtures.at("cases")) {
+    const auto expected = test.at("prompt").get<std::string>();
+    test.erase("prompt");
+    const auto request = parse_openai(test.dump(), 4096, "test", Api::chat);
+    check(request.prompt == expected, "Qwen template differs from pinned Jinja reference");
+  }
   const Json base = {{"model", "test"}, {"messages", Json::array({{{"role", "user"}, {"content", "Hello"}}})},
                      {"temperature", 0}, {"max_completion_tokens", 16}};
   const auto request = parse(base.dump(), 256, "test", Api::chat);
   check(request.spec.max_new_tokens == 16 && request.spec.sampling.temperature == 0, "Sampling/limits lost");
   check(request.prompt == "<|im_start|>user\nHello<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n", "Generation prefix differs");
+  auto uncached = base;
+  uncached["cache_prompt"] = false;
+  const auto uncached_request = parse(uncached.dump(), 256, "test", Api::chat);
+  check(uncached_request.prompt == request.prompt && uncached_request.prefix_prompt.empty(),
+        "Disabling automatic caching changed the prompt or requested a prefix");
   auto edit = base;
   edit["draft"] = "input";
   edit["draft_source"] = "original source";
@@ -113,6 +122,23 @@ int main(int argc, char **argv) try {
     large.push(std::string(StreamQueue::max_chunk_bytes, 'x'));
   check(!large.room_for_output(), "Queue must backpressure at the reserved byte limit");
   for (std::size_t i = 0; i < 2; ++i) large.push(std::string(StreamQueue::max_chunk_bytes, 'y'));
+  load_chat_template(std::filesystem::path(argv[1]).parent_path() / "finetune-chat");
+  auto custom = base;
+  custom["messages"][0]["content"] = "  keep spacing  ";
+  custom["chat_template_kwargs"] = {{"mode", "classify"}};
+  check(parse_openai(custom.dump(), 256, "test", Api::chat).prompt ==
+        "<local><task>classify|user=  keep spacing  =>", "Fine-tune file override, tokens or kwargs lost");
+  auto filtered = custom;
+  filtered["chat_template_kwargs"]["filter_test"] = 1;
+  rejects([&] { parse_openai(filtered.dump(), 256, "test", Api::chat); });
+  filtered["chat_template_kwargs"]["filter_test"] = "B";
+  check(parse_openai(filtered.dump(), 256, "test", Api::chat).prompt == "BB",
+        "Block filter failed to recover on the next request");
+  const Json tool = {{"type", "function"}, {"function", {{"name", "example"}, {"parameters",
+    {{"type", "object"}, {"properties", Json::object()}, {"additionalProperties", false}}}}}};
+  custom["tools"] = Json::array({tool});
+  check(parse_openai(custom.dump(), 256, "test", Api::chat).prompt == "example|  keep spacing  ",
+        "Checkpoint tool_use file did not override embedded templates");
   std::cout << fixtures["cases"].size() << " reference template cases and server protocol checks passed\n";
   return 0;
 } catch (const std::exception &e) { std::cerr << e.what() << '\n'; return 1; }

@@ -11,6 +11,7 @@ inline Request parse_messages(const std::string &body, std::size_t context,
   require(j.at("model") == model, "Unknown model");
   if (!count_only) require(j.contains("max_tokens") && !j["max_tokens"].is_null(), "max_tokens is required");
   Json normalized = {{"model", model}, {"messages", Json::array()}};
+  normalized["chat_template_kwargs"] = {{"enable_thinking", false}};
   if (j.contains("system"))
     normalized["messages"].push_back({{"role", "system"}, {"content", content(j["system"])}});
   require(j.at("messages").is_array(), "messages must be an array");

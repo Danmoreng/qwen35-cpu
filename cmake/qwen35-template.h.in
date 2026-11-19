@@ -1,0 +1,2 @@
+#pragma once
+inline constexpr char qwen35_default_template[] = R"QWEN35(@QWEN35_DEFAULT_TEMPLATE@)QWEN35";

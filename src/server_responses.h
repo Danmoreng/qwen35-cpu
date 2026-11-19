@@ -214,6 +214,7 @@ inline PreparedResponse prepare_response(Json j, Json history, std::size_t conte
     } else
       chat["response_format"] = format;
   }
+  chat["chat_template_kwargs"] = {{"enable_thinking", false}};
   Json formatted;
   auto request =
       parse_openai(chat.dump(), context, model, Api::chat, truncation == "auto" ? &formatted : nullptr);
@@ -327,21 +328,7 @@ public:
                         {"output_tokens", usage.at("completion_tokens")},
                         {"output_tokens_details", {{"reasoning_tokens", 0}}},
                         {"total_tokens", usage.at("total_tokens")}};
-      Json item;
-      if (msg.contains("tool_calls")) {
-        const auto &call = msg["tool_calls"][0], &fn = call.at("function");
-        item = {{"type", "function_call"}, {"id", response_id("fc_")}, {"call_id", call.at("id")},
-                {"name", fn.at("name")},   {"arguments", ""},          {"status", "in_progress"}};
-        emit("response.output_item.added", {{"output_index", 0}, {"item", item}});
-        item["arguments"] = fn.at("arguments");
-        item["status"] = "completed";
-        Json event = {{"item_id", item["id"]}, {"output_index", 0}, {"delta", fn.at("arguments")}};
-        emit("response.function_call_arguments.delta", event);
-        event.erase("delta");
-        event["arguments"] = fn.at("arguments");
-        event["name"] = fn.at("name");
-        emit("response.function_call_arguments.done", event);
-      } else if (msg.at("content").is_string()) {
+      if (msg.at("content").is_string()) {
         const auto text = msg["content"].get<std::string>();
         if (stream && !part_open_) {
           open_text();
@@ -356,11 +343,26 @@ public:
         event = location();
         event["part"] = part;
         emit("response.content_part.done", event);
-        item = response_message(item_id_, status, Json::array({part}));
-      }
-      if (!item.is_null()) {
+        const auto item = response_message(item_id_, status, Json::array({part}));
         body_["output"].push_back(item);
         emit("response.output_item.done", {{"output_index", 0}, {"item", item}});
+      }
+      if (msg.contains("tool_calls")) {
+        const auto index = body_["output"].size();
+        const auto &call = msg["tool_calls"][0], &fn = call.at("function");
+        Json item = {{"type", "function_call"}, {"id", response_id("fc_")}, {"call_id", call.at("id")},
+                {"name", fn.at("name")},   {"arguments", ""},          {"status", "in_progress"}};
+        emit("response.output_item.added", {{"output_index", index}, {"item", item}});
+        item["arguments"] = fn.at("arguments");
+        item["status"] = "completed";
+        Json event = {{"item_id", item["id"]}, {"output_index", index}, {"delta", fn.at("arguments")}};
+        emit("response.function_call_arguments.delta", event);
+        event.erase("delta");
+        event["arguments"] = fn.at("arguments");
+        event["name"] = fn.at("name");
+        emit("response.function_call_arguments.done", event);
+        body_["output"].push_back(item);
+        emit("response.output_item.done", {{"output_index", index}, {"item", item}});
       }
     } else {
       status = reply.status == 499 ? "cancelled" : "failed";

@@ -75,6 +75,10 @@ def main():
 
             fixture_path = Path(__file__).with_name("fixtures") / "qwen35-mtp-long-tool.json"
             body = json.loads(fixture_path.read_text(encoding="utf-8"))
+            body["chat_template_kwargs"] = {"enable_thinking": False}
+            # This is a long-output/backpressure check; pin the offered write
+            # independently of the checkpoint template's automatic tool choice.
+            body["tool_choice"] = {"type": "function", "function": {"name": "write"}}
             ordinary = payload("/v1/chat/completions", body)
             before = payload("/v1/cache")["draft"]
             events = stream("/v1/chat/completions", {**body, "draft": "mtp"})

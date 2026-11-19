@@ -258,7 +258,8 @@ The CLI performs **raw text completion**, defaulting to greedy decoding. Use
 `--temperature 0.7 --top-p 0.8 --top-k 20 --repetition-penalty 1.05 --seed 42`
 for sampling (v0.1.1+). It does not
 automatically render chat templates. For chat, pass an already rendered prompt
-using `--prompt-file`. Tokenization and teacher-forced logit export are also
+using `--prompt-file`, or send messages to the HTTP server to apply the
+checkpoint’s own template. See [chat completions](docs/server.md#chat-completions). Tokenization and teacher-forced logit export are also
 available through `--help`. On Linux, omit `.exe` in executable names.
 
 ## Threads, batching and prefixes

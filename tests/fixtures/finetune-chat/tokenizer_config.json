@@ -1,0 +1,18 @@
+{
+  "bos_token": {
+    "content": "<local>"
+  },
+  "chat_template": [
+    {
+      "name": "default",
+      "template": "embedded default"
+    },
+    {
+      "name": "tool_use",
+      "template": "embedded tool"
+    }
+  ],
+  "extra_special_tokens": {
+    "task_token": "<task>"
+  }
+}

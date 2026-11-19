@@ -35,3 +35,12 @@ adapters, generation events and transport lifecycle tests. The native Qwen
 model, tokenizer, CPU executor and hybrid state ownership remain this engine's.
 
 The native HTTP server statically links the public-domain SQLite 3.51.2 amalgamation for batch storage. CMake pins the upstream archive and its SHA-256. [SQLite licensing](https://sqlite.org/copyright.html)
+
+The HTTP server uses the standalone C++ Jinja interpreter and Unicode helper from
+[ik_llama.cpp at ecc288f](https://github.com/ikawrakow/ik_llama.cpp/tree/ecc288f7da01996cd5d2df66c85a741aeeff4731/common/jinja).
+The MIT license is installed as `licenses/chat-jinja.txt`. A local patch matches
+Python Unicode whitespace trimming, preserves floating-point values in JSON
+serialization and keeps block filters reusable after a render error. The bundled fallback is the original Qwen3.5-0.8B chat template,
+SHA-256 `273d8e0e683b885071fb17e08d71e5f2a5ddfb5309756181681de4f5a1822d80`,
+from [Qwen's checkpoint](https://huggingface.co/Qwen/Qwen3.5-0.8B/blob/main/chat_template.jinja).
+See the [Apache-2.0 license](licenses/qwen-chat-template.txt).

@@ -165,7 +165,29 @@ if (QWEN35_BUILD_SERVER)
     URL https://www.sqlite.org/2026/sqlite-amalgamation-3510200.zip
     URL_HASH SHA256=6e2a845a493026bdbad0618b2b5a0cf48584faab47384480ed9f592d912f23ec
     SOURCE_SUBDIR unused)
-  FetchContent_MakeAvailable(http_headers json_headers batch_sqlite)
+  # Compile only the standalone Jinja interpreter for checkpoint prompt rendering.
+  find_package(Git REQUIRED)
+  FetchContent_Declare(chat_jinja
+    URL https://codeload.github.com/ikawrakow/ik_llama.cpp/tar.gz/ecc288f7da01996cd5d2df66c85a741aeeff4731
+    PATCH_COMMAND ${GIT_EXECUTABLE} apply --no-index --ignore-space-change
+      "${CMAKE_CURRENT_SOURCE_DIR}/cmake/patches/chat-jinja.patch"
+    URL_HASH SHA256=9e7987c6e76cd53f5a2505d95eb2fd1d4f0ea352bd789ecbb617ecda907190f5
+    SOURCE_SUBDIR unused)
+  FetchContent_MakeAvailable(http_headers json_headers batch_sqlite chat_jinja)
+  set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS configs/chat/qwen35.jinja)
+  file(READ "${CMAKE_CURRENT_SOURCE_DIR}/configs/chat/qwen35.jinja" QWEN35_DEFAULT_TEMPLATE)
+  configure_file(cmake/qwen35-template.h.in generated/qwen35-template.h @ONLY)
+  set(jinja_dir "${chat_jinja_SOURCE_DIR}/common")
+  add_library(qwen35_chat STATIC src/server_template.cpp
+    ${jinja_dir}/unicode.cpp ${jinja_dir}/jinja/lexer.cpp ${jinja_dir}/jinja/parser.cpp
+    ${jinja_dir}/jinja/runtime.cpp ${jinja_dir}/jinja/string.cpp ${jinja_dir}/jinja/value.cpp)
+  target_include_directories(qwen35_chat PRIVATE src ${jinja_dir} ${CMAKE_CURRENT_BINARY_DIR}/generated
+    ${json_headers_SOURCE_DIR}/single_include)
+  if(MSVC)
+    target_compile_options(qwen35_chat PRIVATE /utf-8 /bigobj)
+  endif()
+  install(FILES licenses/qwen-chat-template.txt DESTINATION licenses)
+  install(FILES ${chat_jinja_SOURCE_DIR}/LICENSE DESTINATION licenses RENAME chat-jinja.txt)
   add_library(qwen35_batch_sqlite STATIC ${batch_sqlite_SOURCE_DIR}/sqlite3.c)
   target_include_directories(qwen35_batch_sqlite PUBLIC ${batch_sqlite_SOURCE_DIR})
   target_compile_definitions(qwen35_batch_sqlite PRIVATE SQLITE_OMIT_LOAD_EXTENSION SQLITE_DQS=0)
@@ -173,16 +195,16 @@ if (QWEN35_BUILD_SERVER)
   add_executable(qwen35_cpu_server src/server.cpp)
   target_include_directories(qwen35_cpu_server PRIVATE
     ${http_headers_SOURCE_DIR} ${json_headers_SOURCE_DIR}/single_include)
-  target_link_libraries(qwen35_cpu_server PRIVATE qwen35x_core qwen35_batch_sqlite Threads::Threads)
+  target_link_libraries(qwen35_cpu_server PRIVATE qwen35_chat qwen35x_core qwen35_batch_sqlite Threads::Threads)
   add_executable(systemone_protocol_test tests/systemone_protocol_test.cpp)
   target_include_directories(systemone_protocol_test PRIVATE src ${json_headers_SOURCE_DIR}/single_include)
   target_link_libraries(systemone_protocol_test PRIVATE qwen35x_core)
   add_executable(server_protocol_test tests/server_protocol_test.cpp)
   target_include_directories(server_protocol_test PRIVATE src ${json_headers_SOURCE_DIR}/single_include)
-  target_link_libraries(server_protocol_test PRIVATE qwen35x_core)
+  target_link_libraries(server_protocol_test PRIVATE qwen35_chat qwen35x_core)
   add_executable(server_structured_test tests/server_structured_test.cpp)
   target_include_directories(server_structured_test PRIVATE src ${json_headers_SOURCE_DIR}/single_include)
-  target_link_libraries(server_structured_test PRIVATE qwen35x_core)
+  target_link_libraries(server_structured_test PRIVATE qwen35_chat qwen35x_core)
   if (WIN32)
     target_link_libraries(qwen35_cpu_server PRIVATE ws2_32 crypt32)
   elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -266,6 +288,7 @@ target_link_libraries(q4_quantizer_test PRIVATE qwen35x_core)
 add_test(NAME q4_quantizer COMMAND q4_quantizer_test)
 find_package(Python3 COMPONENTS Interpreter QUIET)
 if(Python3_Interpreter_FOUND)
+  add_test(NAME finetune_template_assets COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/finetune_template_assets_test.py)
   add_test(NAME finetune_metrics COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/finetune_metrics_test.py)
   add_test(NAME when2call_scripts COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/when2call_test.py)
   add_test(NAME when2call_comparison COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/when2call_comparison_test.py)

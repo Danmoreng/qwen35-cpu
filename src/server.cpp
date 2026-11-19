@@ -205,8 +205,7 @@ class Service {
               // leading instructions and at least the most recent user question.
               std::vector<std::size_t> turns;
               for (std::size_t i=0; i<messages.size(); ++i)
-                if (messages[i]["role"]=="user" &&
-                    !server::content(messages[i].at("content")).starts_with("<tool_response>"))
+                if (messages[i]["role"]=="user")
                   turns.push_back(i);
               bool fits=false;
               std::size_t low=1, high=turns.size();
@@ -215,7 +214,11 @@ class Service {
                 auto shortened=messages;
                 shortened.erase(shortened.begin()+turns.front(),shortened.begin()+turns[mid]);
                 std::string prefix;
-                auto prompt=server::chat_prompt(shortened,&prefix);
+                std::string prompt;
+                try {
+                  prompt=server::chat_prompt(shortened, job->automatic_prefix ? &prefix : nullptr,
+                                             job->template_tools, job->template_kwargs);
+                } catch (const std::exception &e) { error=e.what(); break; }
                 std::vector<std::int32_t> ids;
                 if (!tokenizer_.encode(prompt,ids,error)) break;
                 if (ids.size()>budget) {low=mid+1; continue;}
@@ -224,7 +227,7 @@ class Service {
                 job->prefix_prompt=std::move(prefix);
                 job->prompt=std::move(prompt);
               }
-              if (!fits) {finish(job,failure(400,"Latest turn and instructions exceed the context window")); continue;}
+              if (!fits) {finish(job,failure(400,error.empty() ? "Latest turn and instructions exceed the context window" : error)); continue;}
             }
           }
           if (!job->draft_source.empty() &&
@@ -367,9 +370,9 @@ class Service {
                   stop.empty() ? Json(nullptr) : Json(stop), server::messages_usage(job->prompt_count,
                     result.generated_tokens, result.cached_prefix_tokens, result.prefix_written_tokens));
               } else reply.body["usage"]["prompt_tokens_details"] = {{"cached_tokens", result.cached_prefix_tokens}};
-              if (job->constraint && job->constraint->complete())
+              if (!job->tool_mode && job->constraint && job->constraint->complete())
                 server::require(Json::accept(job->text), "Constrained output is not valid JSON");
-              if (job->tool_mode) server::apply_tool_response(reply.body, job->api, job->text, it->id, job->constraint->complete());
+              if (job->tool_mode) server::apply_tool_response(reply.body, job->api, job->text, it->id, job->constraint->complete(), job->template_tools);
             } catch (const std::exception &e) { reply = failure(500, e.what()); }
             }
           }
@@ -511,6 +514,7 @@ int main(int argc, char **argv) try {
   if (host != "127.0.0.1" && host != "::1" && host != "localhost" && api_key.empty())
     throw std::runtime_error("Set QWEN35_API_KEY before binding a non-loopback interface");
   if (batch_width > config.max_resident_requests) throw std::runtime_error("--batch-width exceeds --residents");
+  server::load_chat_template(load.model_dir);
   Service service(load, config, auto_decision_head, automatic_prefix, batch_width);
   BatchService batches(service, batch_db, config.max_context, service.batch_tuning().width, decision_encoding);
   server::ResponseStore responses;
@@ -602,12 +606,11 @@ int main(int argc, char **argv) try {
               if (job->tool_mode) {
                 const auto &message = terminal->body["choices"][0]["message"];
                 auto data = chunk("", false);
+                if (message["content"].is_string() && !write(chunk(message["content"].get<std::string>(), false))) return false;
                 if (message.contains("tool_calls")) {
                   auto calls = message["tool_calls"]; calls[0]["index"] = 0;
                   data["choices"][0]["delta"] = {{"tool_calls", calls}};
                   if (!write(data)) return false;
-                } else if (!message["content"].is_null()) {
-                  if (!write(chunk(message["content"].get<std::string>(), false))) return false;
                 }
               }
               if (!write(chunk("", false, terminal->body["choices"][0]["finish_reason"]))) return false;

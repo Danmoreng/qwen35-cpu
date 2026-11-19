@@ -1,6 +1,8 @@
 #pragma once
 #include "qwen35x/runtime/cpu_engine.h"
 #include "server_text.h"
+#include "server_template.h"
+#include "server_unicode_trim.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <cmath>
@@ -23,6 +25,7 @@ struct Request {
   std::vector<std::string> stops;
   std::shared_ptr<const ByteGrammar> grammar;
   bool tool_mode = false;
+  Json template_tools = Json::array(), template_kwargs = Json::object();
 };
 inline void require(bool ok, const std::string &message) {
   if (!ok) throw std::runtime_error(message);
@@ -50,24 +53,6 @@ inline float real(const Json &j, const char *key, float fallback) {
           std::string(key) + " must be finite and representable");
   return static_cast<float>(value);
 }
-// Match Jinja/Python's Unicode whitespace trimming for the supported text template.
-inline std::string trim(std::string text) {
-  static const std::vector<std::string> spaces = {
-    " ", "\t", "\n", "\r", "\v", "\f", "\x1c", "\x1d", "\x1e", "\x1f",
-    "\xc2\x85", "\xc2\xa0", "\xe1\x9a\x80", "\xe2\x80\x80", "\xe2\x80\x81",
-    "\xe2\x80\x82", "\xe2\x80\x83", "\xe2\x80\x84", "\xe2\x80\x85", "\xe2\x80\x86",
-    "\xe2\x80\x87", "\xe2\x80\x88", "\xe2\x80\x89", "\xe2\x80\x8a", "\xe2\x80\xa8",
-    "\xe2\x80\xa9", "\xe2\x80\xaf", "\xe2\x81\x9f", "\xe3\x80\x80"};
-  bool changed = true;
-  while (changed) {
-    changed = false;
-    for (const auto &space : spaces) {
-      if (text.starts_with(space)) { text.erase(0, space.size()); changed = true; }
-      if (text.ends_with(space)) { text.resize(text.size() - space.size()); changed = true; }
-    }
-  }
-  return text;
-}
 inline std::string content(const Json &value, bool nullable = false) {
   if (nullable && value.is_null()) return {};
   if (value.is_string()) return value.get<std::string>();
@@ -80,71 +65,67 @@ inline std::string content(const Json &value, bool nullable = false) {
   }
   return out;
 }
-inline std::string chat_prompt(const Json &messages, std::string *prefix_prompt = nullptr) {
+inline std::string chat_prompt(const Json &messages, std::string *prefix_prompt = nullptr,
+                               const Json &tools = Json::array(), const Json &kwargs = Json::object()) {
   require(messages.is_array() && !messages.empty() && messages.size() <= 1024,
           "messages must contain 1..1024 messages");
-  struct Message { std::string role, text, reasoning; };
-  std::vector<Message> rows;
-  std::string system;
-  bool has_system = false;
+  Json rows = Json::array();
   std::size_t last_user = 0;
   bool has_user = false;
-  for (const auto &message : messages) {
-    fields(message, {"role", "content", "reasoning_content"});
-    auto role = message.at("role").get<std::string>();
-    require(role == "system" || role == "developer" || role == "user" || role == "assistant",
-            "Unsupported message role: " + role);
-    auto text = trim(content(message.at("content"), role == "assistant"));
-    std::string reasoning;
-    if (message.contains("reasoning_content") && !message["reasoning_content"].is_null()) {
-      require(role == "assistant" && message["reasoning_content"].is_string(),
-              "reasoning_content is only supported on assistant history");
-      reasoning = message["reasoning_content"].get<std::string>();
-    } else if (role == "assistant") {
-      const auto close = text.find("</think>");
-      if (close != std::string::npos) {
-        reasoning = text.substr(0, close);
-        if (const auto open = reasoning.rfind("<think>"); open != std::string::npos)
-          reasoning.erase(0, open + 7);
-        text.erase(0, text.rfind("</think>") + 8);
-        while (!text.empty() && text.front() == '\n') text.erase(0, 1);
-      }
-    }
+  for (const auto &m : messages) {
+    fields(m, {"role", "content", "reasoning_content", "tool_calls", "tool_call_id"});
+    const auto role = m.at("role").get<std::string>();
+    require(role == "system" || role == "developer" || role == "user" || role == "assistant" ||
+            role == "tool", "Unsupported message role: " + role);
+    const auto text = content(m.at("content"), role == "assistant");
+    if (m.contains("reasoning_content") && !m["reasoning_content"].is_null())
+      require(role == "assistant" && m["reasoning_content"].is_string(), "Invalid assistant reasoning");
     if (role == "system" || role == "developer") {
-      require(rows.empty(), "System/developer messages must precede the conversation");
-      if (has_system) system += "\n\n";
-      system += text; has_system = true;
-    } else {
-      if (role == "user" && !(text.starts_with("<tool_response>") && text.ends_with("</tool_response>"))) {
-        last_user = rows.size(); has_user = true;
+      require(rows.empty() || (rows.size() == 1 && rows.front()["role"] == "system"),
+              "System/developer messages must precede the conversation");
+      if (!rows.empty()) {
+        rows[0]["content"] = trim(content(rows[0]["content"])) + "\n\n" + trim(text);
+        continue;
       }
-      rows.push_back({role, std::move(text), trim(std::move(reasoning))});
     }
+    if (role == "user") { last_user = rows.size(); has_user = true; }
+    rows.push_back(m);
+    if (role == "developer") rows.back()["role"] = "system";
   }
   require(has_user, "At least one user query is required");
-  std::string prompt = has_system ? "<|im_start|>system\n" + system + "<|im_end|>\n" : "";
-  if (prefix_prompt) *prefix_prompt = prompt;
-  for (std::size_t i = 0; i < rows.size(); ++i) {
-    if (prefix_prompt && i == last_user && i > 0) *prefix_prompt = prompt;
-    const auto &m = rows[i];
-    prompt += "<|im_start|>" + m.role + "\n";
-    if (m.role == "assistant" && i > last_user)
-      prompt += "<think>\n" + m.reasoning + "\n</think>\n\n";
-    prompt += m.text + "<|im_end|>\n";
+  auto prompt = render_chat_template(rows, tools, kwargs, true);
+  if (prefix_prompt) {
+    // A custom template may transform, omit, or reorder a partial history.
+    // Only cache a byte prefix that the actual generation prompt also has.
+    std::string candidate;
+    try {
+      if (rows.back()["role"] == "tool" || !last_user) {
+        candidate = render_chat_template(rows, tools, kwargs, false);
+      } else {
+        constexpr auto marker = "Qwen35PrefixBoundary89c8";
+        rows.erase(rows.begin() + last_user + 1, rows.end());
+        rows.back()["content"] = marker;
+        candidate = render_chat_template(rows, tools, kwargs, false);
+        const auto pos = candidate.find(marker);
+        if (pos == std::string::npos) candidate.clear();
+        else candidate.resize(pos);
+      }
+    } catch (const std::exception &) {
+      // Some fine-tune templates accept only complete generation requests.
+      candidate.clear();
+    }
+    auto match = std::mismatch(prompt.begin(), prompt.end(), candidate.begin(), candidate.end());
+    prefix_prompt->assign(prompt.begin(), match.first);
   }
-  // Within a tool loop the last user turn stays fixed while each completed
-  // tool exchange extends the next request's reusable history.
-  if (prefix_prompt && (prefix_prompt->empty() ||
-      (rows.back().role == "user" && rows.size() - 1 > last_user)))
-    *prefix_prompt = prompt;
-  return prompt + "<|im_start|>assistant\n<think>\n\n</think>\n\n";
+  return prompt;
 }
-inline Request parse(const std::string &body, std::size_t context, const std::string &model, Api api) {
+inline Request parse(const std::string &body, std::size_t context, const std::string &model, Api api,
+                     const Json &template_tools = Json::array()) {
   const auto j = Json::parse(body);
   if (api == Api::chat)
     fields(j, {"model", "messages", "max_tokens", "max_completion_tokens", "temperature", "stream", "n",
                "prefix_tokens", "top_p", "top_k", "seed", "repetition_penalty", "stop", "stream_options",
-               "cache_prompt", "prompt_cache_key", "draft", "draft_source"});
+               "cache_prompt", "prompt_cache_key", "draft", "draft_source", "chat_template_kwargs"});
   else
     fields(j, {"model", "prompt", "max_tokens", "temperature", "stream", "n", "prefix_tokens",
                "top_p", "top_k", "seed", "repetition_penalty", "stop", "stream_options", "cache_prompt", "prompt_cache_key", "draft", "draft_source"});
@@ -175,7 +156,25 @@ inline Request parse(const std::string &body, std::size_t context, const std::st
     (void)StopMatcher(request.stops, 8192);
   }
   require(integer(j, "n", 1) == 1, "Only n=1 is supported");
-  request.prompt = api == Api::chat ? chat_prompt(j.at("messages"), &request.prefix_prompt) : j.at("prompt").get<std::string>();
+  request.template_tools = template_tools;
+  if (j.contains("chat_template_kwargs")) {
+    const auto &args = j.at("chat_template_kwargs");
+    require(args.is_object(), "chat_template_kwargs must be an object");
+    for (auto key : {"messages", "tools", "add_generation_prompt", "bos_token", "eos_token"})
+      require(!args.contains(key), std::string("Reserved template variable: ") + key);
+    require(!args.contains("enable_thinking") || args["enable_thinking"].is_boolean(),
+            "enable_thinking must be boolean");
+    request.template_kwargs = args;
+  }
+  if (j.contains("cache_prompt")) {
+    require(j["cache_prompt"].is_boolean(), "cache_prompt must be boolean");
+    request.automatic_prefix = j["cache_prompt"].get<bool>();
+  }
+  if (j.contains("prefix_tokens")) request.automatic_prefix = false;
+  auto *prefix_prompt = request.automatic_prefix ? &request.prefix_prompt : nullptr;
+  request.prompt = api == Api::chat
+      ? chat_prompt(j.at("messages"), prefix_prompt, template_tools, request.template_kwargs)
+      : j.at("prompt").get<std::string>();
   require(!request.prompt.empty() && request.prompt.size() <= 65536, "Prompt must contain 1..65536 bytes");
   require(!(j.contains("max_tokens") && !j["max_tokens"].is_null() && j.contains("max_completion_tokens") &&
             !j["max_completion_tokens"].is_null()), "Specify only one output token limit");
@@ -186,11 +185,6 @@ inline Request parse(const std::string &body, std::size_t context, const std::st
   request.spec.max_new_tokens = static_cast<std::size_t>(limit);
   request.spec.register_prefix_tokens = static_cast<std::size_t>(prefix);
   request.spec.trust_namespace = "local-server";
-  if (j.contains("cache_prompt")) {
-    require(j["cache_prompt"].is_boolean(), "cache_prompt must be boolean");
-    request.automatic_prefix = j["cache_prompt"].get<bool>();
-  }
-  if (j.contains("prefix_tokens")) request.automatic_prefix = false;
   if (j.contains("prompt_cache_key") && !j["prompt_cache_key"].is_null()) {
     const auto key = j["prompt_cache_key"].get<std::string>();
     require(!key.empty() && key.size() <= 64, "prompt_cache_key must contain 1..64 UTF-8 bytes");

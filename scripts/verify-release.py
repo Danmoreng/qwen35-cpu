@@ -43,7 +43,8 @@ with tempfile.TemporaryDirectory(prefix='qwen35-release-') as directory:
         raise ValueError('Server missing from release')
     package = servers[0].parent
     for required in ['qwen35_cpu' + suffix, 'download-model.sh', 'download-model.ps1',
-                     'LICENSE', 'licenses/cpp-httplib.txt', 'licenses/nlohmann-json.txt']:
+                     'LICENSE', 'licenses/cpp-httplib.txt', 'licenses/nlohmann-json.txt',
+                     'licenses/chat-jinja.txt', 'licenses/qwen-chat-template.txt']:
         if not (package / required).is_file():
             raise ValueError('Missing release file: ' + required)
     subprocess.run([str(servers[0]), '--help'], check=True)

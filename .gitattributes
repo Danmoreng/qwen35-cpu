@@ -5,6 +5,8 @@
 *.py text eol=lf
 *.md text eol=lf
 *.json text eol=lf
+*.jinja text eol=lf
+*.patch text eol=lf -whitespace
 *.csv text eol=lf
 *.ps1 text eol=crlf
 *.sh text eol=lf

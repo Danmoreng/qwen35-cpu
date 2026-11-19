@@ -58,11 +58,21 @@ two newlines between them. Such instructions are rejected after the conversation
 has begun. Tool messages follow the structured-tool contract below. Images and
 unsupported message fields are rejected.
 
-The native formatter matches the pinned Qwen3.5 text chat template with thinking
-disabled for generation. Assistant history may contain `reasoning_content`;
-historical reasoning is handled according to that template. Clients supply
-messages, not already formatted prompts. The formatter does not execute model
-repository code or require Python/Jinja at runtime.
+At startup the server compiles the checkpoint's Jinja templates with a native
+C++ interpreter. It reads `chat_template.jinja` and named files under
+`chat_templates/`. If there are no template files it uses `chat_template` in
+`tokenizer_config.json`. For tools it selects `tool_use` when available,
+otherwise `default`. Legacy packages without a template use the bundled
+official Qwen3.5-0.8B template. The server renders before tokenization and
+reuses the compiled template across requests.
+
+Chat uses the checkpoint's own generation prompt and thinking default. The
+stock 0.8B and 2B templates disable thinking by default, while 4B enables it.
+Set `"chat_template_kwargs": {"enable_thinking": false}` to override that
+default. Fine-tunes can read other JSON values from the same object. Assistant
+history can include `reasoning_content`. Generated thinking text is returned in
+the assistant content. The Responses and Anthropic Messages adapters explicitly
+request thinking-disabled generation.
 
 Supported generation fields are `model`, `max_completion_tokens` (or `max_tokens`,
 but not both), `temperature`, `top_p`, `n=1`, `stream`, `stream_options.include_usage`,
@@ -196,8 +206,8 @@ The text subset of `POST /v1/messages` accepts the actual `model` ID, required
 `max_tokens`, `messages` with user/assistant roles and string or text-block
 content, and optional separate `system` text or text blocks. Consecutive messages
 with the same role are combined with two newlines. The final turn must be a user
-turn; assistant prefilling is rejected. Generation uses the same Qwen template,
-disabled thinking and engine as Chat Completions.
+turn; assistant prefilling is rejected. Generation uses the checkpoint template
+with thinking disabled and shares the Chat Completions inference engine.
 
 Use the official Anthropic client with the server root as `base_url`,
 `anthropic-version: 2023-06-01` or `2026-10-21`, and `x-api-key: <QWEN35_API_KEY>` when configured.
@@ -289,12 +299,13 @@ Messages uses `tools: [{"name":...,"description":...,"input_schema":...}]` and
 `disable_parallel_tool_use` boolean is accepted; this engine always emits at
 most one call. Tool mode cannot be combined with a separate output schema.
 
-Tool turns use a server-defined JSON envelope inside the native Qwen text
-template. The server constrains the offered name and argument schema, then maps
-the validated result to OpenAI `tool_calls` with JSON-string arguments or
-Anthropic `tool_use` blocks with object input. `required`/`any` and named choices
-force a call; `auto` also allows a text-answer envelope. Choosing the useful tool
-and filling meaningful free-text arguments remain model tasks.
+The checkpoint template receives structured tool definitions, assistant calls
+and tool results. The output grammar follows the Qwen3.5 `<tool_call>`,
+`<function=…>` and `<parameter=…>` format. The server maps a completed call
+to OpenAI `tool_calls` with JSON-string arguments or Anthropic `tool_use` blocks
+with object input. Required and named choices force a call. Automatic choice
+also accepts ordinary text, including text before a call. Fine-tunes with a
+different tool output syntax can use unconstrained text generation.
 
 Return the assistant call in history followed by OpenAI `role: "tool"` with its
 `tool_call_id`, or an Anthropic user `tool_result` block with `tool_use_id` and
@@ -302,12 +313,10 @@ text content. Anthropic `is_error` is preserved in the model-visible result.
 Unknown, duplicate and unanswered call IDs are rejected. Calls execute in the
 client; the server never executes a function.
 
-Tool-mode streams buffer the bounded generated envelope until it validates,
-then emit text or one complete argument delta in the appropriate SDK format.
-Heartbeats and cancellation remain active during generation. A truncated tool
-envelope returns `length`/`max_tokens` with no callable tool; internal envelope
-fragments never leak as assistant text. Ordinary text and JSON-mode streams
-continue to emit incrementally.
+Tool-mode streams buffer output until the grammar validates it, then emit text
+and any completed call in the requested SDK format. Heartbeats and cancellation
+remain active. An incomplete call at the output limit returns
+`length`/`max_tokens` without a callable tool.
 
 ## Automatic prefix cache
 

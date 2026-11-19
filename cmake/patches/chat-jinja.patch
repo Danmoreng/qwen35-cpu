@@ -1,0 +1,64 @@
+--- a/common/jinja/string.cpp
++++ b/common/jinja/string.cpp
+@@ -1,4 +1,5 @@
+ #include "jinja/string.h"
++#include "server_unicode_trim.h"
+ #include "jinja/value.h"
+ 
+ #include <algorithm>
+@@ -162,6 +163,7 @@
+ }
+ string string::strip(bool left, bool right, std::optional<const std::string_view> chars) {
+     static auto strip_part = [](const std::string & s, bool left, bool right, std::optional<const std::string_view> chars) -> std::string {
++        if (!chars) return qwen35x::server::trim(s, left, right);
+         size_t start = 0;
+         size_t end = s.length();
+         auto match_char = [&chars](unsigned char c) -> bool {
+--- a/common/jinja/value.cpp
++++ b/common/jinja/value.cpp
+@@ -1460,7 +1460,7 @@
+     } else if (is_val<value_int>(val)) {
+         oss << val->as_int();
+     } else if (is_val<value_float>(val)) {
+-        oss << val->as_float();
++        oss << nlohmann::ordered_json(val->as_float()).dump();
+     } else if (is_val<value_string>(val)) {
+         oss << "\"";
+         for (char c : val->as_string().str()) {
+--- a/common/jinja/runtime.cpp
++++ b/common/jinja/runtime.cpp
+@@ -311,8 +311,7 @@
+     throw std::runtime_error("Unknown (built-in) filter '" + name + "' for type " + input->type());
+ }
+ 
+-value filter_expression::execute_impl(context & ctx) {
+-    value input = operand ? operand->execute(ctx) : val;
++static value apply_filter(context & ctx, value input, const statement_ptr & filter) {
+ 
+     JJ_DEBUG("Applying filter to %s", input->type().c_str());
+ 
+@@ -361,6 +360,10 @@
+     }
+ }
+ 
++value filter_expression::execute_impl(context & ctx) {
++    return apply_filter(ctx, operand ? operand->execute(ctx) : val, filter);
++}
++
+ value filter_statement::execute_impl(context & ctx) {
+     // eval body as string, then apply filter
+     auto body_val = exec_statements(body, ctx);
+@@ -368,12 +371,7 @@
+     gather_string_parts_recursive(body_val, parts);
+ 
+     JJ_DEBUG("FilterStatement: applying filter to body string of length %zu", parts->val_str.length());
+-    filter_expression filter_expr(std::move(parts), std::move(filter));
+-    value out = filter_expr.execute(ctx);
+-
+-    // this node can be reused later, make sure filter is preserved
+-    this->filter = std::move(filter_expr.filter);
+-    return out;
++    return apply_filter(ctx, parts, filter);
+ }
+ 
+ value test_expression::execute_impl(context & ctx) {

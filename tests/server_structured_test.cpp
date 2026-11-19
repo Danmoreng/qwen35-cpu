@@ -81,23 +81,36 @@ int main() try {
   Json request = {{"model", "test"}, {"messages", Json::array({{{"role", "user"}, {"content", "Weather?"}}})},
     {"tools", tools}, {"tool_choice", "required"}, {"max_tokens", 64}};
   auto parsed = parse_openai(request.dump(), 1024, "test", Api::chat);
-  check(parsed.tool_mode && accepts(*parsed.grammar, R"({"type":"tool_call","name":"weather","arguments":{"city":"Berlin"}})"), "Tool envelope not constrained");
-  check(!accepts(*parsed.grammar, R"({"type":"tool_call","name":"other","arguments":{"city":"Berlin"}})"), "Unoffered tool allowed");
-  check(!accepts(*parsed.grammar, R"({"type":"message","content":"No"})"), "Required tool choice allowed text");
+  const std::string wire = "<tool_call>\n<function=weather>\n<parameter=city>\nBerlin\n</parameter>\n</function>\n</tool_call>";
+  check(parsed.tool_mode && accepts(*parsed.grammar, wire), "Qwen tool call rejected");
+  auto other = wire; other.replace(other.find("weather"), 7, "another");
+  auto invalid = wire; invalid.replace(invalid.find("Berlin"), 6, "Paris");
+  check(!accepts(*parsed.grammar, other) && !accepts(*parsed.grammar, invalid), "Unoffered tool or enum allowed");
+  auto bool_tool = request;
+  bool_tool["tools"][0]["function"]["parameters"]["properties"]["city"] = {{"type", "boolean"}, {"const", true}};
+  const auto bool_request = parse_openai(bool_tool.dump(), 1024, "test", Api::chat);
+  auto bool_wire = wire;
+  bool_wire.replace(bool_wire.find("Berlin"), 6, "True");
+  check(accepts(*bool_request.grammar, bool_wire) && tool_value("True", {{"type", "boolean"}}) == true,
+        "Qwen boolean formatting lost");
+  bool_wire.replace(bool_wire.find("True"), 4, "False");
+  check(!accepts(*bool_request.grammar, bool_wire), "Qwen boolean constant was not enforced");
+  check(!accepts(*parsed.grammar, "No"), "Required tool choice allowed text");
   auto auto_request = request; auto_request["tool_choice"] = "auto";
   const auto automatic = parse_openai(auto_request.dump(), 1024, "test", Api::chat);
-  check(accepts(*automatic.grammar, R"({"type":"message","content":"Hello"})"), "Automatic tool choice cannot answer with text");
+  check(accepts(*automatic.grammar, "Hello") && accepts(*automatic.grammar, "One moment.\n" + wire)
+    && !accepts(*automatic.grammar, "One moment.\n" + other), "Automatic tool choice lost its boundary");
   auto malformed = request; malformed["stop"] = "x";
   rejects([&] { parse_openai(malformed.dump(), 1024, "test", Api::chat); });
   Json reply = completion(Api::chat, "test", 7, 1, "", "stop", 100, 20);
-  apply_tool_response(reply, Api::chat, R"({"type":"tool_call","name":"weather","arguments":{"city":"Berlin"}})", 7, true);
+  apply_tool_response(reply, Api::chat, wire, 7, true, tools);
   const auto assistant = reply["choices"][0]["message"];
   check(reply["choices"][0]["finish_reason"] == "tool_calls" && assistant["tool_calls"][0]["function"]["arguments"] == R"({"city":"Berlin"})", "OpenAI tool response malformed");
   auto text_reply = completion(Api::chat, "test", 8, 1, "", "stop", 10, 2);
-  apply_tool_response(text_reply, Api::chat, R"({"type":"message","content":"Hello"})", 8, true);
+  apply_tool_response(text_reply, Api::chat, "Hello", 8, true, tools);
   check(text_reply["choices"][0]["message"]["content"] == "Hello", "Tool text envelope leaked");
   auto anthropic_text = message_response("test", 8, "", "end_turn", nullptr, messages_usage(10, 2));
-  apply_tool_response(anthropic_text, Api::messages, R"({"type":"message","content":"Hello"})", 8, true);
+  apply_tool_response(anthropic_text, Api::messages, "Hello", 8, true, tools);
   check(anthropic_text["content"][0]["text"] == "Hello" && message_tool_events(anthropic_text).find("text_delta") != std::string::npos,
         "Messages automatic text adapter differs");
   request["messages"].push_back(assistant);

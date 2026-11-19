@@ -74,7 +74,7 @@ class Observer:
         body.update(model=self.model, stream=True, stream_options={"include_usage": True})
         if self.config["engine"] == "native":
             body.update(draft="mtp" if self.config["depth"] else "off")
-        elif path == "/v1/chat/completions":
+        if path == "/v1/chat/completions":
             body["chat_template_kwargs"] = {"enable_thinking": False}
 
         stats = {"turn": self.turn, "request": number, "path": path}

@@ -1,6 +1,7 @@
 #pragma once
 #include "server_protocol.h"
 #include <bitset>
+#include <map>
 #include <set>
 
 namespace qwen35x::server {
@@ -214,6 +215,76 @@ public:
     const int root = schema(s, 0);
     g_.start = sequence({ws_, root, ws_});
     (void)g_.initial(); return std::move(g_);
+  }
+  // Consume arbitrary text up to the first complete delimiter. Prefix states
+  // retain overlapping matches, including a newline in a multiline value.
+  int until(const std::string &delimiter, int continuation, bool allow_text_end) {
+    std::vector<int> states(delimiter.size());
+    for (auto &id : states) id = g_.rule();
+    for (std::size_t i = 0; i < states.size(); ++i) {
+      std::map<std::size_t, std::bitset<256>> transitions;
+      for (unsigned byte = 0; byte < 256; ++byte) {
+        auto prefix = delimiter.substr(0, i) + static_cast<char>(byte);
+        std::size_t n = std::min(prefix.size(), delimiter.size());
+        while (n && !prefix.ends_with(std::string_view(delimiter).substr(0, n))) --n;
+        transitions[n].set(byte);
+      }
+      ByteGrammar::Alternatives choices;
+      if (allow_text_end) choices.push_back({});
+      for (const auto &[n, bytes] : transitions)
+        choices.push_back({g_.charset(bytes), n == states.size() ? continuation : states[n]});
+      g_.rules[states[i]] = std::move(choices);
+    }
+    return states.front();
+  }
+  int tool_parameter(const Json &s, int string_body, int close) {
+    if (s.contains("anyOf")) {
+      ByteGrammar::Alternatives choices;
+      for (const auto &option : s.at("anyOf"))
+        choices.push_back({tool_parameter(option, string_body, close)});
+      return g_.rule(std::move(choices));
+    }
+    const auto &type = s.at("type");
+    if (type == "boolean" || type == "null") {
+      // Qwen prints scalar arguments through Jinja's string filter; models
+      // also emit JSON spellings. Constrain both forms to the offered schema.
+      ByteGrammar::Alternatives choices = {{schema(s, 0), close}};
+      const Json values = s.contains("const") ? Json::array({s.at("const")}) :
+                          s.contains("enum") ? s.at("enum") :
+                          type == "null" ? Json::array({nullptr}) : Json::array({true, false});
+      for (const auto &v : values)
+        choices.push_back({g_.literal(v.is_null() ? "None" : v.get<bool>() ? "True" : "False"), close});
+      return g_.rule(std::move(choices));
+    }
+    if (type != "string") return sequence({schema(s, 0), close});
+    if (!s.contains("const") && !s.contains("enum")) return string_body;
+    ByteGrammar::Alternatives choices;
+    for (const auto &v : s.contains("const") ? Json::array({s.at("const")}) : s.at("enum"))
+      choices.push_back({g_.literal(v.get<std::string>()), close});
+    return g_.rule(std::move(choices));
+  }
+  ByteGrammar tool_calls(const Json &definitions, bool automatic) {
+    constexpr auto marker = "<tool_call>";
+    constexpr auto end_value = "\n</parameter>\n";
+    const int close = g_.literal(end_value);
+    const int string_body = until(end_value, sequence({}), false);
+    ByteGrammar::Alternatives functions;
+    for (const auto &[name, params] : definitions.items()) {
+      ByteGrammar::Stack call{g_.literal("\n<function=" + name + ">\n")};
+      const auto required = params.value("required", std::vector<std::string>{});
+      for (const auto &[key, value] : params.at("properties").items()) {
+        require(!key.empty() && key.find_first_of(">\r\n") == std::string::npos,
+                "Invalid Qwen tool parameter name");
+        auto field = sequence({g_.literal("<parameter=" + key + ">\n"), tool_parameter(value, string_body, close)});
+        if (std::find(required.begin(), required.end(), key) == required.end()) field = optional(field);
+        call.push_back(field);
+      }
+      call.push_back(g_.literal("</function>\n</tool_call>"));
+      functions.push_back(std::move(call));
+    }
+    const int call = g_.rule(std::move(functions));
+    g_.start = automatic ? until(marker, call, true) : sequence({g_.literal(marker), call});
+    return std::move(g_);
   }
   ByteGrammar object() {
     // General JSON objects; nested containers are capped at eight levels.
