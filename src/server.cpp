@@ -286,20 +286,29 @@ class Service {
           engine_->cancel(it->id); engine_->release(it->id);
           finish(job, failure(499, "Request cancelled")); it = active.erase(it); continue;
         }
-        if (job->stream && !job->events.room()) { ++it; continue; }
+        // A single scheduler step can confirm the pending token and a full
+        // draft block. Drain that many tokens so a fast reader can sustain it.
+        auto read_limit = max_mtp_draft_tokens + 1;
+        if (job->stream && !job->tool_mode)
+          read_limit = std::min(read_limit, job->events.room_for_output());
+        if (!read_limit) { ++it; continue; }
         const auto previous = it->output.size();
         CpuRequestResult result;
-        if (!engine_->read_output(it->id, 1, it->output, error) ||
+        if (!engine_->read_output(it->id, read_limit, it->output, error) ||
             !engine_->result(it->id, result)) {
           engine_->cancel(it->id); engine_->release(it->id);
           finish(it->job, failure(500, error)); it = active.erase(it); continue;
         }
         if (!job->decision && !job->classify) {
           try {
-            if (it->output.size() != previous) {
+            for (auto i = previous; i < it->output.size(); ++i) {
               std::string bytes;
-              if (!tokenizer_.decode({it->output.back()}, bytes, error)) throw std::runtime_error(error);
+              if (!tokenizer_.decode({it->output[i]}, bytes, error)) throw std::runtime_error(error);
               job->accept(job->stop_matcher->Push(job->utf8.push(bytes)));
+              if (job->stop_matcher->stopped()) {
+                it->output.resize(i + 1);
+                break;
+              }
             }
             if (job->stop_matcher->stopped()) {
               engine_->cancel(it->id);

@@ -100,12 +100,19 @@ int main(int argc, char **argv) try {
   check(overlap.Push("xabctail") == "x" && overlap.stopped() && overlap.matched() == "abc", "Earliest stop not selected");
   StreamQueue queue;
   std::size_t queued = 0;
-  while (queue.room()) { queue.push("payload"); ++queued; }
-  check(queued > 0 && queued <= StreamQueue::capacity, "Unbounded event queue");
+  while (queue.room_for_output()) { queue.push("payload"); ++queued; }
+  check(queued == StreamQueue::capacity - 2, "Event queue did not reserve two terminal flush slots");
   queue.finish({500, {{"error", "test"}}});
   std::string delta; std::optional<Reply> terminal;
   while (queue.pop(delta, terminal)) --queued;
   check(!queued && terminal && terminal->status == 500, "Terminal state lost behind full queue");
+  StreamQueue large;
+  const auto chunks = StreamQueue::byte_capacity / StreamQueue::max_chunk_bytes;
+  check(large.room_for_output() == chunks - 2, "Unexpected byte credits");
+  for (std::size_t i = 0; i < chunks - 2; ++i)
+    large.push(std::string(StreamQueue::max_chunk_bytes, 'x'));
+  check(!large.room_for_output(), "Queue must backpressure at the reserved byte limit");
+  for (std::size_t i = 0; i < 2; ++i) large.push(std::string(StreamQueue::max_chunk_bytes, 'y'));
   std::cout << fixtures["cases"].size() << " reference template cases and server protocol checks passed\n";
   return 0;
 } catch (const std::exception &e) { std::cerr << e.what() << '\n'; return 1; }

@@ -16,15 +16,17 @@ class StreamQueue {
   std::size_t bytes_ = 0;
   std::optional<Reply> terminal_;
 public:
-  static constexpr std::size_t capacity = 64, byte_capacity = 256 * 1024;
-  bool room() {
+  static constexpr std::size_t capacity = 64, byte_capacity = 256 * 1024, max_chunk_bytes = 8192;
+  std::size_t room_for_output() {
     std::lock_guard lock(mutex_);
-    return text_.size() + 3 <= capacity && bytes_ + 3 * 8192 <= byte_capacity;
+    const auto slots = std::min(capacity - text_.size(), (byte_capacity - bytes_) / max_chunk_bytes);
+    // Finishing a reply may flush both the UTF-8 decoder and a held stop suffix.
+    return slots > 2 ? slots - 2 : 0;
   }
   void push(std::string text) {
     if (text.empty()) return;
     std::lock_guard lock(mutex_);
-    if (text.size() > 8192 || text_.size() >= capacity || bytes_ + text.size() > byte_capacity || terminal_)
+    if (text.size() > max_chunk_bytes || text_.size() >= capacity || bytes_ + text.size() > byte_capacity || terminal_)
       throw std::runtime_error("Stream queue bound exceeded");
     bytes_ += text.size(); text_.push_back(std::move(text)); changed_.notify_one();
   }

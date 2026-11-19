@@ -244,3 +244,15 @@ python tests/qwen35_mtp_reference.py --probe build/qwen35_mtp_probe \
 
 The Python reference requires PyTorch, NumPy, Safetensors and the official 4B
 source shards.
+
+The real-model HTTP regression verifies a long tool reply through the SSE
+endpoint, confirms that drafting continues beyond the output buffer capacity,
+and checks streamed byte-stop and output parity against ordinary decoding.
+Run it with the native 4B H128 weights and sidecar.
+
+```sh
+model=models/qwen3.5-4b
+python tests/server_mtp_http_test.py --server build/qwen35_cpu_server \
+  --model-dir "$model" --weights "$model/model-mse16.q35h" \
+  --mtp-weights "$model/mtp-h128.q35h"
+```
