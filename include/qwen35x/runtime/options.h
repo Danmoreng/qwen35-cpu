@@ -15,6 +15,7 @@ struct CpuLoadOptions {
  // Historical field name: accepts H128 artifacts or supported GGUF files (magic detection).
  std::string model_dir,cpu_q4_h128_path;
  cpu::Q8_0Backend cpu_q8_backend=cpu::Q8_0Backend::auto_select;
+ std::string mtp_weights_path;
 };
 using ReferenceLogitsCallback=bool(*)(void*,std::size_t,std::int32_t,const float*,std::size_t,std::string&);
 

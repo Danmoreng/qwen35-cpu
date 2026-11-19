@@ -48,7 +48,7 @@ if (QWEN35X_SYSTEM_PROCESSOR_LOWER MATCHES "^(x86_64|amd64|i[3-6]86)$" OR
   if (MSVC)
     set(QWEN35X_Q8_0_HAS_AVX2_TU ON)
     set_source_files_properties(
-      src/cpu/q4_g16_avx2.cpp src/cpu/k_quant_avx2.cpp src/cpu/activation_avx2.cpp src/cpu/q4_0_avx2.cpp src/cpu/q4_dot4_avx2.cpp src/cpu/q4_h128_avx2.cpp src/cpu/q8_0_avx2.cpp src/cpu/delta_net_avx2.cpp src/cpu/full_attention_avx2.cpp src/cpu/full_attention_tiled_avx2.cpp
+      src/cpu/bf16_avx2.cpp src/cpu/q4_g16_avx2.cpp src/cpu/k_quant_avx2.cpp src/cpu/activation_avx2.cpp src/cpu/q4_0_avx2.cpp src/cpu/q4_dot4_avx2.cpp src/cpu/q4_h128_avx2.cpp src/cpu/q8_0_avx2.cpp src/cpu/delta_net_avx2.cpp src/cpu/full_attention_avx2.cpp src/cpu/full_attention_tiled_avx2.cpp
       PROPERTIES COMPILE_OPTIONS "/arch:AVX2")
     # The AVX-VNNI intrinsic spellings used by the isolated backend are
     # available in the VS 2022 toolset. Older MSVCs keep the AVX2 backend.
@@ -69,7 +69,7 @@ if (QWEN35X_SYSTEM_PROCESSOR_LOWER MATCHES "^(x86_64|amd64|i[3-6]86)$" OR
   elseif (CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
     set(QWEN35X_Q8_0_HAS_AVX2_TU ON)
     set_source_files_properties(
-      src/cpu/q4_g16_avx2.cpp src/cpu/k_quant_avx2.cpp src/cpu/activation_avx2.cpp src/cpu/q4_0_avx2.cpp src/cpu/q4_dot4_avx2.cpp src/cpu/q4_h128_avx2.cpp src/cpu/q8_0_avx2.cpp src/cpu/delta_net_avx2.cpp src/cpu/full_attention_avx2.cpp src/cpu/full_attention_tiled_avx2.cpp
+      src/cpu/bf16_avx2.cpp src/cpu/q4_g16_avx2.cpp src/cpu/k_quant_avx2.cpp src/cpu/activation_avx2.cpp src/cpu/q4_0_avx2.cpp src/cpu/q4_dot4_avx2.cpp src/cpu/q4_h128_avx2.cpp src/cpu/q8_0_avx2.cpp src/cpu/delta_net_avx2.cpp src/cpu/full_attention_avx2.cpp src/cpu/full_attention_tiled_avx2.cpp
       PROPERTIES COMPILE_OPTIONS "-mavx2;-mfma;-mf16c;-mtune=skylake")
     check_cxx_compiler_flag("-mavxvnni" QWEN35X_COMPILER_HAS_MAVXVNNI)
     if (QWEN35X_COMPILER_HAS_MAVXVNNI)
@@ -99,7 +99,7 @@ endif ()
 if (QWEN35X_Q8_0_HAS_AVX2_TU)
   target_sources(
     qwen35x_core PRIVATE
-    src/cpu/q4_g16_avx2.cpp src/cpu/k_quant_avx2.cpp src/cpu/activation_avx2.cpp src/cpu/q4_0_avx2.cpp src/cpu/q4_dot4_avx2.cpp src/cpu/q4_h128_avx2.cpp src/cpu/q8_0_avx2.cpp src/cpu/delta_net_avx2.cpp src/cpu/full_attention_avx2.cpp src/cpu/full_attention_tiled_avx2.cpp)
+    src/cpu/bf16_avx2.cpp src/cpu/q4_g16_avx2.cpp src/cpu/k_quant_avx2.cpp src/cpu/activation_avx2.cpp src/cpu/q4_0_avx2.cpp src/cpu/q4_dot4_avx2.cpp src/cpu/q4_h128_avx2.cpp src/cpu/q8_0_avx2.cpp src/cpu/delta_net_avx2.cpp src/cpu/full_attention_avx2.cpp src/cpu/full_attention_tiled_avx2.cpp)
   target_compile_definitions(qwen35x_core PRIVATE QWEN35X_Q8_0_HAS_AVX2_TU=1)
 else ()
   target_compile_definitions(qwen35x_core PRIVATE QWEN35X_Q8_0_HAS_AVX2_TU=0)
@@ -283,6 +283,9 @@ endif()
 # Optional local numerical diagnostics; not part of runtime packaging.
 add_executable(q4_projection_probe EXCLUDE_FROM_ALL tools/projection_probe.cpp)
 target_link_libraries(q4_projection_probe PRIVATE qwen35x_core)
+add_executable(qwen35_mtp_probe EXCLUDE_FROM_ALL tools/mtp_reference_probe.cpp)
+target_link_libraries(qwen35_mtp_probe PRIVATE qwen35x_core)
+target_compile_definitions(qwen35_mtp_probe PRIVATE QWEN35X_Q8_0_HAS_AVX2_TU=$<BOOL:${QWEN35X_Q8_0_HAS_AVX2_TU}>)
 add_executable(qev-native-study EXCLUDE_FROM_ALL tools/qev-native-study.cpp)
 target_link_libraries(qev-native-study PRIVATE qwen35x_core)
 add_executable(mixed_q8_runtime_test tests/mixed_q8_runtime_test.cpp)

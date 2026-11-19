@@ -212,6 +212,25 @@ int main() {
     ok=expect(qwen35x::q4_h128_payload_size(encoding,{8,129},error)==0,"G16 accepted partial column tile") && ok;
   }
 
+  {
+    qwen35x::Q4H128TensorInfo info;
+    info.name = "mtp.bf16";
+    info.shape = {2, 2};
+    info.encoding = qwen35x::Q4H128TensorEncoding::bf16;
+    const std::uint16_t input[]{0x3f80, 0xbf80, 0x4040, 0x3f00};
+    std::uint16_t output[4]{};
+    qwen35x::Q4H128ArtifactWriter bf16_writer;
+    ok = expect(bf16_writer.open(path.string(), metadata, {info}, error), "BF16 writer open") && ok;
+    ok = expect(bf16_writer.write_tensor(info.name, input, sizeof(input), error), "BF16 payload write") && ok;
+    ok = expect(bf16_writer.finalize(error), "BF16 writer finalize") && ok;
+    bf16_writer.close();
+    ok = expect(reader.open(path.string(), error), "BF16 reader open") && ok;
+    ok = expect(reader.read_tensor_into(info.name, output, sizeof(output), error) &&
+        std::memcmp(input, output, sizeof(input)) == 0, "BF16 payload round trip") && ok;
+    reader.close();
+    fs::remove(path);
+  }
+
   if (ok) {
     std::cout << "Q4_H128 artifact tests passed\n";
     return 0;

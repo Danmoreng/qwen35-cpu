@@ -25,6 +25,7 @@ enum class Q4H128TensorEncoding : std::uint32_t {
   q8_0 = 7,
   q4_g16_cpu_dot4 = 8,
   q4_h128_g16_cpu_dot4 = 9,
+  bf16 = 10,
 };
 
 inline bool q4_g16_encoding(Q4H128TensorEncoding e) noexcept {

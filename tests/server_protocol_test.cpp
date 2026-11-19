@@ -26,6 +26,10 @@ int main(int argc, char **argv) try {
   const auto copied = parse(edit.dump(), 256, "test", Api::chat);
   check(copied.spec.draft_mode == qwen35x::CpuDraftMode::input && copied.draft_source == "original source",
         "Input draft settings lost");
+  auto mtp = base;
+  mtp["draft"] = "mtp";
+  check(parse(mtp.dump(), 256, "test", Api::chat).spec.draft_mode == qwen35x::CpuDraftMode::mtp,
+        "MTP draft mode lost");
   for (const auto &patch : std::vector<Json>{
       {{"draft","unknown"}}, {{"draft","ngram"},{"draft_source","unused"}},
       {{"model", "wrong"}}, {{"messages", Json::array()}}, {{"max_tokens", 12}},

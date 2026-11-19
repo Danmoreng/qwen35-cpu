@@ -133,3 +133,25 @@ draft rounds, proposed and accepted tokens, replayed positions, and
 checkpoint per active engine (18 MiB for 0.8B and 2B, 48 MiB for 4B, plus
 convolution state) and may hold four vocabulary rows for sampling.
 Request-local lookup indices grow with the indexed text.
+
+### Learned MTP drafts for 4B
+
+Load the [4B MTP sidecar](quantization.md#optional-4b-mtp-weights) via
+`CpuLoadOptions::mtp_weights_path` and select `CpuDraftMode::mtp`. The
+experimental path uses the native 4B Q4 DOT4 output head with an AVX2-capable
+backend. `CpuEngineConfig::mtp_max_tokens` defaults to one candidate token
+and also accepts two or three.
+
+The trained block combines the target's normalized hidden state with the
+following token's embedding and writes to a request-private FP16 KV cache.
+During prefill, it computes only the K and V rows needed for later drafting.
+The existing verifier selects output tokens with the target sampler and its
+request RNG. Candidate generation consumes zero target RNG draws. The engine
+overwrites committed MTP KV rows with the corresponding target features after
+verification. A multi-request batch uses ordinary target decoding and advances
+the MTP cache so a later single-request turn can resume drafting.
+
+MTP requests use cold prompt prefill and ordinary text generation. Prefix
+snapshots, forced tokens, logit callbacks and constrained sampling require
+the ordinary request path. The benchmark profile records MTP prefill overhead,
+proposal, verification and cache-repair times separately.

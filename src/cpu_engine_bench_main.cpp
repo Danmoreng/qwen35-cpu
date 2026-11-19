@@ -119,6 +119,8 @@ int main(int argc, char **argv) try {
       options.model_dir = value;
     else if ((arg == "--cpu-q4-h128" || arg == "--cpu-gguf"))
       options.cpu_q4_h128_path = value;
+    else if (arg == "--mtp-weights") options.mtp_weights_path = value;
+    else if (arg == "--mtp-depth") config.mtp_max_tokens = positive();
     else if (arg == "--draft") spec.draft_mode = parse_cpu_draft_mode(value);
     else if (arg == "--cpu-batch")
       batch_size = positive();
@@ -331,6 +333,8 @@ int main(int argc, char **argv) try {
       << ",\"draft_rounds\":" << stats.draft_rounds << ",\"proposed_tokens\":" << stats.proposed_tokens
       << ",\"accepted_draft_tokens\":" << stats.accepted_draft_tokens << ",\"replayed_tokens\":" << stats.replayed_tokens
       << ",\"draft_cooldowns\":" << stats.draft_cooldowns
+      << ",\"mtp_prefill_ms\":" << stats.mtp_prefill_ms << ",\"mtp_draft_ms\":" << stats.mtp_draft_ms
+      << ",\"mtp_verify_ms\":" << stats.mtp_verify_ms << ",\"mtp_repair_ms\":" << stats.mtp_repair_ms
       << ",\"decode_time_ms\":" << decode_ms
       << ",\"tokens_per_second\":" << throughput
       << ",\"per_request_tokens_per_second\":" << throughput / batch_size

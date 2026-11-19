@@ -3,6 +3,7 @@ struct CpuModel::Impl {
   ModelProfile profile;
   RuntimeDims dims;
   ModelWeights weights;
+  std::unique_ptr<MtpWeights> mtp;
   cpu::Q8_0Backend backend;
   bool gguf=false;
 };
@@ -50,11 +51,20 @@ CpuModel::load(const ModelProfile &profile,
     error = "Native GGUF execution requires the Qwen3.5-0.8B text profile.";
     return nullptr;
   }
+  if (!options.mtp_weights_path.empty() && architecture != TextArchitecture::qwen35_4b) {
+    error = "An MTP sidecar requires the native Qwen3.5-4B text profile.";
+    return nullptr;
+  }
   if (
       !(model->gguf ? load_model_weights_from_quantized_gguf : load_model_weights_from_q4_h128)(options.cpu_q4_h128_path,
                           model->dims, profile, model->backend, 0,
                           model->weights, error))
     return nullptr;
+  if (!options.mtp_weights_path.empty()) {
+    model->mtp = std::make_unique<MtpWeights>();
+    if (!load_mtp_weights(options.mtp_weights_path, model->backend, *model->mtp, error))
+      return nullptr;
+  }
   return std::shared_ptr<const CpuModel>(new CpuModel(std::move(model)));
 }
 
@@ -76,6 +86,7 @@ struct CpuEngine::Impl {
     std::mt19937 rng;
     std::vector<float> logits;
     detail::TokenDraft draft;
+    std::unique_ptr<MtpState> mtp;
     int pending_token = -1;
     bool resident = false;
     std::size_t consumed = 0;
@@ -132,6 +143,8 @@ struct CpuEngine::Impl {
     std::vector<cpu::Q4_0ArgmaxResult> greedy_results;
     std::vector<int> greedy_tokens;
   } batch;
+  MtpWorkspace mtp_scratch;
+  std::vector<float> mtp_prefill_hidden;
 
 #include "cpu_engine_greedy.inl"
 #include "cpu_engine_state_batch.inl"
@@ -258,6 +271,13 @@ struct CpuEngine::Impl {
     const auto &d = model->impl_->dims;
     const auto capacity =
         s.spec.prompt_tokens.size() + s.spec.max_new_tokens - 1;
+    if (s.spec.draft_mode == CpuDraftMode::mtp && s.spec.max_new_tokens > 2) {
+      s.mtp = std::make_unique<MtpState>();
+      s.mtp->target_hidden.resize(d.hidden);
+      const auto values = capacity * static_cast<std::size_t>(d.n_kv_heads) * d.head_dim;
+      s.mtp->attention.k_cache_f16.resize(values);
+      s.mtp->attention.v_cache_f16.resize(values);
+    }
     const auto half = static_cast<std::size_t>(d.rope_dim / 2);
     s.state.rope_inverse_frequency.resize(half);
     for (std::size_t i = 0; i < half; ++i)
@@ -348,6 +368,7 @@ struct CpuEngine::Impl {
   void retire(Sequence &s) {
     if (!config.max_queued_requests || !s.resident || !terminal(s)) return;
     s.state = ModelState{};
+    s.mtp.reset();
     std::vector<int>().swap(s.counts);
     std::vector<float>().swap(s.logits);
     s.spec.prefix.reset();
@@ -400,7 +421,42 @@ struct CpuEngine::Impl {
                             : CpuRequestStatus::decode;
     return true;
   }
+  bool draft_mtp(Sequence &s, std::size_t room, detail::DraftProposal &proposal,
+                 std::string &error) {
+    const auto start = std::chrono::steady_clock::now();
+    const auto &m = *model->impl_;
+    const auto position = s.result.committed_tokens;
+    auto previous = std::span<const float>(s.mtp->target_hidden);
+    std::int32_t token = s.pending_token;
+    proposal.count = std::min({room, config.mtp_max_tokens, proposal.tokens.size()});
+    for (std::size_t row = 0; row < proposal.count; ++row) {
+      if (!mtp_forward(context.get(), *m.mtp, m.weights.embed_tokens, m.dims, s.state,
+            *s.mtp, mtp_scratch, position + row, token, previous, error) ||
+          !greedy_q4_token(context.get(), m.weights.embed_tokens, mtp_scratch.head_hidden,
+            s.counts, s.spec.sampling.repetition_penalty, token, error))
+        return false;
+      proposal.tokens[row] = token;
+      previous = mtp_scratch.head_hidden;
+    }
+    stats.mtp_draft_ms += elapsed_ms(start);
+    return true;
+  }
+
+  bool advance_mtp_cache(Sequence &s, std::size_t position,
+                         std::span<const std::int32_t> tokens, std::span<const float> result_hidden,
+                         double &timer, std::string &error) {
+    const auto start = std::chrono::steady_clock::now();
+    const auto &m = *model->impl_;
+    if (!mtp_store_kv(context.get(), *m.mtp, m.weights.embed_tokens, m.dims, s.state,
+          *s.mtp, mtp_scratch, position, tokens, s.mtp->target_hidden, result_hidden, error))
+      return false;
+    s.mtp->target_hidden.assign(result_hidden.end() - m.dims.hidden, result_hidden.end());
+    timer += elapsed_ms(start);
+    return true;
+  }
+
   bool verify_draft(Sequence &s, const detail::DraftProposal &proposal, std::string &error) {
+    const auto started = s.mtp ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
     std::array<Sequence *, 4> rows;
     rows.fill(&s);
     std::array<std::int32_t, 4> input{s.pending_token};
@@ -427,7 +483,7 @@ struct CpuEngine::Impl {
       if (terminal(s)) break;
     }
     stats.accepted_draft_tokens += accepted;
-    if (!terminal(s) && s.draft.record_verification(proposal, accepted, s.result.generated_tokens))
+    if (!s.mtp && !terminal(s) && s.draft.record_verification(proposal, accepted, s.result.generated_tokens))
       ++stats.draft_cooldowns;
     if (used < width && !terminal(s)) {
       s.state.linear_states.swap(draft_checkpoint);
@@ -438,6 +494,23 @@ struct CpuEngine::Impl {
               s.state, input[i], static_cast<int>(position+i), s.logits, nullptr, error, false))
           return false;
         ++stats.replayed_tokens;
+      }
+    }
+    if (s.mtp) {
+      stats.mtp_verify_ms += elapsed_ms(started);
+      if (!terminal(s)) {
+        // The first draft KV row used the actual target hidden state. Any
+        // further committed rows need their true target inputs after verification.
+        const auto &m = *model->impl_;
+        const auto hidden = static_cast<std::size_t>(m.dims.hidden);
+        const auto target_rows = std::span<const float>(batch.final_hidden).first(used * hidden);
+        const auto repair = std::chrono::steady_clock::now();
+        if (!mtp_store_kv(context.get(), *m.mtp, m.weights.embed_tokens, m.dims, s.state,
+              *s.mtp, mtp_scratch, position + 1, std::span(input).subspan(1, used - 1),
+              target_rows.first(hidden), target_rows.subspan(hidden), error))
+          return false;
+        s.mtp->target_hidden.assign(target_rows.end() - hidden, target_rows.end());
+        stats.mtp_repair_ms += elapsed_ms(repair);
       }
     }
     s.result.committed_tokens += used;
@@ -500,7 +573,9 @@ struct CpuEngine::Impl {
         &s.counts, s.spec.sampling.repetition_penalty, -1, greedy};
     bool predict = true, ok;
     const auto start = std::chrono::steady_clock::now();
-    if (!prefill && s.spec.draft_mode != CpuDraftMode::off && s.draft.ready(s.result.generated_tokens) &&
+    const bool lookup_draft = s.spec.draft_mode == CpuDraftMode::ngram ||
+                             s.spec.draft_mode == CpuDraftMode::input;
+    if (!prefill && (s.mtp || (lookup_draft && s.draft.ready(s.result.generated_tokens))) &&
         s.spec.forced_output_tokens.empty() && !s.spec.logits_callback && !s.spec.sampling_constraint &&
         !model->impl_->gguf && model->supports_selected_logits() &&
         cpu::q8_0_backend_uses_avx2(model->impl_->backend)) {
@@ -509,9 +584,12 @@ struct CpuEngine::Impl {
         room = std::min(room, config.max_buffered_tokens - (s.result.output_tokens.size() - s.consumed));
       if (room > 1) {
         try {
-          const auto proposal = s.draft.propose(s.spec, s.result.output_tokens, room-1);
-          if (proposal.count) {
-            ok = verify_draft(s, proposal, error);
+          detail::DraftProposal proposal;
+          ok = true;
+          if (s.mtp) ok = draft_mtp(s, room - 1, proposal, error);
+          else proposal = s.draft.propose(s.spec, s.result.output_tokens, room - 1);
+          if (!ok || proposal.count) {
+            if (ok) ok = verify_draft(s, proposal, error);
             s.result.decode_ms += elapsed_ms(start);
             if (!ok) { s.result.status = CpuRequestStatus::failed; s.result.error = error; }
             return ok;
@@ -555,12 +633,16 @@ struct CpuEngine::Impl {
       std::vector<float> prefix_hidden;
       predict =
           s.result.committed_tokens + count == s.spec.prompt_tokens.size();
+      const auto position = s.result.committed_tokens;
+      const auto *tokens = s.spec.prompt_tokens.data() + position;
       ok = run_forward_cpu_q8_batch(
           context.get(), w, d, s.state,
-          s.spec.prompt_tokens.data() + s.result.committed_tokens, count,
-          static_cast<int>(s.result.committed_tokens), predict && !selected, s.logits,
+          tokens, count, static_cast<int>(position), predict && !selected, s.logits,
           greedy ? &sampling : nullptr, nullptr, error,
-          (publish || (selected && predict)) ? &prefix_hidden : nullptr);
+          (publish || (selected && predict)) ? &prefix_hidden : nullptr, {},
+          s.mtp ? &mtp_prefill_hidden : nullptr);
+      if (ok && s.mtp)
+        ok = advance_mtp_cache(s, position, {tokens, count}, mtp_prefill_hidden, stats.mtp_prefill_ms, error);
       if(ok && selected && predict)
         ok=compute_selected_logits_from_embedding(context.get(),w.embed_tokens,prefix_hidden,
           s.spec.selected_logit_tokens,s.logits,error);
@@ -574,6 +656,9 @@ struct CpuEngine::Impl {
       ok = run_forward_single_token(
           context.get(), w, d, s.state, s.pending_token,
           static_cast<int>(s.result.committed_tokens), s.logits, greedy ? &sampling : nullptr, error);
+      if (ok && s.mtp && s.result.generated_tokens + 1 < s.spec.max_new_tokens)
+        ok = advance_mtp_cache(s, s.result.committed_tokens, {&s.pending_token, 1},
+            context->decode.forward.final_hidden, stats.mtp_repair_ms, error);
       if (ok) {
         ++s.result.committed_tokens;
         ++s.result.decode_forwards;
@@ -602,6 +687,7 @@ CpuEngine::create(std::shared_ptr<const CpuModel> model,
           static_cast<std::size_t>(std::numeric_limits<int>::max()) ||
       !config.max_prefill_requests || config.max_prefill_requests > 8 ||
       config.prefill_chunk_size > 2048 ||
+      !config.mtp_max_tokens || config.mtp_max_tokens > 3 ||
       (config.kv_cache_bits != 0 && config.kv_cache_bits != 16 && config.kv_cache_bits != 32) ||
       (config.shared_kv_pages && config.kv_cache_bits == 32) ||
       (model && config.shared_kv_pages && !cpu::q8_0_backend_uses_avx2(model->impl_->backend)) ||
@@ -663,6 +749,14 @@ CpuRequestId CpuEngine::submit(CpuRequestSpec spec, std::string &error) {
     return 0;
   }
   const bool selected=!spec.selected_logit_tokens.empty() || spec.selected_logits_callback;
+  if (spec.draft_mode == CpuDraftMode::mtp &&
+      (!impl_->model->impl_->mtp || !impl_->model->supports_selected_logits() ||
+       !cpu::q8_0_backend_uses_avx2(impl_->model->impl_->backend) ||
+       spec.prefix || spec.register_prefix_tokens || spec.logits_callback || selected ||
+       spec.sampling_constraint || !spec.forced_output_tokens.empty())) {
+    error = "MTP requires a 4B sidecar, an AVX2-capable backend and ordinary generation with a Q4 DOT4 head.";
+    return 0;
+  }
   if (spec.sampling_constraint && (selected || !spec.forced_output_tokens.empty())) {
     error = "Sampling constraints cannot be combined with forced or selected readout.";
     return 0;
@@ -779,6 +873,21 @@ bool CpuEngine::advance_batch(std::span<const CpuRequestId> ids,
       static_cast<std::size_t>(impl_->model->impl_->dims.vocab_size);
   for (std::size_t r = 0; r < rows.size(); ++r) {
     auto &s = *rows[r];
+    std::string local_error;
+    if (s.mtp && s.result.generated_tokens + 1 < s.spec.max_new_tokens) {
+      const auto width = static_cast<std::size_t>(impl_->model->impl_->dims.hidden);
+      const auto hidden = std::span<const float>(impl_->batch.final_hidden).subspan(r * width, width);
+      const auto mtp_start = std::chrono::steady_clock::now();
+      if (!impl_->advance_mtp_cache(s, s.result.committed_tokens, {&s.pending_token, 1},
+                                   hidden, impl_->stats.mtp_repair_ms, local_error)) {
+        s.result.status = CpuRequestStatus::failed;
+        s.result.error = local_error;
+        if (error.empty()) error = local_error;
+        ok = false;
+        continue;
+      }
+      s.result.decode_ms += elapsed_ms(mtp_start);
+    }
     ++s.result.committed_tokens;
     ++s.result.decode_forwards;
     // Attribution only, not a substitute for common wall-clock throughput.
@@ -787,7 +896,6 @@ bool CpuEngine::advance_batch(std::span<const CpuRequestId> ids,
     if (!greedy)
       s.logits.assign(impl_->batch.logits.data() + r * vocab,
                       impl_->batch.logits.data() + (r + 1) * vocab);
-    std::string local_error;
     if (!impl_->select(s, greedy ? impl_->batch.greedy_tokens[r] : -1,
                        local_error)) {
       s.result.status = CpuRequestStatus::failed;
@@ -815,6 +923,7 @@ CpuEngineStats CpuEngine::stats() const {
     stats.queued_requests += s->result.status == CpuRequestStatus::queued;
     stats.resident_requests += s->resident;
     for(const auto &state:s->state.full_states)count_state(state);
+    if (s->mtp) count_state(s->mtp->attention);
   }
   for(const auto &prefix:impl_->prefixes)
     for(const auto &state:prefix->impl_->snapshot.full_states)count_state(state);

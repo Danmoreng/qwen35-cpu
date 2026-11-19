@@ -487,6 +487,13 @@ generated tokens. Ordinary decode continues during the pause and automatic
 lookup resumes afterward. See the [drafting API](cpu-engine-api.md#text-drafts)
 for the acceptance threshold and counters.
 
+For experimental learned 4B drafting, start the server with the native 4B
+checkpoint and `--mtp-weights FILE`. Select `"draft": "mtp"` in a chat
+completion or a raw completion. `--mtp-depth 1|2|3` sets the proposal limit
+and defaults to one.
+MTP requests prefill their own KV cache and bypass automatic prefix reuse.
+See the [4B packing instructions](quantization.md#optional-4b-mtp-weights).
+
 In this request the transcript supplies candidate tokens and the target model decides which corrections to make.
 
 ```json

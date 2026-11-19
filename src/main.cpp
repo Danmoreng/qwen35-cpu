@@ -57,7 +57,8 @@ int main(int argc, char **argv) try {
         "--model-dir DIR --weights FILE --prompt TEXT | --prompt-file FILE | --tokens-file FILE\n"
         "[--threads N] [--max-context N] [--max-new-tokens N]\n"
         "[--temperature F] [--top-p F] [--top-k N] [--repetition-penalty F] [--seed N]\n"
-        "[--draft off|ngram|input] [--draft-source-file FILE]\n"
+        "[--draft off|ngram|input|mtp] [--draft-source-file FILE]\n"
+        "[--mtp-weights FILE] [--mtp-depth 1..3] (4B MTP only)\n"
         "[--tokenize-out FILE] [--forced-tokens-file FILE --logits-out FILE]\n"
         "Raw text completion; supply your own rendered chat template. Default: greedy.\n";
       return 0;
@@ -79,6 +80,8 @@ int main(int argc, char **argv) try {
     };
     if (key == "--model-dir") load.model_dir = value;
     else if (key == "--weights") load.cpu_q4_h128_path = value;
+    else if (key == "--mtp-weights") load.mtp_weights_path = value;
+    else if (key == "--mtp-depth") config.mtp_max_tokens = number();
     else if (key == "--prompt" || key == "--prompt-file") {
       if (has_prompt || has_tokens) throw std::runtime_error("Specify one prompt input");
       prompt = key == "--prompt" ? value : read(value); has_prompt = true;

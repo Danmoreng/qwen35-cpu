@@ -2,6 +2,7 @@
 #include "attention_partition.h"
 #include "prefill_chunk.h"
 #include "token_draft.h"
+#include "../cpu/bf16_avx2.h"
 #include "qwen35x/runtime/cpu_engine.h"
 
 #include "qwen35x/cpu/activation.h"
@@ -18,10 +19,12 @@
 #include "qwen35x/cpu/kv_pages.h"
 #include "qwen35x/cpu/full_attention_tiled.h"
 #include "qwen35x/weights/q4_h128_artifact.h"
+#include "qwen35x/weights/qwen35_mtp.h"
 #include "qwen35x/weights/safetensors.h"
 
 #include <algorithm>
 #include <atomic>
+#include <bit>
 #include <chrono>
 #include <cmath>
 #include <cstring>
@@ -42,5 +45,6 @@ namespace qwen35x {
 #include "layers.inl"
 #include "forward.inl"
 #include "prefill.inl"
+#include "mtp.inl"
 #include "cpu_engine.inl"
 }

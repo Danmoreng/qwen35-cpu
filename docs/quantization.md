@@ -190,3 +190,27 @@ The validated artifact is 2,369,080,576 bytes with SHA-256
 `7db1dd7be2e74444465f833d6b639d895ff09e0b8226fb06eb925a5729a85eae`.
 See the [Ryzen 4B report](benchmarks/qwen35-4b-ryzen.md) for memory,
 throughput and BF16 fidelity.
+
+### Optional 4B MTP weights
+
+The packer can export the 15 trained MTP tensors into a separate native
+sidecar. Use the same official 4B snapshot and select `bf16`, `q8` or
+`h128`. The three variants use BF16 matrices, identity-basis Q8_0 matrices,
+or unweighted MSE16 H128/Q4-G32-DOT4 matrices, respectively. Normalization
+weights use F32 storage and all variants share the base checkpoint's tied
+embedding and vocabulary projection.
+
+```sh
+model=models/qwen3.5-4b
+for precision in bf16 q8 h128; do
+  build/qwen35_cpu_pack --hf-model-dir "$model" --mtp-only "$precision" \
+    --output "$model/mtp-$precision.q35h"
+done
+
+build/qwen35_cpu --model-dir "$model" --weights "$model/model-mse16.q35h" \
+  --mtp-weights "$model/mtp-h128.q35h" --draft mtp --mtp-depth 1 \
+  --prompt "Once upon a time" --threads 6 --max-new-tokens 128
+```
+
+See the [4B MTP study](benchmarks/qwen35-4b-mtp.md) for measured throughput,
+acceptance and the precision comparison.

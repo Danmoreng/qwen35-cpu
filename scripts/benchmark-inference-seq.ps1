@@ -46,7 +46,7 @@ try {
     for ($argumentIndex=0; $argumentIndex -lt ($case.args.Count-1); $argumentIndex++) {
       $flag = [string]$case.args[$argumentIndex]
       $value = [string]$case.args[$argumentIndex+1]
-      if ($flag -in @('--cpu-q4-h128','--cpu-gguf','--weights','--tokens-file','--forced-tokens-file','--prompt-tokens-file')) {
+      if ($flag -in @('--cpu-q4-h128','--cpu-gguf','--weights','--mtp-weights','--tokens-file','--forced-tokens-file','--prompt-tokens-file')) {
         $inputPaths += $value
       }
       if ($flag -in @('--hf-model-dir','--model-dir')) {

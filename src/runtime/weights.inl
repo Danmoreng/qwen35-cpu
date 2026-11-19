@@ -125,6 +125,7 @@ struct TensorData {
 
   std::vector<std::int64_t> shape;
   std::vector<float> data;
+  std::vector<std::uint16_t> bf16;
   std::vector<cpu::Q4_0Block> q4_0_blocks;
   std::vector<cpu::Q4_0BlockX8> packed_q4_0_blocks;
   std::vector<float> q4_0_scales;
@@ -1028,6 +1029,58 @@ bool run_q8_gate_tail(CpuExecutionContext *context, const TensorData &w,
   return true;
 }
 
+struct Bf16MatmulJob {
+  const std::uint16_t *weights;
+  const float *input;
+  float *output;
+  std::size_t rows, columns, vectors;
+  cpu::Q8_0Backend backend;
+};
+
+void run_bf16_matmul_rows(void *opaque, std::size_t begin, std::size_t end) noexcept {
+  const auto &job = *static_cast<const Bf16MatmulJob *>(opaque);
+  const auto &[weights, input, output, rows, columns, vectors, backend] = job;
+#if QWEN35X_Q8_0_HAS_AVX2_TU
+  if (columns % 8 == 0 && cpu::q8_0_backend_uses_avx2(backend)) {
+    cpu::bf16_f32_matmul_rows_avx2(weights, input, output, rows, columns, vectors, begin, end);
+    return;
+  }
+#endif
+  for (std::size_t v = 0; v < vectors; ++v) {
+    for (std::size_t row = begin; row < end; ++row) {
+      float sum = 0.0F;
+      for (std::size_t col = 0; col < columns; ++col) {
+        const auto bits = static_cast<std::uint32_t>(weights[row * columns + col]) << 16;
+        sum += std::bit_cast<float>(bits) * input[v * columns + col];
+      }
+      output[v * rows + row] = sum;
+    }
+  }
+}
+
+bool bf16_matmul(CpuExecutionContext *context, const TensorData &weight,
+                 const std::vector<float> &input, std::size_t vectors,
+                 std::vector<float> &output, std::string &error) {
+  const auto rows = static_cast<std::size_t>(weight.shape[0]);
+  const auto cols = static_cast<std::size_t>(weight.shape[1]);
+  if (!vectors || input.size() != vectors * cols || weight.bf16.size() != rows * cols) {
+    error = "Invalid BF16 projection input or weights.";
+    return false;
+  }
+  output.resize(vectors * rows);
+  Bf16MatmulJob job{weight.bf16.data(), input.data(), output.data(), rows, cols, vectors, weight.q8_0_backend};
+  if (context && context->executor) {
+    const auto status = context->executor->parallel_for_rows(rows, run_bf16_matmul_rows, &job);
+    if (status != cpu::CpuExecutorStatus::ok) {
+      error = std::string("BF16 CPU executor failed: ") + cpu::cpu_executor_status_name(status);
+      return false;
+    }
+  } else {
+    run_bf16_matmul_rows(&job, 0, rows);
+  }
+  return true;
+}
+
 bool matvec_2d(CpuExecutionContext *cpu_context,
   const TensorData & w,
   const std::vector<float> & x,
@@ -1040,6 +1093,7 @@ bool matvec_2d(CpuExecutionContext *cpu_context,
     error_message = "matvec input size mismatch.";
     return false;
   }
+  if (!w.bf16.empty()) return bf16_matmul(cpu_context, w, x, 1, out, error_message);
 
 
 

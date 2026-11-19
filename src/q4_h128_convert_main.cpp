@@ -12,6 +12,7 @@
 #include "qwen35x/cpu/q4_0.h"
 #include "qwen35x/cpu/q4_h128.h"
 #include "qwen35x/weights/q4_h128_artifact.h"
+#include "qwen35x/weights/qwen35_mtp.h"
 #include "qwen35x/weights/safetensors.h"
 
 #include <algorithm>
@@ -43,7 +44,7 @@ Q4H128TensorInfo make_tensor(
     tensor.transform_size = qwen35x::cpu::q4_h128_transform_size;
     tensor.scale_group = qwen35x::cpu::q4_0_values_per_block;
     tensor.sign_seed = sign_seed;
-  } else if (encoding == Q4H128TensorEncoding::q4_0) {
+  } else if (encoding == Q4H128TensorEncoding::q4_0 || encoding == Q4H128TensorEncoding::q8_0) {
     tensor.scale_group = qwen35x::cpu::q4_0_values_per_block;
   }
   return tensor;
@@ -201,7 +202,8 @@ std::vector<ConversionTensor> plan_conversion(
           break;
         }
       }
-    } else if (cpu_packed && source.encoding != Q4H128TensorEncoding::f32) {
+    } else if (cpu_packed && (source.encoding == Q4H128TensorEncoding::q4_h128 ||
+                            source.encoding == Q4H128TensorEncoding::q4_0)) {
       output.encoding = source.encoding == Q4H128TensorEncoding::q4_h128
         ? Q4H128TensorEncoding::q4_h128_cpu_x8
         : Q4H128TensorEncoding::q4_0_cpu_x8;
@@ -219,6 +221,7 @@ std::vector<ConversionTensor> plan_conversion(
         {"self_attn.v_proj.weight", "self_attn.qkv_proj.weight"},
       };
       for (const auto & merge : merges) {
+        if (output.name.starts_with("mtp.")) break;
         const std::string suffix = merge.first;
         if (output.name.size() >= suffix.size() &&
             output.name.compare(output.name.size() - suffix.size(), suffix.size(), suffix) == 0) {
@@ -266,7 +269,23 @@ bool convert_tensor(
     // HF exports of Qwen3_5ForCausalLM can omit the language_model prefix.
     // Keep artifact and calibration names canonical across both source layouts.
     std::string name = source.name;
-    if (text_only_names) name.replace(0, sizeof("model.language_model.") - 1, "model.");
+    if (text_only_names && name.starts_with("model.language_model."))
+      name.replace(0, sizeof("model.language_model.") - 1, "model.");
+    if (source.encoding == Q4H128TensorEncoding::bf16) {
+      std::string shard;
+      qwen35x::SafetensorTensorInfo raw;
+      std::vector<std::uint16_t> data;
+      if (!qwen35x::SafetensorLoader::resolve_tensor_file(model_dir, name, shard, error) ||
+          !qwen35x::SafetensorLoader::load_tensor_info(shard, name, raw, error) ||
+          !qwen35x::SafetensorLoader::read_bf16_tensor(shard, raw, data, error))
+        return false;
+      if (!shape_matches(raw.shape, source.shape) ||
+          std::any_of(data.begin(), data.end(), [](auto bits) { return (bits & 0x7f80U) == 0x7f80U; })) {
+        error = "Invalid BF16 shape or values in " + name;
+        return false;
+      }
+      return writer.write_tensor(info.name, data.data(), data.size() * sizeof(data[0]), error);
+    }
     if (!qwen35x::SafetensorLoader::read_tensor_f32(
           model_dir, name, tensor, error)) {
       return false;
@@ -404,6 +423,7 @@ int main(int argc, char ** argv) {
   bool head_g16 = false;
   std::string importance_dir;
   std::string covariance_dir;
+  std::string mtp_only;
   for (int index = 1; index < argc; ++index) {
     const std::string argument = argv[index];
     if (argument == "--head-g16") { head_g16 = true;
@@ -415,6 +435,12 @@ int main(int argc, char ** argv) {
       model_dir = argv[++index];
     } else if (argument == "--output" && index + 1 < argc) {
       output_path = argv[++index];
+    } else if (argument == "--mtp-only" && index + 1 < argc) {
+      mtp_only = argv[++index];
+      if (mtp_only.empty()) {
+        std::cerr << "--mtp-only requires bf16, q8 or h128.\n";
+        return 2;
+      }
     } else if (argument == "--layout" && index + 1 < argc) {
       layout = argv[++index];
     } else if (argument == "--quantizer" && index + 1 < argc) {
@@ -424,7 +450,9 @@ int main(int argc, char ** argv) {
     } else if (argument == "--importance-dir" && index + 1 < argc) {
       importance_dir = argv[++index];
     } else if (argument == "--help") {
-      std::cout << "Usage: qwen35_cpu_pack --hf-model-dir <dir> --output <file> [--layout cpu-dot4] [--quantizer mse16|legacy-absmax15] [--importance-dir <Q35CAL1 directory>] [--covariance-dir <Q35COV1 directory>] [--q8-gates] [--q8-head] [--head-basis identity|h128] [--head-g16]\nDefault quantizer: mse16; calibration is enabled only with --importance-dir.\n";
+      std::cout << "Usage: qwen35_cpu_pack --hf-model-dir <dir> --output <file> [--layout cpu-dot4] [--quantizer mse16|legacy-absmax15] [--importance-dir <Q35CAL1 directory>] [--covariance-dir <Q35COV1 directory>] [--q8-gates] [--q8-head] [--head-basis identity|h128] [--head-g16]\n"
+                   "Qwen3.5-4B MTP sidecar: --mtp-only bf16|q8|h128\n"
+                   "Default quantizer: mse16; calibration is enabled only with --importance-dir.\n";
       return 0;
     } else {
       std::cerr << "Unknown or incomplete argument: " << argument << '\n';
@@ -433,6 +461,12 @@ int main(int argc, char ** argv) {
   }
   if (model_dir.empty() || output_path.empty()) {
     std::cerr << "Both --hf-model-dir and --output are required.\n";
+    return 2;
+  }
+  if (!mtp_only.empty() && ((mtp_only != "bf16" && mtp_only != "q8" && mtp_only != "h128") ||
+      q8_gates || q8_head || head_g16 || head_basis != "identity" || !importance_dir.empty() ||
+      !covariance_dir.empty() || quantizer != "mse16")) {
+    std::cerr << "--mtp-only requires bf16, q8 or h128 and its own uncalibrated recipe.\n";
     return 2;
   }
   if ((head_basis != "identity" && head_basis != "h128") ||
@@ -473,7 +507,8 @@ int main(int argc, char ** argv) {
     std::cerr << "Profile load failed: " << error << '\n';
     return 3;
   }
-  if (qwen35x::text_architecture(*profile) == qwen35x::TextArchitecture::unsupported) {
+  const auto architecture = qwen35x::text_architecture(*profile);
+  if (architecture == qwen35x::TextArchitecture::unsupported) {
     std::cerr << "Expected the Qwen3.5-0.8B, Qwen3.5-2B or Qwen3.5-4B text architecture.\n";
     return 1;
   }
@@ -485,7 +520,20 @@ int main(int argc, char ** argv) {
   metadata.sign_seed = qwen35x::cpu::q4_h128_default_sign_seed;
 
   std::vector<Q4H128TensorInfo> tensors;
-  if (!append_required_tensors(*profile, metadata.sign_seed, tensors, error)) {
+  if (!mtp_only.empty()) {
+    if (architecture != qwen35x::TextArchitecture::qwen35_4b) {
+      std::cerr << "--mtp-only requires the Qwen3.5-4B text profile.\n";
+      return 2;
+    }
+    const auto encoding = mtp_only == "bf16" ? Q4H128TensorEncoding::bf16
+        : mtp_only == "q8" ? Q4H128TensorEncoding::q8_0 : Q4H128TensorEncoding::q4_h128;
+    for (const auto & tensor : qwen35x::qwen35_4b_mtp_tensors) {
+      auto shape = std::vector<std::uint64_t>{tensor.rows};
+      if (tensor.columns) shape.push_back(tensor.columns);
+      tensors.push_back(make_tensor(std::string(tensor.name), std::move(shape),
+          tensor.columns ? encoding : Q4H128TensorEncoding::f32, metadata.sign_seed));
+    }
+  } else if (!append_required_tensors(*profile, metadata.sign_seed, tensors, error)) {
     std::cerr << "Tensor plan failed: " << error << '\n';
     return 3;
   }
@@ -568,6 +616,12 @@ int main(int argc, char ** argv) {
       std::cerr << "Completed artifact payload verification failed: " << error << '\n';
       return 7;
     }
+  }
+  if (!mtp_only.empty()) {
+    std::cout << "Wrote and checksum-verified " << verifier.tensors().size()
+              << " MTP tensors (" << mtp_only << ") in " << output_path
+              << " (" << fs::file_size(output_path) << " bytes).\n";
+    return 0;
   }
   std::ofstream sidecar(output_path + ".quantization.json");
   sidecar << "{\n  \"version\": 1,\n  \"quantizer\": \"" << quantizer

@@ -145,6 +145,14 @@ std::uint64_t q4_h128_payload_size(
     return bytes;
   }
   switch (encoding) {
+    case Q4H128TensorEncoding::bf16: {
+      std::uint64_t bytes = 0;
+      if (!checked_multiply(elements, sizeof(std::uint16_t), bytes)) {
+        error_message = "BF16 tensor size overflows.";
+        return 0;
+      }
+      return bytes;
+    }
     case Q4H128TensorEncoding::q8_0: {
       std::uint64_t bytes = 0;
       if (shape.size() != 2 || shape[1] % 32 != 0 ||
@@ -460,7 +468,7 @@ bool Q4H128ArtifactReader::open(const std::string & path, std::string & error_me
       read_value(stream_, tensor.data_offset) && read_value(stream_, tensor.data_size) &&
       read_value(stream_, tensor.checksum);
     if (!ok || name_size == 0 || name_size > 4096 || rank == 0 || rank > 8 ||
-        encoding > static_cast<std::uint32_t>(Q4H128TensorEncoding::q4_h128_g16_cpu_dot4) ||
+        encoding > static_cast<std::uint32_t>(Q4H128TensorEncoding::bf16) ||
         reserved != 0) {
       error_message = "Invalid Q4_H128 tensor directory entry.";
       close();

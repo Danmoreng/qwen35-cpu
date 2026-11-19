@@ -78,6 +78,7 @@ struct CpuEngineConfig {
   std::size_t max_buffered_tokens = 256;
   // Opt-in FP16 shared prefix pages; contiguous caches remain the reference.
   bool shared_kv_pages = false;
+  std::size_t mtp_max_tokens = 1;
 };
 // Request-local sampling restriction. Called only by the engine owner, never
 // concurrently. apply masks disallowed logits; accept advances after selection.
@@ -88,12 +89,13 @@ public:
   virtual bool apply(float *logits, std::size_t count, std::string &error) = 0;
   virtual bool accept(std::int32_t token, std::string &error) = 0;
 };
-enum class CpuDraftMode { off, ngram, input };
+enum class CpuDraftMode { off, ngram, input, mtp };
 inline CpuDraftMode parse_cpu_draft_mode(std::string_view value) {
   if (value == "off") return CpuDraftMode::off;
   if (value == "ngram") return CpuDraftMode::ngram;
   if (value == "input") return CpuDraftMode::input;
-  throw std::invalid_argument("draft mode must be off, ngram or input");
+  if (value == "mtp") return CpuDraftMode::mtp;
+  throw std::invalid_argument("draft mode must be off, ngram, input or mtp");
 }
 
 struct CpuRequestSpec {
@@ -155,6 +157,7 @@ struct CpuEngineStats {
   std::size_t prefix_entries = 0, prefix_bytes = 0;
   std::size_t physical_kv_bytes = 0;
   std::size_t draft_cooldowns = 0;
+  double mtp_prefill_ms = 0, mtp_draft_ms = 0, mtp_verify_ms = 0, mtp_repair_ms = 0;
 };
 
 // One owner calls these methods serially. Each engine owns one executor and

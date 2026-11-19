@@ -103,7 +103,7 @@ class Service {
   std::size_t outstanding_ = 0;
   std::thread worker_;
   void configure_cache(CpuRequestSpec &spec, std::size_t candidate) {
-    if (!automatic_prefix_ || !prefix_budget_) return;
+    if (!automatic_prefix_ || !prefix_budget_ || spec.draft_mode == CpuDraftMode::mtp) return;
     spec.prefix = engine_->find_prefix(spec.prompt_tokens, spec.trust_namespace);
     if (candidate >= 32 && (!spec.prefix || spec.prefix->token_count() < candidate))
       spec.register_prefix_tokens = candidate;
@@ -432,6 +432,7 @@ int main(int argc, char **argv) try {
     const std::string key = argv[i];
     if (key == "--help") {
       std::cout << "Qwen3.5 CPU HTTP server\n--model-dir DIR [--weights FILE] [--threads auto|N] [--batch-width auto|N] [--batch-db PATH]\n"
+        "[--mtp-weights FILE] [--mtp-depth 1..3] (4B MTP only)\n"
         "[--host 127.0.0.1] [--port 8080] [--max-context 8192] [--residents 16]\n"
         "[--decision-encoding joint|per_question] (qev_config.json required)\n"
         "[--prefill-requests 1..8] [--decision-head auto|full] [--prefill-chunk N] (1..2048; default adaptive)\n"
@@ -449,6 +450,8 @@ int main(int argc, char **argv) try {
     };
     if (key == "--model-dir") load.model_dir = value;
     else if (key == "--weights") load.cpu_q4_h128_path = value;
+    else if (key == "--mtp-weights") load.mtp_weights_path = value;
+    else if (key == "--mtp-depth") config.mtp_max_tokens = number();
     else if (key == "--threads") config.threads = value == "auto" ? 0 : number();
     else if (key == "--batch-width") batch_width = value == "auto" ? 0 : number();
     else if (key == "--batch-db") batch_db = value;

@@ -608,7 +608,8 @@ bool run_forward_cpu_q8_batch(CpuExecutionContext *cpu_context,
   DecodeProfilingAccumulator * profiling,
   std::string & error_message,
   std::vector<float> * normalized_output = nullptr,
-  std::span<PrefillSegment> segments = {}) {
+  std::span<PrefillSegment> segments = {},
+  std::vector<float> * normalized_rows = nullptr) {
   if (cpu_context == nullptr || token_ids == nullptr || batch_size == 0) {
     error_message = "Batched CPU Q8_0 forward received an invalid runtime or empty batch.";
     return false;
@@ -744,6 +745,11 @@ bool run_forward_cpu_q8_batch(CpuExecutionContext *cpu_context,
                         part.hidden.data(), 1, hidden, dims.rms_eps, 1.0F);
     }
     return true;
+  }
+  if (normalized_rows) {
+    normalized_rows->resize(batch_size * hidden);
+    cpu::rms_norm_f32(x.data(), weights.final_norm.data.data(), normalized_rows->data(),
+                      batch_size, hidden, dims.rms_eps, 1.0F);
   }
   if (!compute_next_logits && normalized_output == nullptr) {
     return true;
