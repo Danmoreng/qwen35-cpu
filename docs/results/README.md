@@ -6,6 +6,7 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
+| `zen4-batch-decode-2026-11-19` | [Parallel batch decode on Zen 4](../benchmarks/zen4-batch-decode.md), paired 0.8B and 2B throughput and logit parity |
 | `avx2-prefill-i7-2026-11-18` | [Long-context AVX2 prefill](../benchmarks/avx2-prefill-i7.md), i7-8750H timing samples and logit parity |
 | `when2call-comparison-2026-11-10` | [Published When2Call comparisons](../benchmarks/when2call-comparison.md), AA cohort re-scoring, independently re-counted Jev/Snap outputs and English charts |
 | `when2call-2026-11-10` | [qev on NVIDIA When2Call](../benchmarks/when2call.md), complete-test candidate-choice accuracy, CPU/Vulkan agreement and frozen provenance |

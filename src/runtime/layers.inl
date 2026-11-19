@@ -156,6 +156,11 @@ bool run_linear_attention_step(CpuExecutionContext *cpu_context,
       return false;
     }
   } else {
+    // The parallel state batch supplies a private workspace and no executor.
+    // Keep its H128 projection and activation backends separate from DeltaNet.
+    const auto state_backend = return_core && layer.linear.out_proj.uses_q4_h128_transform
+      ? cpu::delta_net_parallel_decode_backend(cpu_backend)
+      : cpu_backend;
     cpu::gated_delta_net_update_rows(
       state.recurrent_state.data(),
       q.data(),
@@ -169,7 +174,7 @@ bool run_linear_attention_step(CpuExecutionContext *cpu_context,
       static_cast<std::size_t>(dims.linear_head_v_dim),
       0,
       static_cast<std::size_t>(dims.linear_num_v_heads * dims.linear_head_v_dim),
-      cpu_backend);
+      state_backend);
   }
 
   auto & gated_norm = workspace.gated_norm;

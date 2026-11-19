@@ -1,0 +1,990 @@
+{
+  "date": "2026-11-19",
+  "cpu": "AMD Ryzen 5 7600, CPUID family 19h model 61h",
+  "compiler": "c++ (GCC) 16.2.1 20260810",
+  "kernel": "7.2.9-1-MANJARO",
+  "baseline_checkout": "98144f26de5fc07029177a9a4363ef09a1008a7f",
+  "baseline_binary_source": "3c5a34344af6430006e6b027578025756786fa34",
+  "before_deltanet_binary_source": "2f7faac466d7d9c969cb886ef174fe202497b7ee",
+  "raw_evidence": "benchmarks/ryzen5-7600-batch-decode-2026-11-19",
+  "candidate_changed_source_sha256": {
+    "include/qwen35x/cpu/delta_net.h": "656b3752115af8cc0a2e3d13556cbf3d34825c959bcbf7bd7ae3b8eafc23aa3f",
+    "src/cpu/delta_net.cpp": "578fddee02f5a214d72f13ed05df795ecaf1099af18e021e5c9db62ae9f76dda",
+    "src/runtime/layers.inl": "17afa22154d34110658aa3d090b28f5e389306232937a31cd275bc253a326e82"
+  },
+  "protocol": {
+    "runner": "scripts/benchmark-inference-seq.ps1",
+    "affinity": 63,
+    "cpu_threads": 6,
+    "warmups": 1,
+    "measured_runs": 3,
+    "prefill_tokens_per_request": 512,
+    "generated_tokens_per_request": 128,
+    "decode_forwards_per_request": 127,
+    "prompt_file": "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+    "prompt_sha256": "6baa0783f9ad2adea59013c948cd15a0a465e870837bf9a60e57eb73ef39bd81",
+    "forced_output_tokens": [
+      303,
+      22461,
+      4843,
+      57900,
+      13,
+      1049,
+      39388,
+      264,
+      5145,
+      5614,
+      716,
+      539,
+      4642,
+      3629,
+      426,
+      13,
+      22911,
+      303,
+      3114,
+      220,
+      16,
+      24,
+      21,
+      16,
+      11,
+      852,
+      995,
+      27949,
+      279,
+      3516,
+      4042,
+      310,
+      4128,
+      264,
+      855,
+      383,
+      279,
+      16820,
+      321,
+      460,
+      1384,
+      20359,
+      1518,
+      279,
+      809,
+      314,
+      279,
+      12828,
+      13,
+      561,
+      1957,
+      888,
+      5825,
+      264,
+      14938,
+      76119,
+      440,
+      279,
+      18023,
+      33986,
+      220,
+      16,
+      6830,
+      12858,
+      3807,
+      303,
+      5869,
+      220,
+      16,
+      24,
+      21,
+      22,
+      321,
+      22819,
+      383,
+      13900,
+      7633,
+      1472,
+      279,
+      36497,
+      42120,
+      321,
+      82751,
+      7233,
+      13,
+      561,
+      18802,
+      8872,
+      11,
+      8552,
+      3988,
+      11177,
+      303,
+      3433,
+      37116,
+      11,
+      557,
+      11550,
+      310,
+      2353,
+      279,
+      47503,
+      629,
+      23542,
+      11,
+      321,
+      1141,
+      632,
+      37335,
+      290,
+      54814,
+      21059,
+      48130,
+      220,
+      16,
+      20,
+      32635,
+      383,
+      279,
+      16820,
+      383,
+      5589,
+      220,
+      17,
+      16,
+      11,
+      1345,
+      32022
+    ],
+    "max_context": 8192,
+    "logits": "full",
+    "kv_cache": "fp16"
+  },
+  "model_files": {
+    "models/qwen3.5-2b/config.json": {
+      "sha256": "ED1C1723241F23F7F4E23430759CBD7DCFB4103CBDFE052BFE7626B57C2615B4",
+      "bytes": 2908
+    },
+    "models/qwen3.5-2b/tokenizer_config.json": {
+      "sha256": "49E2B6E395F959F077F1E992B338919C0D4A9732FC6E613995E06557F843500C",
+      "bytes": 16709
+    },
+    "models/qwen3.5-0.8b/tokenizer.json": {
+      "sha256": "5F9E4D4901A92B997E463C1F46055088B6CCA5CA61A6522D1B9F64C4BB81CB42",
+      "bytes": 12807982
+    },
+    "models/qwen3.5-0.8b/config.json": {
+      "sha256": "B90B86F35C8E6925EF74EE04D0E758F0A845C83A42089AD82BBAA948DE9B4204",
+      "bytes": 2907
+    },
+    "models/qwen3.5-2b/model.q35h": {
+      "sha256": "1084C3A2751D3813A2AA686337F717E56291E6A1A79FF8BE1B6D1665D22892A3",
+      "bytes": 1060442880
+    },
+    "models/qwen3.5-2b/tokenizer.json": {
+      "sha256": "5F9E4D4901A92B997E463C1F46055088B6CCA5CA61A6522D1B9F64C4BB81CB42",
+      "bytes": 12807982
+    },
+    "models/qwen3.5-0.8b/tokenizer_config.json": {
+      "sha256": "49E2B6E395F959F077F1E992B338919C0D4A9732FC6E613995E06557F843500C",
+      "bytes": 16709
+    },
+    "models/qwen3.5-0.8b/model.q35h": {
+      "sha256": "013FBFAA03760E759181301DDAF964BB5C200C50C50617AFE72557FD65BCBF0A",
+      "bytes": 424964864
+    }
+  },
+  "prototypes": {
+    "binaries_sha256": {
+      "build/qwen35_cpu_bench": "2d680ed816c5bcd5c95e4fcaf351a94aec0748f2b7a6c96ceba968c252400d9e",
+      "benchmarks/ryzen5-7600-batch-decode-2026-11-19/avx2-tiles-build/qwen35_cpu_bench": "5f49456431e9e8cb318e8128d03897acb6ce36096adac22d6dd5d3f3bb7309da",
+      "benchmarks/ryzen5-7600-batch-decode-2026-11-19/avx2-rows-build/qwen35_cpu_bench": "c885d0c5eace4bc1a7f06c35aa11468f982aa2d28c8e3c0dfd2b1d2e8921a704"
+    },
+    "case_order": [
+      "0.8b-stock",
+      "0.8b-avx2-rows",
+      "0.8b-avx2-tiles",
+      "2b-stock",
+      "2b-avx2-rows",
+      "2b-avx2-tiles"
+    ],
+    "benchmark_commands": [
+      {
+        "name": "0.8b-stock",
+        "executable": "build/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "16",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "0.8b-avx2-rows",
+        "executable": "benchmarks/ryzen5-7600-batch-decode-2026-11-19/avx2-rows-build/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "16",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "0.8b-avx2-tiles",
+        "executable": "benchmarks/ryzen5-7600-batch-decode-2026-11-19/avx2-tiles-build/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "16",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "2b-stock",
+        "executable": "build/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "16",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "2b-avx2-rows",
+        "executable": "benchmarks/ryzen5-7600-batch-decode-2026-11-19/avx2-rows-build/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "16",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "2b-avx2-tiles",
+        "executable": "benchmarks/ryzen5-7600-batch-decode-2026-11-19/avx2-tiles-build/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "16",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      }
+    ],
+    "cases": {
+      "0.8b-stock": {
+        "binary": "build/qwen35_cpu_bench",
+        "model": "0.8B",
+        "batch": 16,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 3048,
+        "decode_tokens_per_second": [
+          533.936821382,
+          540.190126253,
+          537.332410335
+        ],
+        "prefill_forward_tokens_per_second": [
+          1647.73408139,
+          1641.77060299,
+          1647.58321066
+        ]
+      },
+      "0.8b-avx2-rows": {
+        "binary": "benchmarks/ryzen5-7600-batch-decode-2026-11-19/avx2-rows-build/qwen35_cpu_bench",
+        "model": "0.8B",
+        "batch": 16,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 3048,
+        "decode_tokens_per_second": [
+          556.493988122,
+          568.376380833,
+          564.349723203
+        ],
+        "prefill_forward_tokens_per_second": [
+          1643.05847134,
+          1644.70437126,
+          1651.31756142
+        ]
+      },
+      "0.8b-avx2-tiles": {
+        "binary": "benchmarks/ryzen5-7600-batch-decode-2026-11-19/avx2-tiles-build/qwen35_cpu_bench",
+        "model": "0.8B",
+        "batch": 16,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 3048,
+        "decode_tokens_per_second": [
+          541.609776961,
+          544.033428498,
+          546.946360396
+        ],
+        "prefill_forward_tokens_per_second": [
+          1625.81099591,
+          1637.96261648,
+          1642.90800386
+        ]
+      },
+      "2b-stock": {
+        "binary": "build/qwen35_cpu_bench",
+        "model": "2B",
+        "batch": 16,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 3048,
+        "decode_tokens_per_second": [
+          352.379147949,
+          352.930652815,
+          349.034386347
+        ],
+        "prefill_forward_tokens_per_second": [
+          756.725677108,
+          749.397420644,
+          758.133164205
+        ]
+      },
+      "2b-avx2-rows": {
+        "binary": "benchmarks/ryzen5-7600-batch-decode-2026-11-19/avx2-rows-build/qwen35_cpu_bench",
+        "model": "2B",
+        "batch": 16,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 3048,
+        "decode_tokens_per_second": [
+          359.602552443,
+          361.539605764,
+          361.180601455
+        ],
+        "prefill_forward_tokens_per_second": [
+          757.904988185,
+          754.526384531,
+          759.624361306
+        ]
+      },
+      "2b-avx2-tiles": {
+        "binary": "benchmarks/ryzen5-7600-batch-decode-2026-11-19/avx2-tiles-build/qwen35_cpu_bench",
+        "model": "2B",
+        "batch": 16,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 3048,
+        "decode_tokens_per_second": [
+          348.979288298,
+          355.031604387,
+          338.754389205
+        ],
+        "prefill_forward_tokens_per_second": [
+          754.228553383,
+          758.550130323,
+          752.729531342
+        ]
+      }
+    }
+  },
+  "production_dispatch": {
+    "binaries_sha256": {
+      "build-main-before-2f7faac/qwen35_cpu_bench": "5d206cca10b25ebfcaada80792a70ef5c2b1db6a8afc8253ea20e3f95109c352",
+      "build/qwen35_cpu_bench": "2d680ed816c5bcd5c95e4fcaf351a94aec0748f2b7a6c96ceba968c252400d9e",
+      "build-zen4-batch-candidate/qwen35_cpu_bench": "fe68f2f8cfca16717cd9364e2dbeee60422df874dfe501c7ad829f024de666ab"
+    },
+    "case_order": [
+      "0.8b-b1-stock",
+      "0.8b-b1-fixed",
+      "0.8b-b4-stock",
+      "0.8b-b4-fixed",
+      "0.8b-b16-pre-delta",
+      "0.8b-b16-stock",
+      "0.8b-b16-fixed",
+      "2b-b1-stock",
+      "2b-b1-fixed",
+      "2b-b16-stock",
+      "2b-b16-fixed"
+    ],
+    "benchmark_commands": [
+      {
+        "name": "0.8b-b1-stock",
+        "executable": "build/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "0.8b-b1-fixed",
+        "executable": "build-zen4-batch-candidate/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "0.8b-b4-stock",
+        "executable": "build/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "4",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "0.8b-b4-fixed",
+        "executable": "build-zen4-batch-candidate/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "4",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "0.8b-b16-pre-delta",
+        "executable": "build-main-before-2f7faac/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "16",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "0.8b-b16-stock",
+        "executable": "build/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "16",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "0.8b-b16-fixed",
+        "executable": "build-zen4-batch-candidate/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "16",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "2b-b1-stock",
+        "executable": "build/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "2b-b1-fixed",
+        "executable": "build-zen4-batch-candidate/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "2b-b16-stock",
+        "executable": "build/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "16",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "2b-b16-fixed",
+        "executable": "build-zen4-batch-candidate/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "benchmarks/ryzen5-7600-main-update-2026-11-18/prompt-512.csv",
+          "--forced-output-tokens",
+          "@forced_output_tokens",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "16",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      }
+    ],
+    "cases": {
+      "0.8b-b1-stock": {
+        "binary": "build/qwen35_cpu_bench",
+        "model": "0.8B",
+        "batch": 1,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 0,
+        "decode_tokens_per_second": [
+          115.777577421,
+          115.974193766,
+          115.594827344
+        ],
+        "prefill_forward_tokens_per_second": [
+          1647.04303886,
+          1648.3448628,
+          1644.06742396
+        ]
+      },
+      "0.8b-b1-fixed": {
+        "binary": "build-zen4-batch-candidate/qwen35_cpu_bench",
+        "model": "0.8B",
+        "batch": 1,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 0,
+        "decode_tokens_per_second": [
+          115.954253261,
+          112.080851208,
+          114.199188246
+        ],
+        "prefill_forward_tokens_per_second": [
+          1658.4094181,
+          1651.12229088,
+          1650.74225916
+        ]
+      },
+      "0.8b-b4-stock": {
+        "binary": "build/qwen35_cpu_bench",
+        "model": "0.8B",
+        "batch": 4,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 0,
+        "decode_tokens_per_second": [
+          292.691681723,
+          290.994908786,
+          291.001516157
+        ],
+        "prefill_forward_tokens_per_second": [
+          1527.57505201,
+          1676.51856264,
+          1610.8237477
+        ]
+      },
+      "0.8b-b4-fixed": {
+        "binary": "build-zen4-batch-candidate/qwen35_cpu_bench",
+        "model": "0.8B",
+        "batch": 4,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 0,
+        "decode_tokens_per_second": [
+          290.231748594,
+          290.426733891,
+          293.440655918
+        ],
+        "prefill_forward_tokens_per_second": [
+          1678.36558779,
+          1546.54914355,
+          1687.27354805
+        ]
+      },
+      "0.8b-b16-pre-delta": {
+        "binary": "build-main-before-2f7faac/qwen35_cpu_bench",
+        "model": "0.8B",
+        "batch": 16,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 3048,
+        "decode_tokens_per_second": [
+          556.12181029,
+          557.933387386,
+          564.725150806
+        ],
+        "prefill_forward_tokens_per_second": [
+          1646.34307522,
+          1638.28839619,
+          1648.37015269
+        ]
+      },
+      "0.8b-b16-stock": {
+        "binary": "build/qwen35_cpu_bench",
+        "model": "0.8B",
+        "batch": 16,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 3048,
+        "decode_tokens_per_second": [
+          536.756133086,
+          536.343837204,
+          531.892836304
+        ],
+        "prefill_forward_tokens_per_second": [
+          1645.65098046,
+          1641.94624661,
+          1635.90803013
+        ]
+      },
+      "0.8b-b16-fixed": {
+        "binary": "build-zen4-batch-candidate/qwen35_cpu_bench",
+        "model": "0.8B",
+        "batch": 16,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 3048,
+        "decode_tokens_per_second": [
+          568.727853343,
+          555.54470606,
+          554.494508876
+        ],
+        "prefill_forward_tokens_per_second": [
+          1622.02305767,
+          1608.77306276,
+          1637.1302516
+        ]
+      },
+      "2b-b1-stock": {
+        "binary": "build/qwen35_cpu_bench",
+        "model": "2B",
+        "batch": 1,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 0,
+        "decode_tokens_per_second": [
+          49.2550157154,
+          49.1470281721,
+          49.1635173792
+        ],
+        "prefill_forward_tokens_per_second": [
+          658.222747851,
+          752.235964104,
+          722.150502475
+        ]
+      },
+      "2b-b1-fixed": {
+        "binary": "build-zen4-batch-candidate/qwen35_cpu_bench",
+        "model": "2B",
+        "batch": 1,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 0,
+        "decode_tokens_per_second": [
+          49.1722545362,
+          48.9904671568,
+          48.9955618358
+        ],
+        "prefill_forward_tokens_per_second": [
+          767.342714182,
+          760.060204369,
+          765.620755791
+        ]
+      },
+      "2b-b16-stock": {
+        "binary": "build/qwen35_cpu_bench",
+        "model": "2B",
+        "batch": 16,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 3048,
+        "decode_tokens_per_second": [
+          351.599806172,
+          353.257460871,
+          352.23344917
+        ],
+        "prefill_forward_tokens_per_second": [
+          756.456364466,
+          754.723978933,
+          757.993099109
+        ]
+      },
+      "2b-b16-fixed": {
+        "binary": "build-zen4-batch-candidate/qwen35_cpu_bench",
+        "model": "2B",
+        "batch": 16,
+        "isa": "avx512-vnni-q4+avx512-fp32",
+        "state_batches": 3048,
+        "decode_tokens_per_second": [
+          367.468328562,
+          360.288113482,
+          362.710467537
+        ],
+        "prefill_forward_tokens_per_second": [
+          754.528052505,
+          758.660844417,
+          751.616129736
+        ]
+      }
+    }
+  },
+  "validation": {
+    "ctest_passed": 24,
+    "real_model_bitwise_batch_sizes": {
+      "0.8B": [
+        4,
+        8,
+        12,
+        16,
+        20,
+        32
+      ],
+      "2B": [
+        4,
+        8,
+        12,
+        16,
+        20,
+        32
+      ]
+    },
+    "paged_scheduler_and_http_smoke": "passed"
+  }
+}

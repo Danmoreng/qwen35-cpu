@@ -1,11 +1,62 @@
 #include "qwen35x/cpu/delta_net.h"
 
 #include <cstddef>
+#if QWEN35X_Q8_0_HAS_AVX512_TU && defined(_MSC_VER)
+#include <intrin.h>
+#elif QWEN35X_Q8_0_HAS_AVX512_TU && (defined(__GNUC__) || defined(__clang__))
+#include <cpuid.h>
+#endif
 #if QWEN35X_HAS_WASM_SIMD_TU
 #include "delta_net_wasm.h"
 #endif
 
 namespace qwen35x::cpu {
+
+#if QWEN35X_Q8_0_HAS_AVX512_TU
+namespace {
+
+bool is_amd_family_19h() noexcept {
+  // CPUID leaf 0 returns "AuthenticAMD" in EBX, EDX and ECX.
+  constexpr unsigned amd_ebx = 0x68747541;
+  constexpr unsigned amd_edx = 0x69746e65;
+  constexpr unsigned amd_ecx = 0x444d4163;
+#if defined(_MSC_VER)
+  int registers[4]{};
+  __cpuid(registers, 0);
+  if (registers[0] < 1 || registers[1] != amd_ebx ||
+      registers[3] != amd_edx || registers[2] != amd_ecx) {
+    return false;
+  }
+  __cpuid(registers, 1);
+  const auto signature = static_cast<unsigned>(registers[0]);
+#else
+  unsigned signature, ebx, ecx, edx;
+  if (!__get_cpuid(0, &signature, &ebx, &ecx, &edx) ||
+      ebx != amd_ebx || edx != amd_edx || ecx != amd_ecx ||
+      !__get_cpuid(1, &signature, &ebx, &ecx, &edx)) {
+    return false;
+  }
+#endif
+  const unsigned base_family = (signature >> 8) & 0xf;
+  const unsigned extended_family = (signature >> 20) & 0xff;
+  return base_family == 0xf && base_family + extended_family == 0x19;
+}
+
+} // namespace
+#endif
+
+Q8_0Backend delta_net_parallel_decode_backend(const Q8_0Backend backend) noexcept {
+#if QWEN35X_Q8_0_HAS_AVX512_TU
+  if (q8_0_backend_uses_avx512(backend)) {
+    // The AVX2 row kernel is faster with multiple private states on Zen 4.
+    static const bool amd_family_19h = is_amd_family_19h();
+    if (amd_family_19h) {
+      return Q8_0Backend::avx2;
+    }
+  }
+#endif
+  return backend;
+}
 
 namespace detail {
 

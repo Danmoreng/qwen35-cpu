@@ -6,6 +6,10 @@
 
 namespace qwen35x::cpu {
 
+// Select the state-update backend when the executor parallelizes across
+// requests. The caller retains its original backend for other operations.
+[[nodiscard]] Q8_0Backend delta_net_parallel_decode_backend(Q8_0Backend backend) noexcept;
+
 // Updates a contiguous range of value rows in a decode-time gated DeltaNet.
 // State layout is [head_count, value_dim, key_dim]. q/k are
 // [head_count, key_dim], while v/output are [head_count, value_dim].
