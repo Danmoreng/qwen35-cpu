@@ -6,6 +6,7 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
+| `qwen35-4b-ryzen-2026-11-19` | [Native Qwen3.5-4B on Ryzen](../benchmarks/qwen35-4b-ryzen.md), throughput, memory, task panel and BF16 reference |
 | `qwen35-text-panel-2026-11-19` | [Native 0.8B and 2B text tasks](../benchmarks/qwen35-text-panel.md), frozen tasks, outputs, timings and provenance |
 | `zen4-batch-decode-2026-11-19` | [Parallel batch decode on Zen 4](../benchmarks/zen4-batch-decode.md), paired 0.8B and 2B throughput and logit parity |
 | `avx2-prefill-i7-2026-11-18` | [Long-context AVX2 prefill](../benchmarks/avx2-prefill-i7.md), i7-8750H timing samples and logit parity |

@@ -98,6 +98,7 @@ void run_linear_prefill_prepare(void *opaque, std::size_t begin, std::size_t end
   auto &v_batch = scratch.v_batch;
   auto &alpha_batch = scratch.alpha_batch;
   auto &beta_batch = scratch.beta_batch;
+  const auto values_per_key = head_count / static_cast<std::size_t>(dims.linear_num_k_heads);
   // Convolution has completed. Each worker owns disjoint heads in every
   // token, including contiguous head-major inputs for its recurrent scan.
   for (std::size_t token = 0; token < batch_size; ++token) {
@@ -114,22 +115,28 @@ void run_linear_prefill_prepare(void *opaque, std::size_t begin, std::size_t end
     }
 
     float * conv_out = conv_batch.data() + token * conv_channels;
-    std::span<float> q(conv_out + begin * key_dim, (end - begin) * key_dim);
-    std::span<float> k(conv_out + q_width + begin * key_dim, (end - begin) * key_dim);
     const float * v = conv_out + 2 * q_width;
-    l2_norm_per_head(
-      q, static_cast<int>(end - begin), dims.linear_head_k_dim, 1.0e-6F, q_scale);
-    l2_norm_per_head(k, static_cast<int>(end - begin), dims.linear_head_k_dim);
+    if (values_per_key == 1) {
+      std::span<float> q(conv_out + begin * key_dim, (end - begin) * key_dim);
+      std::span<float> k(conv_out + q_width + begin * key_dim, (end - begin) * key_dim);
+      l2_norm_per_head(
+        q, static_cast<int>(end - begin), dims.linear_head_k_dim, 1.0e-6F, q_scale);
+      l2_norm_per_head(k, static_cast<int>(end - begin), dims.linear_head_k_dim);
+    }
     for (std::size_t head = begin; head < end; ++head) {
       const std::size_t head_token = head * batch_size + token;
-      std::memcpy(
-        q_batch.data() + head_token * key_dim,
-        q.data() + (head - begin) * key_dim,
-        key_dim * sizeof(float));
-      std::memcpy(
-        k_batch.data() + head_token * key_dim,
-        k.data() + (head - begin) * key_dim,
-        key_dim * sizeof(float));
+      const std::size_t source_head = values_per_key == 1 ? head : head / values_per_key;
+      const std::size_t source = source_head * key_dim;
+      float * const q = q_batch.data() + head_token * key_dim;
+      float * const k = k_batch.data() + head_token * key_dim;
+      std::memcpy(q, conv_out + source, key_dim * sizeof(float));
+      std::memcpy(k, conv_out + q_width + source, key_dim * sizeof(float));
+      if (values_per_key != 1) {
+        // Different workers can share a source head. Normalize only the
+        // private copy that belongs to the worker's value head.
+        l2_norm_per_head({q, key_dim}, 1, dims.linear_head_k_dim, 1.0e-6F, q_scale);
+        l2_norm_per_head({k, key_dim}, 1, dims.linear_head_k_dim);
+      }
       std::memcpy(
         v_batch.data() + head_token * value_dim,
         v + head * value_dim,
@@ -160,7 +167,7 @@ bool run_linear_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
   const std::size_t q_width = static_cast<std::size_t>(dims.linear_q_dim);
   const std::size_t projection_width = conv_channels + value_width + 2 * head_count;
   const std::size_t expected_state = head_count * value_dim * key_dim;
-  if (dims.linear_num_k_heads != dims.linear_num_v_heads || key_dim != value_dim ||
+  if (key_dim != value_dim ||
       state.recurrent_state.size() != expected_state ||
       state.conv_state.size() !=
         static_cast<std::size_t>(dims.linear_kernel - 1) * conv_channels ||
@@ -193,9 +200,9 @@ bool run_linear_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
   auto & conv_batch = scratch.conv_batch;
   conv_batch.resize(batch_size * conv_channels);
   auto & q_batch = scratch.q_batch;
-  q_batch.resize(batch_size * q_width);
+  q_batch.resize(batch_size * head_count * key_dim);
   auto & k_batch = scratch.k_batch;
-  k_batch.resize(batch_size * q_width);
+  k_batch.resize(batch_size * head_count * key_dim);
   auto & v_batch = scratch.v_batch;
   v_batch.resize(batch_size * value_width);
   auto & alpha_batch = scratch.alpha_batch;

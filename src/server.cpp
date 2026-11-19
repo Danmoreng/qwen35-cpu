@@ -376,10 +376,13 @@ public:
     if (!profile) throw std::runtime_error(error);
     auto model = CpuModel::load(*profile, load, error);
     if (!model) throw std::runtime_error(error);
+    const auto architecture = text_architecture(*profile);
     if (std::string(model->weight_format()).starts_with("gguf-"))
       model_name = "Qwen3.5-0.8B-GGUF";
-    else if (text_architecture(*profile) == TextArchitecture::qwen35_2b)
+    else if (architecture == TextArchitecture::qwen35_2b)
       model_name = "Qwen3.5-2B-H128-Q4-G32-DOT4";
+    else if (architecture == TextArchitecture::qwen35_4b)
+      model_name = "Qwen3.5-4B-H128-Q4-G32-DOT4";
     if (decision_) model_name = "qev-0.8b-H128-Q4-G32-DOT4";
     selected_decision_head_ = auto_decision_head && model->supports_selected_logits();
     if (decision_) std::cout << "System One readout: " << (selected_decision_head_ ? "selected" : "full") << '\n';

@@ -29,6 +29,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 - [Native prefill optimization](benchmarks/native-prefill.md): paired measurements and bitwise quality checks.
 - [Qwen3.5-2B on the i7-8750H](benchmarks/qwen35-2b-i7.md) covers GTX 1070 Max-Q teacher collection, quantization quality and matched 0.8B/2B CPU measurements against ik_llama.cpp.
 - [Native 0.8B and 2B text tasks](benchmarks/qwen35-text-panel.md) measures German correction, Python edits and JSON extraction on a Ryzen 5 7600.
+- [Native Qwen3.5-4B on Ryzen](benchmarks/qwen35-4b-ryzen.md) compares 2B and 4B throughput, memory and task results and validates 4B against BF16.
 - [AVX2 prefill on the i7-8750H](benchmarks/avx2-prefill-i7.md) measures query tile selection for long prompts.
 - [AVX2 cloud VM tuning](benchmarks/avx2-cloud.md): prompt processing, decode experiments and bitwise checks on an EPYC VM.
 - [Standard model calibration](benchmarks/calibration.md).

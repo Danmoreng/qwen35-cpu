@@ -57,7 +57,7 @@ struct ModelProfile {
   ModelWeightsManifest weights;
 };
 
-enum class TextArchitecture { unsupported, qwen35_0_8b, qwen35_2b };
+enum class TextArchitecture { unsupported, qwen35_0_8b, qwen35_2b, qwen35_4b };
 TextArchitecture text_architecture(const ModelProfile & profile);
 
 std::string to_string(AttentionBlock block);

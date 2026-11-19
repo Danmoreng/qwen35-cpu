@@ -208,3 +208,16 @@ matching packed checkpoint to the same batch parity test used for 0.8B.
 ```sh
 build/cpu_batch_model_test models/qwen3.5-2b models/qwen3.5-2b/model-mse16.q35h
 ```
+
+For 4B, pack the [native text-only artifact](quantization.md#qwen35-4b) and
+use the optional real-model tests to exercise grouped DeltaNet heads in
+prefill and decode.
+
+```sh
+model=models/qwen3.5-4b
+weights="$model/model-mse16.q35h"
+build/cpu_batch_model_test "$model" "$weights"
+build/cpu_prefill_chunk_model_test "$model" "$weights"
+build/cpu_prefill_chunk_model_test "$model" "$weights" --pages
+build/cpu_draft_model_test "$model" "$weights"
+```

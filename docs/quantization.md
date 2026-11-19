@@ -165,3 +165,28 @@ The CPU reference collector builds from `tools/llama-comparison` as target
 `llama-calibration-resident-cpu` and accepts the same jobs file. The collection
 wrapper selects it with `--backend cpu`. Use separate output directories for
 each run.
+
+## Qwen3.5-4B
+
+The official 4B checkpoint has 32 text layers. Its 24 DeltaNet layers each
+have 16 query/key heads and 32 value heads, with two independently gated value
+states sharing each query/key head. Its eight full-attention layers each have
+16 query heads and four key/value heads.
+
+Pack the official Hugging Face snapshot with the native CPU packer. The
+validated 4B recipe uses unweighted MSE16. The artifact contains the text model
+with tied embeddings. Vision tensors and the optional MTP head are excluded.
+
+```sh
+hf download Qwen/Qwen3.5-4B --revision 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a --local-dir models/qwen3.5-4b
+build/qwen35_cpu_pack --hf-model-dir models/qwen3.5-4b --output models/qwen3.5-4b/model-mse16.q35h
+build/qwen35_cpu_server --model-dir models/qwen3.5-4b \
+  --weights models/qwen3.5-4b/model-mse16.q35h --threads 6
+```
+
+Keep the matching configuration and tokenizer assets alongside the packed
+checkpoint. The server exposes it as `Qwen3.5-4B-H128-Q4-G32-DOT4`.
+The validated artifact is 2,369,080,576 bytes with SHA-256
+`7db1dd7be2e74444465f833d6b639d895ff09e0b8226fb06eb925a5729a85eae`.
+See the [Ryzen 4B report](benchmarks/qwen35-4b-ryzen.md) for memory,
+throughput and BF16 fidelity.

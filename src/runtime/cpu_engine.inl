@@ -42,12 +42,12 @@ CpuModel::load(const ModelProfile &profile,
   if (!build_runtime_dims(profile, model->dims, error)) return nullptr;
   const auto architecture = text_architecture(profile);
   if (architecture == TextArchitecture::unsupported) {
-    error = "Expected the Qwen3.5-0.8B or Qwen3.5-2B text architecture.";
+    error = "Expected the Qwen3.5-0.8B, Qwen3.5-2B or Qwen3.5-4B text architecture.";
     return nullptr;
   }
   model->gguf = is_gguf_file(options.cpu_q4_h128_path);
   if (model->gguf && architecture != TextArchitecture::qwen35_0_8b) {
-    error = "Qwen3.5-2B requires an H128 artifact.";
+    error = "Native GGUF execution requires the Qwen3.5-0.8B text profile.";
     return nullptr;
   }
   if (

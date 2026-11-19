@@ -1,0 +1,388 @@
+{
+  "checkpoint": "Qwen/Qwen3.5-4B",
+  "source_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "reference_revision": "73a43d1f69345aee8bb186ef4b3172cef892f2e5",
+  "compiler": "GCC 16.2.1 Release",
+  "python_packages": {
+    "torch": "2.11.0+cpu",
+    "transformers": "5.12.1"
+  },
+  "cpu_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "threads": 6,
+  "raw_results": "benchmarks/qwen35-4b-ryzen-2026-11-19",
+  "source_shards": {
+    "model.safetensors-00001-of-00002.safetensors": "26a93f066e1916adb13453dae5a0c707c0fbc71299ed98779571a907b8e74c61",
+    "model.safetensors-00002-of-00002.safetensors": "cb544bd9bfae93dc59b0f22b292f5933573854a7f9b97835c67060d7d910e188"
+  },
+  "sha256": {
+    "build-4b-candidate/qwen35_cpu": "101bbfea9b8cb800b3cec4a8ca2a7103039d74171739fab41276058869b5349a",
+    "build-4b-candidate/qwen35_cpu_pack": "0f0e2ef45360920faa46621403551032402631539257c70802bc5a169b700eae",
+    "build-4b-candidate/qwen35_cpu_bench": "559a4051860e38596a3c9a710017da5d6bad481eb3e76ee16de1cef1d861f49a",
+    "build-4b-candidate/qwen35_cpu_server": "36465d8c7fc9e1b7e6bce8f20346d570924af9cd820b576e6e4d836ffa70788e",
+    "build/qwen35_cpu": "7bb967ea81c66d295802c7ce1b71bd429ebf98123834eead84317e76e2bb0ee3",
+    "build/qwen35_cpu_bench": "fe68f2f8cfca16717cd9364e2dbeee60422df874dfe501c7ad829f024de666ab",
+    "build-llama/bin/llama-fixed-cpu-bench": "00aed6b96a85801c9f30e5fc2e456cfdd5fa1d9de7279f013e4a6911a23376d5",
+    "build-llama/bin/libllama.so.0.4.0": "47d185130e15c5f7ddad991b9355201884cbb1f929134dca634e7d099bf4257b",
+    "build-llama/bin/libggml-cpu.so.0.23.0": "801f7c781c9bd6e67d1629d6bb89c5ddb64e34ceb4559b37fbae1a3c47966428",
+    "models/qwen3.5-4b/model-mse16.q35h": "7db1dd7be2e74444465f833d6b639d895ff09e0b8226fb06eb925a5729a85eae",
+    "models/qwen3.5-4b/config.json": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670",
+    "models/qwen3.5-4b/tokenizer.json": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+    "models/llama-comparison/Qwen3.5-4B-BF16.gguf": "8ba0f85feb490c0b4a63d87a18d28aab0d15c29e8dac54044cb6c248ac9ad3ef",
+    "scripts/compare-logit-dumps.py": "1bca3b6c7598268a6c635a6756207730ed171e80c591bd8dd0bd527a3f027950",
+    "scripts/benchmark-text-panel.py": "213d8c6b923ceea47527b689240f64ef47964bafa5087ff733e7f6b46eb34b24",
+    "scripts/benchmark-inference-seq.ps1": "c25e85c24a892eb3c1671c6b9255530b305d1b52ef725486cc09dc5926b1ca92",
+    "docs/results/qwen35-4b-ryzen-2026-11-19/reference-windows.json": "d8cd64e0c77203e67d6dedc08940d8c2a005427628a20fa712718ee5c1bb1176"
+  },
+  "native_tensor_count": 306,
+  "native_artifact_bytes": 2369080576,
+  "reference_artifact_bytes": 8424393504,
+  "pack_command": [
+    "build-4b-candidate/qwen35_cpu_pack",
+    "--hf-model-dir",
+    "models/qwen3.5-4b",
+    "--output",
+    "models/qwen3.5-4b/model-mse16.q35h"
+  ],
+  "reference_export": [
+    "python",
+    ".cache/llama.cpp/convert_hf_to_gguf.py",
+    "models/qwen3.5-4b",
+    "--outtype",
+    "bf16",
+    "--no-mtp",
+    "--outfile",
+    "models/llama-comparison/Qwen3.5-4B-BF16.gguf"
+  ],
+  "quality_runs": [
+    {
+      "positions": 128,
+      "kld": {
+        "mean": 0.24851505223845327,
+        "median": 0.04608841880441675,
+        "p95": 0.7267036089188038,
+        "p99": 2.946527658118975,
+        "max": 13.121472006720351
+      },
+      "target_nll": {
+        "teacher_perplexity": 13.60302205366016,
+        "candidate_perplexity": 11.676271260367905,
+        "teacher_mean": 2.610291977885012,
+        "candidate_mean": 2.457558685024838,
+        "delta_mean": -0.15273329286017398,
+        "delta_p95": 0.7666899336707611,
+        "perplexity_ratio": 0.8583586216583527
+      },
+      "agreement": {
+        "top1": 0.859375,
+        "teacher_top1_in_candidate_top5": 0.984375,
+        "teacher_top1_in_candidate_top10": 1.0,
+        "top5_overlap": 0.8390625000000002,
+        "top10_overlap": 0.8382812500000002
+      },
+      "name": "english-continuation",
+      "prompt_tokens": 512,
+      "teacher_command": [
+        "build-llama/bin/llama-fixed-cpu-bench",
+        "--cpu-gguf",
+        "models/llama-comparison/Qwen3.5-4B-BF16.gguf",
+        "--prompt-tokens-file",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/english-continuation-prompt.csv",
+        "--forced-output-tokens",
+        "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+        "--cpu-threads",
+        "6",
+        "--max-context",
+        "1024",
+        "--max-new-tokens",
+        "128",
+        "--logits-out",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/english-continuation-teacher.logits",
+        "--profile-json",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/english-continuation-teacher-profile.json"
+      ],
+      "native_command": [
+        "build-4b-candidate/qwen35_cpu",
+        "--model-dir",
+        "models/qwen3.5-4b",
+        "--weights",
+        "models/qwen3.5-4b/model-mse16.q35h",
+        "--tokens-file",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/english-continuation-prompt.csv",
+        "--forced-tokens-file",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/english-continuation-targets.csv",
+        "--threads",
+        "6",
+        "--max-context",
+        "1024",
+        "--max-new-tokens",
+        "128",
+        "--logits-out",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/english-continuation-native.logits"
+      ],
+      "scoring_command": [
+        "scripts/compare-logit-dumps.py",
+        "--teacher",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/english-continuation-teacher.logits",
+        "--candidate",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/english-continuation-native.logits",
+        "--csv",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/english-continuation-quality.csv",
+        "--json",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/english-continuation-quality.json"
+      ]
+    },
+    {
+      "positions": 35,
+      "kld": {
+        "mean": 0.04856370049458526,
+        "median": 0.035744159641201326,
+        "p95": 0.12775457354354788,
+        "p99": 0.17739688713605856,
+        "max": 0.19046627530498464
+      },
+      "target_nll": {
+        "teacher_perplexity": 15.725320863532934,
+        "candidate_perplexity": 16.893417790911275,
+        "teacher_mean": 2.755272207054512,
+        "candidate_mean": 2.8269240662343247,
+        "delta_mean": 0.07165185917981286,
+        "delta_p95": 0.6787416627198811,
+        "perplexity_ratio": 1.0742812777885609
+      },
+      "agreement": {
+        "top1": 0.8571428571428571,
+        "teacher_top1_in_candidate_top5": 1.0,
+        "teacher_top1_in_candidate_top10": 1.0,
+        "top5_overlap": 0.8685714285714287,
+        "top10_overlap": 0.8714285714285714
+      },
+      "name": "editing",
+      "prompt_tokens": 32,
+      "teacher_command": [
+        "build-llama/bin/llama-fixed-cpu-bench",
+        "--cpu-gguf",
+        "models/llama-comparison/Qwen3.5-4B-BF16.gguf",
+        "--prompt-tokens-file",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/editing-prompt.csv",
+        "--forced-output-tokens",
+        "1165,599,2582,21103,678,3425,321,9770,279,2940,13,1368,488,1144,1438,15499,303,11,264,51715,668,381,2420,2980,2943,303,279,12967,13,271,12295,11,198,2229,1413",
+        "--cpu-threads",
+        "6",
+        "--max-context",
+        "1024",
+        "--max-new-tokens",
+        "35",
+        "--logits-out",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/editing-teacher.logits",
+        "--profile-json",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/editing-teacher-profile.json"
+      ],
+      "native_command": [
+        "build-4b-candidate/qwen35_cpu",
+        "--model-dir",
+        "models/qwen3.5-4b",
+        "--weights",
+        "models/qwen3.5-4b/model-mse16.q35h",
+        "--tokens-file",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/editing-prompt.csv",
+        "--forced-tokens-file",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/editing-targets.csv",
+        "--threads",
+        "6",
+        "--max-context",
+        "1024",
+        "--max-new-tokens",
+        "35",
+        "--logits-out",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/editing-native.logits"
+      ],
+      "scoring_command": [
+        "scripts/compare-logit-dumps.py",
+        "--teacher",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/editing-teacher.logits",
+        "--candidate",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/editing-native.logits",
+        "--csv",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/editing-quality.csv",
+        "--json",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/editing-quality.json"
+      ]
+    },
+    {
+      "positions": 34,
+      "kld": {
+        "mean": 0.03834336582826594,
+        "median": 0.031934190010303086,
+        "p95": 0.09527463879186862,
+        "p99": 0.10730416009142695,
+        "max": 0.1098114560042155
+      },
+      "target_nll": {
+        "teacher_perplexity": 14.532436724076476,
+        "candidate_perplexity": 15.39136006604348,
+        "teacher_mean": 2.676383166486279,
+        "candidate_mean": 2.733806317308242,
+        "delta_mean": 0.05742315082196219,
+        "delta_p95": 0.6143697884175797,
+        "perplexity_ratio": 1.0591038762648788
+      },
+      "agreement": {
+        "top1": 0.8823529411764706,
+        "teacher_top1_in_candidate_top5": 1.0,
+        "teacher_top1_in_candidate_top10": 1.0,
+        "top5_overlap": 0.8470588235294118,
+        "top10_overlap": 0.8499999999999999
+      },
+      "name": "transcript",
+      "prompt_tokens": 32,
+      "teacher_command": [
+        "build-llama/bin/llama-fixed-cpu-bench",
+        "--cpu-gguf",
+        "models/llama-comparison/Qwen3.5-4B-BF16.gguf",
+        "--prompt-tokens-file",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/transcript-prompt.csv",
+        "--forced-output-tokens",
+        "13,81366,54606,8235,8388,14410,180026,17539,55982,11,1454,40848,15948,83,92221,449,2607,17539,240713,74766,54854,2421,13,70437,20546,18279,10323,3262,219872,92298,712,178904,12285,13",
+        "--cpu-threads",
+        "6",
+        "--max-context",
+        "1024",
+        "--max-new-tokens",
+        "34",
+        "--logits-out",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/transcript-teacher.logits",
+        "--profile-json",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/transcript-teacher-profile.json"
+      ],
+      "native_command": [
+        "build-4b-candidate/qwen35_cpu",
+        "--model-dir",
+        "models/qwen3.5-4b",
+        "--weights",
+        "models/qwen3.5-4b/model-mse16.q35h",
+        "--tokens-file",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/transcript-prompt.csv",
+        "--forced-tokens-file",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/transcript-targets.csv",
+        "--threads",
+        "6",
+        "--max-context",
+        "1024",
+        "--max-new-tokens",
+        "34",
+        "--logits-out",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/transcript-native.logits"
+      ],
+      "scoring_command": [
+        "scripts/compare-logit-dumps.py",
+        "--teacher",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/transcript-teacher.logits",
+        "--candidate",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/transcript-native.logits",
+        "--csv",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/transcript-quality.csv",
+        "--json",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/transcript-quality.json"
+      ]
+    },
+    {
+      "positions": 41,
+      "kld": {
+        "mean": 0.022635106320597936,
+        "median": 0.015482601543921618,
+        "p95": 0.06942845052116568,
+        "p99": 0.08052419548390975,
+        "max": 0.08742062652392746
+      },
+      "target_nll": {
+        "teacher_perplexity": 2.7810653630301814,
+        "candidate_perplexity": 3.053867871649634,
+        "teacher_mean": 1.0228340784025167,
+        "candidate_mean": 1.1164089418296264,
+        "delta_mean": 0.09357486342710968,
+        "delta_p95": 0.6143616528679416,
+        "perplexity_ratio": 1.0980928072550635
+      },
+      "agreement": {
+        "top1": 0.926829268292683,
+        "teacher_top1_in_candidate_top5": 1.0,
+        "teacher_top1_in_candidate_top10": 1.0,
+        "top5_overlap": 0.9073170731707317,
+        "top10_overlap": 0.8804878048780488
+      },
+      "name": "code",
+      "prompt_tokens": 32,
+      "teacher_command": [
+        "build-llama/bin/llama-fixed-cpu-bench",
+        "--cpu-gguf",
+        "models/llama-comparison/Qwen3.5-4B-BF16.gguf",
+        "--prompt-tokens-file",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/code-prompt.csv",
+        "--forced-output-tokens",
+        "1455,17518,348,1455,33157,198,262,460,3202,271,727,21867,23573,11,3615,8973,1590,198,262,4041,283,23839,10467,23573,8,198,262,460,5192,4559,1170,4041,11,359,17091,1170,4041,348,3615,8973,92",
+        "--cpu-threads",
+        "6",
+        "--max-context",
+        "1024",
+        "--max-new-tokens",
+        "41",
+        "--logits-out",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/code-teacher.logits",
+        "--profile-json",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/code-teacher-profile.json"
+      ],
+      "native_command": [
+        "build-4b-candidate/qwen35_cpu",
+        "--model-dir",
+        "models/qwen3.5-4b",
+        "--weights",
+        "models/qwen3.5-4b/model-mse16.q35h",
+        "--tokens-file",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/code-prompt.csv",
+        "--forced-tokens-file",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/code-targets.csv",
+        "--threads",
+        "6",
+        "--max-context",
+        "1024",
+        "--max-new-tokens",
+        "41",
+        "--logits-out",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/code-native.logits"
+      ],
+      "scoring_command": [
+        "scripts/compare-logit-dumps.py",
+        "--teacher",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/code-teacher.logits",
+        "--candidate",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/code-native.logits",
+        "--csv",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/code-quality.csv",
+        "--json",
+        "benchmarks/qwen35-4b-ryzen-2026-11-19/code-quality.json"
+      ]
+    }
+  ],
+  "quality_overall": {
+    "positions": 238,
+    "teacher_perplexity": 10.671584556452748,
+    "candidate_perplexity": 10.178754641197354,
+    "mean_kl": 0.15017382353419353,
+    "top1_agreement": 0.8739495798319328
+  },
+  "old_profile_parity": {
+    "prompt_tokens": 512,
+    "scored_positions": 128,
+    "vocab": 248320,
+    "baseline_revision": "4fdd25fc30459bccd9df333c06c8f2ae88996f1d",
+    "0.8B_logit_dumps_sha256": "2910bbe9dbd8dd72ce7759ab64fefb5bac6b24189b663a9b5007fa4e06e40ef4",
+    "2B_logit_dumps_sha256": "3c40170fa6c90b42d756bac83838c771b518a81b7a65e117cbab695a09895ef9"
+  }
+}

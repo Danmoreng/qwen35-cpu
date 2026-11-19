@@ -125,6 +125,24 @@ bool run_linear_attention_step(CpuExecutionContext *cpu_context,
     q, dims.linear_num_k_heads, dims.linear_head_k_dim, 1.0e-6F, q_scale);
   l2_norm_per_head(k, dims.linear_num_k_heads, dims.linear_head_k_dim);
 
+  const float * scan_q = q.data();
+  const float * scan_k = k.data();
+  if (dims.linear_num_k_heads != dims.linear_num_v_heads) {
+    const auto key_dim = static_cast<std::size_t>(dims.linear_head_k_dim);
+    const auto head_count = static_cast<std::size_t>(dims.linear_num_v_heads);
+    const auto values_per_key = head_count / static_cast<std::size_t>(dims.linear_num_k_heads);
+    workspace.grouped_q.resize(head_count * key_dim);
+    workspace.grouped_k.resize(head_count * key_dim);
+    // The reference repeats each Q/K head for adjacent value heads.
+    for (std::size_t head = 0; head < head_count; ++head) {
+      const std::size_t source = head / values_per_key * key_dim;
+      std::copy_n(q.data() + source, key_dim, workspace.grouped_q.data() + head * key_dim);
+      std::copy_n(k.data() + source, key_dim, workspace.grouped_k.data() + head * key_dim);
+    }
+    scan_q = workspace.grouped_q.data();
+    scan_k = workspace.grouped_k.data();
+  }
+
   auto & core_out = workspace.core_out;
   core_out.resize(static_cast<std::size_t>(dims.linear_v_dim));
   const cpu::Q8_0Backend cpu_backend = layer.linear.out_proj.is_cpu_quantized()
@@ -134,8 +152,8 @@ bool run_linear_attention_step(CpuExecutionContext *cpu_context,
   if (cpu_runtime != nullptr && cpu_runtime->executor != nullptr) {
     GatedDeltaNetCpuJob job{
       state.recurrent_state.data(),
-      q.data(),
-      k.data(),
+      scan_q,
+      scan_k,
       v.data(),
       alpha.data(),
       beta.data(),
@@ -163,8 +181,8 @@ bool run_linear_attention_step(CpuExecutionContext *cpu_context,
       : cpu_backend;
     cpu::gated_delta_net_update_rows(
       state.recurrent_state.data(),
-      q.data(),
-      k.data(),
+      scan_q,
+      scan_k,
       v.data(),
       alpha.data(),
       beta.data(),

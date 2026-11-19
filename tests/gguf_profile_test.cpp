@@ -39,6 +39,20 @@ int main() {
   if (text_architecture(larger) != TextArchitecture::qwen35_2b) return 7;
   larger.fingerprint.attention_schedule[0] = AttentionBlock::full;
   if (text_architecture(larger) != TextArchitecture::unsupported) return 8;
+  auto four_b = p;
+  auto & four_b_text = four_b.text;
+  four_b_text.num_hidden_layers = 32;
+  four_b_text.hidden_size = 2560;
+  four_b_text.intermediate_size = 9216;
+  four_b_text.num_attention_heads = 16;
+  four_b_text.num_key_value_heads = 4;
+  four_b_text.linear_num_value_heads = 32;
+  auto & schedule = four_b.fingerprint.attention_schedule;
+  for (int i = 24; i < 32; ++i)
+    schedule.push_back((i + 1) % 4 ? AttentionBlock::linear : AttentionBlock::full);
+  if (text_architecture(four_b) != TextArchitecture::qwen35_4b) return 9;
+  four_b_text.linear_num_value_heads = 16;
+  if (text_architecture(four_b) != TextArchitecture::unsupported) return 10;
   for(bool nonfinite : {false,true}) {
     std::ofstream f(file,std::ios::binary);
     f.write("GGUF",4);u32(f,3);u64(f,0);u64(f,22);

@@ -1,6 +1,6 @@
 # Qwen3.5 CPU
 
-A small C++20 inference engine specialized for **Qwen3.5-0.8B and Qwen3.5-2B text inference on
+A small C++20 inference engine specialized for **Qwen3.5-0.8B, Qwen3.5-2B and Qwen3.5-4B text inference on
 CPUs**, using **H128/Q4-G32-DOT4** weights. No CUDA toolchain, GPU runtime or
 general-purpose model framework is required.
 
@@ -185,7 +185,9 @@ See [server API and limits](docs/server.md) and [publishing](docs/publishing.md)
 
 ## What is specialized
 
-- Two Qwen3.5 text profiles share the hybrid DeltaNet/full-attention implementation. The 0.8B profile uses hidden/FFN widths of 1024/3584 and the 2B profile uses 2048/6144.
+- Three Qwen3.5 text profiles share the hybrid DeltaNet/full-attention implementation.
+  The 24-layer 0.8B and 2B profiles use one value head per DeltaNet query/key
+  head. The 32-layer 4B profile uses two adjacent value heads per query/key head.
 - Main weight paths: H128 transforms with Q4 groups of 32, or plain Q4_0, both using CPU DOT4 packing.
   Large projection weights use H128/Q4; embeddings and small retained tensors use
   their prescribed encodings. This is not an all-tensors-four-bit claim.
@@ -249,6 +251,8 @@ the original BF16 shards. The validated local artifact is about 425 MB
 (decimal); it is not shipped in this repository.
 
 For the 2B checkpoint, see the [2B packing and validation instructions](docs/quantization.md#qwen35-2b). The released download and comparison tables on this page use 0.8B.
+See the [4B packing instructions](docs/quantization.md#qwen35-4b) for the
+native text-only checkpoint.
 
 The CLI performs **raw text completion**, defaulting to greedy decoding. Use
 `--temperature 0.7 --top-p 0.8 --top-k 20 --repetition-penalty 1.05 --seed 42`

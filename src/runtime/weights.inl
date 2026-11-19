@@ -8,7 +8,7 @@ struct CpuDecodeWorkspace {
   } forward;
   struct Linear {
     std::vector<float> mixed_qkv, z_vec, b_vec, a_vec, packed;
-    std::vector<float> beta, alpha, conv_out, core_out, gated_norm;
+    std::vector<float> beta, alpha, conv_out, core_out, gated_norm, grouped_q, grouped_k;
   } linear;
   struct Full {
     std::vector<float> q_full, k_flat, v_flat, packed, q, gate, q_normed, k_normed;

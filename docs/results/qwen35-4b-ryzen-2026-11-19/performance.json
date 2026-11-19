@@ -1,0 +1,1329 @@
+{
+  "cpu": "AMD Ryzen 5 7600",
+  "core_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "kernel": "7.2.9-1-MANJARO",
+  "compiler": "GCC 16.2.1 Release",
+  "cpu_policy": {
+    "driver": "amd-pstate-epp",
+    "governor": "powersave",
+    "energy_performance_preference": "balance_performance"
+  },
+  "runs": 3,
+  "warmups": 1,
+  "runner": "scripts/benchmark-inference-seq.ps1",
+  "runner_options": [
+    "-Runs",
+    "3",
+    "-WarmupRuns",
+    "1",
+    "-Affinity",
+    "63"
+  ],
+  "baseline_revision": "4fdd25fc30459bccd9df333c06c8f2ae88996f1d",
+  "baseline_build": "build",
+  "candidate_build": "build-4b-candidate",
+  "raw_results": {
+    "timings": "benchmarks/qwen35-4b-ryzen-2026-11-19/speed",
+    "text_panel": "benchmarks/qwen35-4b-ryzen-2026-11-19/panel"
+  },
+  "nested_server_sha256": "36465d8c7fc9e1b7e6bce8f20346d570924af9cd820b576e6e4d836ffa70788e",
+  "throughput": {
+    "inputs": {
+      "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv": {
+        "bytes": 18715,
+        "sha256": "bb1582bd818d65ba153c31116895c24fd69d9edd822bb7c5fb8873055e6cd435"
+      },
+      "docs/results/cpu-refresh-2026-10-22/prompt-512.csv": {
+        "bytes": 2311,
+        "sha256": "6baa0783f9ad2adea59013c948cd15a0a465e870837bf9a60e57eb73ef39bd81"
+      },
+      "models/qwen3.5-2b/config.json": {
+        "bytes": 2908,
+        "sha256": "ed1c1723241f23f7f4e23430759cbd7dcfb4103cbdfe052bfe7626b57c2615b4"
+      },
+      "models/qwen3.5-2b/model.q35h": {
+        "bytes": 1060442880,
+        "sha256": "1084c3a2751d3813a2aa686337f717e56291e6a1a79ff8be1b6d1665d22892a3"
+      },
+      "models/qwen3.5-2b/tokenizer.json": {
+        "bytes": 12807982,
+        "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+      },
+      "models/qwen3.5-2b/tokenizer_config.json": {
+        "bytes": 16709,
+        "sha256": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c"
+      },
+      "models/qwen3.5-4b/config.json": {
+        "bytes": 3161,
+        "sha256": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670"
+      },
+      "models/qwen3.5-4b/model-mse16.q35h": {
+        "bytes": 2369080576,
+        "sha256": "7db1dd7be2e74444465f833d6b639d895ff09e0b8226fb06eb925a5729a85eae"
+      },
+      "models/qwen3.5-4b/tokenizer.json": {
+        "bytes": 12807982,
+        "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+      },
+      "models/qwen3.5-4b/tokenizer_config.json": {
+        "bytes": 16710,
+        "sha256": "316230d6a809701f4db5ea8f8fc862bc3a6f3229c937c174e674ff3ca0a64ac8"
+      }
+    },
+    "binaries": {
+      "build-4b-candidate/qwen35_cpu_bench": "559a4051860e38596a3c9a710017da5d6bad481eb3e76ee16de1cef1d861f49a",
+      "build/qwen35_cpu_bench": "fe68f2f8cfca16717cd9364e2dbeee60422df874dfe501c7ad829f024de666ab"
+    },
+    "candidate_base_revision": "102776a7bbe997840d61f473653351da0521d2a8",
+    "candidate_git_diff_sha256": "76ef03bb92a2a6f35f68a5b1b6786f23a9dc9a9c18c8161de2043699fce82124",
+    "matrix": [
+      {
+        "name": "2b-baseline-b1",
+        "executable": "build/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "2b-candidate-b1",
+        "executable": "build-4b-candidate/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "4b-candidate-b1",
+        "executable": "build-4b-candidate/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-4b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-4b/model-mse16.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "2b-baseline-b16",
+        "executable": "build/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "16",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "2b-candidate-b16",
+        "executable": "build-4b-candidate/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "16",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "4b-candidate-b16",
+        "executable": "build-4b-candidate/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-4b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-4b/model-mse16.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "16",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "128"
+        ]
+      },
+      {
+        "name": "2b-baseline-p4096",
+        "executable": "build/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "1"
+        ]
+      },
+      {
+        "name": "2b-candidate-p4096",
+        "executable": "build-4b-candidate/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "1"
+        ]
+      },
+      {
+        "name": "4b-candidate-p4096",
+        "executable": "build-4b-candidate/qwen35_cpu_bench",
+        "args": [
+          "--hf-model-dir",
+          "models/qwen3.5-4b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-4b/model-mse16.q35h",
+          "--cpu-batch-full-logits",
+          "--cpu-isa",
+          "auto",
+          "--cpu-isa-strict",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "6",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "8192",
+          "--max-new-tokens",
+          "1"
+        ]
+      }
+    ],
+    "cases": {
+      "2b-baseline-b1": {
+        "samples": [
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 512,
+            "generated_tokens": 128,
+            "decode_forwards": 127,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 695.384157175,
+            "tokens_per_second": 49.4115589698,
+            "peak_rss_bytes": 1135386624,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 512,
+            "generated_tokens": 128,
+            "decode_forwards": 127,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 729.05263368,
+            "tokens_per_second": 49.3107918949,
+            "peak_rss_bytes": 1135161344,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 512,
+            "generated_tokens": 128,
+            "decode_forwards": 127,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 763.937268163,
+            "tokens_per_second": 49.0686307159,
+            "peak_rss_bytes": 1135009792,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          }
+        ],
+        "medians": {
+          "cpu_batch": 1,
+          "prompt_tokens": 512,
+          "generated_tokens": 128,
+          "decode_forwards": 127,
+          "prefill_forward_tokens_per_second": 729.05263368,
+          "tokens_per_second": 49.3107918949,
+          "peak_rss_bytes": 1135161344
+        }
+      },
+      "2b-candidate-b1": {
+        "samples": [
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 512,
+            "generated_tokens": 128,
+            "decode_forwards": 127,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 766.214704797,
+            "tokens_per_second": 49.254479047,
+            "peak_rss_bytes": 1135251456,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 512,
+            "generated_tokens": 128,
+            "decode_forwards": 127,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 766.079586713,
+            "tokens_per_second": 48.6939282175,
+            "peak_rss_bytes": 1135214592,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 512,
+            "generated_tokens": 128,
+            "decode_forwards": 127,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 755.295961579,
+            "tokens_per_second": 48.9174884133,
+            "peak_rss_bytes": 1135312896,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          }
+        ],
+        "medians": {
+          "cpu_batch": 1,
+          "prompt_tokens": 512,
+          "generated_tokens": 128,
+          "decode_forwards": 127,
+          "prefill_forward_tokens_per_second": 766.079586713,
+          "tokens_per_second": 48.9174884133,
+          "peak_rss_bytes": 1135251456
+        }
+      },
+      "4b-candidate-b1": {
+        "samples": [
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 512,
+            "generated_tokens": 128,
+            "decode_forwards": 127,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 301.228464039,
+            "tokens_per_second": 21.9299052422,
+            "peak_rss_bytes": 2512097280,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 512,
+            "generated_tokens": 128,
+            "decode_forwards": 127,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 281.041850926,
+            "tokens_per_second": 21.9075130312,
+            "peak_rss_bytes": 2512326656,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 512,
+            "generated_tokens": 128,
+            "decode_forwards": 127,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 282.772266249,
+            "tokens_per_second": 21.9942406076,
+            "peak_rss_bytes": 2511949824,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          }
+        ],
+        "medians": {
+          "cpu_batch": 1,
+          "prompt_tokens": 512,
+          "generated_tokens": 128,
+          "decode_forwards": 127,
+          "prefill_forward_tokens_per_second": 282.772266249,
+          "tokens_per_second": 21.9299052422,
+          "peak_rss_bytes": 2512097280
+        }
+      },
+      "2b-baseline-b16": {
+        "samples": [
+          {
+            "cpu_batch": 16,
+            "prompt_tokens": 8192,
+            "generated_tokens": 2048,
+            "decode_forwards": 2032,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 759.702375603,
+            "tokens_per_second": 361.223785205,
+            "peak_rss_bytes": 1609965568,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 16,
+            "prompt_tokens": 8192,
+            "generated_tokens": 2048,
+            "decode_forwards": 2032,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 758.804377693,
+            "tokens_per_second": 363.90714611,
+            "peak_rss_bytes": 1609822208,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 16,
+            "prompt_tokens": 8192,
+            "generated_tokens": 2048,
+            "decode_forwards": 2032,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 756.651140915,
+            "tokens_per_second": 361.452731822,
+            "peak_rss_bytes": 1610219520,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          }
+        ],
+        "medians": {
+          "cpu_batch": 16,
+          "prompt_tokens": 8192,
+          "generated_tokens": 2048,
+          "decode_forwards": 2032,
+          "prefill_forward_tokens_per_second": 758.804377693,
+          "tokens_per_second": 361.452731822,
+          "peak_rss_bytes": 1609965568
+        }
+      },
+      "2b-candidate-b16": {
+        "samples": [
+          {
+            "cpu_batch": 16,
+            "prompt_tokens": 8192,
+            "generated_tokens": 2048,
+            "decode_forwards": 2032,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 758.515515499,
+            "tokens_per_second": 362.140538706,
+            "peak_rss_bytes": 1609994240,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 16,
+            "prompt_tokens": 8192,
+            "generated_tokens": 2048,
+            "decode_forwards": 2032,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 753.148425958,
+            "tokens_per_second": 363.130478042,
+            "peak_rss_bytes": 1609883648,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 16,
+            "prompt_tokens": 8192,
+            "generated_tokens": 2048,
+            "decode_forwards": 2032,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 758.469597932,
+            "tokens_per_second": 363.545685141,
+            "peak_rss_bytes": 1610059776,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          }
+        ],
+        "medians": {
+          "cpu_batch": 16,
+          "prompt_tokens": 8192,
+          "generated_tokens": 2048,
+          "decode_forwards": 2032,
+          "prefill_forward_tokens_per_second": 758.469597932,
+          "tokens_per_second": 363.130478042,
+          "peak_rss_bytes": 1609994240
+        }
+      },
+      "4b-candidate-b16": {
+        "samples": [
+          {
+            "cpu_batch": 16,
+            "prompt_tokens": 8192,
+            "generated_tokens": 2048,
+            "decode_forwards": 2032,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 296.464342994,
+            "tokens_per_second": 157.327805045,
+            "peak_rss_bytes": 3674587136,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 16,
+            "prompt_tokens": 8192,
+            "generated_tokens": 2048,
+            "decode_forwards": 2032,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 294.883697868,
+            "tokens_per_second": 156.083057116,
+            "peak_rss_bytes": 3674746880,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 16,
+            "prompt_tokens": 8192,
+            "generated_tokens": 2048,
+            "decode_forwards": 2032,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 297.035771684,
+            "tokens_per_second": 155.741785852,
+            "peak_rss_bytes": 3674529792,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          }
+        ],
+        "medians": {
+          "cpu_batch": 16,
+          "prompt_tokens": 8192,
+          "generated_tokens": 2048,
+          "decode_forwards": 2032,
+          "prefill_forward_tokens_per_second": 296.464342994,
+          "tokens_per_second": 156.083057116,
+          "peak_rss_bytes": 3674587136
+        }
+      },
+      "2b-baseline-p4096": {
+        "samples": [
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 4096,
+            "generated_tokens": 1,
+            "decode_forwards": 0,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 684.755645808,
+            "tokens_per_second": 0,
+            "peak_rss_bytes": 1178411008,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 4096,
+            "generated_tokens": 1,
+            "decode_forwards": 0,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 682.849215593,
+            "tokens_per_second": 0,
+            "peak_rss_bytes": 1178570752,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 4096,
+            "generated_tokens": 1,
+            "decode_forwards": 0,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 685.04778808,
+            "tokens_per_second": 0,
+            "peak_rss_bytes": 1178570752,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          }
+        ],
+        "medians": {
+          "cpu_batch": 1,
+          "prompt_tokens": 4096,
+          "generated_tokens": 1,
+          "decode_forwards": 0,
+          "prefill_forward_tokens_per_second": 684.755645808,
+          "tokens_per_second": 0,
+          "peak_rss_bytes": 1178570752
+        }
+      },
+      "2b-candidate-p4096": {
+        "samples": [
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 4096,
+            "generated_tokens": 1,
+            "decode_forwards": 0,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 685.246018679,
+            "tokens_per_second": 0,
+            "peak_rss_bytes": 1178435584,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 4096,
+            "generated_tokens": 1,
+            "decode_forwards": 0,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 684.969592316,
+            "tokens_per_second": 0,
+            "peak_rss_bytes": 1178443776,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 4096,
+            "generated_tokens": 1,
+            "decode_forwards": 0,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 683.941293973,
+            "tokens_per_second": 0,
+            "peak_rss_bytes": 1178521600,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          }
+        ],
+        "medians": {
+          "cpu_batch": 1,
+          "prompt_tokens": 4096,
+          "generated_tokens": 1,
+          "decode_forwards": 0,
+          "prefill_forward_tokens_per_second": 684.969592316,
+          "tokens_per_second": 0,
+          "peak_rss_bytes": 1178443776
+        }
+      },
+      "4b-candidate-p4096": {
+        "samples": [
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 4096,
+            "generated_tokens": 1,
+            "decode_forwards": 0,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 266.156323249,
+            "tokens_per_second": 0,
+            "peak_rss_bytes": 2626072576,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 4096,
+            "generated_tokens": 1,
+            "decode_forwards": 0,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 262.187825052,
+            "tokens_per_second": 0,
+            "peak_rss_bytes": 2625802240,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          },
+          {
+            "cpu_batch": 1,
+            "prompt_tokens": 4096,
+            "generated_tokens": 1,
+            "decode_forwards": 0,
+            "weight_format": "h128-q4-dot4",
+            "prefill_forward_tokens_per_second": 265.215360077,
+            "tokens_per_second": 0,
+            "peak_rss_bytes": 2625966080,
+            "projection_kernel": "q4-dot4",
+            "resolved_isa": "avx512-vnni-q4+avx512-fp32"
+          }
+        ],
+        "medians": {
+          "cpu_batch": 1,
+          "prompt_tokens": 4096,
+          "generated_tokens": 1,
+          "decode_forwards": 0,
+          "prefill_forward_tokens_per_second": 265.215360077,
+          "tokens_per_second": 0,
+          "peak_rss_bytes": 2625966080
+        }
+      }
+    },
+    "candidate_source_sha256": {
+      "include/qwen35x/common/model_profile.h": "61fe0322f96a4193bf2dbba2326cce2528b019b060b846d7d3739fdd9bef448e",
+      "src/compiler/profile_loader.cpp": "1d7827a89dbb1d49cea5219abbc50727bc4aa1d5e55b0416520d4da1bf98edde",
+      "src/main.cpp": "588524812926d1d3e66d360ebab359f7a4399190d899a50f07f3c970808b13f0",
+      "src/q4_h128_convert_main.cpp": "5aafa77fc9df3b0431d09902278015d890bf246caa981bd4f1cc4197d52e3069",
+      "src/runtime/cpu_engine.inl": "b9e3dcbff3b759cf5d1bc8e380e334481c9738276e3e5b1c62c222ec2e3ac93a",
+      "src/runtime/layers.inl": "3bac3a1832746ea8f37c5ccdb705f1ae5680258261397c71ddd7951db4e8f1f5",
+      "src/runtime/prefill.inl": "690276d6518019f246285c5956f7e7cbeaf1d4c18153635db88018fd0a0b91b7",
+      "src/runtime/weights.inl": "3bcf9026f74795d14b51d5d1cf88c0a94111c798499def15b213b3cf0a4c03bd",
+      "src/server.cpp": "d365a73ae213a6ee006b89112a8cdcea842fcb75fd9969c282535da9269bfba6",
+      "tests/gguf_profile_test.cpp": "4bfc1a0558b88845027fe7a1cd636c29a4125b5111e65a85911f8b132848b8bb"
+    },
+    "contiguous_chunk_log": [
+      "Chunk 512: cold and prefix-restored logits match bitwise",
+      "Chunk 1024: cold and prefix-restored logits match bitwise"
+    ],
+    "paged_chunk_log": [
+      "Chunk 512: cold and prefix-restored logits match bitwise",
+      "Chunk 1024: cold and prefix-restored logits match bitwise"
+    ],
+    "batch_log": [
+      "B=4: full-vocabulary logits match bitwise",
+      "B=8: full-vocabulary logits match bitwise",
+      "B=12: full-vocabulary logits match bitwise",
+      "B=16: full-vocabulary logits match bitwise",
+      "B=20: full-vocabulary logits match bitwise",
+      "B=32: full-vocabulary logits match bitwise"
+    ],
+    "draft_log": [
+      "Verified full acceptance, each rejection position, stop sequences, seeded sampling and both KV layouts"
+    ]
+  },
+  "text_panel": {
+    "inputs": {
+      "models/qwen3.5-2b/config.json": {
+        "bytes": 2908,
+        "sha256": "ed1c1723241f23f7f4e23430759cbd7dcfb4103cbdfe052bfe7626b57c2615b4"
+      },
+      "models/qwen3.5-2b/model.q35h": {
+        "bytes": 1060442880,
+        "sha256": "1084c3a2751d3813a2aa686337f717e56291e6a1a79ff8be1b6d1665d22892a3"
+      },
+      "models/qwen3.5-2b/tokenizer.json": {
+        "bytes": 12807982,
+        "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+      },
+      "models/qwen3.5-2b/tokenizer_config.json": {
+        "bytes": 16709,
+        "sha256": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c"
+      },
+      "models/qwen3.5-4b/config.json": {
+        "bytes": 3161,
+        "sha256": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670"
+      },
+      "models/qwen3.5-4b/model-mse16.q35h": {
+        "bytes": 2369080576,
+        "sha256": "7db1dd7be2e74444465f833d6b639d895ff09e0b8226fb06eb925a5729a85eae"
+      },
+      "models/qwen3.5-4b/tokenizer.json": {
+        "bytes": 12807982,
+        "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+      },
+      "models/qwen3.5-4b/tokenizer_config.json": {
+        "bytes": 16710,
+        "sha256": "316230d6a809701f4db5ea8f8fc862bc3a6f3229c937c174e674ff3ca0a64ac8"
+      }
+    },
+    "binaries": {
+      "/usr/bin/python3": "d78f9cf7178ecff09963551399855543c297f37ac207e626228bfe43cb26a70c"
+    },
+    "candidate_base_revision": "102776a7bbe997840d61f473653351da0521d2a8",
+    "candidate_git_diff_sha256": "76ef03bb92a2a6f35f68a5b1b6786f23a9dc9a9c18c8161de2043699fce82124",
+    "matrix": [
+      {
+        "name": "2b",
+        "executable": "/usr/bin/python3",
+        "args": [
+          "scripts/benchmark-text-panel.py",
+          "--server",
+          "build-4b-candidate/qwen35_cpu_server",
+          "--model-dir",
+          "models/qwen3.5-2b",
+          "--weights",
+          "models/qwen3.5-2b/model.q35h",
+          "--panel",
+          "docs/results/qwen35-text-panel-2026-11-19/panel.json"
+        ]
+      },
+      {
+        "name": "4b",
+        "executable": "/usr/bin/python3",
+        "args": [
+          "scripts/benchmark-text-panel.py",
+          "--server",
+          "build-4b-candidate/qwen35_cpu_server",
+          "--model-dir",
+          "models/qwen3.5-4b",
+          "--weights",
+          "models/qwen3.5-4b/model-mse16.q35h",
+          "--panel",
+          "docs/results/qwen35-text-panel-2026-11-19/panel.json"
+        ]
+      }
+    ],
+    "cases": {
+      "2b": {
+        "samples": [
+          {
+            "correct": 6,
+            "http_p50_ms": 455.78208199913206,
+            "http_p95_ms": 1852.1304179994331,
+            "server_peak_rss_bytes": 1186824192
+          },
+          {
+            "correct": 6,
+            "http_p50_ms": 467.4620310006503,
+            "http_p95_ms": 1837.7165980000427,
+            "server_peak_rss_bytes": 1186701312
+          },
+          {
+            "correct": 6,
+            "http_p50_ms": 459.9561055010781,
+            "http_p95_ms": 1834.4369839996943,
+            "server_peak_rss_bytes": 1186385920
+          }
+        ],
+        "outputs_identical_including_warmup": true,
+        "tasks": [
+          {
+            "id": "invoice",
+            "kind": "edit",
+            "text": "bitte schick mir die Rechnung bis Freitag, ich überweise sie dann.",
+            "finish_reason": "stop",
+            "completion_tokens": 17,
+            "passed": false
+          },
+          {
+            "id": "appointment",
+            "kind": "edit",
+            "text": "Der Termin ist am Mittwoch nicht am Donnerstag.",
+            "finish_reason": "stop",
+            "completion_tokens": 10,
+            "passed": false
+          },
+          {
+            "id": "apology",
+            "kind": "edit",
+            "text": "Es tut mir leid, dass ich zu spät bin",
+            "finish_reason": "stop",
+            "completion_tokens": 11,
+            "passed": false
+          },
+          {
+            "id": "order",
+            "kind": "edit",
+            "text": "Wir haben drei Pakete bestellt und zwei bekommen.",
+            "finish_reason": "stop",
+            "completion_tokens": 11,
+            "passed": true
+          },
+          {
+            "id": "address",
+            "kind": "edit",
+            "text": "ich weiß nicht, ob die Adresse noch stimmt",
+            "finish_reason": "stop",
+            "completion_tokens": 10,
+            "passed": false
+          },
+          {
+            "id": "waiting",
+            "kind": "edit",
+            "text": "Wenn du noch Fragen hast, melde dich.",
+            "finish_reason": "stop",
+            "completion_tokens": 11,
+            "passed": false
+          },
+          {
+            "id": "closing",
+            "kind": "edit",
+            "text": "vielen Dank für ihre Hilfe",
+            "finish_reason": "stop",
+            "completion_tokens": 7,
+            "passed": false
+          },
+          {
+            "id": "report",
+            "kind": "edit",
+            "text": "ich habe den Bericht gelesen, aber noch keine Rückmeldung gegeben",
+            "finish_reason": "stop",
+            "completion_tokens": 13,
+            "passed": false
+          },
+          {
+            "id": "rename",
+            "kind": "python",
+            "text": "```python\ndef bill(prices):\n    subtotal = sum(prices)\n    return subtotal\n```",
+            "finish_reason": "stop",
+            "completion_tokens": 23,
+            "passed": true
+          },
+          {
+            "id": "boundary",
+            "kind": "python",
+            "text": "```python\ndef allowed(age):\n    return age >= 18\n```",
+            "finish_reason": "stop",
+            "completion_tokens": 18,
+            "passed": true
+          },
+          {
+            "id": "argument",
+            "kind": "python",
+            "text": "```python\ndef double(n):\n    return n * 2\n```",
+            "finish_reason": "stop",
+            "completion_tokens": 17,
+            "passed": false
+          },
+          {
+            "id": "filter",
+            "kind": "python",
+            "text": "```python\ndef positive(xs):\n    return [x for x in xs if x > 0 or x == 0]\n```",
+            "finish_reason": "stop",
+            "completion_tokens": 30,
+            "passed": false
+          },
+          {
+            "id": "guard",
+            "kind": "python",
+            "text": "```python\nif not xs: return None\ndef first(xs):\n    return xs[0]\n```",
+            "finish_reason": "stop",
+            "completion_tokens": 24,
+            "passed": false
+          },
+          {
+            "id": "default",
+            "kind": "python",
+            "text": "```python\ndef take(xs, limit):\n    return xs[:limit]\n```",
+            "finish_reason": "stop",
+            "completion_tokens": 19,
+            "passed": false
+          },
+          {
+            "id": "comprehension",
+            "kind": "python",
+            "text": "```python\ndef transform(xs):\n    return [x**2 for x in xs if x > 0]\n```",
+            "finish_reason": "stop",
+            "completion_tokens": 27,
+            "passed": true
+          },
+          {
+            "id": "keyword",
+            "kind": "python",
+            "text": "```python\ndef sorted_copy(xs, reverse=False):\n    return sorted(xs, reverse=reverse)\n```",
+            "finish_reason": "stop",
+            "completion_tokens": 24,
+            "passed": false
+          },
+          {
+            "id": "units",
+            "kind": "json",
+            "text": "```json\n{\n  \"article\": \"Wir bestellen 12 Filter.\",\n  \"count\": 12\n}\n```",
+            "finish_reason": "stop",
+            "completion_tokens": 30,
+            "passed": false
+          },
+          {
+            "id": "boolean",
+            "kind": "json",
+            "text": "{\n  \"bezahlt\": false,\n  \"betrag\": 0\n}",
+            "finish_reason": "stop",
+            "completion_tokens": 19,
+            "passed": false
+          },
+          {
+            "id": "optional",
+            "kind": "json",
+            "text": "{\n  \"ort\": \"Mainz\",\n  \"datum\": null\n}",
+            "finish_reason": "stop",
+            "completion_tokens": 19,
+            "passed": true
+          },
+          {
+            "id": "array",
+            "kind": "json",
+            "text": "{\n  \"Schlüssel namen\": \"Es kommen Ava, Ben und Cem.\"\n}",
+            "finish_reason": "stop",
+            "completion_tokens": 20,
+            "passed": false
+          },
+          {
+            "id": "nested",
+            "kind": "json",
+            "text": "{\n  \"name\": \"Kontakt: Ada, Köln.\",\n  \"object\": {\n    \"name\": \"Kontakt: Ada, Köln.\",\n    \"object\": {\n      \"name\": \"Kontakt: Ada, Köln.\",\n      \"object\": {\n        \"name\": \"Kontakt: Ada, Köln.\",\n        \"object\": {\n          \"name\": \"Kontakt: Ada, Köln.\",\n          \"object\": {\n            \"name\": \"Kontakt: Ada, Köln.\",\n            \"object\": {\n              \"name\": \"Kontakt: Ada, Köln.\",\n              \"object\": {\n                \"name\": \"Kontakt: Ada, Köln.\",\n                \"object\": {\n                  \"name\": \"Kontakt: Ada, Köln.\",\n                  \"object\": {\n                    \"name\": \"Kontakt: Ada, Köln.\",\n                    \"object\": {\n                      \"name\": \"Kontakt: Ada, Köln.\",\n                      \"object\": {\n                        \"name\": \"Kontakt: Ada, Köln.\",\n                        \"object\": {\n                          \"name\": \"Kontakt: Ada, Köln.\",\n                          \"object\": {\n                            \"name\": \"Kontakt",
+            "finish_reason": "length",
+            "completion_tokens": 256,
+            "passed": false
+          },
+          {
+            "id": "calendar",
+            "kind": "json",
+            "text": "{\n  \"datum\": \"2027-05-07\",\n  \"uhrzeit\": \"09:05\"\n}",
+            "finish_reason": "stop",
+            "completion_tokens": 34,
+            "passed": true
+          },
+          {
+            "id": "cents",
+            "kind": "json",
+            "text": "```json\n{\n  \"cent\": 5,\n  \"waehrung\": \"EUR\"\n}\n```",
+            "finish_reason": "stop",
+            "completion_tokens": 27,
+            "passed": false
+          },
+          {
+            "id": "selection",
+            "kind": "json",
+            "text": "```json\n[\n  {\n    \"produkt\": \"Tee\",\n    \"status\": \"verfügbar\"\n  },\n  {\n    \"produkt\": \"Reis\",\n    \"status\": \"ausverkauft\"\n  },\n  {\n    \"produkt\": \"Salz\",\n    \"status\": \"verfügbar\"\n  }\n]\n```",
+            "finish_reason": "stop",
+            "completion_tokens": 88,
+            "passed": false
+          }
+        ],
+        "correct_by_kind": {
+          "edit": 1,
+          "python": 3,
+          "json": 2
+        },
+        "medians": {
+          "correct": 6,
+          "http_p50_ms": 459.9561055010781,
+          "http_p95_ms": 1837.7165980000427,
+          "server_peak_rss_bytes": 1186701312
+        }
+      },
+      "4b": {
+        "samples": [
+          {
+            "correct": 16,
+            "http_p50_ms": 869.6770984997784,
+            "http_p95_ms": 1492.6451899991662,
+            "server_peak_rss_bytes": 2550042624
+          },
+          {
+            "correct": 16,
+            "http_p50_ms": 875.5687045004379,
+            "http_p95_ms": 1478.9816430002247,
+            "server_peak_rss_bytes": 2550591488
+          },
+          {
+            "correct": 16,
+            "http_p50_ms": 894.6548525000253,
+            "http_p95_ms": 1477.0885630005068,
+            "server_peak_rss_bytes": 2550140928
+          }
+        ],
+        "outputs_identical_including_warmup": true,
+        "tasks": [
+          {
+            "id": "invoice",
+            "kind": "edit",
+            "text": "bitte schicke mir die Rechnung bis Freitag, ich überweise sie dann.",
+            "finish_reason": "stop",
+            "completion_tokens": 17,
+            "passed": false
+          },
+          {
+            "id": "appointment",
+            "kind": "edit",
+            "text": "Der Termin ist am Mittwoch nicht am Donnerstag.",
+            "finish_reason": "stop",
+            "completion_tokens": 10,
+            "passed": false
+          },
+          {
+            "id": "apology",
+            "kind": "edit",
+            "text": "Es tut mir leid, dass ich zu spät bin.",
+            "finish_reason": "stop",
+            "completion_tokens": 12,
+            "passed": true
+          },
+          {
+            "id": "order",
+            "kind": "edit",
+            "text": "Wir haben drei Pakete bestellt und zwei bekommen.",
+            "finish_reason": "stop",
+            "completion_tokens": 11,
+            "passed": true
+          },
+          {
+            "id": "address",
+            "kind": "edit",
+            "text": "Ich weiß nicht, ob die Adresse noch stimmt.",
+            "finish_reason": "stop",
+            "completion_tokens": 11,
+            "passed": true
+          },
+          {
+            "id": "waiting",
+            "kind": "edit",
+            "text": "Wenn du noch Fragen hast, dann melde dich.",
+            "finish_reason": "stop",
+            "completion_tokens": 12,
+            "passed": true
+          },
+          {
+            "id": "closing",
+            "kind": "edit",
+            "text": "Vielen Dank für Ihre Hilfe.",
+            "finish_reason": "stop",
+            "completion_tokens": 8,
+            "passed": true
+          },
+          {
+            "id": "report",
+            "kind": "edit",
+            "text": "Ich habe den Bericht gelesen, aber noch keine Rückmeldung gegeben.",
+            "finish_reason": "stop",
+            "completion_tokens": 14,
+            "passed": true
+          },
+          {
+            "id": "rename",
+            "kind": "python",
+            "text": "def bill(prices):\n    subtotal = sum(prices)\n    return subtotal",
+            "finish_reason": "stop",
+            "completion_tokens": 18,
+            "passed": true
+          },
+          {
+            "id": "boundary",
+            "kind": "python",
+            "text": "def allowed(age):\n    return age >= 18",
+            "finish_reason": "stop",
+            "completion_tokens": 13,
+            "passed": true
+          },
+          {
+            "id": "argument",
+            "kind": "python",
+            "text": "def double(count):\n    return count * 2",
+            "finish_reason": "stop",
+            "completion_tokens": 12,
+            "passed": true
+          },
+          {
+            "id": "filter",
+            "kind": "python",
+            "text": "def positive(xs):\n    return [x for x in xs if x >= 0]",
+            "finish_reason": "stop",
+            "completion_tokens": 20,
+            "passed": true
+          },
+          {
+            "id": "guard",
+            "kind": "python",
+            "text": "```python\ndef first(xs):\n    if not xs:\n        return None\n    return xs[0]\n```",
+            "finish_reason": "stop",
+            "completion_tokens": 27,
+            "passed": true
+          },
+          {
+            "id": "default",
+            "kind": "python",
+            "text": "```python\ndef take(xs, limit=10):\n    return xs[:limit]\n```",
+            "finish_reason": "stop",
+            "completion_tokens": 22,
+            "passed": true
+          },
+          {
+            "id": "comprehension",
+            "kind": "python",
+            "text": "```python\ndef transform(xs):\n    return [x ** 2 for x in xs if x > 0]\n```",
+            "finish_reason": "stop",
+            "completion_tokens": 28,
+            "passed": true
+          },
+          {
+            "id": "keyword",
+            "kind": "python",
+            "text": "def sorted_copy(xs, *):\n    return sorted(xs, reverse=*)",
+            "finish_reason": "stop",
+            "completion_tokens": 17,
+            "passed": false
+          },
+          {
+            "id": "units",
+            "kind": "json",
+            "text": "{\"artikel\": \"Wir bestellen 12 Filter.\", \"anzahl\": 12}",
+            "finish_reason": "stop",
+            "completion_tokens": 20,
+            "passed": false
+          },
+          {
+            "id": "boolean",
+            "kind": "json",
+            "text": "{\"bezahlt\": false, \"betrag\": 49}",
+            "finish_reason": "stop",
+            "completion_tokens": 14,
+            "passed": true
+          },
+          {
+            "id": "optional",
+            "kind": "json",
+            "text": "{\"ort\": \"Mainz\", \"datum\": null}",
+            "finish_reason": "stop",
+            "completion_tokens": 13,
+            "passed": true
+          },
+          {
+            "id": "array",
+            "kind": "json",
+            "text": "{\"Schlüssel namen\": [\"Ava\", \"Ben\", \"Cem\"]}",
+            "finish_reason": "stop",
+            "completion_tokens": 17,
+            "passed": false
+          },
+          {
+            "id": "nested",
+            "kind": "json",
+            "text": "{\n  \"name\": \"Ada\",\n  \"ort\": \"Köln\"\n}",
+            "finish_reason": "stop",
+            "completion_tokens": 22,
+            "passed": false
+          },
+          {
+            "id": "calendar",
+            "kind": "json",
+            "text": "{\"datum\": \"2027-05-07\", \"uhrzeit\": \"09:05\"}",
+            "finish_reason": "stop",
+            "completion_tokens": 27,
+            "passed": true
+          },
+          {
+            "id": "cents",
+            "kind": "json",
+            "text": "{\"cent\": 5, \"waehrung\": \"EUR\"}",
+            "finish_reason": "stop",
+            "completion_tokens": 15,
+            "passed": false
+          },
+          {
+            "id": "selection",
+            "kind": "json",
+            "text": "{\n  \"produkte\": [\n    {\n      \"name\": \"Tee\",\n      \"status\": \"verfügbar\"\n    },\n    {\n      \"name\": \"Reis\",\n      \"status\": \"ausverkauft\"\n    },\n    {\n      \"name\": \"Salz\",\n      \"status\": \"verfügbar\"\n    }\n  ]\n}",
+            "finish_reason": "stop",
+            "completion_tokens": 89,
+            "passed": false
+          }
+        ],
+        "correct_by_kind": {
+          "edit": 6,
+          "python": 7,
+          "json": 3
+        },
+        "medians": {
+          "correct": 16,
+          "http_p50_ms": 875.5687045004379,
+          "http_p95_ms": 1478.9816430002247,
+          "server_peak_rss_bytes": 2550140928
+        }
+      }
+    },
+    "panel_sha256": "e0b72156221f2c59276f68340e9dbe2b529c6299ad7f026f6a53604a69b89943"
+  }
+}

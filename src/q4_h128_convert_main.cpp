@@ -474,7 +474,7 @@ int main(int argc, char ** argv) {
     return 3;
   }
   if (qwen35x::text_architecture(*profile) == qwen35x::TextArchitecture::unsupported) {
-    std::cerr << "Expected the Qwen3.5-0.8B or Qwen3.5-2B text architecture.\n";
+    std::cerr << "Expected the Qwen3.5-0.8B, Qwen3.5-2B or Qwen3.5-4B text architecture.\n";
     return 1;
   }
   qwen35x::Q4H128ArtifactMetadata metadata;
