@@ -256,3 +256,9 @@ python tests/server_mtp_http_test.py --server build/qwen35_cpu_server \
   --model-dir "$model" --weights "$model/model-mse16.q35h" \
   --mtp-weights "$model/mtp-h128.q35h"
 ```
+
+The optional [Pi Coding Agent comparison](benchmarks/qwen35-4b-pi-agent.md)
+requires Linux with Bubblewrap, PowerShell 7, Pi Coding Agent 1.5.0, Node.js
+and the native and ik_llama.cpp 4B files. Browser scoring additionally uses
+Playwright Core and a Chromium headless-shell executable. Matplotlib renders
+the phase-rate chart from the measured request CSV.

@@ -1,0 +1,13 @@
+--- a/src/server.cpp
++++ b/src/server.cpp
+@@ -345,6 +345,10 @@
+               } catch (const std::exception &e) { reply = failure(500, e.what()); }
+             } else {
+             try {
++              std::cerr << "BENCH_TIMING " << Json{{"prompt_n", result.prefill_tokens},
++                {"prompt_ms", result.prefill_ms}, {"decode_rows", result.decode_forwards},
++                {"predicted_n", result.generated_tokens}, {"predicted_ms", result.decode_ms},
++                {"prefix_restore_ms", result.prefix_restore_ms}, {"queue_ms", result.queue_ms}}.dump() << '\n';
+               job->accept(job->stop_matcher->Push(job->utf8.push({}, true)));
+               job->accept(job->stop_matcher->Finish());
+               reply = {200, server::completion(job->api, model_name, it->id, job->created,

@@ -1,0 +1,21 @@
+{
+  "system": "You are the implementation agent on a small web project. Make changes with the provided file tools. Use only the project directory. Follow each user's requirements, preserve earlier behavior, and finish with a short status. Do not paste source code into the chat.",
+  "turns": [
+    {
+      "prompt": "Build a playable grid puzzle named Beacon Switch with vanilla HTML, CSS and JavaScript in one self-contained index.html. It should work offline by opening that file. Give it a compact title, a short instructions area, a responsive grid and a visible status area. Use a 5x5 board with a deterministic starting puzzle obtained by turning all lights off and then applying one move to the center cell. Clicking a cell flips that cell and its orthogonal neighbors within the board. Count moves, show Won when all lights are off, and stop the board accepting moves after winning. Add a Reset button that restores the starting board and resets moves to 0. A lit cell has aria-pressed=\"true\" and an unlit cell aria-pressed=\"false\". Use buttons with IDs cell-ROW-COL, with zero-based row and column, plus IDs moves, status and reset on the relevant elements. Use only index.html and no CDN or dependencies. Write the file with the tool, then report briefly.",
+      "checks": ["initial", "edge", "win", "reset"]
+    },
+    {
+      "prompt": "Add a one-move Undo button to the existing app, with id undo. Undo reverts the most recent move and restores the previous move count and status, including after a win. After Undo the button must be disabled until another move. Reset should disable Undo. Keep all prior features and IDs. Read the existing index.html before editing it.",
+      "checks": ["undo", "undo-win"]
+    },
+    {
+      "prompt": "Add keyboard navigation to the grid. With focus on a cell, arrow keys move focus one cell in each direction, without wrapping at the board edges, and do not change puzzle state or the move count. Use the native button's Space and Enter activation. When starting from the top-left cell, ArrowRight then ArrowDown should reach row 1, column 1. Preserve all IDs and earlier behaviors, including Undo.",
+      "checks": ["keyboard", "keyboard-activation"]
+    },
+    {
+      "prompt": "Add a Size select control (id size) with the options 3, 5, and 7, default 5. On switching size immediately create that size's deterministic center-move starting puzzle, set moves to zero, and clear Undo. Keep the selection when Reset is pressed. Make sure the new grid, Win, Undo, Reset and keyboard navigation all still work. Save your finished changes to index.html and summarize briefly.",
+      "checks": ["resize", "resize-reset", "resize-win", "resize-keyboard"]
+    }
+  ]
+}

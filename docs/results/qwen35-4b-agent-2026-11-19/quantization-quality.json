@@ -1,0 +1,453 @@
+{
+  "measurement": "Forced target continuation, full vocabulary",
+  "teacher_revision": "73a43d1f69345aee8bb186ef4b3172cef892f2e5",
+  "reference_snapshot": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "scored_positions": 238,
+  "overall": {
+    "native": {
+      "mean_kl_from_bf16": 0.15017382353419353,
+      "perplexity": 10.178754641197354,
+      "bf16_perplexity": 10.671584556452748,
+      "top1_agreement": 0.8739495798319328
+    },
+    "ik": {
+      "mean_kl_from_bf16": 0.1803171428214223,
+      "perplexity": 10.27944687923319,
+      "bf16_perplexity": 10.671584556452748,
+      "top1_agreement": 0.8991596638655462
+    }
+  },
+  "windows": [
+    {
+      "name": "english-continuation",
+      "prompt_tokens": 512,
+      "scored_tokens": 128,
+      "teacher_logits_sha256": "05963313786f95240d5acb091f323c17f5000cce8db64b20600efae0b438ca2b",
+      "native": {
+        "kld": {
+          "mean": 0.24851505223845327,
+          "median": 0.04608841880441675,
+          "p95": 0.7267036089188038,
+          "p99": 2.946527658118975,
+          "max": 13.121472006720351
+        },
+        "target_nll": {
+          "teacher_perplexity": 13.60302205366016,
+          "candidate_perplexity": 11.676271260367905,
+          "teacher_mean": 2.610291977885012,
+          "candidate_mean": 2.457558685024838,
+          "delta_mean": -0.15273329286017398,
+          "delta_p95": 0.7666899336707611,
+          "perplexity_ratio": 0.8583586216583527
+        },
+        "agreement": {
+          "top1": 0.859375,
+          "teacher_top1_in_candidate_top5": 0.984375,
+          "teacher_top1_in_candidate_top10": 1.0,
+          "top5_overlap": 0.8390625000000002,
+          "top10_overlap": 0.8382812500000002
+        },
+        "argmax_flips": 18
+      },
+      "ik": {
+        "kld": {
+          "mean": 0.3122307482684718,
+          "median": 0.03864488332225906,
+          "p95": 0.8379253573341648,
+          "p99": 7.7471787637877885,
+          "max": 14.064239138735218
+        },
+        "target_nll": {
+          "teacher_perplexity": 13.60302205366016,
+          "candidate_perplexity": 12.697461683906418,
+          "teacher_mean": 2.610291977885012,
+          "candidate_mean": 2.54140210607945,
+          "delta_mean": -0.06888987180556232,
+          "delta_p95": 0.8280028294691092,
+          "perplexity_ratio": 0.9334294713203025
+        },
+        "agreement": {
+          "top1": 0.8828125,
+          "teacher_top1_in_candidate_top5": 0.984375,
+          "teacher_top1_in_candidate_top10": 0.984375,
+          "top5_overlap": 0.8578125000000001,
+          "top10_overlap": 0.8507812500000002
+        },
+        "argmax_flips": 15
+      }
+    },
+    {
+      "name": "editing",
+      "prompt_tokens": 32,
+      "scored_tokens": 35,
+      "teacher_logits_sha256": "8893667983076b23190b682e436af2e00ab4bf16efc424d781f82c2f3f0f52de",
+      "native": {
+        "kld": {
+          "mean": 0.04856370049458526,
+          "median": 0.035744159641201326,
+          "p95": 0.12775457354354788,
+          "p99": 0.17739688713605856,
+          "max": 0.19046627530498464
+        },
+        "target_nll": {
+          "teacher_perplexity": 15.725320863532934,
+          "candidate_perplexity": 16.893417790911275,
+          "teacher_mean": 2.755272207054512,
+          "candidate_mean": 2.8269240662343247,
+          "delta_mean": 0.07165185917981286,
+          "delta_p95": 0.6787416627198811,
+          "perplexity_ratio": 1.0742812777885609
+        },
+        "agreement": {
+          "top1": 0.8571428571428571,
+          "teacher_top1_in_candidate_top5": 1.0,
+          "teacher_top1_in_candidate_top10": 1.0,
+          "top5_overlap": 0.8685714285714287,
+          "top10_overlap": 0.8714285714285714
+        },
+        "argmax_flips": 5
+      },
+      "ik": {
+        "kld": {
+          "mean": 0.03568259084722598,
+          "median": 0.029056804897792932,
+          "p95": 0.0799793218565123,
+          "p99": 0.15233232754334644,
+          "max": 0.1853165525634529
+        },
+        "target_nll": {
+          "teacher_perplexity": 15.725320863532934,
+          "candidate_perplexity": 15.902251046532824,
+          "teacher_mean": 2.755272207054512,
+          "candidate_mean": 2.766460674458992,
+          "delta_mean": 0.01118846740448041,
+          "delta_p95": 0.43533946982038085,
+          "perplexity_ratio": 1.0112512923923984
+        },
+        "agreement": {
+          "top1": 0.9142857142857143,
+          "teacher_top1_in_candidate_top5": 1.0,
+          "teacher_top1_in_candidate_top10": 1.0,
+          "top5_overlap": 0.9028571428571429,
+          "top10_overlap": 0.9057142857142856
+        },
+        "argmax_flips": 3
+      }
+    },
+    {
+      "name": "transcript",
+      "prompt_tokens": 32,
+      "scored_tokens": 34,
+      "teacher_logits_sha256": "32bf3ca23453df26d16ab5ae971f932489b2f7299395d5f547edb0b3b2c3c86a",
+      "native": {
+        "kld": {
+          "mean": 0.03834336582826594,
+          "median": 0.031934190010303086,
+          "p95": 0.09527463879186862,
+          "p99": 0.10730416009142695,
+          "max": 0.1098114560042155
+        },
+        "target_nll": {
+          "teacher_perplexity": 14.532436724076476,
+          "candidate_perplexity": 15.39136006604348,
+          "teacher_mean": 2.676383166486279,
+          "candidate_mean": 2.733806317308242,
+          "delta_mean": 0.05742315082196219,
+          "delta_p95": 0.6143697884175797,
+          "perplexity_ratio": 1.0591038762648788
+        },
+        "agreement": {
+          "top1": 0.8823529411764706,
+          "teacher_top1_in_candidate_top5": 1.0,
+          "teacher_top1_in_candidate_top10": 1.0,
+          "top5_overlap": 0.8470588235294118,
+          "top10_overlap": 0.8499999999999999
+        },
+        "argmax_flips": 4
+      },
+      "ik": {
+        "kld": {
+          "mean": 0.03093330092575781,
+          "median": 0.027090079740795435,
+          "p95": 0.06248043796762245,
+          "p99": 0.09434069514679183,
+          "max": 0.10512295726794074
+        },
+        "target_nll": {
+          "teacher_perplexity": 14.532436724076476,
+          "candidate_perplexity": 13.811540171655189,
+          "teacher_mean": 2.676383166486279,
+          "candidate_mean": 2.6255044870285227,
+          "delta_mean": -0.05087867945775691,
+          "delta_p95": 0.24614820793032685,
+          "perplexity_ratio": 0.9503939658497218
+        },
+        "agreement": {
+          "top1": 0.9411764705882353,
+          "teacher_top1_in_candidate_top5": 1.0,
+          "teacher_top1_in_candidate_top10": 1.0,
+          "top5_overlap": 0.8941176470588235,
+          "top10_overlap": 0.8794117647058824
+        },
+        "argmax_flips": 2
+      }
+    },
+    {
+      "name": "code",
+      "prompt_tokens": 32,
+      "scored_tokens": 41,
+      "teacher_logits_sha256": "3b619acf704e1ab9e880a30482795bbd7ececb3658311be6b3e25f1234eb3036",
+      "native": {
+        "kld": {
+          "mean": 0.022635106320597936,
+          "median": 0.015482601543921618,
+          "p95": 0.06942845052116568,
+          "p99": 0.08052419548390975,
+          "max": 0.08742062652392746
+        },
+        "target_nll": {
+          "teacher_perplexity": 2.7810653630301814,
+          "candidate_perplexity": 3.053867871649634,
+          "teacher_mean": 1.0228340784025167,
+          "candidate_mean": 1.1164089418296264,
+          "delta_mean": 0.09357486342710968,
+          "delta_p95": 0.6143616528679416,
+          "perplexity_ratio": 1.0980928072550635
+        },
+        "agreement": {
+          "top1": 0.926829268292683,
+          "teacher_top1_in_candidate_top5": 1.0,
+          "teacher_top1_in_candidate_top10": 1.0,
+          "top5_overlap": 0.9073170731707317,
+          "top10_overlap": 0.8804878048780488
+        },
+        "argmax_flips": 3
+      },
+      "ik": {
+        "kld": {
+          "mean": 0.01583710492696204,
+          "median": 0.008406527370778781,
+          "p95": 0.05595638202895786,
+          "p99": 0.06450524595340797,
+          "max": 0.0657481292635558
+        },
+        "target_nll": {
+          "teacher_perplexity": 2.7810653630301814,
+          "candidate_perplexity": 2.8668738842483217,
+          "teacher_mean": 1.0228340784025167,
+          "candidate_mean": 1.0532221971818059,
+          "delta_mean": 0.03038811877928893,
+          "delta_p95": 0.47718637867497193,
+          "perplexity_ratio": 1.0308545503312603
+        },
+        "agreement": {
+          "top1": 0.9024390243902439,
+          "teacher_top1_in_candidate_top5": 1.0,
+          "teacher_top1_in_candidate_top10": 1.0,
+          "top5_overlap": 0.9121951219512194,
+          "top10_overlap": 0.9170731707317074
+        },
+        "argmax_flips": 4
+      }
+    }
+  ],
+  "compile_command": [
+    "c++",
+    "-std=c++17",
+    "-O3",
+    "-DNDEBUG",
+    "-DQWEN35_IK_LLAMA=1",
+    "-Ibenchmarks/qwen35-4b-agent-2026-11-19/ik_llama.cpp/include",
+    "-Ibenchmarks/qwen35-4b-agent-2026-11-19/ik_llama.cpp/ggml/include",
+    "tools/llama-comparison/main.cpp",
+    "-Lbenchmarks/qwen35-4b-agent-2026-11-19/ik-build/src",
+    "-Lbenchmarks/qwen35-4b-agent-2026-11-19/ik-build/ggml/src",
+    "-Wl,-rpath,benchmarks/qwen35-4b-agent-2026-11-19/ik-build/src:benchmarks/qwen35-4b-agent-2026-11-19/ik-build/ggml/src",
+    "-lllama",
+    "-lggml",
+    "-o",
+    "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/ik-fixed-cpu-bench"
+  ],
+  "inputs": {
+    "native": "H128/Q4-G32-DOT4, unweighted MSE16",
+    "ik": "pure IQ4_K_R4"
+  },
+  "commands": {
+    "english-continuation-native": [
+      "taskset",
+      "-c",
+      "0-5",
+      "build/qwen35_cpu",
+      "--model-dir",
+      "models/qwen3.5-4b",
+      "--weights",
+      "models/qwen3.5-4b/model-mse16.q35h",
+      "--tokens-file",
+      "benchmarks/qwen35-4b-ryzen-2026-11-19/english-continuation-prompt.csv",
+      "--forced-tokens-file",
+      "benchmarks/qwen35-4b-ryzen-2026-11-19/english-continuation-targets.csv",
+      "--threads",
+      "6",
+      "--max-context",
+      "1024",
+      "--max-new-tokens",
+      "128",
+      "--logits-out",
+      "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/english-continuation-native.logits"
+    ],
+    "english-continuation-ik": [
+      "taskset",
+      "-c",
+      "0-5",
+      "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/ik-fixed-cpu-bench",
+      "--cpu-gguf",
+      "benchmarks/qwen35-4b-agent-2026-11-19/4b-IQ4_K_R4.gguf",
+      "--prompt-tokens-file",
+      "benchmarks/qwen35-4b-ryzen-2026-11-19/english-continuation-prompt.csv",
+      "--forced-output-tokens",
+      "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+      "--cpu-threads",
+      "6",
+      "--max-context",
+      "1024",
+      "--max-new-tokens",
+      "128",
+      "--logits-out",
+      "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/english-continuation-ik.logits",
+      "--profile-json",
+      "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/english-continuation-ik-profile.json"
+    ],
+    "editing-native": [
+      "taskset",
+      "-c",
+      "0-5",
+      "build/qwen35_cpu",
+      "--model-dir",
+      "models/qwen3.5-4b",
+      "--weights",
+      "models/qwen3.5-4b/model-mse16.q35h",
+      "--tokens-file",
+      "benchmarks/qwen35-4b-ryzen-2026-11-19/editing-prompt.csv",
+      "--forced-tokens-file",
+      "benchmarks/qwen35-4b-ryzen-2026-11-19/editing-targets.csv",
+      "--threads",
+      "6",
+      "--max-context",
+      "1024",
+      "--max-new-tokens",
+      "35",
+      "--logits-out",
+      "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/editing-native.logits"
+    ],
+    "editing-ik": [
+      "taskset",
+      "-c",
+      "0-5",
+      "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/ik-fixed-cpu-bench",
+      "--cpu-gguf",
+      "benchmarks/qwen35-4b-agent-2026-11-19/4b-IQ4_K_R4.gguf",
+      "--prompt-tokens-file",
+      "benchmarks/qwen35-4b-ryzen-2026-11-19/editing-prompt.csv",
+      "--forced-output-tokens",
+      "1165,599,2582,21103,678,3425,321,9770,279,2940,13,1368,488,1144,1438,15499,303,11,264,51715,668,381,2420,2980,2943,303,279,12967,13,271,12295,11,198,2229,1413",
+      "--cpu-threads",
+      "6",
+      "--max-context",
+      "1024",
+      "--max-new-tokens",
+      "35",
+      "--logits-out",
+      "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/editing-ik.logits",
+      "--profile-json",
+      "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/editing-ik-profile.json"
+    ],
+    "transcript-native": [
+      "taskset",
+      "-c",
+      "0-5",
+      "build/qwen35_cpu",
+      "--model-dir",
+      "models/qwen3.5-4b",
+      "--weights",
+      "models/qwen3.5-4b/model-mse16.q35h",
+      "--tokens-file",
+      "benchmarks/qwen35-4b-ryzen-2026-11-19/transcript-prompt.csv",
+      "--forced-tokens-file",
+      "benchmarks/qwen35-4b-ryzen-2026-11-19/transcript-targets.csv",
+      "--threads",
+      "6",
+      "--max-context",
+      "1024",
+      "--max-new-tokens",
+      "34",
+      "--logits-out",
+      "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/transcript-native.logits"
+    ],
+    "transcript-ik": [
+      "taskset",
+      "-c",
+      "0-5",
+      "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/ik-fixed-cpu-bench",
+      "--cpu-gguf",
+      "benchmarks/qwen35-4b-agent-2026-11-19/4b-IQ4_K_R4.gguf",
+      "--prompt-tokens-file",
+      "benchmarks/qwen35-4b-ryzen-2026-11-19/transcript-prompt.csv",
+      "--forced-output-tokens",
+      "13,81366,54606,8235,8388,14410,180026,17539,55982,11,1454,40848,15948,83,92221,449,2607,17539,240713,74766,54854,2421,13,70437,20546,18279,10323,3262,219872,92298,712,178904,12285,13",
+      "--cpu-threads",
+      "6",
+      "--max-context",
+      "1024",
+      "--max-new-tokens",
+      "34",
+      "--logits-out",
+      "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/transcript-ik.logits",
+      "--profile-json",
+      "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/transcript-ik-profile.json"
+    ],
+    "code-native": [
+      "taskset",
+      "-c",
+      "0-5",
+      "build/qwen35_cpu",
+      "--model-dir",
+      "models/qwen3.5-4b",
+      "--weights",
+      "models/qwen3.5-4b/model-mse16.q35h",
+      "--tokens-file",
+      "benchmarks/qwen35-4b-ryzen-2026-11-19/code-prompt.csv",
+      "--forced-tokens-file",
+      "benchmarks/qwen35-4b-ryzen-2026-11-19/code-targets.csv",
+      "--threads",
+      "6",
+      "--max-context",
+      "1024",
+      "--max-new-tokens",
+      "41",
+      "--logits-out",
+      "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/code-native.logits"
+    ],
+    "code-ik": [
+      "taskset",
+      "-c",
+      "0-5",
+      "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/ik-fixed-cpu-bench",
+      "--cpu-gguf",
+      "benchmarks/qwen35-4b-agent-2026-11-19/4b-IQ4_K_R4.gguf",
+      "--prompt-tokens-file",
+      "benchmarks/qwen35-4b-ryzen-2026-11-19/code-prompt.csv",
+      "--forced-output-tokens",
+      "1455,17518,348,1455,33157,198,262,460,3202,271,727,21867,23573,11,3615,8973,1590,198,262,4041,283,23839,10467,23573,8,198,262,460,5192,4559,1170,4041,11,359,17091,1170,4041,348,3615,8973,92",
+      "--cpu-threads",
+      "6",
+      "--max-context",
+      "1024",
+      "--max-new-tokens",
+      "41",
+      "--logits-out",
+      "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/code-ik.logits",
+      "--profile-json",
+      "benchmarks/qwen35-4b-agent-2026-11-19/quant-quality/code-ik-profile.json"
+    ]
+  }
+}

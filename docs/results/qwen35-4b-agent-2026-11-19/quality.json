@@ -1,0 +1,1838 @@
+[
+  {
+    "case": "native-cached",
+    "run": 1,
+    "turns": [
+      {
+        "turn": 1,
+        "passed": 0,
+        "total": 4,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "win": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "index.html missing"
+          }
+        }
+      },
+      {
+        "turn": 2,
+        "passed": 0,
+        "total": 6,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "win": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "undo": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "index.html missing"
+          }
+        }
+      },
+      {
+        "turn": 3,
+        "passed": 0,
+        "total": 8,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'cell-0-1'\n- 'cell-1-1'"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          }
+        }
+      },
+      {
+        "turn": 4,
+        "passed": 0,
+        "total": 12,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'cell-0-1'\n- 'cell-1-1'"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "resize": {
+            "pass": false,
+            "reason": "locator.inputValue: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-reset": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-win": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-keyboard": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "case": "native-cached",
+    "run": 2,
+    "turns": [
+      {
+        "turn": 1,
+        "passed": 0,
+        "total": 4,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "win": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "index.html missing"
+          }
+        }
+      },
+      {
+        "turn": 2,
+        "passed": 0,
+        "total": 6,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "win": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "undo": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "index.html missing"
+          }
+        }
+      },
+      {
+        "turn": 3,
+        "passed": 0,
+        "total": 8,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'cell-0-1'\n- 'cell-1-1'"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          }
+        }
+      },
+      {
+        "turn": 4,
+        "passed": 0,
+        "total": 12,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'cell-0-1'\n- 'cell-1-1'"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "resize": {
+            "pass": false,
+            "reason": "locator.inputValue: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-reset": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-win": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-keyboard": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "case": "native-cached",
+    "run": 3,
+    "turns": [
+      {
+        "turn": 1,
+        "passed": 0,
+        "total": 4,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "win": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "index.html missing"
+          }
+        }
+      },
+      {
+        "turn": 2,
+        "passed": 0,
+        "total": 6,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "win": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "undo": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "index.html missing"
+          }
+        }
+      },
+      {
+        "turn": 3,
+        "passed": 0,
+        "total": 8,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'cell-0-1'\n- 'cell-1-1'"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          }
+        }
+      },
+      {
+        "turn": 4,
+        "passed": 0,
+        "total": 12,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'cell-0-1'\n- 'cell-1-1'"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "resize": {
+            "pass": false,
+            "reason": "locator.inputValue: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-reset": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-win": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-keyboard": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "case": "ik-mtp4-cached",
+    "run": 1,
+    "turns": [
+      {
+        "turn": 1,
+        "passed": 0,
+        "total": 4,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          }
+        }
+      },
+      {
+        "turn": 2,
+        "passed": 0,
+        "total": 6,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          }
+        }
+      },
+      {
+        "turn": 3,
+        "passed": 0,
+        "total": 8,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n'' !== 'cell-0-0'\n"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          }
+        }
+      },
+      {
+        "turn": 4,
+        "passed": 0,
+        "total": 12,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n'' !== 'cell-0-0'\n"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "resize": {
+            "pass": false,
+            "reason": "locator.inputValue: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-reset": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-win": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-keyboard": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "case": "ik-mtp4-cached",
+    "run": 2,
+    "turns": [
+      {
+        "turn": 1,
+        "passed": 0,
+        "total": 4,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          }
+        }
+      },
+      {
+        "turn": 2,
+        "passed": 0,
+        "total": 6,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          }
+        }
+      },
+      {
+        "turn": 3,
+        "passed": 0,
+        "total": 8,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n'' !== 'cell-0-0'\n"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          }
+        }
+      },
+      {
+        "turn": 4,
+        "passed": 0,
+        "total": 12,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n'' !== 'cell-0-0'\n"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "resize": {
+            "pass": false,
+            "reason": "locator.inputValue: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-reset": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-win": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-keyboard": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "case": "ik-mtp4-cached",
+    "run": 3,
+    "turns": [
+      {
+        "turn": 1,
+        "passed": 0,
+        "total": 4,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          }
+        }
+      },
+      {
+        "turn": 2,
+        "passed": 0,
+        "total": 6,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          }
+        }
+      },
+      {
+        "turn": 3,
+        "passed": 0,
+        "total": 8,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n'' !== 'cell-0-0'\n"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          }
+        }
+      },
+      {
+        "turn": 4,
+        "passed": 0,
+        "total": 12,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n'' !== 'cell-0-0'\n"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "resize": {
+            "pass": false,
+            "reason": "locator.inputValue: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-reset": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-win": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-keyboard": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "case": "ik-cached",
+    "run": 1,
+    "turns": [
+      {
+        "turn": 1,
+        "passed": 1,
+        "total": 4,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": true
+          },
+          "reset": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#reset')\n    - locator resolved to <button disabled id=\"reset\">Reset</button>\n  - attempting click action"
+          }
+        }
+      },
+      {
+        "turn": 2,
+        "passed": 1,
+        "total": 6,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": true
+          },
+          "reset": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#reset')\n    - locator resolved to <button disabled id=\"reset\">Reset</button>\n  - attempting click action"
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          }
+        }
+      },
+      {
+        "turn": 3,
+        "passed": 1,
+        "total": 8,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": true
+          },
+          "reset": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#reset')\n    - locator resolved to <button disabled id=\"reset\">Reset</button>\n  - attempting click action"
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n'' !== 'cell-0-0'\n"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          }
+        }
+      },
+      {
+        "turn": 4,
+        "passed": 1,
+        "total": 12,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": true
+          },
+          "reset": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#reset')\n    - locator resolved to <button disabled id=\"reset\">Reset</button>\n  - attempting click action"
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n'' !== 'cell-0-0'\n"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "resize": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 9\n"
+          },
+          "resize-reset": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#cell-6-6')\n"
+          },
+          "resize-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "resize-keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n'' !== 'cell-2-2'\n"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "case": "ik-cached",
+    "run": 2,
+    "turns": [
+      {
+        "turn": 1,
+        "passed": 1,
+        "total": 4,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": true
+          },
+          "reset": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#reset')\n    - locator resolved to <button disabled id=\"reset\">Reset</button>\n  - attempting click action"
+          }
+        }
+      },
+      {
+        "turn": 2,
+        "passed": 1,
+        "total": 6,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": true
+          },
+          "reset": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#reset')\n    - locator resolved to <button disabled id=\"reset\">Reset</button>\n  - attempting click action"
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          }
+        }
+      },
+      {
+        "turn": 3,
+        "passed": 1,
+        "total": 8,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": true
+          },
+          "reset": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#reset')\n    - locator resolved to <button disabled id=\"reset\">Reset</button>\n  - attempting click action"
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n'' !== 'cell-0-0'\n"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          }
+        }
+      },
+      {
+        "turn": 4,
+        "passed": 1,
+        "total": 12,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": true
+          },
+          "reset": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#reset')\n    - locator resolved to <button disabled id=\"reset\">Reset</button>\n  - attempting click action"
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n'' !== 'cell-0-0'\n"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "resize": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 9\n"
+          },
+          "resize-reset": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#cell-6-6')\n"
+          },
+          "resize-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "resize-keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n'' !== 'cell-2-2'\n"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "case": "ik-cached",
+    "run": 3,
+    "turns": [
+      {
+        "turn": 1,
+        "passed": 1,
+        "total": 4,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": true
+          },
+          "reset": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#reset')\n    - locator resolved to <button disabled id=\"reset\">Reset</button>\n  - attempting click action"
+          }
+        }
+      },
+      {
+        "turn": 2,
+        "passed": 1,
+        "total": 6,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": true
+          },
+          "reset": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#reset')\n    - locator resolved to <button disabled id=\"reset\">Reset</button>\n  - attempting click action"
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          }
+        }
+      },
+      {
+        "turn": 3,
+        "passed": 1,
+        "total": 8,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": true
+          },
+          "reset": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#reset')\n    - locator resolved to <button disabled id=\"reset\">Reset</button>\n  - attempting click action"
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n'' !== 'cell-0-0'\n"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          }
+        }
+      },
+      {
+        "turn": 4,
+        "passed": 1,
+        "total": 12,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": true
+          },
+          "reset": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#reset')\n    - locator resolved to <button disabled id=\"reset\">Reset</button>\n  - attempting click action"
+          },
+          "undo": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n'' !== 'cell-0-0'\n"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "resize": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 9\n"
+          },
+          "resize-reset": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#cell-6-6')\n"
+          },
+          "resize-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "resize-keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n'' !== 'cell-2-2'\n"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "case": "native-mtp3-cached",
+    "run": 1,
+    "turns": [
+      {
+        "turn": 1,
+        "passed": 0,
+        "total": 4,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "win": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "index.html missing"
+          }
+        }
+      },
+      {
+        "turn": 2,
+        "passed": 0,
+        "total": 6,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "win": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "undo": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "index.html missing"
+          }
+        }
+      },
+      {
+        "turn": 3,
+        "passed": 0,
+        "total": 8,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'cell-0-1'\n- 'cell-1-1'"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          }
+        }
+      },
+      {
+        "turn": 4,
+        "passed": 0,
+        "total": 12,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'cell-0-1'\n- 'cell-1-1'"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "resize": {
+            "pass": false,
+            "reason": "locator.inputValue: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-reset": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-win": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-keyboard": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "case": "native-mtp3-cached",
+    "run": 2,
+    "turns": [
+      {
+        "turn": 1,
+        "passed": 0,
+        "total": 4,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "win": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "index.html missing"
+          }
+        }
+      },
+      {
+        "turn": 2,
+        "passed": 0,
+        "total": 6,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "win": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "undo": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "index.html missing"
+          }
+        }
+      },
+      {
+        "turn": 3,
+        "passed": 0,
+        "total": 8,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'cell-0-1'\n- 'cell-1-1'"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          }
+        }
+      },
+      {
+        "turn": 4,
+        "passed": 0,
+        "total": 12,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'cell-0-1'\n- 'cell-1-1'"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "resize": {
+            "pass": false,
+            "reason": "locator.inputValue: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-reset": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-win": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-keyboard": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "case": "native-mtp3-cached",
+    "run": 3,
+    "turns": [
+      {
+        "turn": 1,
+        "passed": 0,
+        "total": 4,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "win": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "index.html missing"
+          }
+        }
+      },
+      {
+        "turn": 2,
+        "passed": 0,
+        "total": 6,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "win": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "undo": {
+            "pass": false,
+            "reason": "index.html missing"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "index.html missing"
+          }
+        }
+      },
+      {
+        "turn": 3,
+        "passed": 0,
+        "total": 8,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'cell-0-1'\n- 'cell-1-1'"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          }
+        }
+      },
+      {
+        "turn": 4,
+        "passed": 0,
+        "total": 12,
+        "checks": {
+          "initial": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 25\n"
+          },
+          "edge": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "reset": {
+            "pass": false,
+            "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- ["
+          },
+          "undo": {
+            "pass": false,
+            "reason": "locator.click: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#undo')\n    - locator resolved to <button disabled id=\"undo\">Undo</button>\n  - attempting click action"
+          },
+          "undo-win": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\nfalse !== true\n"
+          },
+          "keyboard": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'cell-0-1'\n- 'cell-1-1'"
+          },
+          "keyboard-activation": {
+            "pass": false,
+            "reason": "Expected values to be strictly equal:\n\n0 !== 1\n"
+          },
+          "resize": {
+            "pass": false,
+            "reason": "locator.inputValue: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-reset": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-win": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          },
+          "resize-keyboard": {
+            "pass": false,
+            "reason": "locator.selectOption: Timeout 800ms exceeded.\nCall log:\n  - waiting for locator('#size')\n"
+          }
+        }
+      }
+    ]
+  }
+]
