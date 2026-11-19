@@ -50,16 +50,17 @@ template <std::size_t Token, typename Block>
 PREFILL_INLINE void accumulate(const Weights16 & w, const Block * vectors,
                                std::size_t blocks, std::size_t block,
                                __m512 & accumulator) noexcept {
-  const auto & a = vectors[(Token / 4) * blocks + block];
-  const auto * qs = a.qs + (Token % 4) * 32;
+  constexpr auto lanes = sizeof(Block::sums) / sizeof(std::int16_t);
+  const auto & a = vectors[(Token / lanes) * blocks + block];
+  const auto * qs = a.qs + (Token % lanes) * 32;
   auto low = _mm512_setzero_si512(), high = _mm512_setzero_si512();
   for (int part = 0; part < 4; ++part) {
     low = _mm512_dpbusd_epi32(low, w.low[part], broadcast4(qs + 8 * part));
     high = _mm512_dpbusd_epi32(high, w.high[part], broadcast4(qs + 8 * part + 4));
   }
   auto dot = _mm512_sub_epi32(_mm512_add_epi32(low, high),
-    _mm512_set1_epi32(8 * static_cast<int>(a.sums[Token % 4])));
-  const auto scale = _mm512_mul_ps(w.scales, _mm512_set1_ps(a.scales[Token % 4]));
+    _mm512_set1_epi32(8 * static_cast<int>(a.sums[Token % lanes])));
+  const auto scale = _mm512_mul_ps(w.scales, _mm512_set1_ps(a.scales[Token % lanes]));
   // Preserve the original per-block integer result and floating-point FMA order.
   accumulator = _mm512_fmadd_ps(_mm512_cvtepi32_ps(dot), scale, accumulator);
 }
@@ -114,6 +115,25 @@ Q4_0ArgmaxResult q4_dot4_argmax_avx512(const Q4_0BlockX8 * matrix,
   return best;
 }
 
+void q4_dot4_matmul_x1_avx512(const Q4_0BlockX8 *matrix, const Q8_0BlockX1 *vectors,
+                             float *output, std::size_t rows, std::size_t count,
+                             std::size_t blocks, std::size_t stride) noexcept {
+  auto project = [&](auto tokens) {
+    std::size_t row = 0;
+    for (; row + 16 <= rows; row += 16)
+      tile(matrix + (row / 8) * blocks, vectors, output + row, blocks, stride, tokens);
+    if (row < rows)
+      for (std::size_t i = 0; i < count; ++i)
+        q4_dot4_matvec_evex(matrix + (row / 8) * blocks, vectors + i * blocks,
+                            output + i * stride + row, rows - row, blocks);
+  };
+  switch (count) {
+    case 2: project(std::make_index_sequence<2>{}); break;
+    case 3: project(std::make_index_sequence<3>{}); break;
+    case 5: project(std::make_index_sequence<5>{}); break;
+  }
+}
+
 void q4_dot4_matmul_avx512(const Q4_0BlockX8 * matrix, const Q8_0BlockX4 * vectors,
                           float * output, std::size_t rows, std::size_t count,
                           std::size_t blocks, std::size_t stride) noexcept {
@@ -133,6 +153,9 @@ void q4_dot4_matmul_avx512(const Q4_0BlockX8 * matrix, const Q8_0BlockX4 * vecto
     for (; token + 8 <= count; token += 8)
       tile(matrix + (row / 8) * blocks, vectors + (token / 4) * blocks,
            output + token * stride + row, blocks, stride, std::make_index_sequence<8>{});
+    for (; token + 4 <= count; token += 4)
+      tile(matrix + (row / 8) * blocks, vectors + (token / 4) * blocks,
+           output + token * stride + row, blocks, stride, std::make_index_sequence<4>{});
     if (token < count)
       q4_dot4_matmul_evex(matrix + (row / 8) * blocks, vectors + (token / 4) * blocks,
                          output + token * stride + row, 16, count - token, blocks, stride);

@@ -11,6 +11,11 @@ void q4_dot4_matvec(const Q4_0BlockX8 *, const Q8_0BlockX1 *, float *, std::size
                     Q8_0Backend backend = Q8_0Backend::auto_select) noexcept;
 void q4_dot4_matmul(const Q4_0BlockX8 *, const Q8_0BlockX4 *, float *, std::size_t rows, std::size_t vectors,
                     std::size_t blocks, std::size_t stride, Q8_0Backend backend = Q8_0Backend::auto_select) noexcept;
+bool q4_dot4_has_x1_tile(std::size_t count, Q8_0Backend backend) noexcept;
+// Project independently prepared X1 rows with the same output stride as matmul.
+void q4_dot4_matmul_x1(const Q4_0BlockX8 *, const Q8_0BlockX1 *, float *, std::size_t rows,
+                       std::size_t count, std::size_t blocks, std::size_t stride,
+                       Q8_0Backend backend = Q8_0Backend::auto_select) noexcept;
 Q4_0ArgmaxResult q4_dot4_argmax(const Q4_0BlockX8 *, const Q8_0BlockX1 *, const int *, float penalty,
                     std::size_t offset, std::size_t rows, std::size_t blocks,
                     Q8_0Backend backend = Q8_0Backend::auto_select) noexcept;

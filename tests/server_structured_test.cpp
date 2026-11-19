@@ -50,6 +50,21 @@ int main() try {
     }
     check(constraint.complete(), "Constraint did not reach complete JSON");
   }
+  {
+    JsonConstraint greedy(enum_grammar, vocab, true);
+    std::string error;
+    check(greedy.accept(0, error) && greedy.accept(1, error), "Failed to reach enum choice");
+    const float nan = std::numeric_limits<float>::quiet_NaN();
+    const float inf = std::numeric_limits<float>::infinity();
+    for (float invalid : {nan, inf, -inf, 9.0F}) {
+      std::vector<float> logits(8, -inf);
+      logits[0] = invalid;
+      logits[2] = logits[3] = 5.0F;
+      check(greedy.apply(logits.data(), logits.size(), error), "No finite enum selected");
+      check(logits[2] == 5.0F && std::count(logits.begin(), logits.end(), -inf) == 7,
+            "Greedy mask lost stable tie or admitted invalid score");
+    }
+  }
   JsonConstraint incomplete(enum_grammar, vocab, false); std::string error;
   check(!incomplete.accept(6, error), "EOS accepted before complete output");
   auto speculative = incomplete.fork_for_greedy_draft();
@@ -89,6 +104,16 @@ int main() try {
   request["messages"].push_back({{"role", "tool"}, {"tool_call_id", "call_7"}, {"content", "Sunny"}});
   parsed = parse_openai(request.dump(), 1024, "test", Api::chat);
   check(parsed.prompt.find("<tool_response>") != std::string::npos, "Tool result not formatted");
+  check(parsed.prefix_prompt.ends_with("</tool_response><|im_end|>\n"), "Tool result missing from checkpoint");
+  auto next_exchange = request;
+  next_exchange["messages"].push_back(assistant);
+  next_exchange["messages"].back()["tool_calls"][0]["id"] = "call_8";
+  next_exchange["messages"].push_back(request["messages"].back());
+  next_exchange["messages"].back()["tool_call_id"] = "call_8";
+  const auto next_tool = parse_openai(next_exchange.dump(), 1024, "test", Api::chat);
+  check(next_tool.prefix_prompt.size() > parsed.prefix_prompt.size() &&
+        next_tool.prefix_prompt.starts_with(parsed.prefix_prompt), "Tool loop checkpoint failed to grow");
+
   malformed = request; malformed["messages"].back()["tool_call_id"] = "unknown";
   rejects([&] { parse_openai(malformed.dump(), 1024, "test", Api::chat); });
   const auto messages = parse_messages(Json({{"model", "test"}, {"max_tokens", 64},

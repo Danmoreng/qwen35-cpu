@@ -132,7 +132,11 @@ inline std::string chat_prompt(const Json &messages, std::string *prefix_prompt 
       prompt += "<think>\n" + m.reasoning + "\n</think>\n\n";
     prompt += m.text + "<|im_end|>\n";
   }
-  if (prefix_prompt && prefix_prompt->empty()) *prefix_prompt = prompt;
+  // Within a tool loop the last user turn stays fixed while each completed
+  // tool exchange extends the next request's reusable history.
+  if (prefix_prompt && (prefix_prompt->empty() ||
+      (rows.back().role == "user" && rows.size() - 1 > last_user)))
+    *prefix_prompt = prompt;
   return prompt + "<|im_start|>assistant\n<think>\n\n</think>\n\n";
 }
 inline Request parse(const std::string &body, std::size_t context, const std::string &model, Api api) {

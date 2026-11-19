@@ -202,49 +202,55 @@ void weighted_sum_pair_avx2(
   const int head_dim,
   const AttentionKvRows *pages) noexcept {
   int column = 0;
-  for (; column + 32 <= head_dim; column += 32) {
-    __m256 accum00 = _mm256_setzero_ps();
-    __m256 accum01 = _mm256_setzero_ps();
-    __m256 accum02 = _mm256_setzero_ps();
-    __m256 accum03 = _mm256_setzero_ps();
-    __m256 accum10 = _mm256_setzero_ps();
-    __m256 accum11 = _mm256_setzero_ps();
-    __m256 accum12 = _mm256_setzero_ps();
-    __m256 accum13 = _mm256_setzero_ps();
-    for (int context = 0; context < sequence_length; ++context) {
-      const std::size_t offset = static_cast<std::size_t>(context) * kv_width +
-        head_offset + static_cast<std::size_t>(column);
-      const __m256 value0 = (v_cache_f16 != nullptr || (pages && pages->values))
-        ? _mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i *>(attention_cache_row(v_cache_f16, pages ? pages->values : nullptr, context, kv_width) + (offset - static_cast<std::size_t>(context) * kv_width))))
-        : _mm256_loadu_ps(v_cache + offset);
-      const __m256 value1 = (v_cache_f16 != nullptr || (pages && pages->values))
-        ? _mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i *>(attention_cache_row(v_cache_f16, pages ? pages->values : nullptr, context, kv_width) + (offset - static_cast<std::size_t>(context) * kv_width) + 8)))
-        : _mm256_loadu_ps(v_cache + offset + 8);
-      const __m256 value2 = (v_cache_f16 != nullptr || (pages && pages->values))
-        ? _mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i *>(attention_cache_row(v_cache_f16, pages ? pages->values : nullptr, context, kv_width) + (offset - static_cast<std::size_t>(context) * kv_width) + 16)))
-        : _mm256_loadu_ps(v_cache + offset + 16);
-      const __m256 value3 = (v_cache_f16 != nullptr || (pages && pages->values))
-        ? _mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i *>(attention_cache_row(v_cache_f16, pages ? pages->values : nullptr, context, kv_width) + (offset - static_cast<std::size_t>(context) * kv_width) + 24)))
-        : _mm256_loadu_ps(v_cache + offset + 24);
-      const __m256 probability0 = _mm256_set1_ps(probabilities0[context]);
-      const __m256 probability1 = _mm256_set1_ps(probabilities1[context]);
-      accum00 = _mm256_fmadd_ps(probability0, value0, accum00);
-      accum01 = _mm256_fmadd_ps(probability0, value1, accum01);
-      accum02 = _mm256_fmadd_ps(probability0, value2, accum02);
-      accum03 = _mm256_fmadd_ps(probability0, value3, accum03);
-      accum10 = _mm256_fmadd_ps(probability1, value0, accum10);
-      accum11 = _mm256_fmadd_ps(probability1, value1, accum11);
-      accum12 = _mm256_fmadd_ps(probability1, value2, accum12);
-      accum13 = _mm256_fmadd_ps(probability1, value3, accum13);
+  // Reuse each group of strided KV rows across the whole head before moving
+  // to the next group. Each output lane keeps its original causal FMA order.
+  constexpr int context_block = 64;
+  for (int first = 0; first < sequence_length; first += context_block) {
+    const int end = std::min(first + context_block, sequence_length);
+    for (column = 0; column + 32 <= head_dim; column += 32) {
+      __m256 accum00 = first ? _mm256_loadu_ps(output0 + column) : _mm256_setzero_ps();
+      __m256 accum01 = first ? _mm256_loadu_ps(output0 + column + 8) : _mm256_setzero_ps();
+      __m256 accum02 = first ? _mm256_loadu_ps(output0 + column + 16) : _mm256_setzero_ps();
+      __m256 accum03 = first ? _mm256_loadu_ps(output0 + column + 24) : _mm256_setzero_ps();
+      __m256 accum10 = first ? _mm256_loadu_ps(output1 + column) : _mm256_setzero_ps();
+      __m256 accum11 = first ? _mm256_loadu_ps(output1 + column + 8) : _mm256_setzero_ps();
+      __m256 accum12 = first ? _mm256_loadu_ps(output1 + column + 16) : _mm256_setzero_ps();
+      __m256 accum13 = first ? _mm256_loadu_ps(output1 + column + 24) : _mm256_setzero_ps();
+      for (int context = first; context < end; ++context) {
+        const std::size_t offset = static_cast<std::size_t>(context) * kv_width +
+          head_offset + static_cast<std::size_t>(column);
+        const __m256 value0 = (v_cache_f16 != nullptr || (pages && pages->values))
+          ? _mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i *>(attention_cache_row(v_cache_f16, pages ? pages->values : nullptr, context, kv_width) + (offset - static_cast<std::size_t>(context) * kv_width))))
+          : _mm256_loadu_ps(v_cache + offset);
+        const __m256 value1 = (v_cache_f16 != nullptr || (pages && pages->values))
+          ? _mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i *>(attention_cache_row(v_cache_f16, pages ? pages->values : nullptr, context, kv_width) + (offset - static_cast<std::size_t>(context) * kv_width) + 8)))
+          : _mm256_loadu_ps(v_cache + offset + 8);
+        const __m256 value2 = (v_cache_f16 != nullptr || (pages && pages->values))
+          ? _mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i *>(attention_cache_row(v_cache_f16, pages ? pages->values : nullptr, context, kv_width) + (offset - static_cast<std::size_t>(context) * kv_width) + 16)))
+          : _mm256_loadu_ps(v_cache + offset + 16);
+        const __m256 value3 = (v_cache_f16 != nullptr || (pages && pages->values))
+          ? _mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i *>(attention_cache_row(v_cache_f16, pages ? pages->values : nullptr, context, kv_width) + (offset - static_cast<std::size_t>(context) * kv_width) + 24)))
+          : _mm256_loadu_ps(v_cache + offset + 24);
+        const __m256 probability0 = _mm256_set1_ps(probabilities0[context]);
+        const __m256 probability1 = _mm256_set1_ps(probabilities1[context]);
+        accum00 = _mm256_fmadd_ps(probability0, value0, accum00);
+        accum01 = _mm256_fmadd_ps(probability0, value1, accum01);
+        accum02 = _mm256_fmadd_ps(probability0, value2, accum02);
+        accum03 = _mm256_fmadd_ps(probability0, value3, accum03);
+        accum10 = _mm256_fmadd_ps(probability1, value0, accum10);
+        accum11 = _mm256_fmadd_ps(probability1, value1, accum11);
+        accum12 = _mm256_fmadd_ps(probability1, value2, accum12);
+        accum13 = _mm256_fmadd_ps(probability1, value3, accum13);
+      }
+      _mm256_storeu_ps(output0 + column, accum00);
+      _mm256_storeu_ps(output0 + column + 8, accum01);
+      _mm256_storeu_ps(output0 + column + 16, accum02);
+      _mm256_storeu_ps(output0 + column + 24, accum03);
+      _mm256_storeu_ps(output1 + column, accum10);
+      _mm256_storeu_ps(output1 + column + 8, accum11);
+      _mm256_storeu_ps(output1 + column + 16, accum12);
+      _mm256_storeu_ps(output1 + column + 24, accum13);
     }
-    _mm256_storeu_ps(output0 + column, accum00);
-    _mm256_storeu_ps(output0 + column + 8, accum01);
-    _mm256_storeu_ps(output0 + column + 16, accum02);
-    _mm256_storeu_ps(output0 + column + 24, accum03);
-    _mm256_storeu_ps(output1 + column, accum10);
-    _mm256_storeu_ps(output1 + column + 8, accum11);
-    _mm256_storeu_ps(output1 + column + 16, accum12);
-    _mm256_storeu_ps(output1 + column + 24, accum13);
   }
   for (; column < head_dim; ++column) {
     float accum0 = 0.0F;

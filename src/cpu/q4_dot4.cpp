@@ -70,14 +70,28 @@ void q4_dot4_matvec(const Q4_0BlockX8 * matrix, const Q8_0BlockX1 * vector, floa
 #endif
   for (std::size_t r = 0; r < rows; ++r) output[r] = scalar_row(matrix, vector, 0, r, blocks);
 }
+bool q4_dot4_has_x1_tile(std::size_t count, Q8_0Backend backend) noexcept {
+  return (count == 2 || count == 3 || count == 5) &&
+         q8_0_resolve_backend(backend) == Q8_0Backend::avx512_vnni;
+}
+void q4_dot4_matmul_x1(const Q4_0BlockX8 *matrix, const Q8_0BlockX1 *vectors, float *output,
+                      std::size_t rows, std::size_t count, std::size_t blocks,
+                      std::size_t stride, Q8_0Backend backend) noexcept {
+#if QWEN35X_Q8_0_HAS_AVX512_VNNI_TU
+  if (q4_dot4_has_x1_tile(count, backend))
+    return detail::q4_dot4_matmul_x1_avx512(matrix, vectors, output, rows, count, blocks, stride);
+#endif
+  for (std::size_t i = 0; i < count; ++i)
+    q4_dot4_matvec(matrix, vectors + i * blocks, output + i * stride, rows, blocks, backend);
+}
 void q4_dot4_matmul(const Q4_0BlockX8 * matrix, const Q8_0BlockX4 * vectors, float * output, std::size_t rows, std::size_t count, std::size_t blocks, std::size_t stride, Q8_0Backend backend) noexcept {
 #if QWEN35X_HAS_WASM_SIMD_TU
   if (q8_0_resolve_backend(backend) == Q8_0Backend::wasm_simd) return detail::q4_dot4_matmul_wasm(matrix, vectors, output, rows, count, blocks, stride);
 #endif
 #if QWEN35X_Q8_0_HAS_AVX512_VNNI_TU
   if (q8_0_resolve_backend(backend) == Q8_0Backend::avx512_vnni) {
-    // Use the wide kernel whenever a complete eight-token tile is available.
-    return (count >= 8 ? detail::q4_dot4_matmul_avx512 : detail::q4_dot4_matmul_evex)(
+    // Four causal rows share a single traversal of each pair of weight tiles.
+    return (count >= 4 ? detail::q4_dot4_matmul_avx512 : detail::q4_dot4_matmul_evex)(
       matrix, vectors, output, rows, count, blocks, stride);
   }
 #endif

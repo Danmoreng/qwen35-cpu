@@ -18,10 +18,10 @@ static void check_mtp_prefixes(const std::shared_ptr<const CpuModel> &model,
   config.max_prefill_requests = 2;
   auto engine = CpuEngine::create(model, config, error);
   check(bool(engine), "MTP prefix engine");
-  auto run = [&](CpuEngine &engine, const std::vector<CpuRequestSpec> &specs) {
+  auto run = [&](CpuEngine &engine, std::vector<CpuRequestSpec> specs) {
     std::vector<CpuRequestId> ids;
-    for (const auto &spec : specs) {
-      ids.push_back(engine.submit(spec, error));
+    for (auto &spec : specs) {
+      ids.push_back(engine.submit(std::move(spec), error));
       check(ids.back() != 0, "MTP prefix submit");
     }
     std::vector<CpuRequestResult> results(ids.size());
@@ -109,6 +109,19 @@ static void check_mtp_prefixes(const std::shared_ptr<const CpuModel> &model,
   const auto fallback = run(*bounded, {req}).front();
   check(fallback.prefix_written_tokens == 0 && bounded->stats().prefix_build_fallbacks == 1 &&
         fallback.output_tokens == mixed[0].output_tokens, "MTP budget fallback");
+
+  config.max_prefix_bytes = mtp->size_bytes();
+  auto rolling = CpuEngine::create(model, config, error);
+  check(bool(rolling), "Rolling MTP prefix engine");
+  req.register_prefix_tokens = 64;
+  check(run(*rolling, {req}).front().prefix_written_tokens == 64, "Build first rolling checkpoint");
+  req.register_prefix_tokens = 128;
+  std::vector<CpuRequestSpec> extension{req};
+  extension.front().prefix = rolling->find_prefix(req.prompt_tokens, req.trust_namespace, req.draft_mode);
+  const auto rolled = run(*rolling, std::move(extension)).front();
+  check(rolled.cached_prefix_tokens == 64 && rolled.prefix_written_tokens == 64 &&
+        rolled.output_tokens == mixed[0].output_tokens && rolling->stats().prefix_evictions == 1,
+        "Extend checkpoint with only one snapshot of budget");
 }
 
 int main(int argc, char **argv) try {

@@ -80,19 +80,29 @@ public:
       if (greedy_) {
         // With no repetition penalty, selecting the highest valid raw logit is
         // exactly constrained greedy sampling; avoid walking the entire trie.
-        std::vector<int> candidates(count); std::iota(candidates.begin(), candidates.end(), 0);
-        auto less = [&](int a, int b) {
-          const auto x = std::isfinite(logits[a]) ? logits[a] : negative;
-          const auto y = std::isfinite(logits[b]) ? logits[b] : negative;
-          return x == y ? a > b : x < y;
-        };
-        std::make_heap(candidates.begin(), candidates.end(), less);
         int chosen = -1;
-        while (!candidates.empty()) {
-          const int id = candidates.front();
-          if (!std::isfinite(logits[id])) break;
-          if (allows(id)) { chosen = id; break; }
-          std::pop_heap(candidates.begin(), candidates.end(), less); candidates.pop_back();
+        float best = negative;
+        for (std::size_t i = 0; i < count; ++i) {
+          if (logits[i] > best && std::isfinite(logits[i])) {
+            chosen = static_cast<int>(i);
+            best = logits[i];
+          }
+        }
+        if (chosen >= 0 && !allows(chosen)) {
+          std::vector<int> candidates(count); std::iota(candidates.begin(), candidates.end(), 0);
+          auto less = [&](int a, int b) {
+            const auto x = std::isfinite(logits[a]) ? logits[a] : negative;
+            const auto y = std::isfinite(logits[b]) ? logits[b] : negative;
+            return x == y ? a > b : x < y;
+          };
+          std::make_heap(candidates.begin(), candidates.end(), less);
+          chosen = -1;
+          while (!candidates.empty()) {
+            const int id = candidates.front();
+            if (!std::isfinite(logits[id])) break;
+            if (allows(id)) { chosen = id; break; }
+            std::pop_heap(candidates.begin(), candidates.end(), less); candidates.pop_back();
+          }
         }
         require(chosen >= 0, "No finite token satisfies the output grammar");
         const float value = logits[chosen]; std::fill(logits, logits + count, negative); logits[chosen] = value;

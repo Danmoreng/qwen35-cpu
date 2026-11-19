@@ -7,7 +7,7 @@ struct GreedyBatchJob {
   Sequence *const *sequences;
   cpu::Q4_0ArgmaxResult *results;
   std::size_t count, blocks, row_tiles, workers;
-  bool use_t8;
+  bool use_t8, use_x1;
 };
 static void greedy_batch_rows(void *opaque, std::size_t begin,
                               std::size_t end) noexcept {
@@ -24,11 +24,15 @@ static void greedy_batch_rows(void *opaque, std::size_t begin,
           job.weight->packed_q4_0_blocks.data() + tile * job.blocks;
       for (std::size_t r = 0; r < job.count;) {
         const std::size_t remaining = job.count - r;
-        const std::size_t vectors = remaining >= 16 ? 16
+        const std::size_t vectors = job.use_x1 ? remaining
+                                    : remaining >= 16 ? 16
                                     : job.use_t8 && remaining >= 8 ? 8
                                     : remaining >= 4 ? 4
                                                      : 1;
-        if (vectors == 1) {
+        if (job.use_x1) {
+          cpu::q4_dot4_matmul_x1(matrix, job.tail, logits, rows, vectors, job.blocks,
+                                tile_rows, job.weight->q8_0_backend);
+        } else if (vectors == 1) {
           (job.weight->q4_dot4 ? cpu::q4_dot4_matvec
                                : cpu::q4_0_packed_matvec_prepared_q8_0)(
               matrix, job.tail + (r - job.count / 4 * 4) * job.blocks, logits,
@@ -44,7 +48,7 @@ static void greedy_batch_rows(void *opaque, std::size_t begin,
           for (std::size_t k = 0; k < rows; ++k) {
             float value = logits[v * tile_rows + k];
             const auto token = tile * 8 + k;
-            if (s.counts[token] > 0 && s.spec.sampling.repetition_penalty > 1) {
+            if (s.spec.sampling.repetition_penalty > 1 && s.counts[token] > 0) {
               value = value > 0 ? value / s.spec.sampling.repetition_penalty
                                 : value * s.spec.sampling.repetition_penalty;
             }
@@ -62,7 +66,9 @@ bool greedy_batch(std::span<Sequence *> rows, std::string &error) {
   const auto &weight = model->impl_->weights.embed_tokens;
   const std::size_t width = model->impl_->dims.hidden;
   const std::size_t blocks = width / 32;
-  const std::size_t count = rows.size(), packed_count = count / 4 * 4;
+  const std::size_t count = rows.size();
+  const bool use_x1 = weight.q4_dot4 && cpu::q4_dot4_has_x1_tile(count, weight.q8_0_backend);
+  const std::size_t packed_count = use_x1 ? 0 : count / 4 * 4;
   auto &packed = context->packed_q8_0_batch;
   packed.resize(packed_count / 4 * blocks);
   if (packed_count) {
@@ -101,7 +107,7 @@ bool greedy_batch(std::span<Sequence *> rows, std::string &error) {
                      blocks,
                      static_cast<std::size_t>(model->impl_->dims.vocab_size) /
                          8,
-                     workers, use_t8};
+                     workers, use_t8, use_x1};
   if (context->executor->parallel_for_rows(workers, greedy_batch_rows, &job) !=
       cpu::CpuExecutorStatus::ok) {
     error = "Batched greedy executor failed.";

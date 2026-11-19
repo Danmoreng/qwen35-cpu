@@ -158,6 +158,7 @@ struct CpuEngine::Impl {
   // For causal verification all lanes refer to one sequence. Keep only the
   // recurrent state after the pending token; suffix KV rows can be overwritten.
   std::vector<LinearAttentionState> draft_checkpoint;
+  std::vector<std::vector<float>> draft_linear_inputs;
   bool forward_batch(std::span<Sequence *> rows, std::string &error,
                      std::span<const std::int32_t> causal_inputs = {}) {
     const auto &d = model->impl_->dims;
@@ -189,6 +190,11 @@ struct CpuEngine::Impl {
       if (!project(input_weight, b.normed, b.projected))
         return false;
       const std::size_t width = b.projected.size() / count;
+      // A partial match can commit any row except the final speculative row.
+      // Keep just the middle rows needed to advance the recurrent checkpoint.
+      if (!causal_inputs.empty() && layer.is_linear && count > 2)
+        draft_linear_inputs[linear_index].assign(b.projected.begin() + width,
+                                                  b.projected.end() - width);
       const std::size_t core_width =
           layer.is_linear ? d.linear_v_dim : d.n_heads * d.head_dim;
       b.core.resize(count * core_width);
@@ -507,6 +513,7 @@ struct CpuEngine::Impl {
     std::copy_n(proposal.tokens.begin(), proposal.count, input.begin()+1);
     const auto width = proposal.count + 1;
     draft_checkpoint.resize(s.state.linear_states.size());
+    draft_linear_inputs.resize(s.state.linear_states.size());
     if (!forward_batch(std::span(rows).first(width), error, std::span(input).first(width)))
       return false;
     const auto position = s.result.committed_tokens;
@@ -532,12 +539,22 @@ struct CpuEngine::Impl {
     if (used < width && !terminal(s)) {
       s.state.linear_states.swap(draft_checkpoint);
       for (auto &full : s.state.full_states)
-        if (full.pages.width()) full.pages.truncate(position + 1);
-      for (std::size_t i = 1; i < used; ++i) {
-        if (!run_forward_single_token(context.get(), model->impl_->weights, model->impl_->dims,
-              s.state, input[i], static_cast<int>(position+i), s.logits, nullptr, error, false))
-          return false;
-        ++stats.replayed_tokens;
+        if (full.pages.width()) full.pages.truncate(position + used);
+      if (used > 1) {
+        const auto &m = *model->impl_;
+        std::size_t linear = 0;
+        for (const auto &layer : m.weights.layers) {
+          if (!layer.is_linear) continue;
+          const auto inputs = std::span<const float>(draft_linear_inputs[linear]);
+          const auto stride = inputs.size() / (width - 2);
+          for (std::size_t row = 1; row < used; ++row) {
+            if (!run_linear_attention_step(context.get(), layer, m.dims, s.state.linear_states[linear],
+                  batch.normed, batch.row, error, inputs.subspan((row - 1) * stride, stride), true))
+              return false;
+          }
+          ++linear;
+        }
+        stats.replayed_tokens += used - 1;
       }
     }
     if (s.mtp) {

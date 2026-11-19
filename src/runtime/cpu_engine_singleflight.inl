@@ -86,6 +86,9 @@ void publish_prefix(Sequence &s, std::vector<float> hidden) {
   const auto count = s.spec.register_prefix_tokens;
   std::string ignored;
   bool published = false;
+  // The restored state is already private. Allow the old entry to be evicted
+  // when the cache can hold either checkpoint but cannot hold both at once.
+  s.spec.prefix.reset();
   if (prefix_room(prefix_size_estimate(count, bool(s.mtp)), ignored))
     try {
       s.spec.prefix = capture_prefix(s, count, std::move(hidden));

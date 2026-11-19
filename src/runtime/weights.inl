@@ -272,11 +272,15 @@ struct PackedQ4TailJob {
 };
 void run_packed_q4_tail_tiles(void *opaque, std::size_t begin, std::size_t end) noexcept {
   auto &job=*static_cast<PackedQ4TailJob *>(opaque);
-  for(std::size_t token=0;token<job.count;++token)
-    (job.dot4 ? cpu::q4_dot4_matvec : cpu::q4_0_packed_matvec_prepared_q8_0)(
-      job.matrix+begin*job.blocks, job.vectors+token*job.blocks,
-      job.output+token*job.stride+begin*cpu::q4_0_packed_rows,
-      (end-begin)*cpu::q4_0_packed_rows, job.blocks, job.backend);
+  const auto rows = (end - begin) * cpu::q4_0_packed_rows;
+  const auto *matrix = job.matrix + begin * job.blocks;
+  auto *output = job.output + begin * cpu::q4_0_packed_rows;
+  if (job.dot4)
+    return cpu::q4_dot4_matmul_x1(matrix, job.vectors, output, rows, job.count,
+                                  job.blocks, job.stride, job.backend);
+  for (std::size_t token = 0; token < job.count; ++token)
+    cpu::q4_0_packed_matvec_prepared_q8_0(matrix, job.vectors + token * job.blocks,
+      output + token * job.stride, rows, job.blocks, job.backend);
 }
 
 void run_packed_q4_matvec_tiles(
@@ -1368,7 +1372,9 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
   if (w.is_q4_0() &&
       (rows % cpu::q4_0_packed_rows) == 0 &&
       !w.packed_q4_0_blocks.empty()) {
-    const std::size_t packed_vector_count =
+    const bool small_dot4 = w.q4_dot4 && cpu_context->executor &&
+      cpu::q4_dot4_has_x1_tile(batch_size, w.q8_0_backend);
+    const std::size_t packed_vector_count = small_dot4 ? 0 :
       batch_size - (batch_size % cpu::q8_0_packed_vectors);
     const std::size_t expected_packed_blocks =
       (rows / cpu::q4_0_packed_rows) * blocks_per_row;
@@ -1456,7 +1462,7 @@ bool matmul_2d_quantized_batch(CpuExecutionContext *cpu_context,
       }
       probe.prepared();
       float * tail_output = out.data() + packed_vector_count * output_stride;
-      if (cpu_context->merge_tail_jobs && cpu_context->executor && tail_vector_count > 1) {
+      if ((small_dot4 || cpu_context->merge_tail_jobs) && cpu_context->executor && tail_vector_count > 1) {
         PackedQ4TailJob job{w.packed_q4_0_blocks.data(), prepared.data(), tail_output,
           blocks_per_row, output_stride, tail_vector_count, w.q8_0_backend, w.q4_dot4};
         const auto status = cpu_context->executor->parallel_for_rows(

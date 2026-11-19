@@ -314,14 +314,18 @@ continue to emit incrementally.
 `--prefix-cache auto` is the default; `--prefix-cache off` disables automatic
 lookup/builds. `--prefix-cache-mib N` bounds retained hybrid snapshots (default
 256 MiB, range 1..4096). This is a cache budget, not a total process-memory limit.
-Least recently used unpinned entries are evicted; active requests pin their
-snapshots. A full budget falls back to ordinary processing.
+The cache evicts the least recently used unpinned entries. When a request
+extends a restored checkpoint, it releases its own old handle so the new
+checkpoint can take its place within the same budget. Other handles keep
+their entries pinned. A full budget falls back to ordinary processing.
 
 Matching uses exact token IDs, model identity, prefill configuration and namespace.
 The server restores the longest retained match. Raw completions may retain the
 full prompt. Chat builds a system prefix or the conversation preceding the last
 user turn; single-turn requests without system instructions retain that user
-turn. A later turn can reuse an existing snapshot and publish a longer one.
+turn. Within a tool loop, a request ending in a tool result can checkpoint
+the conversation through that result. The next request can restore it and
+publish a longer checkpoint.
 Automatic builds require at least 32 tokens. Concurrent matching builds share
 one leader. Snapshots retain FP16 KV, private FP32 recurrent/convolution state
 and the final hidden state; a cached sampled answer is never reused.

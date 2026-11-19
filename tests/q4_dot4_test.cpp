@@ -76,6 +76,22 @@ int main() {
             std::fill(actual.begin(), actual.end(), -123.0F);
             q4_dot4_matmul(dot4.data(), batch.data(), actual.data(), rows, tokens, blocks, stride, backend);
             if (!same_outputs(actual.data(), expected.data(), actual.size(), exact)) { std::cerr << "DOT4 prefill mismatch\n"; return 3; }
+            if (tokens == 8) {
+              std::vector<Q8_0BlockX1> separate(5 * blocks);
+              for (std::size_t t = 0; t < 5; ++t)
+                for (std::size_t b = 0; b < blocks; ++b) {
+                  const auto &src = batch[(t / 4) * blocks + b];
+                  auto &dst = separate[t * blocks + b];
+                  dst.scales[0] = src.scales[t % 4];
+                  dst.sums[0] = src.sums[t % 4];
+                  std::copy_n(src.qs + 32 * (t % 4), 32, dst.qs);
+                }
+              for (std::size_t n : {2U, 3U, 5U}) {
+                std::vector<float> result(n * stride, -123.0F);
+                q4_dot4_matmul_x1(dot4.data(), separate.data(), result.data(), rows, n, blocks, stride, backend);
+                if (!same_outputs(result.data(), expected.data(), result.size(), exact)) return 7;
+              }
+            }
             std::fill(actual.begin(), actual.end(), -123.0F);
             q4_dot4_matvec(dot4.data(), vector.data(), actual.data(), rows, blocks, backend);
             if (!same_outputs(actual.data(), expected.data(), rows, exact)) return 4;
