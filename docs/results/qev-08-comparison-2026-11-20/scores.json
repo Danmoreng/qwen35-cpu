@@ -1,0 +1,266 @@
+{
+  "german": {
+    "ba_release": {
+      "correct": 18,
+      "valid": 64,
+      "total": 64
+    },
+    "all_items": {
+      "ba": {
+        "correct": 18,
+        "valid": 64,
+        "total": 64
+      },
+      "lab_bf16": {
+        "correct": 28,
+        "valid": 64,
+        "total": 64
+      },
+      "lab_q8": {
+        "correct": 25,
+        "valid": 64,
+        "total": 64
+      }
+    },
+    "common_2048": {
+      "ba": {
+        "correct": 18,
+        "valid": 64,
+        "total": 64
+      },
+      "lab_bf16": {
+        "correct": 28,
+        "valid": 64,
+        "total": 64
+      },
+      "lab_q8": {
+        "correct": 25,
+        "valid": 64,
+        "total": 64
+      }
+    },
+    "by_expected": {
+      "ask": {
+        "ba": {
+          "correct": 4,
+          "valid": 16,
+          "total": 16
+        },
+        "lab_bf16": {
+          "correct": 12,
+          "valid": 16,
+          "total": 16
+        },
+        "lab_q8": {
+          "correct": 10,
+          "valid": 16,
+          "total": 16
+        }
+      },
+      "call": {
+        "ba": {
+          "correct": 1,
+          "valid": 16,
+          "total": 16
+        },
+        "lab_bf16": {
+          "correct": 6,
+          "valid": 16,
+          "total": 16
+        },
+        "lab_q8": {
+          "correct": 6,
+          "valid": 16,
+          "total": 16
+        }
+      },
+      "direct": {
+        "ba": {
+          "correct": 12,
+          "valid": 16,
+          "total": 16
+        },
+        "lab_bf16": {
+          "correct": 4,
+          "valid": 16,
+          "total": 16
+        },
+        "lab_q8": {
+          "correct": 4,
+          "valid": 16,
+          "total": 16
+        }
+      },
+      "unsupported": {
+        "ba": {
+          "correct": 1,
+          "valid": 16,
+          "total": 16
+        },
+        "lab_bf16": {
+          "correct": 6,
+          "valid": 16,
+          "total": 16
+        },
+        "lab_q8": {
+          "correct": 5,
+          "valid": 16,
+          "total": 16
+        }
+      }
+    },
+    "paired_bf16": {
+      "same_answer": 16,
+      "both_correct": 7,
+      "only_ba_correct": 11,
+      "only_lab_correct": 21
+    }
+  },
+  "heaven": {
+    "ba_release": {
+      "correct": 132,
+      "valid": 195,
+      "total": 231
+    },
+    "all_items": {
+      "ba": {
+        "correct": 140,
+        "valid": 231,
+        "total": 231
+      },
+      "lab_bf16": {
+        "correct": 180,
+        "valid": 231,
+        "total": 231
+      },
+      "lab_q8": {
+        "correct": 179,
+        "valid": 231,
+        "total": 231
+      }
+    },
+    "common_2048": {
+      "ba": {
+        "correct": 132,
+        "valid": 195,
+        "total": 195
+      },
+      "lab_bf16": {
+        "correct": 159,
+        "valid": 195,
+        "total": 195
+      },
+      "lab_q8": {
+        "correct": 159,
+        "valid": 195,
+        "total": 195
+      }
+    },
+    "paired_bf16": {
+      "same_answer": 156,
+      "both_correct": 128,
+      "only_ba_correct": 12,
+      "only_lab_correct": 52
+    }
+  },
+  "when2call": {
+    "ba_release": {
+      "correct": 1221,
+      "valid": 3538,
+      "total": 3652
+    },
+    "all_items": {
+      "ba": {
+        "correct": 1264,
+        "valid": 3652,
+        "total": 3652
+      },
+      "lab_bf16": {
+        "correct": 1648,
+        "valid": 3652,
+        "total": 3652
+      },
+      "lab_q8": {
+        "correct": 1652,
+        "valid": 3652,
+        "total": 3652
+      }
+    },
+    "common_2048": {
+      "ba": {
+        "correct": 1221,
+        "valid": 3538,
+        "total": 3538
+      },
+      "lab_bf16": {
+        "correct": 1603,
+        "valid": 3538,
+        "total": 3538
+      },
+      "lab_q8": {
+        "correct": 1607,
+        "valid": 3538,
+        "total": 3538
+      }
+    },
+    "by_expected": {
+      "cannot_answer": {
+        "ba": {
+          "correct": 76,
+          "valid": 1295,
+          "total": 1295
+        },
+        "lab_bf16": {
+          "correct": 108,
+          "valid": 1295,
+          "total": 1295
+        },
+        "lab_q8": {
+          "correct": 110,
+          "valid": 1295,
+          "total": 1295
+        }
+      },
+      "request_for_info": {
+        "ba": {
+          "correct": 45,
+          "valid": 1062,
+          "total": 1062
+        },
+        "lab_bf16": {
+          "correct": 319,
+          "valid": 1062,
+          "total": 1062
+        },
+        "lab_q8": {
+          "correct": 322,
+          "valid": 1062,
+          "total": 1062
+        }
+      },
+      "tool_call": {
+        "ba": {
+          "correct": 1143,
+          "valid": 1295,
+          "total": 1295
+        },
+        "lab_bf16": {
+          "correct": 1221,
+          "valid": 1295,
+          "total": 1295
+        },
+        "lab_q8": {
+          "correct": 1220,
+          "valid": 1295,
+          "total": 1295
+        }
+      }
+    },
+    "paired_bf16": {
+      "same_answer": 2513,
+      "both_correct": 1164,
+      "only_ba_correct": 100,
+      "only_lab_correct": 484
+    }
+  }
+}

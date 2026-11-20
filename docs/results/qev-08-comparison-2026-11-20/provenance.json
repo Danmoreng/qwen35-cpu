@@ -1,0 +1,71 @@
+{
+  "ba": {
+    "repo": "ba-research/Qev1.0-Qwen3.5-0.8B",
+    "revision": "e55f3373173b7196854adb2e9e7496514c41f702",
+    "adapter_head_config_sha256": {
+      "head.pt": "749782a28d952f4ee794f6a6746eec2942267eec218544e082d63914aaed865b",
+      "model.json": "927e3eb4c718d6e4d5ca794d66a22ea9fa0f64a83405c439162d7ace7c2177ee",
+      "temperature.json": "b36d470d55763646999d2e41e4a946f2ffc7aa99d7b849d68061c3b22e48e665",
+      "adapter/adapter_config.json": "2f709693c30c8f1708d5cec912c67fd2c3cd130fa293499d237aa2c6fd19d8b4",
+      "adapter/adapter_model.safetensors": "bd09ea687b558560da1e57d5fd3ed4d22543d91b6720df82034ae9ed6c5b6f3e"
+    },
+    "base_config": {
+      "model_id": "Qwen/Qwen3.5-0.8B",
+      "revision": "2fc06364715b967f1860aea9cf38778875588b17",
+      "max_length": 2048,
+      "lora_rank": 8,
+      "method": "independent_candidate_lora_nll_brier"
+    },
+    "base_tensor_sha256": "04b1c301231dd422b8860db31311ab2721511346a32cb1e079c4c4e5f1fe4696",
+    "temperature": {
+      "temperature": 0.9334818708427981,
+      "split": "calibration",
+      "n": 128,
+      "ids_sha256": "e1c2f69f7c70326c1c150af49e9a7c7d2340ab71a8e7d4598dfc999950afb01a"
+    },
+    "open_jev_revision": "bd4118882f733574a3250a4b65fe4d884130c08b",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.10.2",
+    "peft": "0.19.1",
+    "accelerate": "1.13.0"
+  },
+  "lab": {
+    "repo": "labqoat/qev-0.8b-GGUF",
+    "revision": "9550cc0d3f0e8f651cced8469ddfb89acc58c26d",
+    "bf16_sha256": "47a3e93109187add85f7905d507024ade0fc4c957a503183f3cc6106c68a9980",
+    "q8_sha256": "07856dd5d6c7d1e19a9579ef324e5377649890a6438f7735ea5ac8935f2b2140",
+    "tensor_audit": {
+      "qev-0.8b-bf16.gguf": {
+        "tensors": {
+          "BF16": 187,
+          "F32": 133
+        },
+        "readout": "nimble"
+      },
+      "qev-0.8b-text-Q8_0.gguf": {
+        "tensors": {
+          "F32": 133,
+          "Q8_0": 187
+        },
+        "readout": "nimble"
+      }
+    },
+    "llama_cpp": "ffc87c3a7989cb657641a6459a186f303e176af8",
+    "encoding": "joint text"
+  },
+  "device": "NVIDIA GeForce RTX 5080 Laptop GPU",
+  "inputs_sha256": {
+    "routing-de-inputs.jsonl": "571f48461fccc82271cff6ae395bf95c600620276b8bd933146fdf086506e172",
+    "routing-de-gold.jsonl": "05a278bb1bc160a3caabdbbc6c85d125c0c8e9af7a2da41c407b31784432ea76",
+    "heaven-231.jsonl": "771ea8ac252af155606eeb09cad920b32b326c5c2b1e9c9af868be00fe8e2fad",
+    "when2call.jsonl": "8c3694e583eeeb8dbc297e6cd90da70efc68efa4b6adb7227523e828c6b7b14c"
+  },
+  "harness_sha256": {
+    "service.py": "ab85761cb0faafa8521c2751a93c0aef57a842f698621f54b1bdddc95a150ec3",
+    "measure.py": "0a151d7137318295e9348dc32fa6780382f2d5ed04c9d945c73f7631fbc8b522",
+    "lab-measure.py": "0c505b74bd63be7abaf9ffdde78d796fc77782470e72009337df74ecca23bc53",
+    "score.py": "e0a6e95b48e38796c48cbc99f2639975f776e9b81e479fe42d3c946e286a45da"
+  },
+  "raw_directory": "benchmarks/qev08-ab-2026-11-20",
+  "cpu_performance_measured": false
+}
