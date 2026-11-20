@@ -1,6 +1,6 @@
 # Qwen3.5-2B and 4B on the Ryzen 9 9955HX3D
 
-On November 20, 2026, the native engine, ik_llama.cpp and llama.cpp ran the same fixed-token workloads on the laptop used for the [0.8B comparison](ryzen-9955hx3d.md). The [README](../../README.md#cpu-performance) gives the median rates. The [results CSV](../results/ryzen-large-2026-11-20/performance.csv) also gives the minimum and maximum for each workload. [Individual samples](../results/ryzen-large-2026-11-20/samples.csv)
+On November 20, 2026, the native engine, ik_llama.cpp and llama.cpp ran the same fixed-token workloads on the laptop used for the [0.8B comparison](ryzen-9955hx3d.md). The [README at the time of measurement](https://github.com/Danmoreng/qwen35-cpu/blob/a20ba39/README.md#cpu-performance) gives the median rates. The [results CSV](../results/ryzen-large-2026-11-20/performance.csv) also gives the minimum and maximum for each workload. [Individual samples](../results/ryzen-large-2026-11-20/samples.csv)
 
 With 16 simultaneous requests, native decode exceeded IK by 56% at 2B and 53% at 4B. For one request, IK led native decode by 3.4% and 2.4%, respectively. All three engines recorded their fastest single-request decode in the final round at both sizes. Individual rates varied more across rounds than the differences between single-request medians.
 

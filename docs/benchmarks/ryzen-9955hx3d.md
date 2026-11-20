@@ -4,7 +4,7 @@ On November 19, 2026, all five configurations ran on the same laptop in one
 sequential series. The native engine used the published 0.8B H128/Q4-G32-DOT4
 checkpoint. llama.cpp Q4_0 and ik_llama.cpp IQ4_K_R4 match its tensor size.
 The smaller IK IQ4_KS_R4 and larger Unsloth Q4_K_M show the range on either
-side of that size. The [README](../../README.md#cpu-performance)
+side of that size. The [README at the time of measurement](https://github.com/Danmoreng/qwen35-cpu/blob/a20ba39/README.md#cpu-performance)
 summarizes the results. The [CSV](../results/readme-2026-11-19/performance.csv)
 includes the median and range of each case.
 

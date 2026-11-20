@@ -125,38 +125,9 @@ estimates, not guarantees about real-world outcomes.
 
 ## CPU performance
 
-**Ryzen 9 9955HX3D**, eight physical V-cache cores, GCC 16.2.1 Release,
-AVX-512/VNNI. Same single-question HTTP requests; one warmup and three measured
-runs, executed sequentially. Medians include localhost HTTP, tokenization,
-inference and probability formatting, and exclude model loading. Each sample
-uses the first request after a fresh server becomes ready, without prefix-cache
-credit. No output text is generated. These are latency measurements, separate
-from the quality scoring above.
+On the **Ryzen 9 9955HX3D**, the calibrated checkpoint answered a 74-token ticket in **40.29 ms** and a 579-token ticket in **180.07 ms**. Both were the first request after a native server became ready. Across 64 German routing requests (178–216 tokens) sent serially to a resident server, median latency was **57.50 ms**, down from **63.08 ms** before the two prefill optimizations.
 
-| Server / checkpoint | 74 input tokens | 579 input tokens |
-| --- | ---: | ---: |
-| **Native / calibrated H128/Q4-G32-DOT4, adaptive chunk** | **44.27 ms** | **202.76 ms** |
-| Native / same checkpoint, chunk 128 | 40.05 ms | 203.03 ms |
-| llama.cpp CPU / BF16, tuned batching | 76.51 ms | 430.79 ms |
-| llama.cpp CPU / Q8_0, tuned batching | 93.17 ms | 674.11 ms |
-
-Both llama.cpp checkpoints use `--batch-size 2048 --ubatch-size 256`, selected
-from seven combinations and confirmed in an independent three-run/one-warmup
-series together with native. Larger microbatches were also tested. These are
-bounded workload results, not a universal optimum; Q8 long-request samples
-range from 650.09 to 742.63 ms. The linked report preserves defaults and all
-individual measurements.
-
-These are B1 first-request observations. A separate fixed-work comparison sends
-the same 16 distinct requests serially or concurrently to one running server
-(76/581 input tokens per request). Serial throughput is **31.08/5.21
-decisions/s**; with 16 simultaneous calls it is **29.03/5.11 decisions/s**.
-Mean HTTP latency rises from 32 to 486 ms for short requests and from 192 to
-2,912 ms for long requests. The current scheduler shows no useful throughput
-gain from concurrency on this workload; it does not batch prefill across
-requests. These throughput measurements are separate from the cold B1 times.
-CPU results depend on prompt length, hardware and kernels; the BF16/Q8 ordering
-above is measured rather than inferred from bit width.
+The November 20, 2026 measurements used eight physical cores, the adaptive chunk size, one warmup and three measured passes. Timings include localhost HTTP, tokenization and option scoring. Model loading is excluded. All 66 inputs produced identical returned answers and probabilities across the three engine builds. [Paired timings and methodology](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/benchmarks/laptop-refresh-9955hx3d.md#qev-08b-decision-latency) · [Earlier llama.cpp and concurrency comparisons](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/benchmarks/decision-http.md)
 
 ## Source and limitations
 

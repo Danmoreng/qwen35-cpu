@@ -91,8 +91,7 @@ process runs plus one warmup, sequentially with the same affinity and protocol.
 Selection minimized the geometric mean of short/long medians, choosing one
 configuration per checkpoint. Both chose `(2048,256)`. A separate fresh 3+1
 series confirmed those candidates against defaults, alongside both native
-settings. **This confirmation, not the initial grid or earlier untuned series,
-is the source of the current README/model-card latency values.**
+settings. The table below reports that confirmation. A [November native rerun](laptop-refresh-9955hx3d.md#qev-08b-decision-latency) measures the subsequent prefill changes.
 
 | Server / checkpoint / configuration | Short, 74 tokens | Long, 579 tokens |
 |---|---:|---:|

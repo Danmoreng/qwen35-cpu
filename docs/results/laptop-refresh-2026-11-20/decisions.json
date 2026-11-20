@@ -1,0 +1,201 @@
+{
+  "workloads": {
+    "short": {
+      "fixture": "docs/results/qev-api-2026-10-21/short-request.json",
+      "fixture_sha256": "1bb5833036e0cbc6a38c2a031657942aecad6b8e6a05b2428527d28450c70faa",
+      "requests": 1,
+      "min_tokens": 74,
+      "max_tokens": 74,
+      "revisions": {
+        "before": {
+          "http_p50_ms": {
+            "median": 43.59859900068841,
+            "min": 42.99955800161115,
+            "max": 43.857762997504324
+          },
+          "http_p95_ms": {
+            "median": 43.59859900068841,
+            "min": 42.99955800161115,
+            "max": 43.857762997504324
+          }
+        },
+        "deltanet": {
+          "http_p50_ms": {
+            "median": 41.21654000118724,
+            "min": 41.18647399809561,
+            "max": 41.62953400009428
+          },
+          "http_p95_ms": {
+            "median": 41.21654000118724,
+            "min": 41.18647399809561,
+            "max": 41.62953400009428
+          }
+        },
+        "current": {
+          "http_p50_ms": {
+            "median": 40.287662002810976,
+            "min": 40.28229200048372,
+            "max": 40.57013100100448
+          },
+          "http_p95_ms": {
+            "median": 40.287662002810976,
+            "min": 40.28229200048372,
+            "max": 40.57013100100448
+          }
+        }
+      },
+      "reduction_pct": 7.594136219434833
+    },
+    "long": {
+      "fixture": "docs/results/qev-api-2026-10-21/long-request.json",
+      "fixture_sha256": "4ea4b8f8fb73224a7d31a90700ac63093ae645f2f2590e19d5a5c62d1a14ee3d",
+      "requests": 1,
+      "min_tokens": 579,
+      "max_tokens": 579,
+      "revisions": {
+        "before": {
+          "http_p50_ms": {
+            "median": 194.8618019996502,
+            "min": 194.59003299925826,
+            "max": 215.37623699987307
+          },
+          "http_p95_ms": {
+            "median": 194.8618019996502,
+            "min": 194.59003299925826,
+            "max": 215.37623699987307
+          }
+        },
+        "deltanet": {
+          "http_p50_ms": {
+            "median": 184.6705479983939,
+            "min": 184.3189600003825,
+            "max": 185.5300770002941
+          },
+          "http_p95_ms": {
+            "median": 184.6705479983939,
+            "min": 184.3189600003825,
+            "max": 185.5300770002941
+          }
+        },
+        "current": {
+          "http_p50_ms": {
+            "median": 180.07223200038425,
+            "min": 178.91751100250985,
+            "max": 180.1330849993974
+          },
+          "http_p95_ms": {
+            "median": 180.07223200038425,
+            "min": 178.91751100250985,
+            "max": 180.1330849993974
+          }
+        }
+      },
+      "reduction_pct": 7.589773802508759
+    },
+    "routing-de": {
+      "fixture": "docs/results/decision-followup-2026-11-20/routing-de-inputs.jsonl",
+      "fixture_sha256": "571f48461fccc82271cff6ae395bf95c600620276b8bd933146fdf086506e172",
+      "requests": 64,
+      "min_tokens": 178,
+      "max_tokens": 216,
+      "revisions": {
+        "before": {
+          "http_p50_ms": {
+            "median": 63.08024549980473,
+            "min": 62.72146900118969,
+            "max": 63.163450999127235
+          },
+          "http_p95_ms": {
+            "median": 68.26103699859232,
+            "min": 68.05619299848331,
+            "max": 68.26797000030638
+          }
+        },
+        "deltanet": {
+          "http_p50_ms": {
+            "median": 59.350996001739986,
+            "min": 59.201360501901945,
+            "max": 59.41178949979076
+          },
+          "http_p95_ms": {
+            "median": 63.92840799890109,
+            "min": 63.84918999901856,
+            "max": 64.56428800083813
+          }
+        },
+        "current": {
+          "http_p50_ms": {
+            "median": 57.49707599898102,
+            "min": 57.3685255003511,
+            "max": 57.76565900123387
+          },
+          "http_p95_ms": {
+            "median": 62.86087999978918,
+            "min": 62.76011099907919,
+            "max": 63.08254499890609
+          }
+        }
+      },
+      "reduction_pct": 8.850900082246827
+    }
+  },
+  "checked_unique_responses": 66,
+  "all_returned_answers_probabilities_and_usage_match": true,
+  "cached_tokens": [
+    0
+  ],
+  "core_revisions": {
+    "before": "8b0d6426aa4bf3a2fbc4f648d29eeb0b4b2fadb6",
+    "deltanet": "2498e51621bc0d3f275771abf578005119a6ac81",
+    "current": "a3e993555c949f12e6b28f5707684eac352b4937"
+  },
+  "core_sha256": {
+    "before": "1694215393b92d029f1e299c738ae69ec4aa265ae22fc731d6f4ae221d69c4fb",
+    "deltanet": "42680a39159b70551a41adb258c0b53342186f4120433220204cf8f807a710b2",
+    "current": "1a9a4cfc9415064a36ccea49ad74694165abfb05879360be570a048c92a2e99d"
+  },
+  "server_shell_revision": "a3e993555c949f12e6b28f5707684eac352b4937",
+  "servers": {
+    "before": {
+      "path": "benchmarks/laptop-refresh-2026-11-20/before/qwen35_cpu_server",
+      "sha256": "5d737268387434a0d81e202ebfc53b3240d72a31b340034e62535dd449adeeab"
+    },
+    "deltanet": {
+      "path": "benchmarks/laptop-refresh-2026-11-20/deltanet/qwen35_cpu_server",
+      "sha256": "e04d94a6cba2da8ab98ec5be1f656d5a80c69b47ce448db319f512599ae63008"
+    },
+    "current": {
+      "path": "build-qev-refresh/qwen35_cpu_server",
+      "sha256": "c76a3e5cd5336fbe14ca59e69d1207f6cfd59d05d9fbead3ad85d5f15bccaea3"
+    }
+  },
+  "weights": {
+    "path": "dist/qev-h128-public-final/model.q35h",
+    "sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69"
+  },
+  "package_sha256s": [
+    "50cbab8a892c5f2993b8c7351a99182507472def3b1374558308605d99b86b32  LICENSE",
+    "5eb5ba976dcd586c5af9071a9034b8dd72eef97f606ddaf2977c10e09b4cfdfa  NOTICE",
+    "3c28bfa057cf28063ac1c139a561be335ff7be934eaca9f21614a0ff09ac1bf3  README.md",
+    "d9ab6f1698a46bbf04895d171fa0666816745e0d7209b9493d44d3df0caa1b5f  config.json",
+    "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d  merges.txt",
+    "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69  model.q35h",
+    "5260608d19e1d02c7a59d7ee0351ab4a5d57cf40154132e3122eb9b147f6adb7  qev_config.json",
+    "b02c7a24af2a09fe5a34f1c070fc254b251fc9e292419e30aa311fdec91adfe8  quantization.json",
+    "466f27fefa1f44a7bb82cb1b42163c761e01dc6f7f51fc4f3d0a499a5a9b4249  tokenizer.json",
+    "e611fbccc7c29ef3b1cafb1cb7ea548d189968632901d678fd62be68c47885de  tokenizer_config.json",
+    "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003  vocab.json"
+  ],
+  "runner": "scripts/benchmark-inference-seq.ps1",
+  "http_harness": "scripts/benchmark-systemone-http.py",
+  "http_harness_sha256": "b08e4c61e6fc85e0f6096ac46ebab91594ba5605b4241bb621a670ab2087e0db",
+  "python_sha256": "2f02aa4f93265e0ad19d8ffaaef9703d515921c14474a451b8e2d83c583ca233",
+  "raw_directory": "benchmarks/laptop-refresh-2026-11-20/decisions",
+  "metadata_sha256": "26a72745cc2ba3494b457d5c0f2c02ccd26b22584be0f64e1a1f8df28ffe6e69",
+  "utc": "2026-11-20T13:25:48.8401021Z",
+  "affinity": 255,
+  "threads": 8,
+  "runs": 3,
+  "warmups": 1,
+  "matrix": "decision-matrix.json"
+}

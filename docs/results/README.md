@@ -6,6 +6,7 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
+| `laptop-refresh-2026-11-20` | [Current laptop benchmarks](../benchmarks/laptop-refresh-9955hx3d.md), fixed-token throughput, qev HTTP decisions and the README chart |
 | `q4-prefill-2026-11-20` | [Ryzen Q4 matrix kernel](../benchmarks/q4-prefill-9955hx3d.md), paired prefill rates, Q4 operation timings and full-vocabulary logit parity |
 | `prefill-profile-2026-11-20` | [Ryzen prefill study](../benchmarks/prefill-9955hx3d.md), operation timings, runtime comparisons and full-vocabulary logit parity |
 | `ryzen-large-2026-11-20` | [2B and 4B on the Ryzen 9 9955HX3D](../benchmarks/ryzen-9955hx3d-large.md), matched tensor sizes, per-run CPU throughput and reproduction matrix |

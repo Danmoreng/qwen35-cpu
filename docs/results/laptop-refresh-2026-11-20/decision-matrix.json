@@ -1,0 +1,176 @@
+[
+  {
+    "name": "short-before",
+    "executable": "/usr/bin/python3",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "benchmarks/laptop-refresh-2026-11-20/before/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--threads",
+      "8",
+      "--request",
+      "docs/results/qev-api-2026-10-21/short-request.json"
+    ]
+  },
+  {
+    "name": "short-deltanet",
+    "executable": "/usr/bin/python3",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "benchmarks/laptop-refresh-2026-11-20/deltanet/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--threads",
+      "8",
+      "--request",
+      "docs/results/qev-api-2026-10-21/short-request.json"
+    ]
+  },
+  {
+    "name": "short-current",
+    "executable": "/usr/bin/python3",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-qev-refresh/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--threads",
+      "8",
+      "--request",
+      "docs/results/qev-api-2026-10-21/short-request.json"
+    ]
+  },
+  {
+    "name": "long-before",
+    "executable": "/usr/bin/python3",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "benchmarks/laptop-refresh-2026-11-20/before/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--threads",
+      "8",
+      "--request",
+      "docs/results/qev-api-2026-10-21/long-request.json"
+    ]
+  },
+  {
+    "name": "long-deltanet",
+    "executable": "/usr/bin/python3",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "benchmarks/laptop-refresh-2026-11-20/deltanet/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--threads",
+      "8",
+      "--request",
+      "docs/results/qev-api-2026-10-21/long-request.json"
+    ]
+  },
+  {
+    "name": "long-current",
+    "executable": "/usr/bin/python3",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-qev-refresh/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--threads",
+      "8",
+      "--request",
+      "docs/results/qev-api-2026-10-21/long-request.json"
+    ]
+  },
+  {
+    "name": "routing-de-before",
+    "executable": "/usr/bin/python3",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "benchmarks/laptop-refresh-2026-11-20/before/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--threads",
+      "8",
+      "--request",
+      "docs/results/decision-followup-2026-11-20/routing-de-inputs.jsonl",
+      "--jsonl-panel"
+    ]
+  },
+  {
+    "name": "routing-de-deltanet",
+    "executable": "/usr/bin/python3",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "benchmarks/laptop-refresh-2026-11-20/deltanet/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--threads",
+      "8",
+      "--request",
+      "docs/results/decision-followup-2026-11-20/routing-de-inputs.jsonl",
+      "--jsonl-panel"
+    ]
+  },
+  {
+    "name": "routing-de-current",
+    "executable": "/usr/bin/python3",
+    "args": [
+      "scripts/benchmark-systemone-http.py",
+      "--backend",
+      "native",
+      "--server",
+      "build-qev-refresh/qwen35_cpu_server",
+      "--model-dir",
+      "dist/qev-h128-public-final",
+      "--weights",
+      "dist/qev-h128-public-final/model.q35h",
+      "--threads",
+      "8",
+      "--request",
+      "docs/results/decision-followup-2026-11-20/routing-de-inputs.jsonl",
+      "--jsonl-panel"
+    ]
+  }
+]

@@ -56,32 +56,30 @@ Invoke-RestMethod http://127.0.0.1:8080/v1/chat/completions -Method Post -Conten
 
 ## CPU performance
 
-Measured on the **AMD Ryzen 9 9955HX3D** laptop with eight threads pinned to
+Measured November 20, 2026 on the **AMD Ryzen 9 9955HX3D** laptop with eight threads pinned to
 physical cores 0–7. Rates are median **tokens/s** from three runs after one
 warmup. Prefill measures one prompt. Decode uses 512 input and 128 output
 tokens per request. B=16 is total throughput across 16 private requests.
 
-![Decode and prefill throughput for native H128/Q4-G32-DOT4, ik_llama.cpp IQ4_K_R4 and llama.cpp Q4_0 at 0.8B, 2B and 4B.](docs/results/ryzen-large-2026-11-20/cpu-performance.png)
+![Decode and prefill throughput for native H128/Q4-G32-DOT4, ik_llama.cpp IQ4_K_R4 and llama.cpp Q4_0 at 0.8B, 2B and 4B.](docs/results/laptop-refresh-2026-11-20/cpu-performance.png)
 
 | Model | Engine / checkpoint | Tensor MB | Decode B=1 | Decode B=16 | Prefill 512 | Prefill 4,096 |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
-| 0.8B | ik_llama.cpp IQ4_KS_R4 | 401.4 | 121.5 | 400.7 | 3,630.8 | 3,144.8 |
-| 0.8B | ik_llama.cpp IQ4_K_R4 | 424.9 | 113.4 | 388.9 | 3,629.5 | 3,141.2 |
-| 0.8B | **Native H128/Q4-G32-DOT4** | 424.9 | 111.0 | 575.6 | 3,052.4 | 2,670.7 |
-| 0.8B | llama.cpp Q4_0 | 424.9 | 101.8 | 456.5 | 1,099.5 | 1,072.2 |
-| 0.8B | llama.cpp Unsloth Q4_K_M | 521.6 | 83.3 | 389.8 | 1,106.7 | 959.4 |
-| 2B | ik_llama.cpp IQ4_K_R4 | 1,060.4 | 43.6 | 245.7 | 1,737.7 | 1,636.2 |
-| 2B | llama.cpp Q4_0 | 1,060.4 | 42.3 | 306.4 | 701.4 | 626.8 |
-| 2B | **Native H128/Q4-G32-DOT4** | 1,060.4 | 42.2 | 382.6 | 1,504.9 | 1,414.4 |
-| 4B | ik_llama.cpp IQ4_K_R4 | 2,369.0 | 18.9 | 106.5 | 707.8 | 635.6 |
-| 4B | **Native H128/Q4-G32-DOT4** | 2,369.0 | 18.4 | 163.4 | 614.4 | 557.5 |
-| 4B | llama.cpp Q4_0 | 2,369.0 | 18.2 | 98.3 | 195.9 | 175.7 |
+| 0.8B | ik_llama.cpp IQ4_KS_R4 | 401.4 | 134.2 | 440.1 | 3,715.4 | 3,214.2 |
+| 0.8B | ik_llama.cpp IQ4_K_R4 | 424.9 | 126.2 | 425.1 | 3,703.7 | 3,195.1 |
+| 0.8B | **Native H128/Q4-G32-DOT4** | 424.9 | 121.5 | 647.2 | 3,348.4 | 2,912.2 |
+| 0.8B | llama.cpp Q4_0 | 424.9 | 112.5 | 493.1 | 1,119.6 | 1,089.0 |
+| 0.8B | llama.cpp Unsloth Q4_K_M | 521.6 | 90.8 | 429.3 | 1,025.0 | 1,103.0 |
+| 2B | ik_llama.cpp IQ4_K_R4 | 1,060.4 | 48.9 | 265.9 | 1,771.2 | 1,656.1 |
+| 2B | **Native H128/Q4-G32-DOT4** | 1,060.4 | 47.5 | 435.5 | 1,639.0 | 1,526.9 |
+| 2B | llama.cpp Q4_0 | 1,060.4 | 47.0 | 345.9 | 644.9 | 633.1 |
+| 4B | ik_llama.cpp IQ4_K_R4 | 2,369.0 | 21.2 | 115.9 | 717.1 | 645.8 |
+| 4B | **Native H128/Q4-G32-DOT4** | 2,369.0 | 20.8 | 186.2 | 674.4 | 608.2 |
+| 4B | llama.cpp Q4_0 | 2,369.0 | 20.4 | 112.9 | 182.5 | 178.1 |
 
-At 2B and 4B, IK led single-request decode and prefill. Native delivered the
-highest decode throughput across 16 requests. All three formats have the same
-on-disk tensor size within each of these model sizes. Timings use fixed tokens,
-FP16 KV and full-vocabulary logits and exclude loading, tokenization and HTTP.
-[0.8B runs, November 19](docs/benchmarks/ryzen-9955hx3d.md) · [2B and 4B runs, November 20](docs/benchmarks/ryzen-9955hx3d-large.md)
+Native had the highest batch-16 decode throughput at all three model sizes. The three charted formats have the same tensor size within each model size. [Throughput measurements](docs/benchmarks/laptop-refresh-9955hx3d.md#base-model-throughput)
+
+For native qev-0.8b decisions, median HTTP latency was **40.29 ms** (74 input tokens) and **180.07 ms** (579 input tokens), both 7.6% lower than before the prefill changes. [Decision benchmark](docs/benchmarks/laptop-refresh-9955hx3d.md#qev-08b-decision-latency)
 
 <a id="quantization-quality"></a>
 
@@ -101,7 +99,7 @@ test windows. MB measures the on-disk tensor payload.
 | llama.cpp Q4_0 | 424.9 | 18.03403 | 0.144830 |
 | ik_llama.cpp IQ4_KS_R4 | 401.4 | 15.86784 | 0.084944 |
 
-The November native build reproduced every vocabulary logit from the October
+The November 19 native build reproduced every vocabulary logit from the October
 quality run. The comparator scores come from that run with the same binaries
 and weights. [Native verification](docs/results/readme-2026-11-19/native-quality.json) · [Quality measurements](docs/benchmarks/cpu.md#quality-and-size)
 
