@@ -67,18 +67,18 @@ int main(int argc, char **argv) try {
   // Ragged prompts, interrupted chunks and one complete private prefix. Compare
   // unrounded logits before the HTTP layer applies a softmax and rounds them.
   if (model->supports_selected_logits()) {
-    auto run = [&](int width) {
+    auto run = [&](int width, std::size_t chunk, const std::array<std::size_t, 4> &lengths) {
       auto cfg = config;
       cfg.max_prefill_requests = width;
       cfg.max_resident_requests = 4;
-      cfg.prefill_chunk_size = 8;
+      cfg.prefill_chunk_size = chunk;
       auto test = CpuEngine::create(model, cfg, error);
       check(bool(test));
       std::array<std::vector<float>, 4> logits;
       std::vector<CpuRequestId> pending;
       for (std::size_t i = 0; i < logits.size(); ++i) {
         CpuRequestSpec req;
-        req.prompt_tokens.assign(5 + i * 3, 1234 + static_cast<int>(i));
+        req.prompt_tokens.assign(lengths[i], 1234 + static_cast<int>(i));
         req.trust_namespace = "classifier-test";
         req.selected_logit_tokens = {123, 456, 789};
         req.forced_output_tokens = {123};
@@ -105,12 +105,16 @@ int main(int argc, char **argv) try {
       check((test->stats().shared_prefill_ticks > 0) == (width > 1));
       return logits;
     };
-    const auto single = run(1), shared = run(4);
-    for (std::size_t row = 0; row < single.size(); ++row) {
-      check(single[row].size() == 3 && shared[row].size() == 3);
-      for (std::size_t col = 0; col < 3; ++col)
-        check(std::abs(single[row][col] - shared[row][col]) < 0.001F);
-    }
+    auto compare = [&](std::size_t chunk, const std::array<std::size_t, 4> &lengths) {
+      const auto single = run(1, chunk, lengths), shared = run(4, chunk, lengths);
+      for (std::size_t row = 0; row < single.size(); ++row) {
+        check(single[row].size() == 3 && shared[row].size() == 3);
+        for (std::size_t col = 0; col < 3; ++col)
+          check(std::abs(single[row][col] - shared[row][col]) < 0.001F);
+      }
+    };
+    compare(8, {5, 8, 11, 14});
+    compare(128, {5, 67, 128, 193});
   }
   auto engine = CpuEngine::create(model, config, error);
   check(bool(engine));

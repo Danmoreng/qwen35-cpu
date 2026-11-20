@@ -387,7 +387,7 @@ class Service {
     }
   }
 public:
-  Service(const CpuLoadOptions &load, CpuEngineConfig &config, bool auto_decision_head, bool automatic_prefix, std::size_t fixed_width)
+  Service(const CpuLoadOptions &load, CpuEngineConfig &config, bool auto_decision_head, bool automatic_prefix, std::size_t fixed_width, bool tune_chunk)
       : max_context_(config.max_context), automatic_prefix_(automatic_prefix),
         prefix_budget_(config.max_prefix_bytes), mtp_enabled_(!load.mtp_weights_path.empty()) {
     std::string error;
@@ -408,7 +408,7 @@ public:
     if (decision_) model_name = "qev-0.8b-H128-Q4-G32-DOT4";
     selected_decision_head_ = auto_decision_head && model->supports_selected_logits();
     if (decision_) std::cout << "System One readout: " << (selected_decision_head_ ? "selected" : "full") << '\n';
-    tuning_ = server::tune_batches(model, config, fixed_width, decision_ ? std::span<const std::int32_t>(decision_->ids) : std::span<const std::int32_t>{}, selected_decision_head_);
+    tuning_ = server::tune_batches(model, config, fixed_width, decision_ ? std::span<const std::int32_t>(decision_->ids) : std::span<const std::int32_t>{}, selected_decision_head_, tune_chunk);
     engine_ = CpuEngine::create(model, config, error);
     if (!engine_) throw std::runtime_error(error);
     cache_snapshot_ = cache_stats();
@@ -448,7 +448,7 @@ int main(int argc, char **argv) try {
   config.max_decode_batch_size = 16; config.shared_kv_pages = true;
   std::string host = "127.0.0.1";
   std::string decision_encoding = "joint";
-  bool auto_decision_head = true, automatic_prefix = true;
+  bool auto_decision_head = true, automatic_prefix = true, tune_chunk = false;
   int port = 8080;
   for (int i = 1; i < argc; ++i) {
     const std::string key = argv[i];
@@ -457,7 +457,7 @@ int main(int argc, char **argv) try {
         "[--mtp-weights FILE] [--mtp-depth 1..4] (4B MTP only)\n"
         "[--host 127.0.0.1] [--port 8080] [--max-context 8192] [--residents 16]\n"
         "[--decision-encoding joint|per_question] (qev_config.json required)\n"
-        "[--prefill-requests 1..8] [--decision-head auto|full] [--prefill-chunk N] (1..2048; default adaptive)\n"
+        "[--prefill-requests 1..8] [--decision-head auto|full] [--prefill-chunk auto|N] (auto probes short qev decisions; default adaptive)\n"
         "[--prefix-cache auto|off] [--prefix-cache-mib 256]\n"
         "GET /health, GET /v1/models, GET /v1/cache, POST /v1/responses (stored response subresources available)\n"
         "POST /v1/completions, POST /v1/chat/completions, POST /v1/classify, POST /v1/systemone\nPOST /v1/messages, POST /v1/messages/count_tokens\n";
@@ -498,7 +498,8 @@ int main(int argc, char **argv) try {
     }
     else if (key == "--prefill-requests") config.max_prefill_requests = number();
     else if (key == "--prefill-chunk") {
-      config.prefill_chunk_size = number();
+      tune_chunk = value == "auto";
+      config.prefill_chunk_size = tune_chunk ? 0 : number();
       if (config.prefill_chunk_size > 2048) throw std::runtime_error("Prefill chunk must be <=2048");
     }
     else if (key == "--max-context") config.max_context = number();
@@ -515,7 +516,7 @@ int main(int argc, char **argv) try {
     throw std::runtime_error("Set QWEN35_API_KEY before binding a non-loopback interface");
   if (batch_width > config.max_resident_requests) throw std::runtime_error("--batch-width exceeds --residents");
   server::load_chat_template(load.model_dir);
-  Service service(load, config, auto_decision_head, automatic_prefix, batch_width);
+  Service service(load, config, auto_decision_head, automatic_prefix, batch_width, tune_chunk);
   BatchService batches(service, batch_db, config.max_context, service.batch_tuning().width, decision_encoding);
   server::ResponseStore responses;
   httplib::Server http;

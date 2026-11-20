@@ -115,9 +115,9 @@ full projection for comparison. Multi-token candidates need sequence scoring.
 
 `--prefill-requests N` (1–8, default 1) lets the scheduler combine already
 available selected-readout requests with at most 128 uncached tokens remaining
-each. It adds no deliberate waiting period. It batches the MLP projections
-across request chunks. Attention, convolution, DeltaNet and prefix publication
-stay private to each sequence. Full prefix hits and full-head requests use
+each. It adds no deliberate waiting period. It batches input projections for attention and the MLP projections across
+request chunks. Attention, convolution and DeltaNet still read and update each
+sequence's own state. Prefix publication also stays private to each sequence. Full prefix hits and full-head requests use
 their usual paths. The setting controls a different operation from
 `--batch-width`, which controls offline job concurrency. `GET /v1/cache`
 exposes `shared_prefill_ticks` and `shared_prefill_requests`. A request that

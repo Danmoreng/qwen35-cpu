@@ -3,7 +3,7 @@
 
 Each process starts a fresh local server and waits for readiness before timing
 requests. The default sends one request. A JSONL panel sends distinct requests
-serially to the resident server and records per-item latencies in input order.
+to the resident server and records per-item latencies in input order.
 """
 import argparse
 import concurrent.futures
@@ -28,10 +28,10 @@ def main():
     p.add_argument('--decision-head', choices=['auto', 'full'])
     p.add_argument('--ticket-panel', action='store_true', help='Read labeled, variable-length states from --request')
     p.add_argument('--jsonl-panel', action='store_true',
-                   help='Time every {id, request} row from --request in order on one resident server')
+                   help='Time every {id, request} row on one resident server; results retain input order')
     p.add_argument('--prefill-requests', type=int, choices=range(1, 9),
                    help='Benchmark native shared prefill, with fixed admission width and the prefix cache off')
-    p.add_argument('--prefill-chunk', type=int, default=0)
+    p.add_argument('--prefill-chunk', help='Native prefill chunk size or auto')
     p.add_argument('--batch-size', type=int)
     p.add_argument('--ubatch-size', type=int)
     p.add_argument('--concurrency', type=int, default=1)
@@ -41,9 +41,8 @@ def main():
     args = p.parse_args()
     if not 1 <= args.concurrency <= 16:raise ValueError('concurrency must be 1..16')
     count = args.requests if args.requests is not None else args.concurrency
-    if args.jsonl_panel and (args.concurrency != 1 or args.requests is not None or
-                            args.ticket_panel or args.distinct_states or args.prefill_requests):
-        p.error('--jsonl-panel takes a serial panel with one request per row')
+    if args.jsonl_panel and (args.requests is not None or args.ticket_panel or args.distinct_states):
+        p.error('--jsonl-panel takes one request per row and supplies its own states and count')
     if not args.concurrency <= count <= 16:raise ValueError('requests must be concurrency..16')
     if args.profile_json.exists():raise ValueError('Use a fresh profile path')
     with socket.socket() as s:s.bind(('127.0.0.1',0));port=s.getsockname()[1]
@@ -56,7 +55,7 @@ def main():
             cmd += ['--prefill-requests', str(args.prefill_requests), '--batch-width', str(args.concurrency),
                     '--prefix-cache', 'off']
         if args.decision_head:cmd+=['--decision-head',args.decision_head]
-        if args.prefill_chunk:cmd+=['--prefill-chunk',str(args.prefill_chunk)]
+        if args.prefill_chunk not in (None, '0'):cmd+=['--prefill-chunk',str(args.prefill_chunk)]
     else:
         cmd+=['--model',str(args.weights),'--n-gpu-layers','0','--threads',str(args.threads),
               '--threads-batch',str(args.threads),'--parallel',str(args.concurrency),'--ctx-size',str(8192*args.concurrency),
@@ -71,6 +70,8 @@ def main():
         ids = [row['id'] for row in rows]
         if not ids or len(set(ids)) != len(ids):
             raise ValueError('Panel must contain distinct request IDs')
+        if len(ids) < args.concurrency:
+            p.error('Panel needs at least one request per concurrent client')
         bodies = [json.dumps(row['request'], ensure_ascii=False).encode() for row in rows]
     elif args.ticket_panel:
         panel = json.loads(body)
@@ -115,6 +116,9 @@ def main():
                     fields = dict(line.split(':', 1) for line in status.read_text().splitlines())
                     panel_info['server_peak_rss_bytes'] = int(fields['VmHWM'].split()[0]) * 1024
                     panel_info['server_allowed_cpus'] = fields['Cpus_allowed_list'].strip()
+            if args.prefill_chunk == 'auto' and args.backend == 'native':
+                with urllib.request.urlopen(base+'/v1/batch-config', timeout=5) as response:
+                    panel_info['batch_config'] = json.load(response)
             if args.prefill_requests:
                 with urllib.request.urlopen(base+'/v1/cache', timeout=5) as response:
                     stats = json.load(response)

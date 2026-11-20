@@ -4,6 +4,7 @@
 #include <chrono>
 #include <filesystem>
 #include <fstream>
+#include <optional>
 #include <set>
 #include <sstream>
 #include <thread>
@@ -94,8 +95,11 @@ struct BatchTuning {
   int threads = 1;
   std::size_t width = 1;
   Json probes = Json::array();
+  std::size_t prefill_chunk = 0;
+  Json chunk_probes = Json::array();
   Json report() const {
-    return {{"cpu_capacity", cpus}, {"threads", threads}, {"batch_width", width}, {"probes", probes}};
+    return {{"cpu_capacity", cpus}, {"threads", threads}, {"batch_width", width}, {"probes", probes},
+            {"prefill_chunk", prefill_chunk}, {"chunk_probes", chunk_probes}};
   }
 };
 
@@ -103,16 +107,18 @@ struct BatchTuning {
 // is destroyed before the serving executor starts; all probes share the weights.
 inline BatchTuning tune_batches(const std::shared_ptr<const CpuModel> &model, CpuEngineConfig &serving,
                                 std::size_t fixed_width, std::span<const std::int32_t> decision_ids,
-                                bool selected_head) {
+                                bool selected_head, bool tune_chunk) {
   const bool decision = !decision_ids.empty();
   BatchTuning tuning;
   const bool auto_threads = serving.threads == 0;
   tuning.threads = auto_threads ? static_cast<int>(tuning.cpus) : serving.threads;
   const auto limit = batch_memory_width(std::min<std::size_t>(16, serving.max_resident_requests));
   tuning.width = fixed_width ? fixed_width : std::min<std::size_t>(4, limit);
-  auto probe = [&](int threads, std::size_t width) {
+  auto probe = [&](int threads, std::size_t width, std::size_t prompt_size = 4,
+                   std::optional<std::size_t> chunk = std::nullopt) {
     auto cfg = serving;
     cfg.threads = threads;
+    cfg.prefill_chunk_size = chunk.value_or(serving.prefill_chunk_size);
     cfg.max_queued_requests = 0;
     cfg.max_resident_requests = width;
     cfg.max_decode_batch_size = width;
@@ -123,6 +129,7 @@ inline BatchTuning tune_batches(const std::shared_ptr<const CpuModel> &model, Cp
     std::vector<CpuRequestId> ids;
     CpuRequestSpec spec;
     spec.prompt_tokens = {785, 2747, 315, 279};
+    spec.prompt_tokens.resize(prompt_size, 785);
     spec.sampling.temperature = 0;
     spec.sampling.repetition_penalty = 1;
     spec.max_new_tokens = decision ? 1 : 8;
@@ -173,6 +180,10 @@ inline BatchTuning tune_batches(const std::shared_ptr<const CpuModel> &model, Cp
     }
     std::sort(rates.begin(), rates.end());
     const double rate = rates[1];
+    if (chunk) {
+      tuning.chunk_probes.push_back({{"prompt_tokens", prompt_size}, {"chunk", *chunk}, {"decisions_per_second", rate}});
+      return rate;
+    }
     tuning.probes.push_back({{"threads", threads},
                              {"width", width},
                              {"positions_per_second", rate},
@@ -209,6 +220,21 @@ inline BatchTuning tune_batches(const std::shared_ptr<const CpuModel> &model, Cp
       }
     }
   }
+  // Only short prompts change schedules. Compare both ends of the measured
+  // range in opposite orders, using one resident and the final thread count.
+  if (tune_chunk && decision && selected_head && serving.max_context >= 74) {
+    const auto upper = std::min<std::size_t>(128, serving.max_context);
+    const auto baseline = probe(tuning.threads, 1, 74, 0);
+    const auto fixed = probe(tuning.threads, 1, 74, 128);
+    bool faster = fixed > baseline * 1.03;
+    if (upper > 74) {
+      const auto fixed_upper = probe(tuning.threads, 1, upper, 128);
+      const auto baseline_upper = probe(tuning.threads, 1, upper, 0);
+      faster = faster && fixed_upper > baseline_upper * 1.03;
+    }
+    if (faster) serving.prefill_chunk_size = 128;
+  }
+  tuning.prefill_chunk = serving.prefill_chunk_size;
   serving.threads = tuning.threads;
   return tuning;
 }

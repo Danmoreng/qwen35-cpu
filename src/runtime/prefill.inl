@@ -81,6 +81,7 @@ void run_gated_delta_net_batch_cpu_rows(
 
 struct LinearPrefillPrepareJob {
   CpuPrefillWorkspace::Linear &scratch;
+  std::span<const float> projected;
   const LayerWeights &layer;
   const RuntimeDims &dims;
   std::size_t batch_size, projection_width, conv_channels, q_width, value_width;
@@ -89,9 +90,8 @@ struct LinearPrefillPrepareJob {
 };
 void run_linear_prefill_prepare(void *opaque, std::size_t begin, std::size_t end) noexcept {
   auto &job = *static_cast<LinearPrefillPrepareJob *>(opaque);
-  auto &[scratch, layer, dims, batch_size, projection_width, conv_channels,
+  auto &[scratch, projected, layer, dims, batch_size, projection_width, conv_channels,
          q_width, value_width, head_count, key_dim, value_dim, q_scale] = job;
-  auto &projected = scratch.projected;
   auto &conv_batch = scratch.conv_batch;
   auto &q_batch = scratch.q_batch;
   auto &k_batch = scratch.k_batch;
@@ -149,7 +149,8 @@ bool run_linear_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
   const LayerWeights & layer,
   const RuntimeDims & dims,
   LinearAttentionState & state,
-  const std::vector<float> & input,
+  std::span<const float> projected,
+  double projection_ms,
   const std::size_t batch_size,
   const int position_start,
   std::vector<float> & output,
@@ -183,13 +184,13 @@ bool run_linear_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
   const bool fine = runtime && runtime->stages;
   CpuPrefillStage stage;
   std::chrono::steady_clock::time_point mark;
-  if(fine) { stage.kind="linear"; stage.position=position_start; stage.tokens=batch_size; mark=std::chrono::steady_clock::now(); }
-  auto & projected = scratch.projected;
-  if (!matmul_2d_quantized_batch(cpu_context,
-        layer.linear.in_proj_all_cpu, input, batch_size, projected, error_message)) {
-    return false;
+  if (fine) {
+    stage.kind = "linear";
+    stage.position = position_start;
+    stage.tokens = batch_size;
+    stage.projection_ms = projection_ms;
+    mark = std::chrono::steady_clock::now();
   }
-  if(fine) {stage.projection_ms=elapsed_ms(mark);mark=std::chrono::steady_clock::now();}
   if (projected.size() != batch_size * projection_width) {
     error_message = "Batched linear-attention projection output size mismatch.";
     return false;
@@ -241,7 +242,7 @@ bool run_linear_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
       (state.conv_ring_index + batch_size % conv_history) % conv_history;
   }
 
-  LinearPrefillPrepareJob prepare_job{scratch, layer, dims, batch_size,
+  LinearPrefillPrepareJob prepare_job{scratch, projected, layer, dims, batch_size,
     projection_width, conv_channels, q_width, value_width, head_count,
     key_dim, value_dim, q_scale};
   if(fine) {stage.conv_ms=elapsed_ms(mark);mark=std::chrono::steady_clock::now();}
@@ -319,7 +320,8 @@ bool run_full_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
   const LayerWeights & layer,
   const RuntimeDims & dims,
   FullAttentionState & state,
-  const std::vector<float> & input,
+  std::span<const float> projected,
+  double projection_ms,
   const std::size_t batch_size,
   const int position_start,
   const float * rope_cosine,
@@ -340,13 +342,12 @@ bool run_full_attention_batch_cpu_q8(CpuExecutionContext *cpu_context,
   const bool fine = runtime && runtime->stages;
   CpuPrefillStage stage;
   std::chrono::steady_clock::time_point mark;
-  if(fine) { stage.kind="full"; stage.tokens=batch_size; mark=std::chrono::steady_clock::now(); }
-  auto & projected = scratch.projected;
-  if (!matmul_2d_quantized_batch(cpu_context,
-        layer.full.qkv_proj_cpu, input, batch_size, projected, error_message)) {
-    return false;
+  if (fine) {
+    stage.kind = "full";
+    stage.tokens = batch_size;
+    stage.projection_ms = projection_ms;
+    mark = std::chrono::steady_clock::now();
   }
-  if(fine) {stage.projection_ms=elapsed_ms(mark);mark=std::chrono::steady_clock::now();}
   if (projected.size() != batch_size * projection_width) {
     error_message = "Batched full-attention projection output size mismatch.";
     return false;
@@ -650,7 +651,7 @@ bool run_forward_cpu_q8_batch(CpuExecutionContext *cpu_context,
   auto & mlp_hidden = scratch.mlp_hidden;
   mlp_hidden.resize(batch_size * intermediate);
   auto & mlp_output = scratch.mlp_output;
-  std::vector<float> segment_input, segment_output;
+  std::vector<float> segment_output;
   int full_index = 0;
   int linear_index = 0;
 
@@ -659,29 +660,38 @@ bool run_forward_cpu_q8_batch(CpuExecutionContext *cpu_context,
     rms_norm_qwen3next_batch(
       x, batch_size, hidden, layer.input_layernorm, dims.rms_eps, normed);
     const auto attention_start = std::chrono::steady_clock::now();
+    // Project all rows together. Each attention scan consumes only its own
+    // contiguous rows and updates its own recurrent state and KV cache.
+    const auto &projection = layer.is_linear ? layer.linear.in_proj_all_cpu : layer.full.qkv_proj_cpu;
+    auto &projected = layer.is_linear ? cpu_context->prefill.linear.projected
+                                      : cpu_context->prefill.full.projected;
+    if (!matmul_2d_quantized_batch(cpu_context, projection, normed, batch_size, projected, error_message))
+      return false;
+    // Attribute a shared projection to profiling records in proportion to rows.
+    const double projection_ms_per_row = cpu_context->stages ? elapsed_ms(attention_start) / batch_size : 0.0;
     auto attend = [&](ModelState &owner, int position, std::size_t count,
-                      const std::vector<float> &input, std::vector<float> &output) {
+                      std::span<const float> input, std::vector<float> &output) {
+      const double share_ms = projection_ms_per_row * count;
       if (layer.is_linear)
         return run_linear_attention_batch_cpu_q8(cpu_context, layer, dims,
-          owner.linear_states[linear_index], input, count, position, output, error_message);
+          owner.linear_states[linear_index], input, share_ms, count, position, output, error_message);
       const auto offset = static_cast<std::size_t>(position) * (dims.rope_dim / 2);
       return run_full_attention_batch_cpu_q8(cpu_context, layer, dims,
-        owner.full_states[full_index], input, count, position, owner.rope_cosine.data() + offset,
+        owner.full_states[full_index], input, share_ms, count, position, owner.rope_cosine.data() + offset,
         owner.rope_sine.data() + offset, output, error_message);
     };
     if (segments.empty()) {
-      if (!attend(state, position_start, batch_size, normed, attention)) return false;
+      if (!attend(state, position_start, batch_size, projected, attention)) return false;
     } else {
-      // Share the MLP across all rows, keep attention and DeltaNet scans contiguous
-      // in the original sequence and operate on that request's private state.
       attention.resize(batch_size * hidden);
-      std::size_t offset = 0;
+      const auto projection_width = projected.size() / batch_size;
+      std::size_t row = 0;
       for (const auto &part : segments) {
-        const auto size = part.count * hidden;
-        segment_input.assign(normed.begin() + offset, normed.begin() + offset + size);
-        if (!attend(*part.state, part.position, part.count, segment_input, segment_output)) return false;
-        std::copy(segment_output.begin(), segment_output.end(), attention.begin() + offset);
-        offset += size;
+        const auto input = std::span<const float>(projected).subspan(
+            row * projection_width, part.count * projection_width);
+        if (!attend(*part.state, part.position, part.count, input, segment_output)) return false;
+        std::copy(segment_output.begin(), segment_output.end(), attention.begin() + row * hidden);
+        row += part.count;
       }
     }
     if (layer.is_linear) ++linear_index; else ++full_index;

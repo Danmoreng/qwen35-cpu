@@ -172,7 +172,7 @@ The local limits are 4 MiB and 4096 rows per input file, 256 KiB per line, 32 Mi
 
 The default `--threads auto --batch-width auto` probes the loaded model before listening. It measures short greedy decode batches, or prompt processing with the selected decision readout on qev when enabled. The server tests a shortlist of thread counts and widths up to the resident limit, 16 rows and a memory-headroom estimate. Linux uses process affinity and available cgroup v2 CPU quotas. Windows uses process affinity when available. Each candidate receives a warmup and three measurement windows. The probe selects by median throughput, first comparing thread counts and then widths with those threads. Output length, prompt length, sampling mode and concurrent load can change the best setting.
 
-`GET /v1/batch-config` reports detected CPU capacity, chosen inference threads, simultaneous batch rows and the measured candidates. Use `--threads N --batch-width N` to skip the probe. The width must fit `--residents`. The server shares one inference executor across batch and interactive work.
+`GET /v1/batch-config` reports detected CPU capacity, chosen inference threads, simultaneous batch rows and the measured candidates. Use `--threads N --batch-width N` to skip the thread and width probes. The width must fit `--residents`. The server shares one inference executor across batch and interactive work.
 
 ## Streaming and stops
 
@@ -418,13 +418,26 @@ The native path projects only the required option-letter logits for supported
 Q4 DOT4 output weights; it performs **zero decode forwards**. Other supported
 head formats retain full-vocabulary projection. `--decision-head full` forces
 the original readout for comparison; the default is `auto`. Completion requests
-keep their existing vocabulary/sampling behavior. `--prefill-chunk N` selects
-an explicit 1..2048-token chunk; omit it to retain the adaptive 64/128-token
-default. Multiple decision
-requests share the existing bounded scheduler. Prefill chunks use one executor
-and are time-sliced between requests; there is no cross-request prefill batch.
-Decode batching therefore does not accelerate this workload. See the
-[HTTP and concurrency measurements](https://github.com/Danmoreng/qwen35-cpu/blob/3680efb33bf6975ce6722d64d20c641cb7490b06/docs/qev-systemone-api-2026-10-21.md).
+keep their existing vocabulary/sampling behavior.
+
+For a qev server, `--prefill-chunk auto` measures the adaptive schedule and a
+fixed chunk of 128 before listening. It uses the selected-option head, one
+resident request and the final inference thread count. The probes use 74 and
+128 synthetic input tokens (capped at the context limit), one warmup and three
+samples for each setting. A fixed chunk wins if its median decisions/s is more
+than 3% higher at every probed length. Smaller contexts below 74 tokens and
+full-head models retain the adaptive schedule. `GET /v1/batch-config` reports
+the rates in `chunk_probes` and the chosen `prefill_chunk` (0 means adaptive).
+The selected schedule applies to that server instance. Omitting the flag uses
+the adaptive 64/128-token schedule. A numeric value from 1 to 2048 directly
+sets the chunk size.
+
+Multiple decision requests share one inference executor. The default processes
+one request's chunk per scheduler step. `--prefill-requests N` lets eligible
+selected-readout requests share matrix operations during prefill. Cache hits
+and the number of simultaneously ready requests affect how often this happens.
+See the [decision tuning measurements](benchmarks/decision-tuning-9955hx3d.md)
+for the single-request and concurrent profiles on the Ryzen 9 9955HX3D.
 
 The requested prefill chunk is an upper bound. The engine also ends a chunk at
 token 128 so that the first queries retain the row-attention kernel used by the

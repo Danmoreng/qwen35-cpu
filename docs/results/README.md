@@ -6,6 +6,7 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
+| `decision-tuning-2026-11-20` | [qev latency, concurrent serving and AVX2 prototypes](../benchmarks/decision-tuning-9955hx3d.md) |
 | `laptop-refresh-2026-11-20` | [Current laptop benchmarks](../benchmarks/laptop-refresh-9955hx3d.md), fixed-token throughput, qev HTTP decisions and the README chart |
 | `q4-prefill-2026-11-20` | [Ryzen Q4 matrix kernel](../benchmarks/q4-prefill-9955hx3d.md), paired prefill rates, Q4 operation timings and full-vocabulary logit parity |
 | `prefill-profile-2026-11-20` | [Ryzen prefill study](../benchmarks/prefill-9955hx3d.md), operation timings, runtime comparisons and full-vocabulary logit parity |

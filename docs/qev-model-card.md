@@ -67,7 +67,7 @@ optimization. The native server projects only the required option-letter logits 
 checkpoint, with no autoregressive continuation. `--decision-head full` restores
 the full-vocabulary reference; other supported head formats use it automatically.
 The adaptive prefill chunk default is 64 tokens for short prompts and 128 for
-longer prompts. `--prefill-chunk 128` selects a fixed chunk explicitly.
+longer prompts. `--prefill-chunk 128` selects a fixed chunk explicitly. The [Ryzen decision tuning measurements](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/benchmarks/decision-tuning-9955hx3d.md) compare settings for short prompts and concurrent routing.
 
 ## Format and calibration
 

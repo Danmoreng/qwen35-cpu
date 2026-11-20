@@ -23,13 +23,13 @@ def server(binary, model, weights, head=None, expected_auto_head='selected', thr
     command = [str(binary.resolve()), '--model-dir', str(model), '--weights', str(weights),
                '--threads', str(threads), '--port', str(port), '--residents', '16']
     if head: command += ['--decision-head', head]
-    if head and prefill_chunk: command += ['--prefill-chunk', str(prefill_chunk)]
+    if head and prefill_chunk and prefill_chunk != '0': command += ['--prefill-chunk', str(prefill_chunk)]
     with tempfile.TemporaryFile() as log:
         child = subprocess.Popen(command, stdout=log, stderr=log,
                                  env={**os.environ, 'QWEN35_API_KEY': ''})
         base = f'http://127.0.0.1:{port}'
         try:
-            for _ in range(600):
+            for _ in range(1200 if prefill_chunk == 'auto' else 600):
                 if child.poll() is not None: raise RuntimeError('Server exited before readiness')
                 try:
                     with urllib.request.urlopen(base + '/health', timeout=1): break
@@ -39,6 +39,18 @@ def server(binary, model, weights, head=None, expected_auto_head='selected', thr
                 log.seek(0)
                 expected = expected_auto_head if head == 'auto' else 'full'
                 assert f'System One readout: {expected}' in log.read().decode(), 'Unexpected readout dispatch'
+                if prefill_chunk == 'auto':
+                    with urllib.request.urlopen(base + '/v1/batch-config', timeout=5) as response:
+                        tuning = json.load(response)
+                    rates = {(p['prompt_tokens'], p['chunk']): p['decisions_per_second']
+                             for p in tuning['chunk_probes']}
+                    if expected == 'selected':
+                        assert set(rates) == {(74, 0), (74, 128), (128, 0), (128, 128)}
+                        assert all(rate > 0 for rate in rates.values())
+                        faster = all(rates[n, 128] > 1.03 * rates[n, 0] for n in (74, 128))
+                        assert tuning['prefill_chunk'] == (128 if faster else 0)
+                    else:
+                        assert not rates and tuning['prefill_chunk'] == 0
             def call(body, path='/v1/systemone'):
                 request = urllib.request.Request(base + path, data=json.dumps(body).encode(),
                                                  headers={'Content-Type': 'application/json'})
@@ -62,7 +74,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--expected-auto-head', choices=['selected', 'full'], default='selected')
     parser.add_argument('--threads', type=int, default=8)
-    parser.add_argument('--prefill-chunk', type=int, default=0)
+    parser.add_argument('--prefill-chunk', help='Native chunk size or auto')
     args = parser.parse_args()
     fixtures = [{**{k: json.loads(line)[k] for k in ('state', 'questions')}, 'encoding': encoding}
                 for line in Path('configs/qev-smoke.jsonl').read_text().splitlines() if line.strip()

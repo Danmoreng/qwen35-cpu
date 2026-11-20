@@ -79,7 +79,7 @@ tokens per request. B=16 is total throughput across 16 private requests.
 
 Native had the highest batch-16 decode throughput at all three model sizes. The three charted formats have the same tensor size within each model size. [Throughput measurements](docs/benchmarks/laptop-refresh-9955hx3d.md#base-model-throughput)
 
-For native qev-0.8b decisions, median HTTP latency was **40.29 ms** (74 input tokens) and **180.07 ms** (579 input tokens), both 7.6% lower than before the prefill changes. [Decision benchmark](docs/benchmarks/laptop-refresh-9955hx3d.md#qev-08b-decision-latency)
+For native qev-0.8b decisions, median HTTP latency was **40.29 ms** (74 input tokens) and **180.07 ms** (579 input tokens), both 7.6% lower than before the prefill changes. [Decision benchmark](docs/benchmarks/laptop-refresh-9955hx3d.md#qev-08b-decision-latency) · [Short-ticket and concurrency tuning](docs/benchmarks/decision-tuning-9955hx3d.md)
 
 <a id="quantization-quality"></a>
 
