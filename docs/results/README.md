@@ -6,6 +6,7 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
+| `decision-gpu-2026-11-20` | [GPU decision-model comparison](../benchmarks/decision-models-gpu.md), predictions, quality scores and checkpoint hashes |
 | `readme-2026-11-19` | [Ryzen 9 9955HX3D comparison](../benchmarks/ryzen-9955hx3d.md), fixed-token throughput, inputs and binary hashes |
 | `qwen35-4b-agent-2026-11-19` | [4B Pi Coding Agent on Ryzen](../benchmarks/qwen35-4b-pi-agent.md), per-request phase rates, browser scores, cache controls and BF16 quantization comparison |
 | `qwen35-4b-mtp-coding-2026-11-19` | [4B MTP depth for coding and tool calls](../benchmarks/qwen35-4b-mtp-coding.md), source fixtures, HTTP traces and shared-target timing samples |

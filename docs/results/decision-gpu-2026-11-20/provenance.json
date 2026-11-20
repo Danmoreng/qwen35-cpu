@@ -1,0 +1,81 @@
+{
+  "date": "2026-11-20",
+  "device": "NVIDIA GeForce RTX 5080 Laptop GPU",
+  "driver": "620.70.06",
+  "device_memory_mib": 16303,
+  "torch": "2.11.0+cu130",
+  "transformers": "5.14.1",
+  "models": {
+    "qev": {
+      "repo": "labqoat/qev-0.8b-GGUF",
+      "revision": "9550cc0d3f0e8f651cced8469ddfb89acc58c26d",
+      "filename": "qev-0.8b-text-Q8_0.gguf",
+      "sha256": "07856dd5d6c7d1e19a9579ef324e5377649890a6438f7735ea5ac8935f2b2140",
+      "bytes": 811845792
+    },
+    "mapika": {
+      "repo": "Mapika/decider-0.8b",
+      "revision": "a0a01d6f8135298f400a8c856b355793012ae971",
+      "filename": "model.safetensors",
+      "sha256": "6926f82ef7e9ea408ad881555204daa6bb694ca82509c4d1514b7be2e713563d",
+      "bytes": 1504827608
+    },
+    "evalengine": {
+      "repo": "evalengine/decision-0.8b-gguf",
+      "revision": "ce993792ad283053004bf0230b1709ff7351bb24",
+      "filename": "decision-0.8b-Q8_0.gguf",
+      "sha256": "efa1614fe5c7d84acb6b8acdf9fd0dda4a26acf110302732baa573d3332a4fef",
+      "bytes": 811843168
+    },
+    "liquid": {
+      "repo": "LiquidAI/d1-2B-GGUF",
+      "revision": "4a181094d1b6addfaa3a0956f78e7ab2aa406a0c",
+      "filename": "d1-2B-Q8_0.gguf",
+      "sha256": "073313d92b53b0ac8193db6e906cb3c78a98183d244b15b7b8f5426115c6738c",
+      "bytes": 1846240576
+    }
+  },
+  "llama_cpp": {
+    "revision": "ffc87c3a7989cb657641a6459a186f303e176af8",
+    "server_sha256": "ee74e41354baaf28383fa6575c3a980b39361cf4fd96dd0f0588f8d6051b8925",
+    "server_args": [
+      "-ngl",
+      "999",
+      "-np",
+      "1",
+      "-c",
+      "16384",
+      "-b",
+      "8192",
+      "-ub",
+      "8192",
+      "--no-warmup"
+    ]
+  },
+  "benchmarks": {
+    "heaven": {
+      "repository": "https://github.com/fstandhartinger/jevbench",
+      "revision": "1bcc55eb6c8cffde2306b3db03ede39b61c6152a",
+      "combined_jsonl_sha256": "771ea8ac252af155606eeb09cad920b32b326c5c2b1e9c9af868be00fe8e2fad"
+    },
+    "mini": {
+      "repository": "https://github.com/JevBench/jevbench",
+      "revision": "e18733694623aa93058e279c3534f8b8e2edefa3",
+      "manifest_sha256": "d2aa52e7a3210bd6c5fd86e8266791b6f398f840ef8e30bfeec6bcf6f9e59fd9",
+      "gold_sha256": "25438a91d951ccc97fa05cc796fd74fec75f34ceae39c347f4e4ba6d4e3fe83a"
+    },
+    "when2call": {
+      "repository": "https://huggingface.co/datasets/nvidia/When2Call",
+      "revision": "0582f7749df63a96fdc3070932e83e72396ace53",
+      "test_mcq_sha256": "8c3694e583eeeb8dbc297e6cd90da70efc68efa4b6adb7227523e828c6b7b14c",
+      "request_builder_sha256": "65203b7b943ec612c6f80a963dafd8dbac3f7f6206e5453e2f3b16a104174a3a"
+    }
+  },
+  "local_harness": {
+    "run.py": "0ec6d1c6a4e971d033edc2bc448f7162c479011145bc84a3f9de13164ab9fb0d",
+    "adapter.py": "249b089eb91eee47b1978976c5d03ebd372064dc46332a57f1104a79d65a414f",
+    "eval_readout.cpp": "7a068ef1c1017c1097dba2ebf2877c783d9a871d51e12b7cee7ed0d1a2b621ba",
+    "eval_readout_16k.cpp": "fce2eec815c1b8a092ceb2eca53ef5a813d4c0abf135ecaa61e0d3afa15dfe5d",
+    "aggregate.py": "9e5b495a7608406424dd4f0ad16442a850b04adfb4bb566b81304346ea153955"
+  }
+}

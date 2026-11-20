@@ -1,0 +1,807 @@
+{
+  "qev": {
+    "mini": {
+      "overall": 0.6513398692810458,
+      "pillars": {
+        "REP": 0.7527777777777778,
+        "BAT": 0.7083333333333334,
+        "MEA": 0.34558823529411764,
+        "LOG": 0.7416666666666667,
+        "CHO": 0.7083333333333334
+      },
+      "groups": {
+        "REP.invariance": 0.8511904761904762,
+        "REP.equivariance": 0.5555555555555555,
+        "REP.binding": 0.7777777777777778,
+        "REP.type": 0.6666666666666667,
+        "BAT.isolation": 0.7083333333333334,
+        "MEA.complement": 0.15833333333333333,
+        "MEA.partition": 0.5729166666666666,
+        "MEA.marginalisation": 0.12500000000000003,
+        "LOG.bounds": 0.7083333333333334,
+        "LOG.monotonicity": 0.8194444444444444,
+        "CHO.conditioning": 0.7083333333333334
+      },
+      "ci": {
+        "overall": [
+          0.62050887281402,
+          0.6811458223463993
+        ],
+        "graded_overall": [
+          0.9104271200818537,
+          0.9260082427174409
+        ]
+      },
+      "incomplete": [],
+      "excluded": {
+        "low_n": [],
+        "exploratory": [],
+        "diagnostic": []
+      },
+      "n_checks": 50,
+      "n_outcomes": 1468,
+      "skipped_outcomes": 0,
+      "requests": 1248,
+      "errors": 0,
+      "gold": {
+        "accuracy": 0.849329205366357,
+        "gold_prob": 0.8141327780391029,
+        "n": 1938,
+        "ci": [
+          0.8362422997946611,
+          0.8634903640256959
+        ],
+        "by_domain": {
+          "agent_logs": {
+            "n": 141,
+            "accuracy": 0.8865248226950354
+          },
+          "content_moderation": {
+            "n": 214,
+            "accuracy": 0.8644859813084113
+          },
+          "customer_support": {
+            "n": 225,
+            "accuracy": 0.8666666666666667
+          },
+          "ecommerce_returns": {
+            "n": 165,
+            "accuracy": 0.8242424242424242
+          },
+          "education_grading": {
+            "n": 137,
+            "accuracy": 0.8321167883211679
+          },
+          "finance_ops": {
+            "n": 169,
+            "accuracy": 0.8520710059171598
+          },
+          "healthcare_admin": {
+            "n": 142,
+            "accuracy": 0.8169014084507042
+          },
+          "hr_recruiting": {
+            "n": 139,
+            "accuracy": 0.8345323741007195
+          },
+          "it_incidents": {
+            "n": 146,
+            "accuracy": 0.8561643835616438
+          },
+          "legal_contracts": {
+            "n": 147,
+            "accuracy": 0.8299319727891157
+          },
+          "logistics": {
+            "n": 141,
+            "accuracy": 0.8723404255319149
+          },
+          "security_ops": {
+            "n": 172,
+            "accuracy": 0.8430232558139535
+          }
+        }
+      },
+      "raw_sha256": "dceca441c8f1e087c5ccf1b0f9f86db70a1a30894e94a706781e0802eaad5906"
+    },
+    "heaven": {
+      "n_correct": 179,
+      "n_valid": 231,
+      "n_attempted": 231,
+      "n_renormalized": 0,
+      "schema_validity_strict": 1.0,
+      "brier_mean": 0.3287418799690533,
+      "calibration_n": 231,
+      "tiers": {
+        "original": {
+          "correct": 67,
+          "n": 72
+        },
+        "easy": {
+          "correct": 48,
+          "n": 48
+        },
+        "hard": {
+          "correct": 64,
+          "n": 111
+        }
+      },
+      "raw_sha256": "bdcafa0460228566fe93526c1726d20ae60b34ddebe2dec13eb79d3a0bfd0a38"
+    },
+    "when": {
+      "n": 3652,
+      "answered": 3652,
+      "correct": 1652,
+      "explicit_choice_correct": 1652,
+      "changed_by_tie_break": 0,
+      "by_category": {
+        "cannot_answer": {
+          "n": 1295,
+          "answered": 1295,
+          "correct": 110
+        },
+        "request_for_info": {
+          "n": 1062,
+          "answered": 1062,
+          "correct": 322
+        },
+        "tool_call": {
+          "n": 1295,
+          "answered": 1295,
+          "correct": 1220
+        }
+      },
+      "aa": {
+        "n": 3423,
+        "answered": 3423,
+        "correct": 1618
+      },
+      "brier": 0.7703935222714372,
+      "raw_sha256": "372ddf6ec1326eb20876687d7cde23a160eee7c9153bf9cea9dfb9257c72f50c"
+    }
+  },
+  "mapika": {
+    "mini": {
+      "overall": 0.7080228758169935,
+      "pillars": {
+        "REP": 0.7444444444444445,
+        "BAT": 1.0,
+        "MEA": 0.39705882352941174,
+        "LOG": 0.6208333333333333,
+        "CHO": 0.7777777777777778
+      },
+      "groups": {
+        "REP.invariance": 0.761904761904762,
+        "REP.equivariance": 0.7222222222222222,
+        "REP.binding": 0.7222222222222222,
+        "REP.type": 0.75,
+        "BAT.isolation": 1.0,
+        "MEA.complement": 0.10833333333333332,
+        "MEA.partition": 0.703125,
+        "MEA.marginalisation": 0.14583333333333331,
+        "LOG.bounds": 0.625,
+        "LOG.monotonicity": 0.611111111111111,
+        "CHO.conditioning": 0.7777777777777778
+      },
+      "ci": {
+        "overall": [
+          0.6836811281066006,
+          0.733245322833133
+        ],
+        "graded_overall": [
+          0.9081817155157936,
+          0.9235115384617099
+        ]
+      },
+      "incomplete": [],
+      "excluded": {
+        "low_n": [],
+        "exploratory": [],
+        "diagnostic": []
+      },
+      "n_checks": 50,
+      "n_outcomes": 1468,
+      "skipped_outcomes": 0,
+      "requests": 1248,
+      "errors": 0,
+      "gold": {
+        "accuracy": 0.8244754041967665,
+        "gold_prob": 0.7901197471370706,
+        "n": 1938,
+        "ci": [
+          0.8106215846994536,
+          0.8394075553336662
+        ],
+        "by_domain": {
+          "agent_logs": {
+            "n": 141,
+            "accuracy": 0.8262411347517731
+          },
+          "content_moderation": {
+            "n": 214,
+            "accuracy": 0.8364485981308412
+          },
+          "customer_support": {
+            "n": 225,
+            "accuracy": 0.8533333333333334
+          },
+          "ecommerce_returns": {
+            "n": 165,
+            "accuracy": 0.7666666666666667
+          },
+          "education_grading": {
+            "n": 137,
+            "accuracy": 0.8284671532846716
+          },
+          "finance_ops": {
+            "n": 169,
+            "accuracy": 0.8007889546351085
+          },
+          "healthcare_admin": {
+            "n": 142,
+            "accuracy": 0.7147887323943662
+          },
+          "hr_recruiting": {
+            "n": 139,
+            "accuracy": 0.8237410071942446
+          },
+          "it_incidents": {
+            "n": 146,
+            "accuracy": 0.8595890410958904
+          },
+          "legal_contracts": {
+            "n": 147,
+            "accuracy": 0.826530612244898
+          },
+          "logistics": {
+            "n": 141,
+            "accuracy": 0.8936170212765957
+          },
+          "security_ops": {
+            "n": 172,
+            "accuracy": 0.8488372093023255
+          }
+        }
+      },
+      "raw_sha256": "1ded2f69aabd6bf07c001187b623c10dae4dab7549ffbd1e575269aa5e4948c1"
+    },
+    "heaven": {
+      "n_correct": 153,
+      "n_valid": 231,
+      "n_attempted": 231,
+      "n_renormalized": 0,
+      "schema_validity_strict": 1.0,
+      "brier_mean": 0.48546808103896105,
+      "calibration_n": 231,
+      "tiers": {
+        "original": {
+          "correct": 60,
+          "n": 72
+        },
+        "easy": {
+          "correct": 48,
+          "n": 48
+        },
+        "hard": {
+          "correct": 45,
+          "n": 111
+        }
+      },
+      "raw_sha256": "96320a3e8606fb8d5e8c2a1596f74b59bbb899996d69e2767670e006bfcd242a"
+    },
+    "when": {
+      "n": 3652,
+      "answered": 3652,
+      "correct": 1745,
+      "explicit_choice_correct": 1745,
+      "changed_by_tie_break": 0,
+      "by_category": {
+        "cannot_answer": {
+          "n": 1295,
+          "answered": 1295,
+          "correct": 172
+        },
+        "request_for_info": {
+          "n": 1062,
+          "answered": 1062,
+          "correct": 449
+        },
+        "tool_call": {
+          "n": 1295,
+          "answered": 1295,
+          "correct": 1124
+        }
+      },
+      "aa": {
+        "n": 3423,
+        "answered": 3423,
+        "correct": 1694
+      },
+      "brier": 0.7094048131708652,
+      "raw_sha256": "5416eb4d7e67112f98d232364f4de121691b04b5a057a8d017cf6fa235640add"
+    }
+  },
+  "evalengine": {
+    "mini": {
+      "overall": 0.7006045751633987,
+      "pillars": {
+        "REP": 0.7333333333333333,
+        "BAT": 1.0,
+        "MEA": 0.321078431372549,
+        "LOG": 0.7125,
+        "CHO": 0.7361111111111112
+      },
+      "groups": {
+        "REP.invariance": 0.7678571428571428,
+        "REP.equivariance": 0.513888888888889,
+        "REP.binding": 0.7083333333333333,
+        "REP.type": 0.9791666666666667,
+        "BAT.isolation": 1.0,
+        "MEA.complement": 0.11666666666666665,
+        "MEA.partition": 0.5677083333333334,
+        "MEA.marginalisation": 0.08333333333333331,
+        "LOG.bounds": 0.6964285714285714,
+        "LOG.monotonicity": 0.75,
+        "CHO.conditioning": 0.7361111111111112
+      },
+      "ci": {
+        "overall": [
+          0.6731519904398796,
+          0.7258519549686822
+        ],
+        "graded_overall": [
+          0.904112511265044,
+          0.9202645132781825
+        ]
+      },
+      "incomplete": [],
+      "excluded": {
+        "low_n": [],
+        "exploratory": [],
+        "diagnostic": []
+      },
+      "n_checks": 50,
+      "n_outcomes": 1468,
+      "skipped_outcomes": 0,
+      "requests": 1248,
+      "errors": 0,
+      "gold": {
+        "accuracy": 0.8152734778121775,
+        "gold_prob": 0.7808721165044529,
+        "n": 1938,
+        "ci": [
+          0.8005967180507211,
+          0.830338266384778
+        ],
+        "by_domain": {
+          "agent_logs": {
+            "n": 141,
+            "accuracy": 0.7730496453900709
+          },
+          "content_moderation": {
+            "n": 214,
+            "accuracy": 0.8317757009345794
+          },
+          "customer_support": {
+            "n": 225,
+            "accuracy": 0.8355555555555556
+          },
+          "ecommerce_returns": {
+            "n": 165,
+            "accuracy": 0.7878787878787878
+          },
+          "education_grading": {
+            "n": 137,
+            "accuracy": 0.8175182481751825
+          },
+          "finance_ops": {
+            "n": 169,
+            "accuracy": 0.7988165680473372
+          },
+          "healthcare_admin": {
+            "n": 142,
+            "accuracy": 0.7746478873239436
+          },
+          "hr_recruiting": {
+            "n": 139,
+            "accuracy": 0.8201438848920863
+          },
+          "it_incidents": {
+            "n": 146,
+            "accuracy": 0.8767123287671232
+          },
+          "legal_contracts": {
+            "n": 147,
+            "accuracy": 0.8027210884353742
+          },
+          "logistics": {
+            "n": 141,
+            "accuracy": 0.8439716312056738
+          },
+          "security_ops": {
+            "n": 172,
+            "accuracy": 0.8081395348837209
+          }
+        }
+      },
+      "raw_sha256": "17ce06aefbde62621bc77f8bbd0a8b6cf2b1251eae3f1ae044e25db467e999b5"
+    },
+    "heaven": {
+      "n_correct": 148,
+      "n_valid": 231,
+      "n_attempted": 231,
+      "n_renormalized": 0,
+      "schema_validity_strict": 1.0,
+      "brier_mean": 0.4383853481967224,
+      "calibration_n": 231,
+      "tiers": {
+        "original": {
+          "correct": 58,
+          "n": 72
+        },
+        "easy": {
+          "correct": 48,
+          "n": 48
+        },
+        "hard": {
+          "correct": 42,
+          "n": 111
+        }
+      },
+      "raw_sha256": "e99bb27e434d1b3e3e864e4d428d7e213588356b3fab28e7c3679095c9fcc3cc"
+    },
+    "when": {
+      "n": 3652,
+      "answered": 3652,
+      "correct": 1604,
+      "explicit_choice_correct": 1604,
+      "changed_by_tie_break": 0,
+      "by_category": {
+        "cannot_answer": {
+          "n": 1295,
+          "answered": 1295,
+          "correct": 120
+        },
+        "request_for_info": {
+          "n": 1062,
+          "answered": 1062,
+          "correct": 267
+        },
+        "tool_call": {
+          "n": 1295,
+          "answered": 1295,
+          "correct": 1217
+        }
+      },
+      "aa": {
+        "n": 3423,
+        "answered": 3423,
+        "correct": 1555
+      },
+      "brier": 0.8870114669296176,
+      "raw_sha256": "2e36c0e137968c000ec43991203ff375bdf7e422789bcaba403b15299fea109b"
+    }
+  },
+  "liquid": {
+    "mini": {
+      "overall": 0.7383496732026144,
+      "pillars": {
+        "REP": 0.8194444444444444,
+        "BAT": 1.0,
+        "MEA": 0.42647058823529416,
+        "LOG": 0.7375,
+        "CHO": 0.7083333333333334
+      },
+      "groups": {
+        "REP.invariance": 0.75,
+        "REP.equivariance": 0.8333333333333333,
+        "REP.binding": 0.9305555555555556,
+        "REP.type": 0.875,
+        "BAT.isolation": 1.0,
+        "MEA.complement": 0.18333333333333338,
+        "MEA.partition": 0.6354166666666666,
+        "MEA.marginalisation": 0.3125,
+        "LOG.bounds": 0.7142857142857143,
+        "LOG.monotonicity": 0.7916666666666666,
+        "CHO.conditioning": 0.7083333333333334
+      },
+      "ci": {
+        "overall": [
+          0.713529768647461,
+          0.7644178810789902
+        ],
+        "graded_overall": [
+          0.9344832540535248,
+          0.9473336204718142
+        ]
+      },
+      "incomplete": [],
+      "excluded": {
+        "low_n": [],
+        "exploratory": [],
+        "diagnostic": []
+      },
+      "n_checks": 50,
+      "n_outcomes": 1468,
+      "skipped_outcomes": 0,
+      "requests": 1248,
+      "errors": 0,
+      "gold": {
+        "accuracy": 0.8844169246646026,
+        "gold_prob": 0.8463972186834727,
+        "n": 1938,
+        "ci": [
+          0.8724385245901639,
+          0.8978963571062083
+        ],
+        "by_domain": {
+          "agent_logs": {
+            "n": 141,
+            "accuracy": 0.9078014184397163
+          },
+          "content_moderation": {
+            "n": 214,
+            "accuracy": 0.8644859813084113
+          },
+          "customer_support": {
+            "n": 225,
+            "accuracy": 0.9111111111111111
+          },
+          "ecommerce_returns": {
+            "n": 165,
+            "accuracy": 0.8909090909090909
+          },
+          "education_grading": {
+            "n": 137,
+            "accuracy": 0.8905109489051095
+          },
+          "finance_ops": {
+            "n": 169,
+            "accuracy": 0.8698224852071006
+          },
+          "healthcare_admin": {
+            "n": 142,
+            "accuracy": 0.8732394366197183
+          },
+          "hr_recruiting": {
+            "n": 139,
+            "accuracy": 0.8848920863309353
+          },
+          "it_incidents": {
+            "n": 146,
+            "accuracy": 0.8972602739726028
+          },
+          "legal_contracts": {
+            "n": 147,
+            "accuracy": 0.8571428571428571
+          },
+          "logistics": {
+            "n": 141,
+            "accuracy": 0.8936170212765957
+          },
+          "security_ops": {
+            "n": 172,
+            "accuracy": 0.872093023255814
+          }
+        }
+      },
+      "raw_sha256": "0fabee5105b01f0a2d776b01680e7857051afc8b61aed6f7d3a7a619e4f898f9"
+    },
+    "heaven": {
+      "n_correct": 177,
+      "n_valid": 231,
+      "n_attempted": 231,
+      "n_renormalized": 0,
+      "schema_validity_strict": 1.0,
+      "brier_mean": 0.28506405374089755,
+      "calibration_n": 231,
+      "tiers": {
+        "original": {
+          "correct": 68,
+          "n": 72
+        },
+        "easy": {
+          "correct": 48,
+          "n": 48
+        },
+        "hard": {
+          "correct": 61,
+          "n": 111
+        }
+      },
+      "raw_sha256": "984f759fe90c5306f6546238d18bce19acd176e7c40a947a13f2b0f8296cc3db"
+    },
+    "when": {
+      "n": 3652,
+      "answered": 3652,
+      "correct": 3295,
+      "explicit_choice_correct": 3295,
+      "changed_by_tie_break": 0,
+      "by_category": {
+        "cannot_answer": {
+          "n": 1295,
+          "answered": 1295,
+          "correct": 1231
+        },
+        "request_for_info": {
+          "n": 1062,
+          "answered": 1062,
+          "correct": 885
+        },
+        "tool_call": {
+          "n": 1295,
+          "answered": 1295,
+          "correct": 1179
+        }
+      },
+      "aa": {
+        "n": 3423,
+        "answered": 3423,
+        "correct": 3211
+      },
+      "brier": 0.14498088378536234,
+      "raw_sha256": "70647fadb353934122c8b40f15ec1be815b4e77cc17dac8c1dd0b169aac2ceca"
+    }
+  },
+  "evalengine-2k-diagnostic": {
+    "mini": {
+      "overall": 0.7006045751633987,
+      "pillars": {
+        "REP": 0.7333333333333333,
+        "BAT": 1.0,
+        "MEA": 0.321078431372549,
+        "LOG": 0.7125,
+        "CHO": 0.7361111111111112
+      },
+      "groups": {
+        "REP.invariance": 0.7678571428571428,
+        "REP.equivariance": 0.513888888888889,
+        "REP.binding": 0.7083333333333333,
+        "REP.type": 0.9791666666666667,
+        "BAT.isolation": 1.0,
+        "MEA.complement": 0.11666666666666665,
+        "MEA.partition": 0.5677083333333334,
+        "MEA.marginalisation": 0.08333333333333331,
+        "LOG.bounds": 0.6964285714285714,
+        "LOG.monotonicity": 0.75,
+        "CHO.conditioning": 0.7361111111111112
+      },
+      "ci": {
+        "overall": [
+          0.6731519904398796,
+          0.7258519549686822
+        ],
+        "graded_overall": [
+          0.904112511265044,
+          0.9202645132781825
+        ]
+      },
+      "incomplete": [],
+      "excluded": {
+        "low_n": [],
+        "exploratory": [],
+        "diagnostic": []
+      },
+      "n_checks": 50,
+      "n_outcomes": 1468,
+      "skipped_outcomes": 0,
+      "requests": 1248,
+      "errors": 0,
+      "gold": {
+        "accuracy": 0.8152734778121775,
+        "gold_prob": 0.7808721165044529,
+        "n": 1938,
+        "ci": [
+          0.8005967180507211,
+          0.830338266384778
+        ],
+        "by_domain": {
+          "agent_logs": {
+            "n": 141,
+            "accuracy": 0.7730496453900709
+          },
+          "content_moderation": {
+            "n": 214,
+            "accuracy": 0.8317757009345794
+          },
+          "customer_support": {
+            "n": 225,
+            "accuracy": 0.8355555555555556
+          },
+          "ecommerce_returns": {
+            "n": 165,
+            "accuracy": 0.7878787878787878
+          },
+          "education_grading": {
+            "n": 137,
+            "accuracy": 0.8175182481751825
+          },
+          "finance_ops": {
+            "n": 169,
+            "accuracy": 0.7988165680473372
+          },
+          "healthcare_admin": {
+            "n": 142,
+            "accuracy": 0.7746478873239436
+          },
+          "hr_recruiting": {
+            "n": 139,
+            "accuracy": 0.8201438848920863
+          },
+          "it_incidents": {
+            "n": 146,
+            "accuracy": 0.8767123287671232
+          },
+          "legal_contracts": {
+            "n": 147,
+            "accuracy": 0.8027210884353742
+          },
+          "logistics": {
+            "n": 141,
+            "accuracy": 0.8439716312056738
+          },
+          "security_ops": {
+            "n": 172,
+            "accuracy": 0.8081395348837209
+          }
+        }
+      },
+      "raw_sha256": "9e98480c5557e6149107f135948dd501ff089b5941eb3ccd65960ff33de4616e"
+    },
+    "heaven": {
+      "n_correct": 138,
+      "n_valid": 195,
+      "n_attempted": 231,
+      "n_renormalized": 0,
+      "schema_validity_strict": 0.8441558441558441,
+      "brier_mean": 0.36102478268331806,
+      "calibration_n": 195,
+      "tiers": {
+        "original": {
+          "correct": 58,
+          "n": 72
+        },
+        "easy": {
+          "correct": 48,
+          "n": 48
+        },
+        "hard": {
+          "correct": 32,
+          "n": 111
+        }
+      },
+      "raw_sha256": "a825a61bc0c0d0210e37aede4674a14d3bdfbcac67bcc80ed48ff762b217a9d7"
+    },
+    "when": {
+      "n": 3652,
+      "answered": 3394,
+      "correct": 1484,
+      "explicit_choice_correct": 1484,
+      "changed_by_tie_break": 0,
+      "by_category": {
+        "cannot_answer": {
+          "n": 1295,
+          "answered": 1251,
+          "correct": 119
+        },
+        "request_for_info": {
+          "n": 1062,
+          "answered": 959,
+          "correct": 258
+        },
+        "tool_call": {
+          "n": 1295,
+          "answered": 1184,
+          "correct": 1107
+        }
+      },
+      "aa": {
+        "n": 3423,
+        "answered": 3180,
+        "correct": 1437
+      },
+      "brier": 0.8852647550530139,
+      "raw_sha256": "7d66217316e181beb0da127f5a3f299d7a37c5c559b4ba5b6167f99656df86d8"
+    }
+  }
+}

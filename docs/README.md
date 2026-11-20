@@ -39,6 +39,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 - [AVX2 cloud VM tuning](benchmarks/avx2-cloud.md): prompt processing, decode experiments and bitwise checks on an EPYC VM.
 - [Standard model calibration](benchmarks/calibration.md).
 - [Decision quality](benchmarks/decision-quality.md) and [HTTP latency](benchmarks/decision-http.md).
+- [Four decision models on GPU](benchmarks/decision-models-gpu.md) compares public JevBench accuracy, probability consistency and When2Call tool routing before CPU integration.
 - [qev on JevBench v1](benchmarks/jevbench-v1.md): Q4/Q8/BF16 accuracy and Ryzen CPU latency, paired precision audit, training-provenance limits, published Gemma 4/H100 comparisons and an English chart.
 - [qev on NVIDIA When2Call](benchmarks/when2call.md): complete MCQ test accuracy across Q4/Q8/BF16 and CPU/Vulkan backend agreement; [published-model comparisons](benchmarks/when2call-comparison.md) with English charts.
 - [qev AVX2 tuning](benchmarks/qev-avx2-cloud.md): CPU measurements and attention boundaries for larger chunks.
