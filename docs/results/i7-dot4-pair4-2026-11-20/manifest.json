@@ -1,0 +1,573 @@
+{
+  "raw_directory": "benchmarks/i7-dot4-6FugJsNr",
+  "reproduction_paths_relative_to": "repository root",
+  "base_revision": "c2affd50b83edb2e677794993b2a6ff02dba2d4e",
+  "ryzen_evidence_revision": "fc7e413101cea078ebd36cb2e2cb37fd8022938b",
+  "candidate_patch": "../decision-tuning-2026-11-20/avx2-pair4.patch",
+  "candidate_patch_sha256": "92c788b1da8e70e7a53052a4b06479065f9f95b7faa60522a00b84cc9bee38eb",
+  "builds": {
+    "stock": {
+      "base_revision": "c2affd50b83edb2e677794993b2a6ff02dba2d4e",
+      "bench_sha256": "7de9d0e6c14dc2d4a5a5dd604ec3559ef376512f1460aaf3f73bd755cba31ded",
+      "cli_sha256": "8be6770d89ead91181c960a7aed2ec5a76cda02ca7c83883abad998f4abe4c30",
+      "normalized_build_commands_sha256": "aaab627424d52c10db4d46611efc7e8894bac36c970ec9df0b843fd5241994b0",
+      "dot4_simd_source_sha256": "a5c95d37246623a19688bcdce9c2ee0d6ab7cd4b26f8bf0201cbc082eb507ac6",
+      "kernel_test_sha256": "26878262a0abcb0a3e0b0facc5089757cff5e13ff1f531ae08a15f6621a8a90f",
+      "kernel_test_result": "DOT4 roundtrip, embedding, decode, prefill/tail and argmax: 5040 cases passed"
+    },
+    "pair4": {
+      "base_revision": "c2affd50b83edb2e677794993b2a6ff02dba2d4e",
+      "bench_sha256": "4750c93e913e1a29a96f0267d0d1ebf74bea914a9d3e1c78c8d840ce488eff19",
+      "cli_sha256": "f418b33070add6d41a275e4252926024fab89dd41612868193c978296e34f2c9",
+      "normalized_build_commands_sha256": "aaab627424d52c10db4d46611efc7e8894bac36c970ec9df0b843fd5241994b0",
+      "dot4_simd_source_sha256": "11d021cbf4bd6e810e987402845e5c8c53b8e3e1caa9146799240081a6114a8c",
+      "kernel_test_sha256": "9c919ca834ada9b8e7a14c099f28aac59854f76443e789dc7d66148b529c0ca6",
+      "kernel_test_result": "DOT4 roundtrip, embedding, decode, prefill/tail and argmax: 5040 cases passed"
+    },
+    "main-stock": {
+      "base_revision": "fc7e413101cea078ebd36cb2e2cb37fd8022938b",
+      "bench_sha256": "9abb640703631854fade729ac278b4324da71a9cc2bfb1ceb9c0adbd34f58b54",
+      "cli_sha256": "c80d95a7fb9d3b9794ace471aeb09679a47d827a80516446fc52d81ca4a6275d",
+      "normalized_build_commands_sha256": "aaab627424d52c10db4d46611efc7e8894bac36c970ec9df0b843fd5241994b0",
+      "dot4_simd_source_sha256": "a5c95d37246623a19688bcdce9c2ee0d6ab7cd4b26f8bf0201cbc082eb507ac6",
+      "kernel_test_sha256": "26878262a0abcb0a3e0b0facc5089757cff5e13ff1f531ae08a15f6621a8a90f",
+      "kernel_test_result": "DOT4 roundtrip, embedding, decode, prefill/tail and argmax: 5040 cases passed"
+    },
+    "main-pair4": {
+      "base_revision": "fc7e413101cea078ebd36cb2e2cb37fd8022938b",
+      "bench_sha256": "846dc077a4a87ad83778d5ff8fdb2d211625fcecdb253962f6d472346af3593e",
+      "cli_sha256": "a00e34c7108e7f9fd528e00245607d269f33ce0ec352bde0674abea1f53ed139",
+      "normalized_build_commands_sha256": "aaab627424d52c10db4d46611efc7e8894bac36c970ec9df0b843fd5241994b0",
+      "dot4_simd_source_sha256": "11d021cbf4bd6e810e987402845e5c8c53b8e3e1caa9146799240081a6114a8c",
+      "kernel_test_sha256": "9c919ca834ada9b8e7a14c099f28aac59854f76443e789dc7d66148b529c0ca6",
+      "kernel_test_result": "DOT4 roundtrip, embedding, decode, prefill/tail and argmax: 5040 cases passed"
+    }
+  },
+  "build_configure_args": [
+    "-G",
+    "Ninja",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DQWEN35_BUILD_SERVER=OFF"
+  ],
+  "build_args": [
+    "--parallel",
+    "6",
+    "--target",
+    "qwen35_cpu_bench",
+    "qwen35_cpu",
+    "q4_dot4_test"
+  ],
+  "build_toolchain": {
+    "cxx": "GCC 15.2.0 (Ubuntu 15.2.0-16ubuntu1)",
+    "cmake": "4.2.3",
+    "ninja": "1.13.2"
+  },
+  "benchmark_host": {
+    "cpu": "Intel Core i7-8750H",
+    "os": "Ubuntu 26.04.1 LTS",
+    "kernel": "7.0.0-43-generic",
+    "power_supply": "AC",
+    "driver": "intel_pstate active",
+    "governor": "powersave",
+    "energy_performance_preference": "balance_power",
+    "turbo_enabled": true,
+    "intel_pstate_max_perf_pct": 80,
+    "package_rapl_power_limits_w": {
+      "long_term": 30,
+      "short_term": 38
+    },
+    "physical_core_cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "smt_siblings": [
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ]
+  },
+  "benchmark_runner": {
+    "powershell": "7.7.0",
+    "omp_num_threads": 6,
+    "taskset_cpus": "0-5",
+    "affinity_mask": 63,
+    "script": "scripts/benchmark-inference-seq.ps1",
+    "warmup_runs": 1,
+    "measured_runs": 3,
+    "reverse_case_order_on_odd_passes": true
+  },
+  "metric": "prefill_forward_tokens_per_second",
+  "qev_package": "danmoreng/qev-0.8b-H128-Q4-G32-DOT4",
+  "qev_package_revision": "fc805be27e1409630b14b233ad7aac1a6dbb213f",
+  "inputs": {
+    "benchmarks/i7-dot4-6FugJsNr/stock/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv": {
+      "sha256": "bb1582bd818d65ba153c31116895c24fd69d9edd822bb7c5fb8873055e6cd435",
+      "bytes": 18715
+    },
+    "benchmarks/i7-dot4-6FugJsNr/stock/docs/results/cpu-refresh-2026-10-22/prompt-512.csv": {
+      "bytes": 2311,
+      "sha256": "6baa0783f9ad2adea59013c948cd15a0a465e870837bf9a60e57eb73ef39bd81"
+    },
+    "models/qev-i7/config.json": {
+      "sha256": "d9ab6f1698a46bbf04895d171fa0666816745e0d7209b9493d44d3df0caa1b5f",
+      "bytes": 2485
+    },
+    "models/qev-i7/model.q35h": {
+      "sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69",
+      "bytes": 424964864
+    },
+    "models/qev-i7/tokenizer.json": {
+      "sha256": "466f27fefa1f44a7bb82cb1b42163c761e01dc6f7f51fc4f3d0a499a5a9b4249",
+      "bytes": 12807181
+    },
+    "models/qev-i7/tokenizer_config.json": {
+      "sha256": "e611fbccc7c29ef3b1cafb1cb7ea548d189968632901d678fd62be68c47885de",
+      "bytes": 16712
+    },
+    "models/qwen3.5-2b/config.json": {
+      "bytes": 2908,
+      "sha256": "ed1c1723241f23f7f4e23430759cbd7dcfb4103cbdfe052bfe7626b57c2615b4"
+    },
+    "models/qwen3.5-2b/model.q35h": {
+      "bytes": 1060442880,
+      "sha256": "1084c3a2751d3813a2aa686337f717e56291e6a1a79ff8be1b6d1665d22892a3"
+    },
+    "models/qwen3.5-2b/tokenizer.json": {
+      "bytes": 12807982,
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+    },
+    "models/qwen3.5-2b/tokenizer_config.json": {
+      "bytes": 16709,
+      "sha256": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c"
+    }
+  },
+  "matrix_a": [
+    {
+      "name": "2B-p4096-pair4",
+      "executable": "benchmarks/i7-dot4-6FugJsNr/pair4/build-i7/qwen35_cpu_bench",
+      "args": [
+        "--hf-model-dir",
+        "models/qwen3.5-2b",
+        "--cpu-q4-h128",
+        "models/qwen3.5-2b/model.q35h",
+        "--cpu-batch-full-logits",
+        "--prompt-tokens-file",
+        "benchmarks/i7-dot4-6FugJsNr/stock/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+        "--forced-output-tokens",
+        "248045",
+        "--cpu-threads",
+        "6",
+        "--cpu-batch",
+        "1",
+        "--max-context",
+        "16384",
+        "--max-new-tokens",
+        "1",
+        "--cpu-isa",
+        "avx2",
+        "--cpu-isa-strict"
+      ]
+    },
+    {
+      "name": "2B-p4096-stock",
+      "executable": "benchmarks/i7-dot4-6FugJsNr/stock/build-i7/qwen35_cpu_bench",
+      "args": [
+        "--hf-model-dir",
+        "models/qwen3.5-2b",
+        "--cpu-q4-h128",
+        "models/qwen3.5-2b/model.q35h",
+        "--cpu-batch-full-logits",
+        "--prompt-tokens-file",
+        "benchmarks/i7-dot4-6FugJsNr/stock/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+        "--forced-output-tokens",
+        "248045",
+        "--cpu-threads",
+        "6",
+        "--cpu-batch",
+        "1",
+        "--max-context",
+        "16384",
+        "--max-new-tokens",
+        "1",
+        "--cpu-isa",
+        "avx2",
+        "--cpu-isa-strict"
+      ]
+    },
+    {
+      "name": "2B-p512-pair4",
+      "executable": "benchmarks/i7-dot4-6FugJsNr/pair4/build-i7/qwen35_cpu_bench",
+      "args": [
+        "--hf-model-dir",
+        "models/qwen3.5-2b",
+        "--cpu-q4-h128",
+        "models/qwen3.5-2b/model.q35h",
+        "--cpu-batch-full-logits",
+        "--prompt-tokens-file",
+        "benchmarks/i7-dot4-6FugJsNr/stock/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+        "--forced-output-tokens",
+        "303",
+        "--cpu-threads",
+        "6",
+        "--cpu-batch",
+        "1",
+        "--max-context",
+        "16384",
+        "--max-new-tokens",
+        "1",
+        "--cpu-isa",
+        "avx2",
+        "--cpu-isa-strict"
+      ]
+    },
+    {
+      "name": "2B-p512-stock",
+      "executable": "benchmarks/i7-dot4-6FugJsNr/stock/build-i7/qwen35_cpu_bench",
+      "args": [
+        "--hf-model-dir",
+        "models/qwen3.5-2b",
+        "--cpu-q4-h128",
+        "models/qwen3.5-2b/model.q35h",
+        "--cpu-batch-full-logits",
+        "--prompt-tokens-file",
+        "benchmarks/i7-dot4-6FugJsNr/stock/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+        "--forced-output-tokens",
+        "303",
+        "--cpu-threads",
+        "6",
+        "--cpu-batch",
+        "1",
+        "--max-context",
+        "16384",
+        "--max-new-tokens",
+        "1",
+        "--cpu-isa",
+        "avx2",
+        "--cpu-isa-strict"
+      ]
+    },
+    {
+      "name": "qev-p4096-pair4",
+      "executable": "benchmarks/i7-dot4-6FugJsNr/pair4/build-i7/qwen35_cpu_bench",
+      "args": [
+        "--hf-model-dir",
+        "models/qev-i7",
+        "--cpu-q4-h128",
+        "models/qev-i7/model.q35h",
+        "--cpu-batch-full-logits",
+        "--prompt-tokens-file",
+        "benchmarks/i7-dot4-6FugJsNr/stock/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+        "--forced-output-tokens",
+        "248045",
+        "--cpu-threads",
+        "6",
+        "--cpu-batch",
+        "1",
+        "--max-context",
+        "16384",
+        "--max-new-tokens",
+        "1",
+        "--cpu-isa",
+        "avx2",
+        "--cpu-isa-strict"
+      ]
+    },
+    {
+      "name": "qev-p4096-stock",
+      "executable": "benchmarks/i7-dot4-6FugJsNr/stock/build-i7/qwen35_cpu_bench",
+      "args": [
+        "--hf-model-dir",
+        "models/qev-i7",
+        "--cpu-q4-h128",
+        "models/qev-i7/model.q35h",
+        "--cpu-batch-full-logits",
+        "--prompt-tokens-file",
+        "benchmarks/i7-dot4-6FugJsNr/stock/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+        "--forced-output-tokens",
+        "248045",
+        "--cpu-threads",
+        "6",
+        "--cpu-batch",
+        "1",
+        "--max-context",
+        "16384",
+        "--max-new-tokens",
+        "1",
+        "--cpu-isa",
+        "avx2",
+        "--cpu-isa-strict"
+      ]
+    },
+    {
+      "name": "qev-p512-pair4",
+      "executable": "benchmarks/i7-dot4-6FugJsNr/pair4/build-i7/qwen35_cpu_bench",
+      "args": [
+        "--hf-model-dir",
+        "models/qev-i7",
+        "--cpu-q4-h128",
+        "models/qev-i7/model.q35h",
+        "--cpu-batch-full-logits",
+        "--prompt-tokens-file",
+        "benchmarks/i7-dot4-6FugJsNr/stock/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+        "--forced-output-tokens",
+        "303",
+        "--cpu-threads",
+        "6",
+        "--cpu-batch",
+        "1",
+        "--max-context",
+        "16384",
+        "--max-new-tokens",
+        "1",
+        "--cpu-isa",
+        "avx2",
+        "--cpu-isa-strict"
+      ]
+    },
+    {
+      "name": "qev-p512-stock",
+      "executable": "benchmarks/i7-dot4-6FugJsNr/stock/build-i7/qwen35_cpu_bench",
+      "args": [
+        "--hf-model-dir",
+        "models/qev-i7",
+        "--cpu-q4-h128",
+        "models/qev-i7/model.q35h",
+        "--cpu-batch-full-logits",
+        "--prompt-tokens-file",
+        "benchmarks/i7-dot4-6FugJsNr/stock/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+        "--forced-output-tokens",
+        "303",
+        "--cpu-threads",
+        "6",
+        "--cpu-batch",
+        "1",
+        "--max-context",
+        "16384",
+        "--max-new-tokens",
+        "1",
+        "--cpu-isa",
+        "avx2",
+        "--cpu-isa-strict"
+      ]
+    }
+  ],
+  "series": {
+    "a": {
+      "start_utc": "2026-11-20T17:13:23.2206099Z",
+      "end_utc": "2026-11-20T17:19:12.090107+00:00",
+      "source_revision": "c2affd50b83edb2e677794993b2a6ff02dba2d4e",
+      "runner_source_sha256": "4fb8a8c55a904c5bcc4b16f79eb8f9109844806a51eedb02b8120cd19dad3df2",
+      "case_order": [
+        "2B-p4096-pair4",
+        "2B-p4096-stock",
+        "2B-p512-pair4",
+        "2B-p512-stock",
+        "qev-p4096-pair4",
+        "qev-p4096-stock",
+        "qev-p512-pair4",
+        "qev-p512-stock"
+      ],
+      "commands_checked": 32,
+      "raw_metadata_sha256": "0d931408593d3262d92ebf40b781dcca468869a696a301eba5dde433a571dc47",
+      "telemetry_samples": 351,
+      "package_temp_c": {
+        "min": 37.0,
+        "max": 65.0
+      },
+      "cpu_sampled_khz": {
+        "min": 800000,
+        "max": 3302743
+      },
+      "throttle_counter_delta": {
+        "package_throttle_count": 0,
+        "package_throttle_total_ms": 0,
+        "cpu0_core_throttle_count": 0,
+        "cpu1_core_throttle_count": 0,
+        "cpu2_core_throttle_count": 0,
+        "cpu3_core_throttle_count": 0,
+        "cpu4_core_throttle_count": 0,
+        "cpu5_core_throttle_count": 0
+      }
+    },
+    "b": {
+      "start_utc": "2026-11-20T17:19:15.1434802Z",
+      "end_utc": "2026-11-20T17:25:03.244238+00:00",
+      "source_revision": "c2affd50b83edb2e677794993b2a6ff02dba2d4e",
+      "runner_source_sha256": "4fb8a8c55a904c5bcc4b16f79eb8f9109844806a51eedb02b8120cd19dad3df2",
+      "case_order": [
+        "qev-p512-stock",
+        "qev-p512-pair4",
+        "qev-p4096-stock",
+        "qev-p4096-pair4",
+        "2B-p512-stock",
+        "2B-p512-pair4",
+        "2B-p4096-stock",
+        "2B-p4096-pair4"
+      ],
+      "commands_checked": 32,
+      "raw_metadata_sha256": "6ed2de8534e38c9be0c77fc37841dd34870bb9aa0f43b3cb98b941b34ba6337b",
+      "telemetry_samples": 350,
+      "package_temp_c": {
+        "min": 46.0,
+        "max": 67.0
+      },
+      "cpu_sampled_khz": {
+        "min": 800000,
+        "max": 3300855
+      },
+      "throttle_counter_delta": {
+        "package_throttle_count": 0,
+        "package_throttle_total_ms": 0,
+        "cpu0_core_throttle_count": 0,
+        "cpu1_core_throttle_count": 0,
+        "cpu2_core_throttle_count": 0,
+        "cpu3_core_throttle_count": 0,
+        "cpu4_core_throttle_count": 0,
+        "cpu5_core_throttle_count": 0
+      }
+    },
+    "c": {
+      "start_utc": "2026-11-20T17:26:33.4568287Z",
+      "end_utc": "2026-11-20T17:28:10.206513+00:00",
+      "source_revision": "c2affd50b83edb2e677794993b2a6ff02dba2d4e",
+      "runner_source_sha256": "4fb8a8c55a904c5bcc4b16f79eb8f9109844806a51eedb02b8120cd19dad3df2",
+      "case_order": [
+        "qev-p4096-pair4",
+        "qev-p4096-stock"
+      ],
+      "commands_checked": 8,
+      "raw_metadata_sha256": "74c5a8651b6e45174a533cb9f03eb1ef152d35a52e6886a140e122268af63e8b",
+      "telemetry_samples": 99,
+      "package_temp_c": {
+        "min": 47.0,
+        "max": 67.0
+      },
+      "cpu_sampled_khz": {
+        "min": 800000,
+        "max": 3301169
+      },
+      "throttle_counter_delta": {
+        "package_throttle_count": 0,
+        "package_throttle_total_ms": 0,
+        "cpu0_core_throttle_count": 0,
+        "cpu1_core_throttle_count": 0,
+        "cpu2_core_throttle_count": 0,
+        "cpu3_core_throttle_count": 0,
+        "cpu4_core_throttle_count": 0,
+        "cpu5_core_throttle_count": 0
+      }
+    },
+    "main-a": {
+      "start_utc": "2026-11-20T17:29:09.7169368Z",
+      "end_utc": "2026-11-20T17:34:54.882570+00:00",
+      "source_revision": "fc7e413101cea078ebd36cb2e2cb37fd8022938b",
+      "runner_source_sha256": "4fb8a8c55a904c5bcc4b16f79eb8f9109844806a51eedb02b8120cd19dad3df2",
+      "case_order": [
+        "2B-p4096-pair4",
+        "2B-p4096-stock",
+        "2B-p512-pair4",
+        "2B-p512-stock",
+        "qev-p4096-pair4",
+        "qev-p4096-stock",
+        "qev-p512-pair4",
+        "qev-p512-stock"
+      ],
+      "commands_checked": 32,
+      "raw_metadata_sha256": "3a98675a1a2f752fb1cf85cb949db374581add30c4d8deb3cca7ccbc6e1123d6",
+      "telemetry_samples": 347,
+      "package_temp_c": {
+        "min": 46.0,
+        "max": 67.0
+      },
+      "cpu_sampled_khz": {
+        "min": 800000,
+        "max": 3305240
+      },
+      "throttle_counter_delta": {
+        "package_throttle_count": 0,
+        "package_throttle_total_ms": 0,
+        "cpu0_core_throttle_count": 0,
+        "cpu1_core_throttle_count": 0,
+        "cpu2_core_throttle_count": 0,
+        "cpu3_core_throttle_count": 0,
+        "cpu4_core_throttle_count": 0,
+        "cpu5_core_throttle_count": 0
+      }
+    },
+    "main-b": {
+      "start_utc": "2026-11-20T17:34:57.2783634Z",
+      "end_utc": "2026-11-20T17:40:43.387387+00:00",
+      "source_revision": "fc7e413101cea078ebd36cb2e2cb37fd8022938b",
+      "runner_source_sha256": "4fb8a8c55a904c5bcc4b16f79eb8f9109844806a51eedb02b8120cd19dad3df2",
+      "case_order": [
+        "qev-p512-stock",
+        "qev-p512-pair4",
+        "qev-p4096-stock",
+        "qev-p4096-pair4",
+        "2B-p512-stock",
+        "2B-p512-pair4",
+        "2B-p4096-stock",
+        "2B-p4096-pair4"
+      ],
+      "commands_checked": 32,
+      "raw_metadata_sha256": "e4c15bfcb401da887dfdbb19a4be09c7ad97be36652a3a396ad840a00ea2b85d",
+      "telemetry_samples": 348,
+      "package_temp_c": {
+        "min": 47.0,
+        "max": 67.0
+      },
+      "cpu_sampled_khz": {
+        "min": 800000,
+        "max": 3305310
+      },
+      "throttle_counter_delta": {
+        "package_throttle_count": 0,
+        "package_throttle_total_ms": 0,
+        "cpu0_core_throttle_count": 0,
+        "cpu1_core_throttle_count": 0,
+        "cpu2_core_throttle_count": 0,
+        "cpu3_core_throttle_count": 0,
+        "cpu4_core_throttle_count": 0,
+        "cpu5_core_throttle_count": 0
+      }
+    },
+    "main-c": {
+      "start_utc": "2026-11-20T17:40:46.1956305Z",
+      "end_utc": "2026-11-20T17:42:23.006670+00:00",
+      "source_revision": "fc7e413101cea078ebd36cb2e2cb37fd8022938b",
+      "runner_source_sha256": "4fb8a8c55a904c5bcc4b16f79eb8f9109844806a51eedb02b8120cd19dad3df2",
+      "case_order": [
+        "qev-p4096-pair4",
+        "qev-p4096-stock"
+      ],
+      "commands_checked": 8,
+      "raw_metadata_sha256": "7e025b03dd5f04cedb7a706c939cbaa62168ac13e13b9324eca8c89a8c5adb1f",
+      "telemetry_samples": 99,
+      "package_temp_c": {
+        "min": 46.0,
+        "max": 67.0
+      },
+      "cpu_sampled_khz": {
+        "min": 800000,
+        "max": 3300028
+      },
+      "throttle_counter_delta": {
+        "package_throttle_count": 0,
+        "package_throttle_total_ms": 0,
+        "cpu0_core_throttle_count": 0,
+        "cpu1_core_throttle_count": 0,
+        "cpu2_core_throttle_count": 0,
+        "cpu3_core_throttle_count": 0,
+        "cpu4_core_throttle_count": 0,
+        "cpu5_core_throttle_count": 0
+      }
+    }
+  }
+}

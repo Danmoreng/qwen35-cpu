@@ -132,9 +132,10 @@ Both prototypes passed 10,080 DOT4 kernel cases. For the four-token prototype
 all four forced-step vocabulary logit vectors were byte-identical to v0.3.2 on
 both checkpoints at both lengths. These are single-request model-forward
 measurements on fixed tokens, with strict AVX2/FMA/F16C for the quantized
-matrix dispatch. The laptop normally selects AVX-512/VNNI. The four-token
-candidate has been measured on this Ryzen. AVX2-only i7-8750H and EPYC 9V74
-timings are pending. The implementation is retained as an [applicable patch](../results/decision-tuning-2026-11-20/avx2-pair4.patch)
+matrix dispatch. The laptop normally selects AVX-512/VNNI. The
+[i7-8750H follow-up](dot4-pair4-i7.md) measures the four-token patch on an
+AVX2-only CPU. EPYC 9V74 timings are pending. The implementation is retained
+as an [applicable patch](../results/decision-tuning-2026-11-20/avx2-pair4.patch)
 for measurements on an AVX2 deployment. To reproduce the paired build on an
 i7-8750H or an AVX2 VM, build v0.3.2 in two separate checkouts with the same
 compiler and flags. Apply the patch in the candidate checkout, build
