@@ -41,6 +41,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 - [4B Pi Coding Agent on Ryzen](benchmarks/qwen35-4b-pi-agent.md) compares native and ik_llama.cpp agent sessions, cache reuse, quantization fidelity and [matched 4K–12K decode](benchmarks/qwen35-4b-pi-agent.md#matched-long-context-mtp-decode).
 - [AVX2 prefill on the i7-8750H](benchmarks/avx2-prefill-i7.md) measures query tile selection for long prompts.
 - [Four-token AVX2 DOT4 on the i7-8750H](benchmarks/dot4-pair4-i7.md) measures the paired-panel patch and checks full-vocabulary logit parity.
+- [AVX2 prefill follow-up on the i7-8750H](benchmarks/avx2-prefill-followup-i7.md) compares paired DOT4 scheduling, DeltaNet state reuse and attention PV tiles.
 - [AVX2 cloud VM tuning](benchmarks/avx2-cloud.md): prompt processing, decode experiments and bitwise checks on an EPYC VM.
 - [Standard model calibration](benchmarks/calibration.md).
 - [Decision quality](benchmarks/decision-quality.md) and [HTTP latency](benchmarks/decision-http.md).

@@ -99,6 +99,66 @@ DOT4_INLINE void accumulate_chunk(__m256i lo, __m256i hi, const Block *vectors,
 #endif
 }
 #endif
+#if DOT4_AVX2
+template <std::size_t... Token>
+DOT4_INLINE void paired_tile(const Q4_0BlockX8 *matrix, const Q8_0BlockX4 *vectors,
+                             float *output, std::size_t blocks, std::size_t stride,
+                             std::index_sequence<Token...>) noexcept {
+  __m256 sum0[sizeof...(Token)] = {((void)Token, _mm256_setzero_ps())...};
+  __m256 sum1[sizeof...(Token)] = {((void)Token, _mm256_setzero_ps())...};
+  const auto mask = _mm256_set1_epi8(15);
+  for (std::size_t block = 0; block < blocks; ++block) {
+#if defined(__GNUC__) || defined(__clang__)
+    // Separate the live ranges of the FP sums and integer dot products.
+    __asm__("" : "+m"(sum0), "+m"(sum1));
+#endif
+    const auto &activation = vectors[block];
+    const auto &weights0 = matrix[block];
+    const auto &weights1 = matrix[block + blocks];
+    __m256i pairs0[sizeof...(Token)] = {((void)Token, _mm256_setzero_si256())...};
+    __m256i pairs1[sizeof...(Token)] = {((void)Token, _mm256_setzero_si256())...};
+    for (std::size_t chunk = 0; chunk < 4; ++chunk) {
+      const auto raw0 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(weights0.qs + chunk * 32));
+      const auto raw1 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(weights1.qs + chunk * 32));
+      const auto lo0 = _mm256_and_si256(raw0, mask);
+      const auto lo1 = _mm256_and_si256(raw1, mask);
+      const auto hi0 = _mm256_and_si256(_mm256_srli_epi16(raw0, 4), mask);
+      const auto hi1 = _mm256_and_si256(_mm256_srli_epi16(raw1, 4), mask);
+      const auto accumulate_pair = [&]<std::size_t T>() {
+        const auto *values = activation.qs + T * 32 + chunk * 8;
+        const auto low = broadcast4(values);
+        const auto high = broadcast4(values + 4);
+        pairs0[T] = _mm256_add_epi16(pairs0[T],
+            _mm256_add_epi16(_mm256_maddubs_epi16(lo0, low), _mm256_maddubs_epi16(hi0, high)));
+        pairs1[T] = _mm256_add_epi16(pairs1[T],
+            _mm256_add_epi16(_mm256_maddubs_epi16(lo1, low), _mm256_maddubs_epi16(hi1, high)));
+#if defined(__GNUC__) || defined(__clang__)
+        __asm__("" : "+x"(pairs0[T]), "+x"(pairs1[T]));
+#endif
+      };
+      (accumulate_pair.template operator()<Token>(), ...);
+    }
+#if defined(__GNUC__) || defined(__clang__)
+    __asm__("" : "+m"(sum0), "+m"(sum1));
+#endif
+    const auto scales0 = _mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i *>(weights0.d)));
+    const auto scales1 = _mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i *>(weights1.d)));
+    const auto finish = [&]<std::size_t T>() {
+      // Sixteen products per int16 lane fit even at the maximum byte values.
+      const auto correction = _mm256_set1_epi32(8 * static_cast<int>(activation.sums[T]));
+      const auto scale = _mm256_set1_ps(activation.scales[T]);
+      const auto dot0 = _mm256_sub_epi32(_mm256_madd_epi16(pairs0[T], _mm256_set1_epi16(1)), correction);
+      const auto dot1 = _mm256_sub_epi32(_mm256_madd_epi16(pairs1[T], _mm256_set1_epi16(1)), correction);
+      sum0[T] = _mm256_fmadd_ps(_mm256_cvtepi32_ps(dot0), _mm256_mul_ps(scales0, scale), sum0[T]);
+      sum1[T] = _mm256_fmadd_ps(_mm256_cvtepi32_ps(dot1), _mm256_mul_ps(scales1, scale), sum1[T]);
+    };
+    (finish.template operator()<Token>(), ...);
+  }
+  (_mm256_storeu_ps(output + Token * stride, sum0[Token]), ...);
+  (_mm256_storeu_ps(output + Token * stride + 8, sum1[Token]), ...);
+}
+#endif
+
 template <typename Block, std::size_t... Token>
 DOT4_INLINE void tile(const Q4_0BlockX8 * matrix, const Block * vectors, float * output,
                      std::size_t blocks, std::size_t stride, std::index_sequence<Token...>) noexcept {
@@ -146,7 +206,19 @@ void DOT4_FN(matmul)(const Q4_0BlockX8 * matrix, const Q8_0BlockX4 * vectors, fl
 #if DOT4_AVX2
   // Keep an eight-row weight tile hot while processing the prompt. Scanning
   // the whole matrix for every four tokens repeatedly streams large weights.
-  for (std::size_t r = 0; r < rows / 8; ++r)
+  std::size_t r = 0;
+  // Use the paired kernel for full-size prompt chunks. Small projection
+  // batches keep the eight-row kernel.
+  if (count >= 128) {
+    for (; r + 2 <= rows / 8; r += 2) {
+      for (std::size_t token = 0; token + 4 <= count; token += 4) {
+        paired_tile(matrix + r * blocks, vectors + (token / 4) * blocks,
+                    output + token * stride + r * 8, blocks, stride,
+                    std::make_index_sequence<4>{});
+      }
+    }
+  }
+  for (; r < rows / 8; ++r)
     for (std::size_t token = 0; token + 4 <= count; token += 4)
       tile(matrix + r * blocks, vectors + (token / 4) * blocks,
            output + token * stride + r * 8, blocks, stride, std::make_index_sequence<4>{});

@@ -6,6 +6,7 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
+| `i7-avx2-followup-2026-11-20` | [AVX2 prefill follow-up on the i7-8750H](../benchmarks/avx2-prefill-followup-i7.md), paired and instrumented timings, build provenance and logit parity |
 | `i7-dot4-pair4-2026-11-20` | [Four-token AVX2 DOT4 on the i7-8750H](../benchmarks/dot4-pair4-i7.md), sequential samples, build provenance and logit parity |
 | `decision-tuning-2026-11-20` | [qev latency, concurrent serving and AVX2 prototypes](../benchmarks/decision-tuning-9955hx3d.md) |
 | `laptop-refresh-2026-11-20` | [Current laptop benchmarks](../benchmarks/laptop-refresh-9955hx3d.md), fixed-token throughput, qev HTTP decisions and the README chart |
