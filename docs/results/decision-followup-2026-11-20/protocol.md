@@ -1,0 +1,8 @@
+# Decision follow-up protocol
+
+Frozen on November 20, 2026 before German inference, Q4 scoring or CPU timing.
+
+- Use the previous study's pinned datasets, Q8 GGUFs, CUDA runtime and decision readouts. Run the official full JevBench-240 suite on Liquid Q8, Qev Q8 joint and Qev Q8 per question. Use all 12,000 frozen tests, seed 0, one trial, default fixed tolerance and the leaderboard's known-gold base accuracy. Report completion, coverage and consistency beside accuracy.
+- Use the 64 newly authored German requests unchanged. Each of 16 scenarios has four contrasting requests with the same tool and fact sheet. Each action is correct 16 times, equally often at all four option positions. Keep answer keys out of inference and join by ID only after prediction. Use argmax and break ties by option letter. Score all 64, count invalid responses as misses and inspect paired discrepancies. This is a small synthetic contrast set.
+- Compare Liquid Q4_K_M against the previous Q8 results on all 3,652 When2Call and 231 Benchmark Heaven items and the 1,200-test JevBench-mini suite. Also compare both on the German panel. The CPU gate requires Q4 to beat Qev joint on both routing sets and come within 2 percentage points of Q8 on When2Call and 5 percentage points of Q8 on German routing.
+- If the gate passes, use the pinned CPU-only llama.cpp server to measure resident HTTP latency for Liquid Q4_K_M, Liquid Q8_0 and Qev Q8_0. Use all 64 German requests and a distinct deterministic selection of 24 When2Call requests (eight per gold category). Use one PowerShell matrix warmup and three measured runs, fixed CPU affinity and no simultaneous inference. Report median and p95 per workload, input size and peak server memory. Exclude server startup from request timings.

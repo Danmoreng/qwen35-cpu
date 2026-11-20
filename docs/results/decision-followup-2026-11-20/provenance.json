@@ -1,0 +1,94 @@
+{
+  "date": "2026-11-20",
+  "models": {
+    "qev": {
+      "repo": "labqoat/qev-0.8b-GGUF",
+      "revision": "9550cc0d3f0e8f651cced8469ddfb89acc58c26d",
+      "filename": "qev-0.8b-text-Q8_0.gguf",
+      "sha256": "07856dd5d6c7d1e19a9579ef324e5377649890a6438f7735ea5ac8935f2b2140",
+      "bytes": 811845792
+    },
+    "liquid": {
+      "repo": "LiquidAI/d1-2B-GGUF",
+      "revision": "4a181094d1b6addfaa3a0956f78e7ab2aa406a0c",
+      "filename": "d1-2B-Q8_0.gguf",
+      "sha256": "073313d92b53b0ac8193db6e906cb3c78a98183d244b15b7b8f5426115c6738c",
+      "bytes": 1846240576
+    },
+    "qev-single": {
+      "repo": "labqoat/qev-0.8b-GGUF",
+      "revision": "9550cc0d3f0e8f651cced8469ddfb89acc58c26d",
+      "filename": "qev-0.8b-vision-Q8_0.gguf",
+      "bytes": 811846944,
+      "sha256": "5868295fabf7b987253b0a9bb548fcbefed9a0a2e382394f32afbe8132678756"
+    },
+    "liquid-q4": {
+      "repo": "LiquidAI/d1-2B-GGUF",
+      "revision": "4a181094d1b6addfaa3a0956f78e7ab2aa406a0c",
+      "filename": "d1-2B-Q4_K_M.gguf",
+      "bytes": 1099629888,
+      "sha256": "adca5789ad30ae6027e8e936749bb9f19673097492ab26fa1c5b69643ca50b4b"
+    }
+  },
+  "device": "NVIDIA GeForce RTX 5080 Laptop GPU",
+  "gpu_driver": "620.70.06",
+  "llama_cpp": {
+    "revision": "ffc87c3a7989cb657641a6459a186f303e176af8",
+    "server_sha256": "ee74e41354baaf28383fa6575c3a980b39361cf4fd96dd0f0588f8d6051b8925",
+    "server_args": [
+      "-ngl",
+      "999",
+      "-np",
+      "1",
+      "-c",
+      "16384",
+      "-b",
+      "8192",
+      "-ub",
+      "8192",
+      "--no-warmup"
+    ]
+  },
+  "benchmarks": {
+    "heaven": {
+      "repository": "https://github.com/fstandhartinger/jevbench",
+      "revision": "1bcc55eb6c8cffde2306b3db03ede39b61c6152a",
+      "combined_jsonl_sha256": "771ea8ac252af155606eeb09cad920b32b326c5c2b1e9c9af868be00fe8e2fad"
+    },
+    "mini": {
+      "repository": "https://github.com/JevBench/jevbench",
+      "revision": "e18733694623aa93058e279c3534f8b8e2edefa3",
+      "manifest_sha256": "d2aa52e7a3210bd6c5fd86e8266791b6f398f840ef8e30bfeec6bcf6f9e59fd9",
+      "gold_sha256": "25438a91d951ccc97fa05cc796fd74fec75f34ceae39c347f4e4ba6d4e3fe83a"
+    },
+    "when2call": {
+      "repository": "https://huggingface.co/datasets/nvidia/When2Call",
+      "revision": "0582f7749df63a96fdc3070932e83e72396ace53",
+      "test_mcq_sha256": "8c3694e583eeeb8dbc297e6cd90da70efc68efa4b6adb7227523e828c6b7b14c",
+      "request_builder_sha256": "65203b7b943ec612c6f80a963dafd8dbac3f7f6206e5453e2f3b16a104174a3a"
+    }
+  },
+  "qev_tensor_parity": {
+    "tensors": 320,
+    "equal_names_shapes_types_bytes": true,
+    "sorted_tensor_manifest_sha256": "1ec30f3cbe0d308a3f283ad17722a3b06896425244c54710b10b8cc42ec07d9e"
+  },
+  "frozen_sha256": {
+    "routing-de-inputs.jsonl": "571f48461fccc82271cff6ae395bf95c600620276b8bd933146fdf086506e172",
+    "routing-de-gold.jsonl": "05a278bb1bc160a3caabdbbc6c85d125c0c8e9af7a2da41c407b31784432ea76",
+    "protocol.md": "bfdb2712b7e952df6a7bc5f9c57e36ca59282e8bc8c845c16287b305492614c2"
+  },
+  "local_raw_directories": [
+    "benchmarks/decision-gpu-2026-11-20",
+    "benchmarks/decision-followup-2026-11-20"
+  ],
+  "harness_sha256": {
+    "followup.py": "1ddf700f7454077dfd2fbe8c13e8754736c11148b43919c2f11c17c2d1646bb4",
+    "german.py": "b679d907fa09dd86e10eb85b67820f12dbbfb95568c5b71369056ee9564d3b30",
+    "aggregate.py": "9e5b495a7608406424dd4f0ad16442a850b04adfb4bb566b81304346ea153955",
+    "cpu_inputs.py": "ab859c8c391bc919400941240c3f40ce73249b58ee8447228ef11358caab3fe9",
+    "score_routing.py": "7b4faba7a238aa14d644db75dbd554b9cb054035cad51476ce709d0d45bb07e7",
+    "evidence.py": "fd1f1d1a3e43c293be4520007d9a0af0c699d4ae7bbe0301b71c9572bd8fa7d8",
+    "benchmark-systemone-http.py": "b08e4c61e6fc85e0f6096ac46ebab91594ba5605b4241bb621a670ab2087e0db"
+  }
+}

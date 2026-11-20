@@ -1,0 +1,401 @@
+{
+  "liquid": {
+    "planned_tests": 12000,
+    "requests": 10320,
+    "cache_hits": 1921,
+    "outcomes": 14838,
+    "errors": 0,
+    "incomplete": [],
+    "skipped": 0,
+    "overall": 0.7213545751633987,
+    "ci": [
+      0.7125065359477124,
+      0.7306111111111111
+    ],
+    "pillars": {
+      "REP": 0.7805555555555556,
+      "BAT": 1.0,
+      "MEA": 0.396078431372549,
+      "LOG": 0.7454166666666667,
+      "CHO": 0.6847222222222222
+    },
+    "relations": {
+      "batch_content": 1.0,
+      "batch_order": 1.0,
+      "batch_size_sweep": 1.0,
+      "batch_solo": 1.0,
+      "choice_complement": 0.05833333333333335,
+      "choice_indicator": 0.17500000000000004,
+      "clone_symmetry": 0.7041666666666666,
+      "compound_negation": 0.02083333333333337,
+      "count_lower": 1.0,
+      "count_upper": 0.6416666666666666,
+      "cross_lingual": 0.7375,
+      "de_morgan": 0.05833333333333335,
+      "description_paraphrase": 0.8,
+      "description_swap": 0.7875,
+      "duplicate_question": 1.0,
+      "entailment_strength": 0.825,
+      "extreme_level": 0.06666666666666665,
+      "frechet_and_upper": 0.4541666666666667,
+      "inclusion_exclusion": 0.3458333333333333,
+      "instruction_paraphrase": 0.7833333333333333,
+      "irrelevant_option": 0.7958333333333334,
+      "key_instruction_conflict": 1.0,
+      "key_rename": 1.0,
+      "name_description_conflict": 1.0,
+      "nary_and_lower": 1.0,
+      "nary_and_upper": 0.23750000000000004,
+      "nary_or_lower": 0.7291666666666667,
+      "nary_or_upper": 0.9875,
+      "natural_negation": 0.6625,
+      "negation_wrapper": 0.050000000000000044,
+      "noul_as_choice": 0.8375,
+      "noul_as_score": 0.7916666666666666,
+      "option_clone": 0.7166666666666667,
+      "option_closure": 0.5208333333333333,
+      "option_merge": 0.6916666666666667,
+      "option_permutation": 0.5833333333333333,
+      "option_rename": 1.0,
+      "option_split": 0.6041666666666667,
+      "pair_choice_marginals": 0.5708333333333333,
+      "pairwise_iia": 0.6125,
+      "partition_hierarchy": 0.7458333333333333,
+      "quantifier_monotonicity": 0.9666666666666667,
+      "remove_option_iia": 0.6458333333333333,
+      "score_complement": 0.10416666666666663,
+      "score_cumulative": 0.025000000000000022,
+      "score_granularity": 0.6541666666666667,
+      "similarity_effect": 0.7208333333333333,
+      "threshold_sweep": 0.6125,
+      "typo_noise": 0.8583333333333334,
+      "verbosity": 0.7666666666666666
+    },
+    "gold": {
+      "accuracy": 0.8844169246646026,
+      "gold_prob": 0.8463972186834727,
+      "n": 1938,
+      "ci": [
+        0.8724385245901639,
+        0.8978963571062083
+      ],
+      "by_domain": {
+        "agent_logs": {
+          "n": 141,
+          "accuracy": 0.9078014184397163
+        },
+        "content_moderation": {
+          "n": 214,
+          "accuracy": 0.8644859813084113
+        },
+        "customer_support": {
+          "n": 225,
+          "accuracy": 0.9111111111111111
+        },
+        "ecommerce_returns": {
+          "n": 165,
+          "accuracy": 0.8909090909090909
+        },
+        "education_grading": {
+          "n": 137,
+          "accuracy": 0.8905109489051095
+        },
+        "finance_ops": {
+          "n": 169,
+          "accuracy": 0.8698224852071006
+        },
+        "healthcare_admin": {
+          "n": 142,
+          "accuracy": 0.8732394366197183
+        },
+        "hr_recruiting": {
+          "n": 139,
+          "accuracy": 0.8848920863309353
+        },
+        "it_incidents": {
+          "n": 146,
+          "accuracy": 0.8972602739726028
+        },
+        "legal_contracts": {
+          "n": 147,
+          "accuracy": 0.8571428571428571
+        },
+        "logistics": {
+          "n": 141,
+          "accuracy": 0.8936170212765957
+        },
+        "security_ops": {
+          "n": 172,
+          "accuracy": 0.872093023255814
+        }
+      }
+    },
+    "sha256": "9f05534161ae66396604b01ef0d3cb6661189358a012c99096bb81611651c7b2"
+  },
+  "qev": {
+    "planned_tests": 12000,
+    "requests": 10320,
+    "cache_hits": 1921,
+    "outcomes": 14838,
+    "errors": 0,
+    "incomplete": [],
+    "skipped": 0,
+    "overall": 0.6261895424836601,
+    "ci": [
+      0.6146797385620915,
+      0.6376127450980392
+    ],
+    "pillars": {
+      "REP": 0.7172222222222222,
+      "BAT": 0.6391666666666667,
+      "MEA": 0.3553921568627451,
+      "LOG": 0.7441666666666666,
+      "CHO": 0.6749999999999999
+    },
+    "relations": {
+      "batch_content": 0.7791666666666667,
+      "batch_order": 0.012499999999999956,
+      "batch_size_sweep": 1.0,
+      "batch_solo": 0.7541666666666667,
+      "choice_complement": 0.10833333333333328,
+      "choice_indicator": 0.2958333333333333,
+      "clone_symmetry": 0.6291666666666667,
+      "compound_negation": 0.18333333333333335,
+      "count_lower": 0.9041666666666667,
+      "count_upper": 0.9041666666666667,
+      "cross_lingual": 0.7583333333333333,
+      "de_morgan": 0.6458333333333333,
+      "description_paraphrase": 0.8333333333333334,
+      "description_swap": 0.5125,
+      "duplicate_question": 0.65,
+      "entailment_strength": 0.8375,
+      "extreme_level": 0.19166666666666665,
+      "frechet_and_upper": 0.5291666666666667,
+      "inclusion_exclusion": 0.25,
+      "instruction_paraphrase": 0.75,
+      "irrelevant_option": 0.7583333333333333,
+      "key_instruction_conflict": 1.0,
+      "key_rename": 1.0,
+      "name_description_conflict": 0.6,
+      "nary_and_lower": 0.9916666666666667,
+      "nary_and_upper": 0.5083333333333333,
+      "nary_or_lower": 0.27083333333333337,
+      "nary_or_upper": 0.9791666666666666,
+      "natural_negation": 0.5,
+      "negation_wrapper": 0.16666666666666663,
+      "noul_as_choice": 0.525,
+      "noul_as_score": 0.725,
+      "option_clone": 0.6416666666666666,
+      "option_closure": 0.47916666666666663,
+      "option_merge": 0.675,
+      "option_permutation": 0.41666666666666663,
+      "option_rename": 0.7083333333333333,
+      "option_split": 0.525,
+      "pair_choice_marginals": 0.012499999999999956,
+      "pairwise_iia": 0.5791666666666666,
+      "partition_hierarchy": 0.5958333333333333,
+      "quantifier_monotonicity": 0.8666666666666667,
+      "remove_option_iia": 0.6875,
+      "score_complement": 0.09166666666666667,
+      "score_cumulative": 0.033333333333333326,
+      "score_granularity": 0.6791666666666667,
+      "similarity_effect": 0.6125,
+      "threshold_sweep": 0.65,
+      "typo_noise": 0.85,
+      "verbosity": 0.8041666666666667
+    },
+    "gold": {
+      "accuracy": 0.849329205366357,
+      "gold_prob": 0.8141327780391029,
+      "n": 1938,
+      "ci": [
+        0.8362422997946611,
+        0.8634903640256959
+      ],
+      "by_domain": {
+        "agent_logs": {
+          "n": 141,
+          "accuracy": 0.8865248226950354
+        },
+        "content_moderation": {
+          "n": 214,
+          "accuracy": 0.8644859813084113
+        },
+        "customer_support": {
+          "n": 225,
+          "accuracy": 0.8666666666666667
+        },
+        "ecommerce_returns": {
+          "n": 165,
+          "accuracy": 0.8242424242424242
+        },
+        "education_grading": {
+          "n": 137,
+          "accuracy": 0.8321167883211679
+        },
+        "finance_ops": {
+          "n": 169,
+          "accuracy": 0.8520710059171598
+        },
+        "healthcare_admin": {
+          "n": 142,
+          "accuracy": 0.8169014084507042
+        },
+        "hr_recruiting": {
+          "n": 139,
+          "accuracy": 0.8345323741007195
+        },
+        "it_incidents": {
+          "n": 146,
+          "accuracy": 0.8561643835616438
+        },
+        "legal_contracts": {
+          "n": 147,
+          "accuracy": 0.8299319727891157
+        },
+        "logistics": {
+          "n": 141,
+          "accuracy": 0.8723404255319149
+        },
+        "security_ops": {
+          "n": 172,
+          "accuracy": 0.8430232558139535
+        }
+      }
+    },
+    "sha256": "7fc804ed7fe1f39887f12d446b8262dcec69e8133fad773eff12498d45f895d3"
+  },
+  "qev-single": {
+    "planned_tests": 12000,
+    "requests": 10320,
+    "cache_hits": 1921,
+    "outcomes": 14838,
+    "errors": 0,
+    "incomplete": [],
+    "skipped": 0,
+    "overall": 0.7000049019607844,
+    "ci": [
+      0.690282679738562,
+      0.7096274509803921
+    ],
+    "pillars": {
+      "REP": 0.6847222222222222,
+      "BAT": 1.0,
+      "MEA": 0.34877450980392155,
+      "LOG": 0.75125,
+      "CHO": 0.7152777777777778
+    },
+    "relations": {
+      "batch_content": 1.0,
+      "batch_order": 1.0,
+      "batch_size_sweep": 1.0,
+      "batch_solo": 1.0,
+      "choice_complement": 0.09166666666666667,
+      "choice_indicator": 0.1958333333333333,
+      "clone_symmetry": 0.6125,
+      "compound_negation": 0.06666666666666665,
+      "count_lower": 0.9375,
+      "count_upper": 0.9125,
+      "cross_lingual": 0.7458333333333333,
+      "de_morgan": 0.12083333333333335,
+      "description_paraphrase": 0.7958333333333334,
+      "description_swap": 0.475,
+      "duplicate_question": 1.0,
+      "entailment_strength": 0.8958333333333334,
+      "extreme_level": 0.1875,
+      "frechet_and_upper": 0.5916666666666667,
+      "inclusion_exclusion": 0.3916666666666667,
+      "instruction_paraphrase": 0.7458333333333333,
+      "irrelevant_option": 0.8333333333333334,
+      "key_instruction_conflict": 1.0,
+      "key_rename": 1.0,
+      "name_description_conflict": 0.575,
+      "nary_and_lower": 1.0,
+      "nary_and_upper": 0.4041666666666667,
+      "nary_or_lower": 0.29166666666666663,
+      "nary_or_upper": 1.0,
+      "natural_negation": 0.4625,
+      "negation_wrapper": 0.12083333333333335,
+      "noul_as_choice": 0.5375,
+      "noul_as_score": 0.8208333333333333,
+      "option_clone": 0.65,
+      "option_closure": 0.4041666666666667,
+      "option_merge": 0.7416666666666667,
+      "option_permutation": 0.4666666666666667,
+      "option_rename": 0.6958333333333333,
+      "option_split": 0.5541666666666667,
+      "pair_choice_marginals": 0.02083333333333337,
+      "pairwise_iia": 0.6333333333333333,
+      "partition_hierarchy": 0.6083333333333334,
+      "quantifier_monotonicity": 0.8458333333333333,
+      "remove_option_iia": 0.6791666666666667,
+      "score_complement": 0.08750000000000002,
+      "score_cumulative": 0.0,
+      "score_granularity": 0.7083333333333333,
+      "similarity_effect": 0.6375,
+      "threshold_sweep": 0.6333333333333333,
+      "typo_noise": 0.85,
+      "verbosity": 0.8291666666666666
+    },
+    "gold": {
+      "accuracy": 0.847265221878225,
+      "gold_prob": 0.8140281910359585,
+      "n": 1938,
+      "ci": [
+        0.8333333333333334,
+        0.8611852642819007
+      ],
+      "by_domain": {
+        "agent_logs": {
+          "n": 141,
+          "accuracy": 0.8794326241134752
+        },
+        "content_moderation": {
+          "n": 214,
+          "accuracy": 0.8504672897196262
+        },
+        "customer_support": {
+          "n": 225,
+          "accuracy": 0.8533333333333334
+        },
+        "ecommerce_returns": {
+          "n": 165,
+          "accuracy": 0.8363636363636363
+        },
+        "education_grading": {
+          "n": 137,
+          "accuracy": 0.8175182481751825
+        },
+        "finance_ops": {
+          "n": 169,
+          "accuracy": 0.8520710059171598
+        },
+        "healthcare_admin": {
+          "n": 142,
+          "accuracy": 0.8098591549295775
+        },
+        "hr_recruiting": {
+          "n": 139,
+          "accuracy": 0.8273381294964028
+        },
+        "it_incidents": {
+          "n": 146,
+          "accuracy": 0.8561643835616438
+        },
+        "legal_contracts": {
+          "n": 147,
+          "accuracy": 0.8367346938775511
+        },
+        "logistics": {
+          "n": 141,
+          "accuracy": 0.900709219858156
+        },
+        "security_ops": {
+          "n": 172,
+          "accuracy": 0.8430232558139535
+        }
+      }
+    },
+    "sha256": "9f9e2b83a72635f5c520cbb26b8def88f2b997cc09630231ec09a31964a9ae58"
+  }
+}

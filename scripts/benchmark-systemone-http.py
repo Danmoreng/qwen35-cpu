@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""One B1 first HTTP decision; orchestrate only via benchmark-inference-seq.ps1.
+"""Time HTTP decisions through benchmark-inference-seq.ps1.
 
-Each process starts a fresh local server, waits for readiness, then times one
-request. Loading/readiness are excluded; HTTP, tokenization and postprocessing
-are included. No cross-request prefix cache or generated continuation is used.
+Each process starts a fresh local server and waits for readiness before timing
+requests. The default sends one request. A JSONL panel sends distinct requests
+serially to the resident server and records per-item latencies in input order.
 """
 import argparse
 import concurrent.futures
@@ -27,6 +27,8 @@ def main():
     p.add_argument('--threads', type=int, default=8)
     p.add_argument('--decision-head', choices=['auto', 'full'])
     p.add_argument('--ticket-panel', action='store_true', help='Read labeled, variable-length states from --request')
+    p.add_argument('--jsonl-panel', action='store_true',
+                   help='Time every {id, request} row from --request in order on one resident server')
     p.add_argument('--prefill-requests', type=int, choices=range(1, 9),
                    help='Benchmark native shared prefill, with fixed admission width and the prefix cache off')
     p.add_argument('--prefill-chunk', type=int, default=0)
@@ -39,6 +41,9 @@ def main():
     args = p.parse_args()
     if not 1 <= args.concurrency <= 16:raise ValueError('concurrency must be 1..16')
     count = args.requests if args.requests is not None else args.concurrency
+    if args.jsonl_panel and (args.concurrency != 1 or args.requests is not None or
+                            args.ticket_panel or args.distinct_states or args.prefill_requests):
+        p.error('--jsonl-panel takes a serial panel with one request per row')
     if not args.concurrency <= count <= 16:raise ValueError('requests must be concurrency..16')
     if args.profile_json.exists():raise ValueError('Use a fresh profile path')
     with socket.socket() as s:s.bind(('127.0.0.1',0));port=s.getsockname()[1]
@@ -61,7 +66,13 @@ def main():
     body=args.request.read_bytes()
     # Concurrency matrices use a different state per request, including B1,
     # so identical prefixes/results cannot turn the test into a cache benchmark.
-    if args.ticket_panel:
+    if args.jsonl_panel:
+        rows = [json.loads(line) for line in body.splitlines() if line.strip()]
+        ids = [row['id'] for row in rows]
+        if not ids or len(set(ids)) != len(ids):
+            raise ValueError('Panel must contain distinct request IDs')
+        bodies = [json.dumps(row['request'], ensure_ascii=False).encode() for row in rows]
+    elif args.ticket_panel:
         panel = json.loads(body)
         if len(panel['cases']) < count: raise ValueError('Not enough distinct cases')
         bodies = [json.dumps(dict(state=c['fields']['state'], questions={'dept': panel['qev_question']})).encode()
@@ -96,6 +107,14 @@ def main():
             times=[x[0] for x in results];result=results[0][1]
             assert all(x[1]['usage']['output_tokens']==0 for x in results)
             stats = {}
+            panel_info = {}
+            if args.jsonl_panel:
+                panel_info['request_ids'] = ids
+                status = Path(f'/proc/{child.pid}/status')
+                if status.is_file():
+                    fields = dict(line.split(':', 1) for line in status.read_text().splitlines())
+                    panel_info['server_peak_rss_bytes'] = int(fields['VmHWM'].split()[0]) * 1024
+                    panel_info['server_allowed_cpus'] = fields['Cpus_allowed_list'].strip()
             if args.prefill_requests:
                 with urllib.request.urlopen(base+'/v1/cache', timeout=5) as response:
                     stats = json.load(response)
@@ -108,7 +127,7 @@ def main():
                 shared_ticks=stats.get('shared_prefill_ticks', 0),
                 shared_requests=stats.get('shared_prefill_requests', 0),
                 responses=[x[1] for x in results],
-                scope='HTTP decisions after readiness; loading excluded'),indent=2)+'\n')
+                scope='HTTP decisions after readiness; loading excluded', **panel_info),indent=2)+'\n')
         finally:
             child.terminate()
             try:child.wait(timeout=10)

@@ -1,0 +1,368 @@
+{
+  "host": "AMD Ryzen 9 9955HX3D",
+  "affinity": "0-7",
+  "threads": 8,
+  "method": "Per-workload p50 and nearest-rank p95 in each of three measured runs; report median across runs.",
+  "server_sha256": "21e98552db93ac833e22e80a1dc0cc0200d3df57a3729055bd62a7ee3464a262",
+  "library_sha256": {
+    "libggml-base.so.1.0.0": "cca57c262c5e82b72ab565ff4e50a4c09b25c0254770cd1e35850344a1374996",
+    "libggml-cpu.so.1.0.0": "19283b53391528c852b02243ab6d69a24fd4429eb3c71f7bdb8afa7953763d07",
+    "libggml.so.1.0.0": "d55157684249721478ecde475b7111c2f36f5a6e02d73bce89e4d03e3b442718",
+    "libllama-bench-impl.so": "03600f33da931a816cdc36a4faafd34f598a6f2d56a46d8ad2b4313ff0617884",
+    "libllama-cli-impl.so": "271f808cd8e52696d0bae32c1d3a9bff51c2281412ab8db48d41927ed080719a",
+    "libllama-common.so.1.0.0": "b47973196c06801aa2bc7dd26794d9cb12005e932a47cf52d42ff84ca334477c",
+    "libllama-quantize-impl.so": "4403de992e26360efd6443d16e8dea4b4f0080f92d10d70be48645ad623ed2e3",
+    "libllama-server-impl.so": "a1a30bc01786bf6d77ef7de7159e5bdbf68810dab68e13123aaf780f506d9e8e",
+    "libllama.so.1.0.0": "4bf9ac4ef96a7edb8b7bd4fa07f2b7db7e51924555485b9ce7acb25a4f8406b2",
+    "libmtmd.so.1.0.0": "7a132c7d95bbc2adf2fef3cdeecf7401e091cba8a591fd1ed36ebf0d674ebfad"
+  },
+  "inputs_sha256": "ff12e299f9263ac81a5bd70d1bf549dba1dbca1c631eb15d19c8b8150fb714ba",
+  "ordered_request_ids": [
+    "8ea1c23802",
+    "76130bfa25",
+    "afa6e6f2-905b-475c-84cf-a4186a53540b",
+    "5bfe02cde3",
+    "35fa04bad3",
+    "568a4e5b3f",
+    "66c1143d8e",
+    "1936e25cac",
+    "d1a5366274",
+    "5ca6a9b8-3845-41b9-8e09-5b2b39ea1f3a",
+    "aa656159-cb91-486d-8be0-1537807c37e6",
+    "bf6ee9e4-c8e2-49f7-bac6-2bd30c812a54",
+    "cfae73a98f",
+    "a147a219ff",
+    "8d951b04-caa9-4aae-9454-2e8bb7561f9c",
+    "f5692908-d50b-421a-96b7-523cfb76c2f0",
+    "9acac2cb-ad52-4cac-ba7a-00d2a987e2c4",
+    "e9ac457fb2",
+    "6eb7e74e1c",
+    "ff09efee30",
+    "ff9917d51d",
+    "b0d88051-904b-4e10-afa6-3563ab83d071",
+    "3da184dd-b90f-40aa-b8ae-f8114da40278",
+    "2bd1de9ce4",
+    "af8c2714f7",
+    "a140c01c-99c8-4bee-9506-7f707f4c2735",
+    "13a956383f",
+    "a6ea7da9b9",
+    "595f585b64",
+    "2e87f2240d",
+    "c294a23d-f47c-49c6-98bd-80873aa9fed3",
+    "35728a2efa",
+    "2d933707a9",
+    "4c125225-9148-48e9-a514-227fa88497d5",
+    "b932ead0-60fc-4472-b3e7-bfe121b20a2f",
+    "8a8be1a670",
+    "bd408fef16",
+    "b3a87368-bd8c-4e98-bf30-3410af848df1",
+    "f767910c29",
+    "f3a6a4f5-869c-4a28-ba80-8dc43eefe257",
+    "b34fce45a4",
+    "5a80c81bce",
+    "f7a55b5101",
+    "e67117ba19",
+    "21413c1ea3",
+    "d2c055b13c",
+    "12ce4743f8",
+    "700f66b417",
+    "e1d0740db9",
+    "73611a7d-f2fb-4e09-8e01-dcceeed0bdb3",
+    "6325f43d-baab-4043-ab20-81971b430156",
+    "bede337de4",
+    "77598f43-0198-4c7d-a2a3-c7b9a4b4b587",
+    "4716b0d215",
+    "8576c15c5d",
+    "3eb7f320-474c-462a-98eb-7c379b7a6675",
+    "8bd6e468-d704-4e56-98ac-97141e965564",
+    "409deddb3c",
+    "273ae6bb-33e2-4405-8eb3-06ee98c6db84",
+    "dadf567e05",
+    "1d35e9454d",
+    "081eb8a81d",
+    "1c2a7b9b28",
+    "a629faad66",
+    "5e11bee915",
+    "f91a1f64cf",
+    "534fd2ca6e",
+    "ed64a7a79f",
+    "76cba4f72a",
+    "c28ddca3e8",
+    "aa834349f0",
+    "e32ca34a-e4e2-40b6-a1e5-badc1ae5099b",
+    "5383579f-a6ca-4fd2-b407-a04f193d8d4e",
+    "498cb916e8",
+    "5eed1649ee",
+    "8b4daadd26",
+    "3fe84c2053",
+    "38a0c05704",
+    "234a9391e7",
+    "bde0f6b02d",
+    "6f9e04b8a5",
+    "0faa5ca659",
+    "404007118a",
+    "d60e4c18c6",
+    "6ddb8cb908",
+    "be1bc5e34c",
+    "2b24659d-42a1-4d56-a2ad-e35ae53736ee",
+    "e968066f21"
+  ],
+  "when2call_selection": "Within each gold class, sort by (characters in json.dumps(request, ensure_ascii=False), UUID); choose zero-based ranks floor((2*i+1)*N/16) for i=0..7. Interleave both panels by SHA-256 of UTF-8 cpu-20261120- followed by the ID.",
+  "server_common_args": [
+    "--n-gpu-layers",
+    "0",
+    "--threads",
+    "8",
+    "--threads-batch",
+    "8",
+    "--parallel",
+    "1",
+    "--ctx-size",
+    "8192",
+    "--batch-size",
+    "8192",
+    "--ubatch-size",
+    "8192",
+    "--no-warmup",
+    "--cache-ram",
+    "0",
+    "--host",
+    "127.0.0.1"
+  ],
+  "samples": {
+    "liquid": [
+      {
+        "run": 1,
+        "peak_server_rss_bytes": 2390753280,
+        "profile_sha256": "80304ca4d6c23af36a764633865ec14797f0d4d4560d56337c46fe3d0f609e66",
+        "german": {
+          "n": 64,
+          "p50_ms": 471.10935450109537,
+          "p95_ms": 493.44750300042506,
+          "min_input_tokens": 186,
+          "max_input_tokens": 220
+        },
+        "when2call": {
+          "n": 24,
+          "p50_ms": 2199.8351259999254,
+          "p95_ms": 4842.498767999132,
+          "min_input_tokens": 263,
+          "max_input_tokens": 1944
+        }
+      },
+      {
+        "run": 2,
+        "peak_server_rss_bytes": 2390700032,
+        "profile_sha256": "a4d76551073c03c59c3bc86a65136d4d30e7998fe27de2cb6fd7790251eeecaf",
+        "german": {
+          "n": 64,
+          "p50_ms": 470.0342329997511,
+          "p95_ms": 492.1710839989828,
+          "min_input_tokens": 186,
+          "max_input_tokens": 220
+        },
+        "when2call": {
+          "n": 24,
+          "p50_ms": 2197.784818499713,
+          "p95_ms": 4830.341774000772,
+          "min_input_tokens": 263,
+          "max_input_tokens": 1944
+        }
+      },
+      {
+        "run": 3,
+        "peak_server_rss_bytes": 2390601728,
+        "profile_sha256": "ff78f4264567621097af5984f2c52d0604644d8709c78703957a8450c9d87e31",
+        "german": {
+          "n": 64,
+          "p50_ms": 467.82219750002696,
+          "p95_ms": 489.1385290011385,
+          "min_input_tokens": 186,
+          "max_input_tokens": 220
+        },
+        "when2call": {
+          "n": 24,
+          "p50_ms": 2191.348447499877,
+          "p95_ms": 4831.371141001,
+          "min_input_tokens": 263,
+          "max_input_tokens": 1944
+        }
+      }
+    ],
+    "liquid-q4": [
+      {
+        "run": 1,
+        "peak_server_rss_bytes": 2353946624,
+        "profile_sha256": "1d13c502b74bb63ae54885e6ddf8e7e4e5c0522100fb3bec5e998013fca5bc01",
+        "german": {
+          "n": 64,
+          "p50_ms": 273.3062584993604,
+          "p95_ms": 284.6934600001987,
+          "min_input_tokens": 186,
+          "max_input_tokens": 220
+        },
+        "when2call": {
+          "n": 24,
+          "p50_ms": 1258.4970239995528,
+          "p95_ms": 2821.6193829994154,
+          "min_input_tokens": 263,
+          "max_input_tokens": 1944
+        }
+      },
+      {
+        "run": 2,
+        "peak_server_rss_bytes": 2354081792,
+        "profile_sha256": "9dd8ef1e22fb05c61ff094e071d1c077d987de9769a5c09a67b668d8eb652295",
+        "german": {
+          "n": 64,
+          "p50_ms": 275.62571950056736,
+          "p95_ms": 287.68624199983606,
+          "min_input_tokens": 186,
+          "max_input_tokens": 220
+        },
+        "when2call": {
+          "n": 24,
+          "p50_ms": 1263.3954374996392,
+          "p95_ms": 2835.1756449992536,
+          "min_input_tokens": 263,
+          "max_input_tokens": 1944
+        }
+      },
+      {
+        "run": 3,
+        "peak_server_rss_bytes": 2354089984,
+        "profile_sha256": "1c3a1f24174bc5c3b1b94a9199e65f73e6d059030bbc895b6486fcbfccfe56b6",
+        "german": {
+          "n": 64,
+          "p50_ms": 273.89681349995953,
+          "p95_ms": 285.12187199885375,
+          "min_input_tokens": 186,
+          "max_input_tokens": 220
+        },
+        "when2call": {
+          "n": 24,
+          "p50_ms": 1251.7137289996754,
+          "p95_ms": 2820.8532900007413,
+          "min_input_tokens": 263,
+          "max_input_tokens": 1944
+        }
+      }
+    ],
+    "qev": [
+      {
+        "run": 1,
+        "peak_server_rss_bytes": 1293426688,
+        "profile_sha256": "8a8384ac744da3fdf587c7f5286dd11cfc20dc01cd4982876d3c87b709a200fb",
+        "german": {
+          "n": 64,
+          "p50_ms": 187.1906799997305,
+          "p95_ms": 200.666036000257,
+          "min_input_tokens": 178,
+          "max_input_tokens": 216
+        },
+        "when2call": {
+          "n": 24,
+          "p50_ms": 921.6523280010733,
+          "p95_ms": 2108.692242998586,
+          "min_input_tokens": 280,
+          "max_input_tokens": 1929
+        }
+      },
+      {
+        "run": 2,
+        "peak_server_rss_bytes": 1295314944,
+        "profile_sha256": "8ae2eb5e6eaf29ff5bbf5f675e138c1452370a0ad11a6893b6e99fe9baa9a1fd",
+        "german": {
+          "n": 64,
+          "p50_ms": 187.0515794998937,
+          "p95_ms": 200.0999359988782,
+          "min_input_tokens": 178,
+          "max_input_tokens": 216
+        },
+        "when2call": {
+          "n": 24,
+          "p50_ms": 932.9762425004446,
+          "p95_ms": 2115.264104000744,
+          "min_input_tokens": 280,
+          "max_input_tokens": 1929
+        }
+      },
+      {
+        "run": 3,
+        "peak_server_rss_bytes": 1291575296,
+        "profile_sha256": "da2c0ad291086177d0e255885befd3ae71d78bc1dd0c31c8ddfa08a9c8413921",
+        "german": {
+          "n": 64,
+          "p50_ms": 186.49525300043024,
+          "p95_ms": 199.40894200044568,
+          "min_input_tokens": 178,
+          "max_input_tokens": 216
+        },
+        "when2call": {
+          "n": 24,
+          "p50_ms": 922.1901045002596,
+          "p95_ms": 2108.1016680000175,
+          "min_input_tokens": 280,
+          "max_input_tokens": 1929
+        }
+      }
+    ]
+  },
+  "gpu_choice_agreement": {
+    "liquid": {
+      "german": {
+        "n": 64,
+        "matches_per_run": [
+          64,
+          64,
+          64
+        ]
+      },
+      "when2call": {
+        "n": 24,
+        "matches_per_run": [
+          24,
+          24,
+          24
+        ]
+      }
+    },
+    "liquid-q4": {
+      "german": {
+        "n": 64,
+        "matches_per_run": [
+          64,
+          64,
+          64
+        ]
+      },
+      "when2call": {
+        "n": 24,
+        "matches_per_run": [
+          24,
+          24,
+          24
+        ]
+      }
+    },
+    "qev": {
+      "german": {
+        "n": 64,
+        "matches_per_run": [
+          61,
+          61,
+          61
+        ]
+      },
+      "when2call": {
+        "n": 24,
+        "matches_per_run": [
+          24,
+          24,
+          24
+        ]
+      }
+    }
+  },
+  "raw_metadata_sha256": "1fdb0ad228d67617cb6cc53764b1b4780ffbcb348bb7f5ec05188eedc193642a"
+}
