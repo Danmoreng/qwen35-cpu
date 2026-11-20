@@ -42,6 +42,8 @@ A separate short-prompt control compared the two native builds at the dispatch t
 | 2B | +3.0% | +2.5% |
 | 4B | +3.4% | +2.7% |
 
+The [Q4 matrix kernel follow-up](q4-prefill-9955hx3d.md) tests weight-panel reuse and activation reuse against this DeltaNet baseline.
+
 ## Validation and reproduction
 
 The DeltaNet unit test compares full recurrent state and outputs byte for byte across head partitions, including batch lengths 31, 32, 33 and 128. Full-model checks used both prompt lengths and all three native checkpoints. Each pair produced identical FP32 logits across the entire vocabulary for four forced output positions. [Capture hashes](../results/prefill-profile-2026-11-20/logit-parity.json)

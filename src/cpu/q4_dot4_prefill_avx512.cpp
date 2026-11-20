@@ -18,6 +18,19 @@ PREFILL_INLINE __m512i join(__m256i low, __m256i high) noexcept {
   return _mm512_inserti64x4(_mm512_castsi256_si512(low), high, 1);
 }
 
+struct Nibbles16 {
+  __m512i low, high;
+};
+
+PREFILL_INLINE Nibbles16 unpack_part(const Q4_0BlockX8 &a, const Q4_0BlockX8 &b,
+                                    unsigned part) noexcept {
+  const auto bits = join(
+    _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a.qs + 32 * part)),
+    _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b.qs + 32 * part)));
+  const auto mask = _mm512_set1_epi8(15);
+  return {_mm512_and_si512(bits, mask), _mm512_and_si512(_mm512_srli_epi32(bits, 4), mask)};
+}
+
 struct Weights16 {
   __m512i low[4], high[4];
   __m512 scales;
@@ -26,13 +39,10 @@ struct Weights16 {
 PREFILL_INLINE Weights16 load(const Q4_0BlockX8 & a,
                               const Q4_0BlockX8 & b) noexcept {
   Weights16 w;
-  const auto mask = _mm512_set1_epi32(0x0f0f0f0f);
-  for (int part = 0; part < 4; ++part) {
-    const auto bits = join(
-      _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a.qs + 32 * part)),
-      _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b.qs + 32 * part)));
-    w.low[part] = _mm512_and_si512(bits, mask);
-    w.high[part] = _mm512_and_si512(_mm512_srli_epi32(bits, 4), mask);
+  for (unsigned part = 0; part < 4; ++part) {
+    const auto nibbles = unpack_part(a, b, part);
+    w.low[part] = nibbles.low;
+    w.high[part] = nibbles.high;
   }
   w.scales = _mm512_castsi512_ps(join(
     _mm256_castps_si256(_mm256_cvtph_ps(_mm_loadu_si128(reinterpret_cast<const __m128i *>(a.d)))),
@@ -75,6 +85,57 @@ PREFILL_INLINE void tile(const Q4_0BlockX8 * matrix, const Block * vectors,
     (accumulate<Token>(w, vectors, blocks, block, accumulators[Token]), ...);
   }
   (_mm512_storeu_ps(output + Token * stride, accumulators[Token]), ...);
+}
+
+// Eight prompt tokens share each weight load. Broadcasting the same four
+// activation bytes to both row pairs covers 32 output rows per broadcast.
+PREFILL_INLINE void tile_32x8(const Q4_0BlockX8 *matrix, const Q8_0BlockX4 *vectors,
+                             float *output, std::size_t blocks, std::size_t stride) noexcept {
+  constexpr unsigned pairs = 2;
+  constexpr unsigned tokens = 8;
+  __m512 accumulators[pairs][tokens]{};
+  for (std::size_t block = 0; block < blocks; ++block) {
+    __m512i dots[pairs][tokens];
+    for (unsigned t = 0; t < tokens; ++t) {
+      const auto &activation = vectors[(t / 4) * blocks + block];
+      // Subtract the Q4 zero point once per block before adding unsigned-nibble dots.
+      const auto correction = _mm512_set1_epi32(-8 * static_cast<int>(activation.sums[t % 4]));
+      for (unsigned pair = 0; pair < pairs; ++pair) dots[pair][t] = correction;
+    }
+    for (unsigned part = 0; part < 4; ++part) {
+      Nibbles16 weights[pairs];
+      for (unsigned pair = 0; pair < pairs; ++pair) {
+        const auto *rows = matrix + (2 * pair) * blocks + block;
+        weights[pair] = unpack_part(rows[0], rows[blocks], part);
+      }
+      for (unsigned t = 0; t < tokens; ++t) {
+        const auto &activation = vectors[(t / 4) * blocks + block];
+        const auto *bytes = activation.qs + (t % 4) * 32 + 8 * part;
+        const auto low = broadcast4(bytes);
+        const auto high = broadcast4(bytes + 4);
+        for (unsigned pair = 0; pair < pairs; ++pair) {
+          dots[pair][t] = _mm512_dpbusd_epi32(dots[pair][t], weights[pair].low, low);
+          dots[pair][t] = _mm512_dpbusd_epi32(dots[pair][t], weights[pair].high, high);
+        }
+      }
+    }
+    for (unsigned pair = 0; pair < pairs; ++pair) {
+      const auto *rows = matrix + (2 * pair) * blocks + block;
+      const auto low = _mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[0].d));
+      const auto high = _mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[blocks].d));
+      const auto weight_scales = _mm512_cvtph_ps(
+        _mm256_inserti128_si256(_mm256_castsi128_si256(low), high, 1));
+      for (unsigned t = 0; t < tokens; ++t) {
+        const auto &activation = vectors[(t / 4) * blocks + block];
+        const auto scale = _mm512_mul_ps(weight_scales, _mm512_set1_ps(activation.scales[t % 4]));
+        accumulators[pair][t] = _mm512_fmadd_ps(_mm512_cvtepi32_ps(dots[pair][t]),
+                                                scale, accumulators[pair][t]);
+      }
+    }
+  }
+  for (unsigned pair = 0; pair < pairs; ++pair)
+    for (unsigned t = 0; t < tokens; ++t)
+      _mm512_storeu_ps(output + t * stride + pair * 16, accumulators[pair][t]);
 }
 #undef PREFILL_INLINE
 } // namespace
@@ -137,12 +198,15 @@ void q4_dot4_matmul_x1_avx512(const Q4_0BlockX8 *matrix, const Q8_0BlockX1 *vect
 void q4_dot4_matmul_avx512(const Q4_0BlockX8 * matrix, const Q8_0BlockX4 * vectors,
                           float * output, std::size_t rows, std::size_t count,
                           std::size_t blocks, std::size_t stride) noexcept {
-  // Pair two existing eight-row blocks in ZMM lanes without changing storage.
-  // Large prefill batches reuse unpacked weights across sixteen tokens.
-  // Keep eight-token tiles for small batches: wider tiles regress decode.
-  // Finish all token tiles for a row pair while its weights remain cache-hot.
-  // Each output keeps the same block traversal and FMA order.
   std::size_t row = 0;
+  if (count >= 64 && count % 8 == 0) {
+    for (; row + 32 <= rows; row += 32) {
+      for (std::size_t token = 0; token < count; token += 8)
+        tile_32x8(matrix + (row / 8) * blocks, vectors + (token / 4) * blocks,
+                  output + token * stride + row, blocks, stride);
+    }
+  }
+  // Remaining row pairs and smaller batches use the existing token tiles.
   for (; row + 16 <= rows; row += 16) {
     std::size_t token = 0;
     if (count >= 64) {

@@ -1,0 +1,1252 @@
+{
+  "baseline_revision": "2498e51621bc0d3f275771abf578005119a6ac81",
+  "source_sha256": "5a827dda3675537ed1aeef7f4afb81350e180ce5f2e5eb5e9e37bc4e63f7fde6",
+  "kernel_text_section_sha256": {
+    "baseline": "6375cd4f20034440262194d73494dfad96248fa5c4be5d7fb95cb46285cf3a1c",
+    "selected": "b795e4fd02f2ca2c66b8fd38397bf3c45ef2de5cd02fb203205bc0b9485cb18d",
+    "r32t8_prototype": "b795e4fd02f2ca2c66b8fd38397bf3c45ef2de5cd02fb203205bc0b9485cb18d"
+  },
+  "host": {
+    "cpu": "AMD Ryzen 9 9955HX3D 16-Core Processor",
+    "kernel": "7.3.4-arch1-2",
+    "compiler": "c++ (GCC) 16.2.1 20260810",
+    "affinity": "0xff",
+    "threads": 8,
+    "platform_profile": "max-power",
+    "ac_online": "1",
+    "scaling_driver": "amd-pstate-epp",
+    "governor": "powersave",
+    "epp": "balance_performance",
+    "cpu0_L3_size": "98304K",
+    "cpu0_L3_shared": "0-7,16-23"
+  },
+  "ik_revision": "98aca8692ae334e6e23e4d39ac43ce0d21029c35",
+  "ik_shared_lib_sha256": {
+    "build-ik-refresh/ik/src/libllama.so": "7a041039bebade8ab185dce1bac63ef4b1381c1e01f60934e4316fef3ff77e44",
+    "build-ik-refresh/ik/ggml/src/libggml.so": "91bce206cd606717b6791dccf509b5045726bf411e3f64551e9fb2dc91d78061"
+  },
+  "benchmark_runner": "scripts/benchmark-inference-seq.ps1",
+  "runner_flags": "-Affinity 255 -WarmupRuns 1 -Runs 3 -Matrix MATRIX -OutputDir RAW",
+  "omp_num_threads": 8,
+  "runs": 3,
+  "warmups": 1,
+  "case_order": "Forward on runs 0 and 2, reverse on 1 and 3.",
+  "profile_args": [
+    "--profile-json",
+    "RAW/case-INDEX-run-RUN.json"
+  ],
+  "cli_flags": [
+    "--model-dir",
+    "MODEL",
+    "--weights",
+    "WEIGHTS",
+    "--tokens-file",
+    "PROMPT",
+    "--threads",
+    "8",
+    "--max-context",
+    "16384",
+    "--forced-tokens-file",
+    "IDS",
+    "--logits-out",
+    "DUMP"
+  ],
+  "series": {
+    "screen": {
+      "utc": "2026-11-20T12:48:21.5091051Z",
+      "raw": "benchmarks/q4-prefill-2026-11-20/screen",
+      "metadata_sha256": "1e47c72174243f4fa21c1c556f88b32e5a8566952c08e9a76f7a3e9c80f9321e"
+    },
+    "outer": {
+      "utc": "2026-11-20T12:50:28.0585396Z",
+      "raw": "benchmarks/q4-prefill-2026-11-20/outer",
+      "metadata_sha256": "af45fcc16dd502ca4fb6c222957c6385023f9e88d550e17ec3a35e507b48e7d4"
+    },
+    "refine": {
+      "utc": "2026-11-20T12:52:15.4851055Z",
+      "raw": "benchmarks/q4-prefill-2026-11-20/refine",
+      "metadata_sha256": "fc2b42b031ea602da382e4f16c0e937d24c253a65ab8acdeb3e03f54c58aa760"
+    },
+    "paired": {
+      "utc": "2026-11-20T12:55:05.3838997Z",
+      "raw": "benchmarks/q4-prefill-2026-11-20/paired",
+      "metadata_sha256": "fc5fb6e907f80575d3ce8b05510bb2c06aa5a78d80eaec0debe80c96705bbee0"
+    },
+    "confirmation": {
+      "utc": "2026-11-20T12:57:23.8628287Z",
+      "raw": "benchmarks/q4-prefill-2026-11-20/confirmation",
+      "metadata_sha256": "8b5b4a247985f0998e30086fdb2c3c12405596d4bde4f84babd320646d18a97c"
+    },
+    "operations": {
+      "utc": "2026-11-20T13:00:53.1597431Z",
+      "raw": "benchmarks/q4-prefill-2026-11-20/operations",
+      "metadata_sha256": "850b431b4b4165039211f01566c16bf2f7f1fdd6c8abc87e82f4e37c9ac13100"
+    }
+  },
+  "binaries": {
+    "benchmarks/q4-prefill-2026-11-20/panel16x8/qwen35_cpu_bench": "009d1321dbf9a29a8b34bd2e7416843f96ea93a50945ee3aba06c94de8c28555",
+    "benchmarks/q4-prefill-2026-11-20/panel16x16/qwen35_cpu_bench": "43394e76e6783e115ba609a314a63c574918d8746fa1be5c2f13711f568e3fba",
+    "benchmarks/q4-prefill-2026-11-20/panel8x8/qwen35_cpu_bench": "a46615d1b52b07d7e95b27d388b7ab64264db2dcd716f40824854aee032ad543",
+    "benchmarks/q4-prefill-2026-11-20/singlechain/qwen35_cpu_bench": "48f750f6429558ad09df95c5a8035673801655b5a553d568f5726b74990690b1",
+    "build-prefill-ryzen/qwen35_cpu_bench": "88c529daf4d0c6aed89e08672d1b4bc5add5347d9545557914b4e24f72deef79",
+    "benchmarks/q4-prefill-2026-11-20/wide24/qwen35_cpu_bench": "b0492c72e3bf6302d385095837599e012dda99ab9f7cc912f4bbe7f568bd47cf",
+    "benchmarks/q4-prefill-2026-11-20/r32t4/qwen35_cpu_bench": "70ae45ccbf4124d9e5fd08d186575a128d7fbd6deda2f3311150bc1255ee9ec0",
+    "benchmarks/q4-prefill-2026-11-20/r64t4/qwen35_cpu_bench": "74f06eee1c043ffd843d2be18b5d49a9eafa6ce23d090d5523de9139bbb28898",
+    "benchmarks/q4-prefill-2026-11-20/r32t8/qwen35_cpu_bench": "ad292e9fa57c271179a1b1b5d9db02ae4f558988ec89ece7568e8be5fe768795",
+    "benchmarks/q4-prefill-2026-11-20/r48t4/qwen35_cpu_bench": "2b9dc17ebb370862b775250614b71b89f80a4d00464ec3adbbc8dcd03559e525",
+    "benchmarks/q4-prefill-2026-11-20/r32t8order2/qwen35_cpu_bench": "525efd1c9459a3793bea94cf2e7b78f8cf621e261764f1c2c8723a096db0724d",
+    "benchmarks/q4-prefill-2026-11-20/r48t8/qwen35_cpu_bench": "7d885686169c9f4961f42f866d1922cffd2eeba9efcf81cc23943732f62fd21a",
+    "benchmarks/q4-prefill-2026-11-20/r32t8order8/qwen35_cpu_bench": "e3928d7a800989d78b784b9eeab4bdaccaf6b0b049c0f9dba17a61b0140e0dbf",
+    "benchmarks/q4-prefill-2026-11-20/r64t8/qwen35_cpu_bench": "8bd8170975b6c0ed31b978ef549fa519b2c859e0c859b72f9ac3c1f7e780c725",
+    "benchmarks/q4-prefill-2026-11-20/staged16/qwen35_cpu_bench": "a27b593115667c98a24d7720d1aa8faac61034e22275dce529b09d448c3a6a06",
+    "benchmarks/q4-prefill-2026-11-20/staged32/qwen35_cpu_bench": "dd2074d05ac21eff3cadb0c2f449baca33d099407d32b8de07987fec8e610254",
+    "benchmarks/q4-prefill-2026-11-20/pair32x4/qwen35_cpu_bench": "01f256679301cfa0faf08e2610c7c53d20baf39051cb6f170cece37763bcb909",
+    "benchmarks/q4-prefill-2026-11-20/presum32x4/qwen35_cpu_bench": "c0363d7cf21c0775483ce79d5b7375748a134bf1629c46620192165017ce7b2a",
+    "benchmarks/q4-prefill-2026-11-20/pair16x8/qwen35_cpu_bench": "b92e7c6bd724bcaba34223639e2d6b55a1799da0bf96d60c7d6838c6d676008a",
+    "benchmarks/q4-prefill-2026-11-20/pair32x8/qwen35_cpu_bench": "9721440a9f9a88c91f69ee24e72a2f823b8faf2940e574021c42948d7900d4ee",
+    "build-ik-refresh/bin/ik-fixed-cpu-bench": "f9444895d81b95abdf1a176aa7436a6e27b2a9d17bcbe90521aaa43f0a91639e",
+    "build-q4-prefill/qwen35_cpu_bench": "3cf914ac5f1a416bcef7fa6b2fda54f06e94a1e99734864db5f1d0bff6d9c036"
+  },
+  "inputs": {
+    "models/qwen3.5-0.8b-linux/tokenizer.json": {
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+      "bytes": 12807982
+    },
+    "models/qwen3.5-4b/model-mse16.q35h": {
+      "sha256": "7db1dd7be2e74444465f833d6b639d895ff09e0b8226fb06eb925a5729a85eae",
+      "bytes": 2369080576
+    },
+    "models/qwen3.5-2b/model.q35h": {
+      "sha256": "1084c3a2751d3813a2aa686337f717e56291e6a1a79ff8be1b6d1665d22892a3",
+      "bytes": 1060442880
+    },
+    "models/qwen3.5-0.8b-linux/model.q35h": {
+      "sha256": "013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a",
+      "bytes": 424964864
+    },
+    "models/qwen3.5-4b/config.json": {
+      "sha256": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670",
+      "bytes": 3161
+    },
+    "models/qwen3.5-2b/tokenizer.json": {
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+      "bytes": 12807982
+    },
+    "docs/results/cpu-refresh-2026-10-22/prompt-512.csv": {
+      "sha256": "6baa0783f9ad2adea59013c948cd15a0a465e870837bf9a60e57eb73ef39bd81",
+      "bytes": 2311
+    },
+    "models/qwen3.5-4b/tokenizer.json": {
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+      "bytes": 12807982
+    },
+    "models/qwen3.5-2b/config.json": {
+      "sha256": "ed1c1723241f23f7f4e23430759cbd7dcfb4103cbdfe052bfe7626b57c2615b4",
+      "bytes": 2908
+    },
+    "models/qwen3.5-2b/tokenizer_config.json": {
+      "sha256": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c",
+      "bytes": 16709
+    },
+    "models/qwen3.5-4b/tokenizer_config.json": {
+      "sha256": "316230d6a809701f4db5ea8f8fc862bc3a6f3229c937c174e674ff3ca0a64ac8",
+      "bytes": 16710
+    },
+    "models/qwen3.5-0.8b-linux/tokenizer_config.json": {
+      "sha256": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c",
+      "bytes": 16709
+    },
+    "models/qwen3.5-0.8b-linux/config.json": {
+      "sha256": "b90b86f35c8e6925ef74ee04d0e758f0a845c83a42089ad82bbaa948de9b4204",
+      "bytes": 2907
+    },
+    "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv": {
+      "bytes": 18715,
+      "sha256": "bb1582bd818d65ba153c31116895c24fd69d9edd822bb7c5fb8873055e6cd435"
+    },
+    "models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-pure.gguf": {
+      "bytes": 1071373824,
+      "sha256": "aadb22150a70a44268ded65ef0ca14401d85a5e60e4c109f5985de1fea53969d"
+    },
+    "models/ik-comparison/Qwen3.5-4B-IQ4_K_R4-pure.gguf": {
+      "bytes": 2380008224,
+      "sha256": "331c1b98432e8177c88792b36f7d299949b999abcdf346c7f0d7102010d4894a"
+    },
+    "models/ik-comparison/Qwen3.5-0.8B-IQ4_K_R4-pure.gguf": {
+      "bytes": 435896352,
+      "sha256": "420af5bcfb8f2d9faae05068e51f686bfb6912d89aa40e65a603de455f541c80"
+    }
+  },
+  "prototype_source_sha256": {
+    "benchmarks/q4-prefill-2026-11-20/panel16x8/q4_dot4_prefill_avx512.cpp": "a871b1eac98057704ca8de29f2cd3b83caf2f6e1ea2d2345194758481d538008",
+    "benchmarks/q4-prefill-2026-11-20/panel16x16/q4_dot4_prefill_avx512.cpp": "8e92e4386aa59759c9a5e350943c51105a0d8a3ee38aeb27b709003bdf483ee0",
+    "benchmarks/q4-prefill-2026-11-20/panel8x8/q4_dot4_prefill_avx512.cpp": "8a98194dd20cbed516d2990b9f85ecb7411c4e4a38bbe3fde483cb5a4410fe6b",
+    "benchmarks/q4-prefill-2026-11-20/singlechain/q4_dot4_prefill_avx512.cpp": "863a739c4daf6362d734a80aec5e662a90456c6e235a530a81e93222970fe702",
+    "benchmarks/q4-prefill-2026-11-20/wide24/q4_dot4_prefill_avx512.cpp": "348d4d0f768296f884969812eeab3dd17d195f35560f8bad82394b54701a6a1f",
+    "benchmarks/q4-prefill-2026-11-20/r32t4/q4_dot4_prefill_avx512.cpp": "6fbe8ed522ec4f5c468aeefb86951576928e524c0b45369c70a9594823fc2d60",
+    "benchmarks/q4-prefill-2026-11-20/r64t4/q4_dot4_prefill_avx512.cpp": "18afb8473e2e56bca97503568e54d19e5465fca0507e2df41b8f863fc2b18b59",
+    "benchmarks/q4-prefill-2026-11-20/r32t8/q4_dot4_prefill_avx512.cpp": "555ce08f272a20b878caf1eae4e8dedc1ff61b6f93860bac719330008362e322",
+    "benchmarks/q4-prefill-2026-11-20/r48t4/q4_dot4_prefill_avx512.cpp": "75efba9163405402d0ac35f37259dfcdbd252170966504d5591e26b8e3f1aeb2",
+    "benchmarks/q4-prefill-2026-11-20/r32t8order2/q4_dot4_prefill_avx512.cpp": "dea36ab54da50db8ca8fa70a4064803a16da64cf3861e6f6e38f93175f8f8a27",
+    "benchmarks/q4-prefill-2026-11-20/r48t8/q4_dot4_prefill_avx512.cpp": "4398662d9507a0c0926397e0cbe516305bf8419d3895f6ac7cfe29bf79d1349a",
+    "benchmarks/q4-prefill-2026-11-20/r32t8order8/q4_dot4_prefill_avx512.cpp": "6c62e9e31b2a0c90ef5713a6e4aa2e681c5c43a0a9071d3ebdf29527c2c3209e",
+    "benchmarks/q4-prefill-2026-11-20/r64t8/q4_dot4_prefill_avx512.cpp": "504187efbb84bd9de9c572228d1782f158019d2b43471a1d4dc6540949a1ac02",
+    "benchmarks/q4-prefill-2026-11-20/staged16/q4_dot4_prefill_avx512.cpp": "84077d5940f5abcf217f08da31623259e287b0bc903c4f2ba8cd7bcc2af1dc2b",
+    "benchmarks/q4-prefill-2026-11-20/staged32/q4_dot4_prefill_avx512.cpp": "7a83ecba0396419da69cfe8b6af02ccb628d95db4545582ad8e7e78a74a24768",
+    "benchmarks/q4-prefill-2026-11-20/pair32x4/q4_dot4_prefill_avx512.cpp": "c66c2ef01582e8dc94195cce21bc41183c1f6f94e997fbdc24e727838152406d",
+    "benchmarks/q4-prefill-2026-11-20/presum32x4/q4_dot4_prefill_avx512.cpp": "bd85a084e8f9e1cb1ced9ae2f24c7f00fde19ff16a7f1fee372a609339fb7867",
+    "benchmarks/q4-prefill-2026-11-20/pair16x8/q4_dot4_prefill_avx512.cpp": "493c9bdcaceee0e4771e3c61d4fc1e0082ed7e1909d6464e7a3b9dd18435ab31",
+    "benchmarks/q4-prefill-2026-11-20/pair32x8/q4_dot4_prefill_avx512.cpp": "6e932cccc17671c638950ce0632c876d3248ca3742e462471afda095af84a761"
+  },
+  "workloads_by_series": {
+    "screen": {
+      "workloads": {
+        "0.8B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b-linux",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b-linux/model.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ],
+        "2B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ],
+        "4B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-4b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-4b/model-mse16.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ]
+      },
+      "cases": [
+        {
+          "name": "0.8B-p512-baseline",
+          "workload": "0.8B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-panel8x8",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/panel8x8/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-panel16x8",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/panel16x8/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-panel16x16",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/panel16x16/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-wide24",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/wide24/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-singlechain",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/singlechain/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-baseline",
+          "workload": "2B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-panel8x8",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/panel8x8/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-panel16x8",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/panel16x8/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-panel16x16",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/panel16x16/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-wide24",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/wide24/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-singlechain",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/singlechain/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-baseline",
+          "workload": "4B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-panel8x8",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/panel8x8/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-panel16x8",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/panel16x8/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-panel16x16",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/panel16x16/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-wide24",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/wide24/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-singlechain",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/singlechain/qwen35_cpu_bench"
+        }
+      ]
+    },
+    "outer": {
+      "workloads": {
+        "0.8B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b-linux",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b-linux/model.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ],
+        "2B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ],
+        "4B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-4b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-4b/model-mse16.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ]
+      },
+      "cases": [
+        {
+          "name": "0.8B-p512-baseline",
+          "workload": "0.8B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-r32t4",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t4/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-r32t8",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t8/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-r48t4",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r48t4/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-r64t4",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r64t4/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-baseline",
+          "workload": "2B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-r32t4",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t4/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-r32t8",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t8/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-r48t4",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r48t4/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-r64t4",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r64t4/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-baseline",
+          "workload": "4B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-r32t4",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t4/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-r32t8",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t8/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-r48t4",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r48t4/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-r64t4",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r64t4/qwen35_cpu_bench"
+        }
+      ]
+    },
+    "refine": {
+      "workloads": {
+        "0.8B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b-linux",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b-linux/model.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ],
+        "2B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ],
+        "4B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-4b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-4b/model-mse16.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ]
+      },
+      "cases": [
+        {
+          "name": "0.8B-p512-baseline",
+          "workload": "0.8B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-r32t8",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t8/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-r32t8order2",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t8order2/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-r32t8order8",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t8order8/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-r48t8",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r48t8/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-r64t8",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r64t8/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-staged16",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/staged16/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-staged32",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/staged32/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-baseline",
+          "workload": "2B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-r32t8",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t8/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-r32t8order2",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t8order2/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-r32t8order8",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t8order8/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-r48t8",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r48t8/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-r64t8",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r64t8/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-staged16",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/staged16/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-staged32",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/staged32/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-baseline",
+          "workload": "4B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-r32t8",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t8/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-r32t8order2",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t8order2/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-r32t8order8",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t8order8/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-r48t8",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r48t8/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-r64t8",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r64t8/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-staged16",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/staged16/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-staged32",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/staged32/qwen35_cpu_bench"
+        }
+      ]
+    },
+    "paired": {
+      "workloads": {
+        "0.8B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b-linux",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b-linux/model.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ],
+        "2B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ],
+        "4B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-4b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-4b/model-mse16.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ]
+      },
+      "cases": [
+        {
+          "name": "0.8B-p512-baseline",
+          "workload": "0.8B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-r32t8",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t8/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-pair16x8",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/pair16x8/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-pair32x4",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/pair32x4/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-pair32x8",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/pair32x8/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-presum32x4",
+          "workload": "0.8B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/presum32x4/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-baseline",
+          "workload": "2B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-r32t8",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t8/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-pair16x8",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/pair16x8/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-pair32x4",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/pair32x4/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-pair32x8",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/pair32x8/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-presum32x4",
+          "workload": "2B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/presum32x4/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-baseline",
+          "workload": "4B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-r32t8",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/r32t8/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-pair16x8",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/pair16x8/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-pair32x4",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/pair32x4/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-pair32x8",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/pair32x8/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-presum32x4",
+          "workload": "4B-p512",
+          "executable": "benchmarks/q4-prefill-2026-11-20/presum32x4/qwen35_cpu_bench"
+        }
+      ]
+    },
+    "confirmation": {
+      "workloads": {
+        "0.8B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b-linux",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b-linux/model.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ],
+        "0.8B-p512-ik": [
+          "--cpu-gguf",
+          "models/ik-comparison/Qwen3.5-0.8B-IQ4_K_R4-pure.gguf",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1",
+          "--ik-repack"
+        ],
+        "0.8B-p4096": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b-linux",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b-linux/model.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+          "--forced-output-tokens",
+          "248045",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ],
+        "0.8B-p4096-ik": [
+          "--cpu-gguf",
+          "models/ik-comparison/Qwen3.5-0.8B-IQ4_K_R4-pure.gguf",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+          "--forced-output-tokens",
+          "248045",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1",
+          "--ik-repack"
+        ],
+        "2B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ],
+        "2B-p512-ik": [
+          "--cpu-gguf",
+          "models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-pure.gguf",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1",
+          "--ik-repack"
+        ],
+        "4B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-4b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-4b/model-mse16.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ],
+        "4B-p512-ik": [
+          "--cpu-gguf",
+          "models/ik-comparison/Qwen3.5-4B-IQ4_K_R4-pure.gguf",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1",
+          "--ik-repack"
+        ],
+        "2B-p4096": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+          "--forced-output-tokens",
+          "248045",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ],
+        "2B-p4096-ik": [
+          "--cpu-gguf",
+          "models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-pure.gguf",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+          "--forced-output-tokens",
+          "248045",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1",
+          "--ik-repack"
+        ],
+        "4B-p4096": [
+          "--hf-model-dir",
+          "models/qwen3.5-4b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-4b/model-mse16.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+          "--forced-output-tokens",
+          "248045",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1"
+        ],
+        "4B-p4096-ik": [
+          "--cpu-gguf",
+          "models/ik-comparison/Qwen3.5-4B-IQ4_K_R4-pure.gguf",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+          "--forced-output-tokens",
+          "248045",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1",
+          "--ik-repack"
+        ]
+      },
+      "cases": [
+        {
+          "name": "0.8B-p512-baseline",
+          "workload": "0.8B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-ik",
+          "workload": "0.8B-p512-ik",
+          "executable": "build-ik-refresh/bin/ik-fixed-cpu-bench"
+        },
+        {
+          "name": "0.8B-p512-selected",
+          "workload": "0.8B-p512",
+          "executable": "build-q4-prefill/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p4096-baseline",
+          "workload": "0.8B-p4096",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p4096-ik",
+          "workload": "0.8B-p4096-ik",
+          "executable": "build-ik-refresh/bin/ik-fixed-cpu-bench"
+        },
+        {
+          "name": "0.8B-p4096-selected",
+          "workload": "0.8B-p4096",
+          "executable": "build-q4-prefill/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-baseline",
+          "workload": "2B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-ik",
+          "workload": "2B-p512-ik",
+          "executable": "build-ik-refresh/bin/ik-fixed-cpu-bench"
+        },
+        {
+          "name": "2B-p512-selected",
+          "workload": "2B-p512",
+          "executable": "build-q4-prefill/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-baseline",
+          "workload": "4B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-ik",
+          "workload": "4B-p512-ik",
+          "executable": "build-ik-refresh/bin/ik-fixed-cpu-bench"
+        },
+        {
+          "name": "4B-p512-selected",
+          "workload": "4B-p512",
+          "executable": "build-q4-prefill/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p4096-baseline",
+          "workload": "2B-p4096",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p4096-ik",
+          "workload": "2B-p4096-ik",
+          "executable": "build-ik-refresh/bin/ik-fixed-cpu-bench"
+        },
+        {
+          "name": "2B-p4096-selected",
+          "workload": "2B-p4096",
+          "executable": "build-q4-prefill/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p4096-baseline",
+          "workload": "4B-p4096",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p4096-ik",
+          "workload": "4B-p4096-ik",
+          "executable": "build-ik-refresh/bin/ik-fixed-cpu-bench"
+        },
+        {
+          "name": "4B-p4096-selected",
+          "workload": "4B-p4096",
+          "executable": "build-q4-prefill/qwen35_cpu_bench"
+        }
+      ]
+    },
+    "operations": {
+      "workloads": {
+        "0.8B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-0.8b-linux",
+          "--cpu-q4-h128",
+          "models/qwen3.5-0.8b-linux/model.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1",
+          "--profile-prefill"
+        ],
+        "2B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-2b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-2b/model.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1",
+          "--profile-prefill"
+        ],
+        "4B-p512": [
+          "--hf-model-dir",
+          "models/qwen3.5-4b",
+          "--cpu-q4-h128",
+          "models/qwen3.5-4b/model-mse16.q35h",
+          "--cpu-batch-full-logits",
+          "--prompt-tokens-file",
+          "docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+          "--forced-output-tokens",
+          "303",
+          "--cpu-threads",
+          "8",
+          "--cpu-batch",
+          "1",
+          "--max-context",
+          "16384",
+          "--max-new-tokens",
+          "1",
+          "--profile-prefill"
+        ]
+      },
+      "cases": [
+        {
+          "name": "0.8B-p512-baseline",
+          "workload": "0.8B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "0.8B-p512-selected",
+          "workload": "0.8B-p512",
+          "executable": "build-q4-prefill/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-baseline",
+          "workload": "2B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "2B-p512-selected",
+          "workload": "2B-p512",
+          "executable": "build-q4-prefill/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-baseline",
+          "workload": "4B-p512",
+          "executable": "build-prefill-ryzen/qwen35_cpu_bench"
+        },
+        {
+          "name": "4B-p512-selected",
+          "workload": "4B-p512",
+          "executable": "build-q4-prefill/qwen35_cpu_bench"
+        }
+      ]
+    }
+  },
+  "logit_parity": {
+    "executables": {
+      "build-prefill-ryzen/qwen35_cpu": "70c45a30f38f9b5ebfc3b621918a3dcd996ed1b0b0f7f4d746f3e73dc618708f",
+      "build-q4-prefill/qwen35_cpu": "2e8b1cc534e4c1a9878f874c772047afc26c369763f4703f73b8a8089c011965"
+    },
+    "fixture_ids": [
+      303,
+      22461,
+      4843,
+      57900
+    ],
+    "threads": 8,
+    "affinity": 255
+  }
+}
