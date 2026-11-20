@@ -22,6 +22,16 @@ float sum8(__m256 value) noexcept {
   return _mm_cvtss_f32(_mm_add_ss(sum, _mm_movehdup_ps(sum)));
 }
 
+// Each lane belongs to a different value row. Within each row, combine the
+// eight column accumulators in the same order as the AVX2 horizontal sum.
+__m512 sum_column_chains(const __m512 (&chains)[8]) noexcept {
+  const __m512 even = _mm512_add_ps(_mm512_add_ps(chains[0], chains[4]),
+                                    _mm512_add_ps(chains[2], chains[6]));
+  const __m512 odd = _mm512_add_ps(_mm512_add_ps(chains[1], chains[5]),
+                                   _mm512_add_ps(chains[3], chains[7]));
+  return _mm512_add_ps(even, odd);
+}
+
 template <unsigned Pairs>
 void update(float *state, const float *q, const float *k, const float *v,
             float alpha, float beta, float *output) noexcept {
@@ -79,6 +89,60 @@ void gated_delta_net_update_rows_avx512(float *state, const float *q, const floa
     if (begin < stop) {
       gated_delta_net_update_rows_avx2(state, q, k, v, alpha, beta, output, 128, value_dim, begin, stop);
       begin = stop;
+    }
+  }
+}
+
+void gated_delta_net_prefill_128_avx512(float *state, const float *q, const float *k,
+    const float *v, const float *alpha, const float *beta, float *output,
+    std::size_t batch, std::size_t heads, std::size_t value_dim,
+    std::size_t head_begin, std::size_t head_end) noexcept {
+  constexpr std::size_t columns = 128, rows = 16;
+  alignas(64) float tile[columns][rows];
+  for (std::size_t head = head_begin; head < head_end; ++head) {
+    for (std::size_t row = 0; row < value_dim; row += rows) {
+      float *state_rows = state + (head * value_dim + row) * columns;
+      // Keep these 16 recurrent rows in an 8 KiB column-major tile for the
+      // complete causal scan. Transpose only on entry and exit.
+      for (std::size_t col = 0; col < columns; ++col)
+        for (std::size_t lane = 0; lane < rows; ++lane)
+          tile[col][lane] = state_rows[lane * columns + col];
+
+      for (std::size_t token = 0; token < batch; ++token) {
+        const std::size_t ht = head * batch + token;
+        const float *keys = k + ht * columns;
+        const float *queries = q + ht * columns;
+        const __m512 decay = _mm512_set1_ps(alpha[ht]);
+        __m512 key_sums[8]{};
+        for (std::size_t col = 0; col < columns; col += 8) {
+          for (std::size_t chain = 0; chain < 8; ++chain) {
+            float *values = tile[col + chain];
+            const __m512 decayed = _mm512_mul_ps(_mm512_load_ps(values), decay);
+            _mm512_store_ps(values, decayed);
+            key_sums[chain] = _mm512_fmadd_ps(decayed,
+                _mm512_set1_ps(keys[col + chain]), key_sums[chain]);
+          }
+        }
+        const __m512 target = _mm512_loadu_ps(v + ht * value_dim + row);
+        const __m512 delta = _mm512_mul_ps(_mm512_sub_ps(target, sum_column_chains(key_sums)),
+                                           _mm512_set1_ps(beta[ht]));
+        __m512 query_sums[8]{};
+        for (std::size_t col = 0; col < columns; col += 8) {
+          for (std::size_t chain = 0; chain < 8; ++chain) {
+            float *values = tile[col + chain];
+            const __m512 next = _mm512_fmadd_ps(delta, _mm512_set1_ps(keys[col + chain]),
+                                                _mm512_load_ps(values));
+            _mm512_store_ps(values, next);
+            query_sums[chain] = _mm512_fmadd_ps(next,
+                _mm512_set1_ps(queries[col + chain]), query_sums[chain]);
+          }
+        }
+        _mm512_storeu_ps(output + (token * heads + head) * value_dim + row,
+                         sum_column_chains(query_sums));
+      }
+      for (std::size_t col = 0; col < columns; ++col)
+        for (std::size_t lane = 0; lane < rows; ++lane)
+          state_rows[lane * columns + col] = tile[col][lane];
     }
   }
 }

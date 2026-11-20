@@ -1,0 +1,186 @@
+{
+  "baseline_binary_revision": "8b0d6426aa4bf3a2fbc4f648d29eeb0b4b2fadb6",
+  "source_parent": "a20ba3994b28120a205ed152adf8f728c87e9b25",
+  "baseline_bench_sha256": "faa1b89c52a6b2467a8946b301b2cbc96989e905ba11151660b010022f6170e9",
+  "ik_revision": "98aca8692ae334e6e23e4d39ac43ce0d21029c35",
+  "compiler": "c++ (GCC) 16.2.1 20260810",
+  "kernel": "7.3.4-arch1-2",
+  "host": {
+    "cpu": "AMD Ryzen 9 9955HX3D 16-Core Processor",
+    "kernel": "7.3.4-arch1-2",
+    "compiler": "c++ (GCC) 16.2.1 20260810",
+    "affinity": "0xff",
+    "threads": 8,
+    "platform_profile": "max-power",
+    "ac_online": "1",
+    "scaling_driver": "amd-pstate-epp",
+    "governor": "powersave",
+    "epp": "balance_performance",
+    "cpu0_L3_size": "98304K",
+    "cpu0_L3_shared": "0-7,16-23"
+  },
+  "samples_per_case": 3,
+  "warmups_per_case": 1,
+  "omp_num_threads": 8,
+  "runner": "scripts/benchmark-inference-seq.ps1",
+  "runner_args": "-Affinity 255 -WarmupRuns 1 -Runs 3 -Matrix MATRIX -OutputDir RAW",
+  "appended_arguments": [
+    "--profile-json",
+    "RAW/case-INDEX-run-RUN.json"
+  ],
+  "case_order": "Forward on runs 0 and 2, reverse on 1 and 3.",
+  "binaries": {
+    "build-readme-refresh/qwen35_cpu_bench": "faa1b89c52a6b2467a8946b301b2cbc96989e905ba11151660b010022f6170e9",
+    "benchmarks/prefill-study-2026-11-20/four-transforms/qwen35_cpu_bench": "d38823c5a1e60b34525a1c7596c7f35145d1ac8450b5fa7184b1b33d36900041",
+    "benchmarks/prefill-study-2026-11-20/combined/qwen35_cpu_bench": "1148d2dc1a002f356799f7cff07bbb3615287bf41f2dba6e0c57d966e1446a43",
+    "benchmarks/prefill-study-2026-11-20/broadcast/qwen35_cpu_bench": "497e246d18fa0415f6a5d3700edd8991845b75de1f607747c067128b76073416",
+    "benchmarks/prefill-study-2026-11-20/chain/qwen35_cpu_bench": "068d29745e1fe79a787324637950a377fd9b819503f9b2c4a9d4fe183c8a288d",
+    "benchmarks/prefill-study-2026-11-20/rowtile/qwen35_cpu_bench": "02bab5ef4dbe1c6c857a44374fa70c245100bc0bb5541a196bdc6f87b6f756a3",
+    "benchmarks/prefill-study-2026-11-20/transpose/qwen35_cpu_bench": "a72cbdb6ccb903114ffea84f5f63b3bcac801e770edb5375652216ce5c7a4a97",
+    "build-ik-refresh/bin/ik-fixed-cpu-bench": "f9444895d81b95abdf1a176aa7436a6e27b2a9d17bcbe90521aaa43f0a91639e",
+    "build-prefill-ryzen/qwen35_cpu_bench": "88c529daf4d0c6aed89e08672d1b4bc5add5347d9545557914b4e24f72deef79"
+  },
+  "inputs": {
+    "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv": {
+      "bytes": 18715,
+      "sha256": "bb1582bd818d65ba153c31116895c24fd69d9edd822bb7c5fb8873055e6cd435"
+    },
+    "models/qwen3.5-2b/tokenizer.json": {
+      "bytes": 12807982,
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+    },
+    "models/qwen3.5-4b/model-mse16.q35h": {
+      "bytes": 2369080576,
+      "sha256": "7db1dd7be2e74444465f833d6b639d895ff09e0b8226fb06eb925a5729a85eae"
+    },
+    "models/qwen3.5-0.8b-linux/model.q35h": {
+      "bytes": 424964864,
+      "sha256": "013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a"
+    },
+    "docs/results/cpu-refresh-2026-10-22/prompt-512.csv": {
+      "bytes": 2311,
+      "sha256": "6baa0783f9ad2adea59013c948cd15a0a465e870837bf9a60e57eb73ef39bd81"
+    },
+    "models/qwen3.5-0.8b-linux/config.json": {
+      "bytes": 2907,
+      "sha256": "b90b86f35c8e6925ef74ee04d0e758f0a845c83a42089ad82bbaa948de9b4204"
+    },
+    "models/qwen3.5-0.8b-linux/tokenizer.json": {
+      "bytes": 12807982,
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+    },
+    "models/qwen3.5-2b/model.q35h": {
+      "bytes": 1060442880,
+      "sha256": "1084c3a2751d3813a2aa686337f717e56291e6a1a79ff8be1b6d1665d22892a3"
+    },
+    "models/qwen3.5-2b/config.json": {
+      "bytes": 2908,
+      "sha256": "ed1c1723241f23f7f4e23430759cbd7dcfb4103cbdfe052bfe7626b57c2615b4"
+    },
+    "models/qwen3.5-4b/config.json": {
+      "bytes": 3161,
+      "sha256": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670"
+    },
+    "models/qwen3.5-2b/tokenizer_config.json": {
+      "bytes": 16709,
+      "sha256": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c"
+    },
+    "models/qwen3.5-4b/tokenizer.json": {
+      "bytes": 12807982,
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+    },
+    "models/qwen3.5-0.8b-linux/tokenizer_config.json": {
+      "bytes": 16709,
+      "sha256": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c"
+    },
+    "models/qwen3.5-4b/tokenizer_config.json": {
+      "bytes": 16710,
+      "sha256": "316230d6a809701f4db5ea8f8fc862bc3a6f3229c937c174e674ff3ca0a64ac8"
+    },
+    "models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-pure.gguf": {
+      "bytes": 1071373824,
+      "sha256": "aadb22150a70a44268ded65ef0ca14401d85a5e60e4c109f5985de1fea53969d"
+    },
+    "models/ik-comparison/Qwen3.5-0.8B-IQ4_K_R4-pure.gguf": {
+      "bytes": 435896352,
+      "sha256": "420af5bcfb8f2d9faae05068e51f686bfb6912d89aa40e65a603de455f541c80"
+    },
+    "models/ik-comparison/Qwen3.5-4B-IQ4_K_R4-pure.gguf": {
+      "bytes": 2380008224,
+      "sha256": "331c1b98432e8177c88792b36f7d299949b999abcdf346c7f0d7102010d4894a"
+    },
+    "docs/results/native-prefill-reuse-2026-10-22/prompt-128.csv": {
+      "bytes": 536,
+      "sha256": "ce3215429d06895baf4a560656390e71af83405d42d38ff76f1d97ea09e297aa"
+    },
+    "docs/results/native-prefill-reuse-2026-10-22/prompt-32.csv": {
+      "bytes": 123,
+      "sha256": "411c57073d459ebfb454d842bec537622d75e5d01ee80f915a80968621fbd034"
+    }
+  },
+  "raw_series": {
+    "profile": {
+      "raw": "benchmarks/prefill-study-2026-11-20/profile",
+      "utc": "2026-11-20T12:29:49.2273434Z",
+      "metadata_sha256": "695b793b28f7aea6aef76e3746ec82240bad48f3ce66d289b58c358ba2ece8fb"
+    },
+    "transform": {
+      "raw": "benchmarks/prefill-study-2026-11-20/transform",
+      "utc": "2026-11-20T12:33:44.4380431Z",
+      "metadata_sha256": "c022b122a21b8a291be14d012774eb3c21f2fa74ce11c81bf152d3ee3b22615d"
+    },
+    "screen": {
+      "raw": "benchmarks/prefill-study-2026-11-20/screen",
+      "utc": "2026-11-20T12:31:47.1810482Z",
+      "metadata_sha256": "3af7c4661207ae6707bac6dc72a7f463cecef7348dbf5b02b3b706265e597fe9"
+    },
+    "recurrent": {
+      "raw": "benchmarks/prefill-study-2026-11-20/recurrent",
+      "utc": "2026-11-20T12:36:28.9514203Z",
+      "metadata_sha256": "839fc5663e105af27ecd9d59ac89a8f8c898557e836f6a20e577bba8f51a8b14"
+    },
+    "confirmation": {
+      "raw": "benchmarks/prefill-study-2026-11-20/confirmation",
+      "utc": "2026-11-20T12:39:39.3131874Z",
+      "metadata_sha256": "3cded54854c6afbc656849e04ca9744ecece31405f6cf2761af57b4792690118"
+    },
+    "short": {
+      "raw": "benchmarks/prefill-study-2026-11-20/short",
+      "utc": "2026-11-20T12:44:03.8018871Z",
+      "metadata_sha256": "79e7b3bc1863a325ecc85b2fb41305e7381fab13d75989d9c869dd62c85e454d"
+    }
+  },
+  "selected_source_sha256": {
+    "src/cpu/delta_net.cpp": "a89085d80df18d28888665ee519f441f062e9e4f7e3bf8339e233ca8e1150634",
+    "src/cpu/delta_net_avx512.cpp": "7d77853247f457de47ed4ae3acabd5fefc5250227d2fc38cb34a51ea5fac2aef"
+  },
+  "ik_shared_lib_sha256": {
+    "build-ik-refresh/ik/src/libllama.so": "7a041039bebade8ab185dce1bac63ef4b1381c1e01f60934e4316fef3ff77e44",
+    "build-ik-refresh/ik/ggml/src/libggml.so": "91bce206cd606717b6791dccf509b5045726bf411e3f64551e9fb2dc91d78061"
+  },
+  "diagnostic_source_sha256": {
+    "four-transforms/q4_h128.cpp": "9b6600ef1786e11b501586ba99f57491c8c094699cd73a7558325e186e080159",
+    "broadcast/q4_dot4_prefill_avx512.cpp": "c3cafbd015fc1ff127041890b5e20ccb86f26f8637171dbd6cab3b8294187a95",
+    "chain/q4_dot4_prefill_avx512.cpp": "863a739c4daf6362d734a80aec5e662a90456c6e235a530a81e93222970fe702",
+    "combined/q4_dot4_prefill_avx512.cpp": "4c566419c6b0d1f11af643a2a1435a253073c7778e1ee892f99409d090450054",
+    "rowtile/delta_net.cpp": "79d888b6c3145b415a8839d9fbab20732cc449ca13866c36af4ee3ded2764155",
+    "rowtile/delta_net_avx512.cpp": "fd45c1861cc8d92f385c84965954fca891e742c27844e5a7df7bc92b0bb8737b",
+    "transpose/delta_net.cpp": "79d888b6c3145b415a8839d9fbab20732cc449ca13866c36af4ee3ded2764155",
+    "transpose/delta_net_avx512.cpp": "c194c6305d4f6e7a4d887b84c714182b58b5de460dc67a2812062924dc60eb08"
+  },
+  "parity": {
+    "forced_ids": [
+      303,
+      22461,
+      4843,
+      57900
+    ],
+    "cpus": "0-7",
+    "threads": 8,
+    "max_context": 16384,
+    "cli_sha256": {
+      "build-readme-refresh/qwen35_cpu": "8ce08b87bb53f94fac6daed10a932ed1b841736076deb733a2590d4ccc2d0880",
+      "build-prefill-ryzen/qwen35_cpu": "70c45a30f38f9b5ebfc3b621918a3dcd996ed1b0b0f7f4d746f3e73dc618708f"
+    }
+  }
+}

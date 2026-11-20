@@ -173,6 +173,9 @@ void gated_delta_net_update_batch_rows_avx2(
 #if QWEN35X_Q8_0_HAS_AVX512_TU
 void gated_delta_net_update_rows_avx512(float *, const float *, const float *, const float *,
     const float *, const float *, float *, std::size_t, std::size_t, std::size_t) noexcept;
+void gated_delta_net_prefill_128_avx512(float *, const float *, const float *, const float *,
+    const float *, const float *, float *, std::size_t, std::size_t, std::size_t,
+    std::size_t, std::size_t) noexcept;
 #endif
 
 } // namespace detail
@@ -241,6 +244,14 @@ void gated_delta_net_update_batch_rows(
     return;
   }
   const std::size_t bounded_end = row_end < head_count ? row_end : head_count;
+#if QWEN35X_Q8_0_HAS_AVX512_TU
+  if (batch_size >= 32 && key_dim == 128 && value_dim % 16 == 0 &&
+      q8_0_backend_uses_avx512(backend)) {
+    detail::gated_delta_net_prefill_128_avx512(state, q, k, v, alpha, beta, output,
+        batch_size, head_count, value_dim, row_begin, bounded_end);
+    return;
+  }
+#endif
 #if QWEN35X_HAS_WASM_SIMD_TU
   if (q8_0_resolve_backend(backend) == Q8_0Backend::wasm_simd) {
     detail::gated_delta_net_update_batch_rows_wasm(state, q, k, v, alpha, beta, output,

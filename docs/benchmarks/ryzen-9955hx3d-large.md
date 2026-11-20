@@ -4,6 +4,8 @@ On November 20, 2026, the native engine, ik_llama.cpp and llama.cpp ran the same
 
 With 16 simultaneous requests, native decode exceeded IK by 56% at 2B and 53% at 4B. For one request, IK led native decode by 3.4% and 2.4%, respectively. All three engines recorded their fastest single-request decode in the final round at both sizes. Individual rates varied more across rounds than the differences between single-request medians.
 
+A subsequent study measured the Hadamard transform and compared optimized DeltaNet prefill with the same IK build at all three model sizes. [Prefill profile and timings](prefill-9955hx3d.md)
+
 ## Checkpoints
 
 | Qwen3.5 text model | Tensor bytes in each format | Native H128/Q4-G32-DOT4 weights |
