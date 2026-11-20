@@ -20,6 +20,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 ## Benchmarks and model cards
 
 - [0.8B on the Ryzen 9 9955HX3D](benchmarks/ryzen-9955hx3d.md) compares the native engine with llama.cpp and ik_llama.cpp.
+- [2B and 4B on the same laptop](benchmarks/ryzen-9955hx3d-large.md) compares the three engines with matched tensor sizes, single requests and batches of 16.
 - [October CPU comparison](benchmarks/cpu.md), [IK prefill analysis](benchmarks/cpu.md#why-ik-iq4_ks_r4-prefill-changed)
   and [IK batch-16 methodology](benchmarks/ik-batch16.md).
 - [Fine-tune serving](benchmarks/finetune-serving.md) compares Prism and QEV against BF16 and tests shared decision prefill.

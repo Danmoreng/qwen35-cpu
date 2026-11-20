@@ -6,7 +6,7 @@ application. The ready-to-run **0.8B** checkpoint uses **425 MB of weights**.
 Source builds also run **2B** and **4B** text models. The engine selects AVX2
 or AVX-512 kernels at runtime on supported CPUs.
 
-[Quick start](#download-and-run) · [0.8B benchmarks](#qwen35-08b-performance) · [Documentation](docs/README.md)
+[Quick start](#download-and-run) · [CPU benchmarks](#cpu-performance) · [Documentation](docs/README.md)
 
 ## What you can run
 
@@ -52,28 +52,38 @@ Invoke-RestMethod http://127.0.0.1:8080/v1/chat/completions -Method Post -Conten
 
 </details>
 
-## Qwen3.5-0.8B performance
+<a id="qwen35-08b-performance"></a>
 
-Measured November 19, 2026 on an **AMD Ryzen 9 9955HX3D**, with eight threads
-pinned to physical cores 0–7. Rates are median **tokens/s** over three runs
-after one warmup. Prefill processes a single prompt. Decode uses 512 input and
-128 output tokens per request. B=16 reports total throughput across 16 requests.
+## CPU performance
 
-| Engine / checkpoint | Decode B=1 | Decode B=16 | Prefill 512 | Prefill 4,096 |
-| --- | ---: | ---: | ---: | ---: |
-| ik_llama.cpp IQ4_KS_R4 | 121.5 | 400.7 | 3,630.8 | 3,144.8 |
-| ik_llama.cpp IQ4_K_R4 | 113.4 | 388.9 | 3,629.5 | 3,141.2 |
-| **Native H128/Q4-G32-DOT4** | 111.0 | 575.6 | 3,052.4 | 2,670.7 |
-| llama.cpp Q4_0 | 101.8 | 456.5 | 1,099.5 | 1,072.2 |
-| llama.cpp Unsloth Q4_K_M | 83.3 | 389.8 | 1,106.7 | 959.4 |
+Measured on the **AMD Ryzen 9 9955HX3D** laptop with eight threads pinned to
+physical cores 0–7. Rates are median **tokens/s** from three runs after one
+warmup. Prefill measures one prompt. Decode uses 512 input and 128 output
+tokens per request. B=16 is total throughput across 16 private requests.
 
-The native engine delivered the highest throughput with 16 concurrent requests.
-The smaller IK IQ4_KS_R4 checkpoint decoded fastest for one request.
-All engines used the same fixed tokens, FP16 KV and full-vocabulary logits.
-IK uses its graph-capacity patch for B=16. The timings exclude model loading,
-tokenization and HTTP. [Revisions, methodology and individual runs](docs/benchmarks/ryzen-9955hx3d.md)
+| Model | Engine / checkpoint | Tensor MB | Decode B=1 | Decode B=16 | Prefill 512 | Prefill 4,096 |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| 0.8B | ik_llama.cpp IQ4_KS_R4 | 401.4 | 121.5 | 400.7 | 3,630.8 | 3,144.8 |
+| 0.8B | ik_llama.cpp IQ4_K_R4 | 424.9 | 113.4 | 388.9 | 3,629.5 | 3,141.2 |
+| 0.8B | **Native H128/Q4-G32-DOT4** | 424.9 | 111.0 | 575.6 | 3,052.4 | 2,670.7 |
+| 0.8B | llama.cpp Q4_0 | 424.9 | 101.8 | 456.5 | 1,099.5 | 1,072.2 |
+| 0.8B | llama.cpp Unsloth Q4_K_M | 521.6 | 83.3 | 389.8 | 1,106.7 | 959.4 |
+| 2B | ik_llama.cpp IQ4_K_R4 | 1,060.4 | 43.6 | 245.7 | 1,737.7 | 1,636.2 |
+| 2B | llama.cpp Q4_0 | 1,060.4 | 42.3 | 306.4 | 701.4 | 626.8 |
+| 2B | **Native H128/Q4-G32-DOT4** | 1,060.4 | 42.2 | 382.6 | 1,504.9 | 1,414.4 |
+| 4B | ik_llama.cpp IQ4_K_R4 | 2,369.0 | 18.9 | 106.5 | 707.8 | 635.6 |
+| 4B | **Native H128/Q4-G32-DOT4** | 2,369.0 | 18.4 | 163.4 | 614.4 | 557.5 |
+| 4B | llama.cpp Q4_0 | 2,369.0 | 18.2 | 98.3 | 195.9 | 175.7 |
 
-### Quantization quality
+At 2B and 4B, IK led single-request decode and prefill. Native delivered the
+highest decode throughput across 16 requests. All three formats have the same
+on-disk tensor size within each of these model sizes. Timings use fixed tokens,
+FP16 KV and full-vocabulary logits and exclude loading, tokenization and HTTP.
+[0.8B runs, November 19](docs/benchmarks/ryzen-9955hx3d.md) · [2B and 4B runs, November 20](docs/benchmarks/ryzen-9955hx3d-large.md)
+
+<a id="quantization-quality"></a>
+
+### 0.8B quantization quality
 
 Perplexity (PPL) measures how well the model predicts the reference text.
 KL measures how closely its predictions match the BF16 teacher, in nats.

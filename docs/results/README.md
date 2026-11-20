@@ -6,6 +6,7 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
+| `ryzen-large-2026-11-20` | [2B and 4B on the Ryzen 9 9955HX3D](../benchmarks/ryzen-9955hx3d-large.md), matched tensor sizes, per-run CPU throughput and reproduction matrix |
 | `decision-gpu-2026-11-20` | [GPU decision-model comparison](../benchmarks/decision-models-gpu.md), predictions, quality scores and checkpoint hashes |
 | `decision-followup-2026-11-20` | [Decision-model follow-up](../benchmarks/decision-model-followup.md), full JevBench scores, frozen German inputs, paired quantization results and CPU latency |
 | `qev-08-comparison-2026-11-20` | [BA Research and Labqoat Qev at 0.8B](../benchmarks/qev-08-comparison.md), paired predictions, context coverage and checkpoint provenance |

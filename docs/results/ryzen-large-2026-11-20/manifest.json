@@ -1,0 +1,205 @@
+{
+  "date": "2026-11-20",
+  "started_utc": "2026-11-20T11:55:33.8855249Z",
+  "source_checkout": "3dba726f4669dbc9ce2c89651bbb7989277b7ad9",
+  "engine_revisions": {
+    "native": "8b0d6426aa4bf3a2fbc4f648d29eeb0b4b2fadb6",
+    "llama": "7170cad4d02f7907517613931840cbb2367399a3",
+    "ik": "98aca8692ae334e6e23e4d39ac43ce0d21029c35",
+    "ik_b16": "98aca8692ae334e6e23e4d39ac43ce0d21029c35"
+  },
+  "host": {
+    "cpu": "AMD Ryzen 9 9955HX3D 16-Core Processor",
+    "kernel": "7.3.4-arch1-2",
+    "compiler": "c++ (GCC) 16.2.1 20260810",
+    "affinity": "0xff",
+    "threads": 8,
+    "platform_profile": "max-power",
+    "ac_online": "1",
+    "scaling_driver": "amd-pstate-epp",
+    "governor": "powersave",
+    "epp": "balance_performance",
+    "cpu0_L3_size": "98304K",
+    "cpu0_L3_shared": "0-7,16-23"
+  },
+  "runs": 3,
+  "warmup_runs": 1,
+  "case_order": "forward on runs 0 and 2, reverse on 1 and 3",
+  "omp_num_threads": 8,
+  "runner": "scripts/benchmark-inference-seq.ps1",
+  "runner_args": [
+    "-Matrix",
+    "benchmarks/ryzen-large-2026-11-20/matrix.json",
+    "-OutputDir",
+    "benchmarks/ryzen-large-2026-11-20/speed",
+    "-Affinity",
+    "255",
+    "-WarmupRuns",
+    "1",
+    "-Runs",
+    "3"
+  ],
+  "matrix": "matrix.json",
+  "runner_appended_args": [
+    "--profile-json",
+    "<output>/case-<zero-based matrix index>-run-<run>.json"
+  ],
+  "binaries": {
+    "build-ik-refresh/bin/ik-fixed-cpu-bench": "f9444895d81b95abdf1a176aa7436a6e27b2a9d17bcbe90521aaa43f0a91639e",
+    "build-llama-refresh/bin/llama-fixed-cpu-bench": "350c52a1dadfb0593e0056a9dc1c48bd15fbed5d4e5035c0e303536e36618601",
+    "build-ik-refresh-b16/bin/ik-fixed-cpu-bench": "747f2267f3ba312ef89bf645eacd3deaa27e5d22d341a95d35cde9933773498f",
+    "build-readme-refresh/qwen35_cpu_bench": "faa1b89c52a6b2467a8946b301b2cbc96989e905ba11151660b010022f6170e9"
+  },
+  "shared_libraries": {
+    "build-ik-refresh-b16/ik/src/libllama.so": "1974661a82f5a0bd2bcfc7a5e00e0c91351e3d213440ad2880b82eb41dca06a6",
+    "build-ik-refresh-b16/ik/ggml/src/libggml.so": "541950e36535065045cd7a43a04be56027a964368016be42883afeff5ab6db05",
+    "build-ik-refresh/ik/src/libllama.so": "7a041039bebade8ab185dce1bac63ef4b1381c1e01f60934e4316fef3ff77e44",
+    "build-ik-refresh/ik/ggml/src/libggml.so": "91bce206cd606717b6791dccf509b5045726bf411e3f64551e9fb2dc91d78061",
+    "build-llama-refresh/bin/libllama.so.0.7.0": "82c14c7c08286186f1315d7934922c9434479745f5d131e7fb850dbb0aad5961",
+    "build-llama-refresh/bin/libggml.so.0.27.0": "331bc7c6a2f054ea375540a8dec85d5750bc23c23c749961d1946ed7ad825065",
+    "build-llama-refresh/bin/libggml-cpu.so.0.27.0": "275369bdf5eb0c0c09b072fab29f91fc58dec8d9b67104c5b0e2b24862e0fe80",
+    "build-llama-refresh/bin/libggml-base.so.0.27.0": "2c9103f5cc31407e200ffae63275e3737d18527ca6c59cd2fee0d1222948b197"
+  },
+  "inputs": {
+    "models/qwen3.5-4b/config.json": {
+      "bytes": 3161,
+      "sha256": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670"
+    },
+    "docs/results/cpu-refresh-2026-10-22/prompt-512.csv": {
+      "bytes": 2311,
+      "sha256": "6baa0783f9ad2adea59013c948cd15a0a465e870837bf9a60e57eb73ef39bd81"
+    },
+    "models/qwen3.5-2b/tokenizer.json": {
+      "bytes": 12807982,
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+    },
+    "models/qwen3.5-2b/config.json": {
+      "bytes": 2908,
+      "sha256": "ed1c1723241f23f7f4e23430759cbd7dcfb4103cbdfe052bfe7626b57c2615b4"
+    },
+    "models/ik-comparison/Qwen3.5-4B-IQ4_K_R4-pure.gguf": {
+      "bytes": 2380008224,
+      "sha256": "331c1b98432e8177c88792b36f7d299949b999abcdf346c7f0d7102010d4894a"
+    },
+    "models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-pure.gguf": {
+      "bytes": 1071373824,
+      "sha256": "aadb22150a70a44268ded65ef0ca14401d85a5e60e4c109f5985de1fea53969d"
+    },
+    "models/qwen3.5-2b/tokenizer_config.json": {
+      "bytes": 16709,
+      "sha256": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c"
+    },
+    "models/qwen3.5-4b/model-mse16.q35h": {
+      "bytes": 2369080576,
+      "sha256": "7db1dd7be2e74444465f833d6b639d895ff09e0b8226fb06eb925a5729a85eae"
+    },
+    "models/llama-comparison/Qwen3.5-2B-Q4_0-pure.gguf": {
+      "bytes": 1071373824,
+      "sha256": "cf87670f77bb584aa8f7dcd101bc590a5c6325388fda09503f094d58834409fa"
+    },
+    "models/qwen3.5-4b/tokenizer.json": {
+      "bytes": 12807982,
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+    },
+    "models/llama-comparison/Qwen3.5-4B-Q4_0-pure.gguf": {
+      "bytes": 2380008224,
+      "sha256": "dc1eeb6988eb446136f6ebc2555149fde3ea772575b63b8f313d0789f85c6f82"
+    },
+    "models/qwen3.5-2b/model.q35h": {
+      "bytes": 1060442880,
+      "sha256": "1084c3a2751d3813a2aa686337f717e56291e6a1a79ff8be1b6d1665d22892a3"
+    },
+    "models/qwen3.5-4b/tokenizer_config.json": {
+      "bytes": 16710,
+      "sha256": "316230d6a809701f4db5ea8f8fc862bc3a6f3229c937c174e674ff3ca0a64ac8"
+    },
+    "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv": {
+      "bytes": 18715,
+      "sha256": "bb1582bd818d65ba153c31116895c24fd69d9edd822bb7c5fb8873055e6cd435"
+    }
+  },
+  "tensor_bytes": {
+    "models/qwen3.5-2b/model.q35h": 1060412672,
+    "models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-pure.gguf": 1060412672,
+    "models/llama-comparison/Qwen3.5-2B-Q4_0-pure.gguf": 1060412672,
+    "models/qwen3.5-4b/model-mse16.q35h": 2369040384,
+    "models/ik-comparison/Qwen3.5-4B-IQ4_K_R4-pure.gguf": 2369040384,
+    "models/llama-comparison/Qwen3.5-4B-Q4_0-pure.gguf": 2369040384
+  },
+  "comparator_reported_loaded_tensor_bytes": {
+    "models/llama-comparison/Qwen3.5-2B-Q4_0-pure.gguf": 1060412672,
+    "models/llama-comparison/Qwen3.5-4B-Q4_0-pure.gguf": 2369040384,
+    "models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-pure.gguf": 1346477312,
+    "models/ik-comparison/Qwen3.5-4B-IQ4_K_R4-pure.gguf": 2726621184
+  },
+  "ik_b16_patch": "tools/ik-llama-comparison/patches/qwen35-multi-sequence-graph.patch",
+  "native_quantizers": {
+    "2B": "activation-calibrated H128/Q4-G32-DOT4",
+    "4B": "unweighted MSE16"
+  },
+  "source_snapshots": {
+    "Qwen/Qwen3.5-2B": "15852e8c16360a2fea060d615a32b45270f8a8fc",
+    "Qwen/Qwen3.5-4B": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+  },
+  "bf16_converter_revision": "73a43d1f69345aee8bb186ef4b3172cef892f2e5",
+  "bf16_inputs": {
+    "/tmp/qwen35-readme-2b-hf/model.safetensors-00001-of-00001.safetensors": "aa33250c4fc64891ddfaba3a314fd9542ea371843c387178b425fbcc5ed680b1",
+    "/tmp/qwen35-readme-2b-reference.gguf": "2ddae3ebbaa1ef1758fb333d448df5378597da2fdb54780ed477cfe868a4e06c",
+    "/tmp/qwen35-readme-4b-bf16.gguf": "8ba0f85feb490c0b4a63d87a18d28aab0d15c29e8dac54044cb6c248ac9ad3ef"
+  },
+  "quantizer_binaries": {
+    "build-ik-refresh/bin/llama-quantize": "c72a35efa9d560fe87a0da194cf73bf94cab05af78be70815ed65fbe2bd593ba",
+    "build-llama-refresh/bin/llama-quantize": "8a801a270bf3bcb6ae9d92f710d1d58e83c8373fb679f6280233cc488f80505d"
+  },
+  "quantize_commands": [
+    [
+      "build-ik-refresh/bin/llama-quantize",
+      "--pure",
+      "/tmp/qwen35-readme-2b-reference.gguf",
+      "models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-pure.gguf",
+      "IQ4_K_R4",
+      "8"
+    ],
+    [
+      "build-llama-refresh/bin/llama-quantize",
+      "--pure",
+      "/tmp/qwen35-readme-2b-reference.gguf",
+      "models/llama-comparison/Qwen3.5-2B-Q4_0-pure.gguf",
+      "Q4_0",
+      "8"
+    ],
+    [
+      "build-ik-refresh/bin/llama-quantize",
+      "--pure",
+      "/tmp/qwen35-readme-4b-bf16.gguf",
+      "models/ik-comparison/Qwen3.5-4B-IQ4_K_R4-pure.gguf",
+      "IQ4_K_R4",
+      "8"
+    ],
+    [
+      "build-llama-refresh/bin/llama-quantize",
+      "--pure",
+      "/tmp/qwen35-readme-4b-bf16.gguf",
+      "models/llama-comparison/Qwen3.5-4B-Q4_0-pure.gguf",
+      "Q4_0",
+      "8"
+    ]
+  ],
+  "raw_directory": "benchmarks/ryzen-large-2026-11-20/speed",
+  "runner_metadata_sha256": "ba6edb0e02f43d89e0c7caf4cb90a400207686e9137a02ebda7f850f141b6d91",
+  "text_bf16_conversion": {
+    "2B": [
+      "python",
+      "convert_hf_to_gguf.py",
+      "/tmp/qwen35-readme-2b-hf",
+      "--model-name",
+      "Qwen3.5-2B",
+      "--no-mtp",
+      "--outtype",
+      "bf16",
+      "--outfile",
+      "/tmp/qwen35-readme-2b-reference.gguf"
+    ],
+    "4B_source_record": "../qwen35-4b-ryzen-2026-11-19/reference.json"
+  }
+}
