@@ -61,6 +61,8 @@ physical cores 0–7. Rates are median **tokens/s** from three runs after one
 warmup. Prefill measures one prompt. Decode uses 512 input and 128 output
 tokens per request. B=16 is total throughput across 16 private requests.
 
+![Decode and prefill throughput for native H128/Q4-G32-DOT4, ik_llama.cpp IQ4_K_R4 and llama.cpp Q4_0 at 0.8B, 2B and 4B.](docs/results/ryzen-large-2026-11-20/cpu-performance.png)
+
 | Model | Engine / checkpoint | Tensor MB | Decode B=1 | Decode B=16 | Prefill 512 | Prefill 4,096 |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | 0.8B | ik_llama.cpp IQ4_KS_R4 | 401.4 | 121.5 | 400.7 | 3,630.8 | 3,144.8 |
