@@ -21,6 +21,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 
 - [qev CPU serving profiles and AVX2 kernel trials](benchmarks/decision-tuning-9955hx3d.md) covers short decisions, concurrent routing and two DOT4 prototypes.
 - [Current laptop throughput and qev decision latency](benchmarks/laptop-refresh-9955hx3d.md) covers the three base-model sizes and the before/after decision tests.
+- [Core i7-8750H vs Ryzen 9 9955HX3D](benchmarks/i7-8750h-vs-ryzen-9955hx3d.md) compares i7 repeats of the README workloads with the retained Ryzen results.
 - [0.8B on the Ryzen 9 9955HX3D](benchmarks/ryzen-9955hx3d.md) compares the native engine with llama.cpp and ik_llama.cpp.
 - [2B and 4B on the same laptop](benchmarks/ryzen-9955hx3d-large.md) compares the three engines with matched tensor sizes, single requests and batches of 16.
 - [Hadamard cost and DeltaNet prefill on the same laptop](benchmarks/prefill-9955hx3d.md) profiles the three model sizes and compares the optimized kernel with ik_llama.cpp. The [Q4 matrix kernel follow-up](benchmarks/q4-prefill-9955hx3d.md) isolates the next change.
