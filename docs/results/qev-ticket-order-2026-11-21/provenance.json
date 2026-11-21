@@ -1,0 +1,51 @@
+{
+  "engine_revision": "e43e83583eb2b4815c1ae26cabc02fe9b5fa3e48",
+  "model": "labqoat/qev-0.8b, released calibrated H128/Q4-G32-DOT4",
+  "model_file_hashes": {
+    "model.q35h": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69",
+    "config.json": "d9ab6f1698a46bbf04895d171fa0666816745e0d7209b9493d44d3df0caa1b5f",
+    "qev_config.json": "5260608d19e1d02c7a59d7ee0351ab4a5d57cf40154132e3122eb9b147f6adb7",
+    "tokenizer.json": "466f27fefa1f44a7bb82cb1b42163c761e01dc6f7f51fc4f3d0a499a5a9b4249",
+    "tokenizer_config.json": "e611fbccc7c29ef3b1cafb1cb7ea548d189968632901d678fd62be68c47885de",
+    "vocab.json": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003",
+    "merges.txt": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d"
+  },
+  "panel_sha256": "309bb7f312f2f46867e4cdb070c08f1b6e06e0885bc534f462e57485ffdf1ab4",
+  "runner_source_sha256": "2569e264c67a8506e6caba8bc7a9bd04f096a3a14b8e241837fe7703d14f27b9",
+  "runner_binary_sha256": "4ed778443bd55fa2b1d54f8f09917edbc8395f7b443d9a2de73a38a33b27eb03",
+  "cpu": "Intel Xeon Platinum 8573C",
+  "threads": 4,
+  "affinity": "0-3",
+  "compiler": "c++ (Debian 14.2.0-19) 14.2.0",
+  "build_type": "Release",
+  "weights_bytes": 424964864,
+  "choice_temperature": 1.7,
+  "option_order": [
+    "Zugang",
+    "Abrechnung",
+    "Vertrag",
+    "Technik",
+    "Sicherheit"
+  ],
+  "diagnostic_option_order": [
+    "Sicherheit",
+    "Technik",
+    "Vertrag",
+    "Abrechnung",
+    "Zugang"
+  ],
+  "diagnostic_panel_sha256": "d7b082eaaf5f713569643ea2ef1a189aa02e1c74dcd717816447ad17b12d401b",
+  "http_crosscheck": {
+    "endpoint": "/v1/systemone",
+    "encoding": "per_question",
+    "threads": 4,
+    "prefix_cache": "off",
+    "checks": [
+      "top choice",
+      "all returned class probabilities",
+      "total input tokens"
+    ],
+    "matching_tickets": 50,
+    "server_sha256": "aa62bab4edc72359752eda0df43d1b8451a571628c851275718d3f143853b985"
+  }
+}

@@ -1,0 +1,371 @@
+{
+  "n": 50,
+  "methods": {
+    "context_first": {
+      "correct": 37,
+      "accuracy": 0.74,
+      "macro_f1": 0.7508045977011494,
+      "mean_gold_probability": 0.65216,
+      "confusion": {
+        "Sicherheit": {
+          "Sicherheit": 9,
+          "Technik": 1,
+          "Vertrag": 0,
+          "Abrechnung": 0,
+          "Zugang": 0
+        },
+        "Technik": {
+          "Sicherheit": 2,
+          "Technik": 7,
+          "Vertrag": 1,
+          "Abrechnung": 0,
+          "Zugang": 0
+        },
+        "Vertrag": {
+          "Sicherheit": 2,
+          "Technik": 0,
+          "Vertrag": 8,
+          "Abrechnung": 0,
+          "Zugang": 0
+        },
+        "Abrechnung": {
+          "Sicherheit": 1,
+          "Technik": 0,
+          "Vertrag": 1,
+          "Abrechnung": 8,
+          "Zugang": 0
+        },
+        "Zugang": {
+          "Sicherheit": 5,
+          "Technik": 0,
+          "Vertrag": 0,
+          "Abrechnung": 0,
+          "Zugang": 5
+        }
+      },
+      "by_subset": {
+        "boundary": {
+          "correct": 18,
+          "n": 25
+        },
+        "direct": {
+          "correct": 19,
+          "n": 25
+        }
+      }
+    },
+    "question_first": {
+      "correct": 10,
+      "accuracy": 0.2,
+      "macro_f1": 0.06666666666666667,
+      "mean_gold_probability": 0.259812,
+      "confusion": {
+        "Sicherheit": {
+          "Sicherheit": 10,
+          "Technik": 0,
+          "Vertrag": 0,
+          "Abrechnung": 0,
+          "Zugang": 0
+        },
+        "Technik": {
+          "Sicherheit": 10,
+          "Technik": 0,
+          "Vertrag": 0,
+          "Abrechnung": 0,
+          "Zugang": 0
+        },
+        "Vertrag": {
+          "Sicherheit": 10,
+          "Technik": 0,
+          "Vertrag": 0,
+          "Abrechnung": 0,
+          "Zugang": 0
+        },
+        "Abrechnung": {
+          "Sicherheit": 10,
+          "Technik": 0,
+          "Vertrag": 0,
+          "Abrechnung": 0,
+          "Zugang": 0
+        },
+        "Zugang": {
+          "Sicherheit": 10,
+          "Technik": 0,
+          "Vertrag": 0,
+          "Abrechnung": 0,
+          "Zugang": 0
+        }
+      },
+      "by_subset": {
+        "boundary": {
+          "correct": 5,
+          "n": 25
+        },
+        "direct": {
+          "correct": 5,
+          "n": 25
+        }
+      }
+    },
+    "question_first_cached": {
+      "correct": 10,
+      "accuracy": 0.2,
+      "macro_f1": 0.06666666666666667,
+      "mean_gold_probability": 0.259812,
+      "confusion": {
+        "Sicherheit": {
+          "Sicherheit": 10,
+          "Technik": 0,
+          "Vertrag": 0,
+          "Abrechnung": 0,
+          "Zugang": 0
+        },
+        "Technik": {
+          "Sicherheit": 10,
+          "Technik": 0,
+          "Vertrag": 0,
+          "Abrechnung": 0,
+          "Zugang": 0
+        },
+        "Vertrag": {
+          "Sicherheit": 10,
+          "Technik": 0,
+          "Vertrag": 0,
+          "Abrechnung": 0,
+          "Zugang": 0
+        },
+        "Abrechnung": {
+          "Sicherheit": 10,
+          "Technik": 0,
+          "Vertrag": 0,
+          "Abrechnung": 0,
+          "Zugang": 0
+        },
+        "Zugang": {
+          "Sicherheit": 10,
+          "Technik": 0,
+          "Vertrag": 0,
+          "Abrechnung": 0,
+          "Zugang": 0
+        }
+      },
+      "by_subset": {
+        "boundary": {
+          "correct": 5,
+          "n": 25
+        },
+        "direct": {
+          "correct": 5,
+          "n": 25
+        }
+      }
+    }
+  },
+  "paired": {
+    "gained": 1,
+    "lost": 28,
+    "both_wrong": 12,
+    "both_right": 9,
+    "changed_choices": [
+      {
+        "id": "T01",
+        "gold": "Technik",
+        "context_first": "Technik",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T03",
+        "gold": "Technik",
+        "context_first": "Technik",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T05",
+        "gold": "Vertrag",
+        "context_first": "Vertrag",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T06",
+        "gold": "Vertrag",
+        "context_first": "Vertrag",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T09",
+        "gold": "Abrechnung",
+        "context_first": "Abrechnung",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T10",
+        "gold": "Abrechnung",
+        "context_first": "Abrechnung",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T11",
+        "gold": "Abrechnung",
+        "context_first": "Abrechnung",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T18",
+        "gold": "Zugang",
+        "context_first": "Zugang",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T19",
+        "gold": "Zugang",
+        "context_first": "Zugang",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T20",
+        "gold": "Technik",
+        "context_first": "Technik",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T21",
+        "gold": "Zugang",
+        "context_first": "Zugang",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T22",
+        "gold": "Abrechnung",
+        "context_first": "Abrechnung",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T23",
+        "gold": "Abrechnung",
+        "context_first": "Abrechnung",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T25",
+        "gold": "Sicherheit",
+        "context_first": "Technik",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T26",
+        "gold": "Vertrag",
+        "context_first": "Vertrag",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T27",
+        "gold": "Vertrag",
+        "context_first": "Vertrag",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T30",
+        "gold": "Technik",
+        "context_first": "Vertrag",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T31",
+        "gold": "Technik",
+        "context_first": "Technik",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T33",
+        "gold": "Zugang",
+        "context_first": "Zugang",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T34",
+        "gold": "Abrechnung",
+        "context_first": "Abrechnung",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T35",
+        "gold": "Zugang",
+        "context_first": "Zugang",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T36",
+        "gold": "Technik",
+        "context_first": "Technik",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T37",
+        "gold": "Vertrag",
+        "context_first": "Vertrag",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T38",
+        "gold": "Abrechnung",
+        "context_first": "Abrechnung",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T39",
+        "gold": "Vertrag",
+        "context_first": "Vertrag",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T40",
+        "gold": "Vertrag",
+        "context_first": "Vertrag",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T41",
+        "gold": "Technik",
+        "context_first": "Technik",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T42",
+        "gold": "Vertrag",
+        "context_first": "Vertrag",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T43",
+        "gold": "Abrechnung",
+        "context_first": "Vertrag",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T46",
+        "gold": "Technik",
+        "context_first": "Technik",
+        "question_first": "Sicherheit"
+      },
+      {
+        "id": "T47",
+        "gold": "Abrechnung",
+        "context_first": "Abrechnung",
+        "question_first": "Sicherheit"
+      }
+    ],
+    "mcnemar_exact_two_sided_p": 1.1175870895385742e-07
+  },
+  "cache": {
+    "choice_changes": 0,
+    "max_probability_difference": 0,
+    "max_absolute_logit_difference": 0,
+    "prefix_lengths": [
+      147
+    ]
+  },
+  "input_tokens": [
+    167,
+    187
+  ]
+}

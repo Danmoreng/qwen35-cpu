@@ -48,6 +48,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 - [AVX2 prefill follow-up on the i7-8750H](benchmarks/avx2-prefill-followup-i7.md) compares paired DOT4 scheduling, DeltaNet state reuse and attention PV tiles.
 - [AVX2 cloud VM tuning](benchmarks/avx2-cloud.md): prompt processing, decode experiments and bitwise checks on an EPYC VM.
 - [Standard model calibration](benchmarks/calibration.md).
+- [QEV prompt order on 50 German tickets](benchmarks/qev-ticket-order.md) compares placing the ticket before or after the question and all options.
 - [Decision quality](benchmarks/decision-quality.md), [HTTP latency](benchmarks/decision-http.md) and [exact-prefix caching with fixed rubrics](benchmarks/qev-exact-prefix.md).
 - [Four decision models on GPU](benchmarks/decision-models-gpu.md) compares public JevBench accuracy, probability consistency and When2Call tool routing before CPU integration.
 - [Liquid and Qev on full JevBench, German routing and CPU](benchmarks/decision-model-followup.md) compares Qev encodings, Liquid Q4 versus Q8 and resident llama.cpp latency.

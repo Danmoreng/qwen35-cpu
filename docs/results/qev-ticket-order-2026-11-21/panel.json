@@ -1,0 +1,312 @@
+{
+  "instruction": "Welches Team soll dieses Ticket als Nächstes bearbeiten? Wähle genau ein Team. Bei konkretem Verdacht auf Fremdzugriff hat Sicherheit Vorrang. Sonst entscheidet die jetzt verlangte Handlung.",
+  "criteria": {
+    "Zugang": "Anmeldung, Passwort oder zweiter Faktor des eigenen Kontos",
+    "Abrechnung": "Gebuchte Zahlungen, Rechnungen, Belege und Erstattungen",
+    "Vertrag": "Tarife, Angebote, Laufzeiten, Zusatzplätze und Kündigungen",
+    "Technik": "Fehlfunktionen des Produkts bei der Bedienung",
+    "Sicherheit": "Verdacht auf Fremdzugriff, Phishing oder unbefugte Änderungen"
+  },
+  "tickets": [
+    {
+      "label": "Technik",
+      "text": "Wir haben alle nötigen Plätze gekauft. Im Einladungsdialog verschwindet die Schaltfläche, sobald man das Fenster verkleinert.",
+      "subset": "boundary",
+      "id": "T01"
+    },
+    {
+      "label": "Technik",
+      "text": "Wenn ich einen Bericht als CSV speichere, enthält die Datei nur die Kopfzeile. Die Tabelle im Browser hat alle Zeilen.",
+      "subset": "direct",
+      "id": "T02"
+    },
+    {
+      "label": "Technik",
+      "text": "Meine Rechnung ist inhaltlich korrekt. Ich melde einen Fehler: Ein Klick auf Drucken öffnet in drei Browsern nur eine weiße Seite.",
+      "subset": "boundary",
+      "id": "T03"
+    },
+    {
+      "label": "Vertrag",
+      "text": "Ins Konto komme ich problemlos. Welche Planstufe muss ich buchen, damit externe Gäste mitarbeiten dürfen?",
+      "subset": "boundary",
+      "id": "T04"
+    },
+    {
+      "label": "Vertrag",
+      "text": "Bitte beenden Sie mein Monatsabo zum nächstmöglichen Termin und bestätigen Sie das Enddatum.",
+      "subset": "direct",
+      "id": "T05"
+    },
+    {
+      "label": "Vertrag",
+      "text": "Kann ich von monatlicher auf jährliche Laufzeit umstellen, sobald die jetzige Periode endet?",
+      "subset": "direct",
+      "id": "T06"
+    },
+    {
+      "label": "Sicherheit",
+      "text": "Jemand hat unseren Vertrag über mein Profil gekündigt. Ich habe mich an dem Tag nicht angemeldet und vermute einen fremden Zugriff.",
+      "subset": "boundary",
+      "id": "T07"
+    },
+    {
+      "label": "Zugang",
+      "text": "Ich habe nur noch einen Wiederherstellungscode übrig. Wie bekomme ich für mein eigenes Konto neue Codes?",
+      "subset": "direct",
+      "id": "T08"
+    },
+    {
+      "label": "Abrechnung",
+      "text": "Für die Reisekostenabrechnung fehlt mir der Beleg für September. Könnten Sie mir eine Kopie mailen?",
+      "subset": "direct",
+      "id": "T09"
+    },
+    {
+      "label": "Abrechnung",
+      "text": "Auf unserer letzten Rechnung fehlt die Umsatzsteuer-ID. Ich brauche den korrigierten Beleg.",
+      "subset": "direct",
+      "id": "T10"
+    },
+    {
+      "label": "Abrechnung",
+      "text": "Der Name auf dem Kontoauszug kam mir erst fremd vor; inzwischen habe ich die Bestellung als meine erkannt. Ich benötige nur die zugehörige Quittung.",
+      "subset": "boundary",
+      "id": "T11"
+    },
+    {
+      "label": "Zugang",
+      "text": "Beim Anmelden heißt es, mein Konto sei nach zu vielen Versuchen gesperrt. Die Versuche waren alle von mir.",
+      "subset": "direct",
+      "id": "T12"
+    },
+    {
+      "label": "Sicherheit",
+      "text": "Mein Firmenlaptop wurde gestohlen, während ich im Kundenportal angemeldet war. Bitte beenden Sie die Sitzung sofort.",
+      "subset": "direct",
+      "id": "T13"
+    },
+    {
+      "label": "Sicherheit",
+      "text": "Über Nacht hat jemand die Wiederherstellungsadresse geändert. Ich war das nicht. Bitte sichern Sie das Konto.",
+      "subset": "direct",
+      "id": "T14"
+    },
+    {
+      "label": "Zugang",
+      "text": "Die Einladung für meinen neuen Arbeitsplatz ist abgelaufen. Könnten Sie mir noch einmal eine schicken?",
+      "subset": "direct",
+      "id": "T15"
+    },
+    {
+      "label": "Zugang",
+      "text": "Der Sicherheitshinweis wegen eines neuen Geräts war berechtigt, das war mein Laptop. Wie ändere ich jetzt meine vergessene PIN?",
+      "subset": "boundary",
+      "id": "T16"
+    },
+    {
+      "label": "Vertrag",
+      "text": "Unser Verein möchte vor der Bestellung ein schriftliches Angebot für sechs Nutzer erhalten.",
+      "subset": "direct",
+      "id": "T17"
+    },
+    {
+      "label": "Zugang",
+      "text": "Unsere Administratorin hat das Unternehmen verlassen und mir das Konto offiziell übergeben. Wie lasse ich mir den ersten Anmeldelink zustellen?",
+      "subset": "boundary",
+      "id": "T18"
+    },
+    {
+      "label": "Zugang",
+      "text": "Ich komme nach dem Handywechsel nicht mehr an den Bestätigungscode. Wie richte ich mein neues Gerät für die Anmeldung ein?",
+      "subset": "direct",
+      "id": "T19"
+    },
+    {
+      "label": "Technik",
+      "text": "Ich kann im Projekt Karten verschieben, aber nach dem Neuladen stehen sie immer wieder an der alten Stelle.",
+      "subset": "direct",
+      "id": "T20"
+    },
+    {
+      "label": "Zugang",
+      "text": "Die App selbst funktioniert auf dem Tablet meiner Kollegin. Bei mir scheitert schon die Anmeldung, weil ich meine hinterlegte E-Mail-Adresse vergessen habe.",
+      "subset": "boundary",
+      "id": "T21"
+    },
+    {
+      "label": "Abrechnung",
+      "text": "Für die Bestellung vom Dienstag wurden zweimal 48 Euro abgebucht. Bitte erstatten Sie die zweite Buchung.",
+      "subset": "direct",
+      "id": "T22"
+    },
+    {
+      "label": "Abrechnung",
+      "text": "Ich habe den offenen Betrag überwiesen und trotzdem eine Mahnung erhalten. Können Sie die Zahlung zuordnen?",
+      "subset": "direct",
+      "id": "T23"
+    },
+    {
+      "label": "Abrechnung",
+      "text": "Die Gutschrift wurde vor zwei Wochen angekündigt. Wann geht das Geld wieder auf meinem Konto ein?",
+      "subset": "direct",
+      "id": "T24"
+    },
+    {
+      "label": "Sicherheit",
+      "text": "Mein Kennwort funktioniert nicht mehr, und die Nachricht über eine Änderung der Kontoadresse habe ich nicht ausgelöst.",
+      "subset": "boundary",
+      "id": "T25"
+    },
+    {
+      "label": "Vertrag",
+      "text": "Unser Mitarbeiter ist ausgeschieden, sein Zugang ist schon deaktiviert. Bitte verringern Sie die gebuchte Zahl der Plätze um einen.",
+      "subset": "boundary",
+      "id": "T26"
+    },
+    {
+      "label": "Vertrag",
+      "text": "Die letzte Rechnung stimmt. Für die nächste Vertragsperiode möchte ich auf den kleineren Tarif wechseln.",
+      "subset": "boundary",
+      "id": "T27"
+    },
+    {
+      "label": "Zugang",
+      "text": "Ich muss die letzte Rechnung herunterladen, komme aber nicht ins Kundenkonto. Bitte helfen Sie mir zuerst beim Zurücksetzen des Passworts.",
+      "subset": "boundary",
+      "id": "T28"
+    },
+    {
+      "label": "Sicherheit",
+      "text": "Ein Kollege erhielt aus meinem Profil Nachrichten, die ich nie verschickt habe. Bitte untersuchen Sie, wer Zugriff hat.",
+      "subset": "direct",
+      "id": "T29"
+    },
+    {
+      "label": "Technik",
+      "text": "Ich will meinen Tarif behalten. Der Tarifvergleich in der App überdeckt auf kleinen Displays den Zurück-Knopf.",
+      "subset": "boundary",
+      "id": "T30"
+    },
+    {
+      "label": "Technik",
+      "text": "Die Anmeldung klappt. Erst beim Öffnen des ersten Projekts friert die Oberfläche ein; könnten Sie das untersuchen?",
+      "subset": "boundary",
+      "id": "T31"
+    },
+    {
+      "label": "Sicherheit",
+      "text": "Ich wollte eigentlich einen Beleg laden und habe dabei einen neuen API-Schlüssel entdeckt, den niemand im Team angelegt hat. Können Sie den Vorfall prüfen?",
+      "subset": "boundary",
+      "id": "T32"
+    },
+    {
+      "label": "Zugang",
+      "text": "Seit dem Urlaub weiß ich mein Kennwort nicht mehr. Können Sie mir einen Link zum Zurücksetzen schicken?",
+      "subset": "direct",
+      "id": "T33"
+    },
+    {
+      "label": "Abrechnung",
+      "text": "Das Zurücksetzen meines Passworts hat geklappt. Können Sie mir jetzt erklären, wie sich die bereits bezahlten 79 Euro zusammensetzen?",
+      "subset": "boundary",
+      "id": "T34"
+    },
+    {
+      "label": "Zugang",
+      "text": "Ich möchte irgendwann kündigen. Heute brauche ich nur wieder Zugang, weil der zweite Faktor noch auf meinem alten Telefon liegt.",
+      "subset": "boundary",
+      "id": "T35"
+    },
+    {
+      "label": "Technik",
+      "text": "Die Suche liefert selbst für den vollständigen Titel meines eigenen Dokuments keine Ergebnisse.",
+      "subset": "direct",
+      "id": "T36"
+    },
+    {
+      "label": "Vertrag",
+      "text": "Bis wann muss ich widersprechen, damit sich meine derzeitige Vereinbarung nicht automatisch verlängert?",
+      "subset": "direct",
+      "id": "T37"
+    },
+    {
+      "label": "Abrechnung",
+      "text": "Die Kündigung ist bereits bestätigt. Es geht mir nur um die danach abgebuchte Monatsgebühr, die ich zurückhaben möchte.",
+      "subset": "boundary",
+      "id": "T38"
+    },
+    {
+      "label": "Vertrag",
+      "text": "Die Störung ist behoben. Wir möchten den Dienst aus Kostengründen trotzdem zum Laufzeitende abbestellen.",
+      "subset": "boundary",
+      "id": "T39"
+    },
+    {
+      "label": "Vertrag",
+      "text": "Die Buchhaltung braucht vor Freigabe einen Preis für drei weitere Lizenzen. Es wurde noch nichts bestellt oder bezahlt.",
+      "subset": "boundary",
+      "id": "T40"
+    },
+    {
+      "label": "Technik",
+      "text": "Die Tonspur meiner hochgeladenen Präsentation springt bei Minute vier an den Anfang. Die Originaldatei spielt richtig ab.",
+      "subset": "direct",
+      "id": "T41"
+    },
+    {
+      "label": "Vertrag",
+      "text": "Wir brauchen ab April zwölf weitere Plätze. Was kostet uns das im Jahrestarif?",
+      "subset": "direct",
+      "id": "T42"
+    },
+    {
+      "label": "Abrechnung",
+      "text": "Den zusätzlichen Platz habe ich selbst bestellt. Warum wurde er für den ganzen Monat statt für drei Tage berechnet?",
+      "subset": "boundary",
+      "id": "T43"
+    },
+    {
+      "label": "Sicherheit",
+      "text": "Eine Rechnung für zusätzliche Plätze ist eingetroffen. Im Protokoll steht ein fremder Administrator, den bei uns niemand kennt. Bitte zuerst das Konto absichern.",
+      "subset": "boundary",
+      "id": "T44"
+    },
+    {
+      "label": "Sicherheit",
+      "text": "Die Liste aktiver Sitzungen zeigt einen Rechner im Ausland, während mein einziger Laptop vor mir liegt. Können Sie den Zugriff prüfen?",
+      "subset": "direct",
+      "id": "T45"
+    },
+    {
+      "label": "Technik",
+      "text": "Seit dem letzten Update schließt sich die Desktopanwendung jedes Mal, wenn ich die Druckvorschau öffne.",
+      "subset": "direct",
+      "id": "T46"
+    },
+    {
+      "label": "Abrechnung",
+      "text": "Der Export des Belegs klappt inzwischen. Auf dem Beleg selbst steht aber der falsche Nettobetrag. Bitte ändern Sie die Rechnung.",
+      "subset": "boundary",
+      "id": "T47"
+    },
+    {
+      "label": "Sicherheit",
+      "text": "Der Supportchat zeigt eine Nachricht in meinem Namen mit einem Link zum Bezahlen. Sie stammt definitiv nicht von mir.",
+      "subset": "boundary",
+      "id": "T48"
+    },
+    {
+      "label": "Technik",
+      "text": "Unser Administrator hat den neuen Standort selbst eingetragen. In der Kartenansicht liegen seitdem sämtliche Markierungen im Meer; in der Liste stimmen die Adressen.",
+      "subset": "boundary",
+      "id": "T49"
+    },
+    {
+      "label": "Sicherheit",
+      "text": "Ich bekam eine Mail mit einem angeblichen Anmeldelink und habe dort meine Zugangsdaten eingegeben. Nun wirkt mir die Seite gefälscht.",
+      "subset": "direct",
+      "id": "T50"
+    }
+  ]
+}
