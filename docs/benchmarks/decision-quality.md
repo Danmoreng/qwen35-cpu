@@ -196,6 +196,11 @@ The independent final panel contains 13,601 questions. BF16 and Q8 use llama.cpp
 CUDA for scoring; all H128/Q4-G32-DOT4 candidates use the native CPU engine.
 Tensor payload sizes below use decimal MB and exclude metadata.
 
+The figure pairs final-panel macro accuracy and Brier scores with the matched
+Ryzen first-forward latency measurements on 74- and 579-token prompts.
+
+![Jev Skills quality for five qev-0.8b checkpoints and first-forward CPU latency on the Ryzen 9 9955HX3D. Quality uses native CPU for H128 and llama.cpp CUDA for BF16 and Q8_0.](../results/qev-calibration-2026-10-21/qev-jev-skills-quality-ryzen-latency.png)
+
 | Representation / calibration | Tensor MB | Macro accuracy | Macro Brier | Mean option KL to BF16 | Mean TV to BF16 | Argmax disagreements |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | BF16, llama.cpp CUDA | 1,505.78 | 68.92% | 0.4097 | 0 | 0 | 0 |
