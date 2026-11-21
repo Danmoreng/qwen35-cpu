@@ -359,6 +359,14 @@ prompt text. Cache entries are process-local and disappear on restart.
 
 ## qev decision API
 
+QEV serializes the state first, followed by the question and options. A
+single-question call can register its entire prompt. A multi-question call
+can register the common token prefix of its rendered rows. Both use the
+32-token minimum for automatic registration. Later requests can restore that
+boundary when every token through it matches. The server reports restored
+tokens summed across evaluated rows in `cache.read_tokens`. See the
+[resident QEV cache measurements](benchmarks/qev-exact-prefix.md).
+
 With the calibrated [qev-0.8b model](https://huggingface.co/danmoreng/qev-0.8b-H128-Q4-G32-DOT4),
 the same executable also serves **`POST /v1/systemone`**. A supported
 `qev_config.json` in the model directory enables the route and validates the

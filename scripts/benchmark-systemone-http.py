@@ -25,6 +25,8 @@ def main():
     p.add_argument('--weights', type=Path, required=True)
     p.add_argument('--request', type=Path, required=True)
     p.add_argument('--threads', type=int, default=8)
+    p.add_argument('--prefix-cache', choices=['auto', 'off'],
+                   help='Explicit native cache mode; records cache counters after the timed panel')
     p.add_argument('--decision-head', choices=['auto', 'full'])
     p.add_argument('--ticket-panel', action='store_true', help='Read labeled, variable-length states from --request')
     p.add_argument('--jsonl-panel', action='store_true',
@@ -39,6 +41,8 @@ def main():
     p.add_argument('--distinct-states', action='store_true')
     p.add_argument('--profile-json', type=Path, required=True)
     args = p.parse_args()
+    if args.prefix_cache and (args.backend != 'native' or (args.prefill_requests and args.prefix_cache != 'off')):
+        p.error('--prefix-cache requires native inference; --prefill-requests benchmarks require off')
     if not 1 <= args.concurrency <= 16:raise ValueError('concurrency must be 1..16')
     count = args.requests if args.requests is not None else args.concurrency
     if args.jsonl_panel and (args.requests is not None or args.ticket_panel or args.distinct_states):
@@ -52,8 +56,9 @@ def main():
         cmd+=['--model-dir',str(args.model_dir),'--weights',str(args.weights),'--threads',str(args.threads),
               '--residents',str(args.concurrency),'--max-context','8192','--port',str(port)]
         if args.prefill_requests:
-            cmd += ['--prefill-requests', str(args.prefill_requests), '--batch-width', str(args.concurrency),
-                    '--prefix-cache', 'off']
+            cmd += ['--prefill-requests', str(args.prefill_requests), '--batch-width', str(args.concurrency)]
+        if args.prefix_cache or args.prefill_requests:
+            cmd += ['--prefix-cache', args.prefix_cache or 'off']
         if args.decision_head:cmd+=['--decision-head',args.decision_head]
         if args.prefill_chunk not in (None, '0'):cmd+=['--prefill-chunk',str(args.prefill_chunk)]
     else:
@@ -119,9 +124,11 @@ def main():
             if args.prefill_chunk == 'auto' and args.backend == 'native':
                 with urllib.request.urlopen(base+'/v1/batch-config', timeout=5) as response:
                     panel_info['batch_config'] = json.load(response)
-            if args.prefill_requests:
+            if args.prefill_requests or args.prefix_cache:
                 with urllib.request.urlopen(base+'/v1/cache', timeout=5) as response:
                     stats = json.load(response)
+                if args.prefix_cache:
+                    panel_info['cache_status'] = stats
             args.profile_json.write_text(json.dumps(dict(cpu_batch=args.concurrency,prompt_tokens=result['usage']['input_tokens'],
                 generated_tokens=0,decode_forward_steps=0,decision_latency_ms=elapsed,
                 decisions_per_second=1000*len(results)/elapsed,server_command=cmd,response=result,

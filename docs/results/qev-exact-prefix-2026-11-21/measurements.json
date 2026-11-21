@@ -1,0 +1,309 @@
+{
+  "engine_revision": "eb0df0ae5601771de628476def338419a43a53e2",
+  "cpu": "Intel Xeon Platinum 8573C",
+  "cpu_quota": 4,
+  "affinity": "0-3",
+  "threads": 4,
+  "cache_budget_bytes": 268435456,
+  "warmup_runs": 1,
+  "measured_runs": 3,
+  "measured_auto_responses": 87,
+  "identical_answer_objects": 87,
+  "maximum_returned_probability_difference": 0,
+  "summary": [
+    {
+      "panel": "short",
+      "mode": "off",
+      "phase": "first",
+      "median_ms": 904.9148699999705,
+      "run_medians_ms": [
+        904.9148699999705,
+        1015.9341159999826,
+        554.2930130000059
+      ],
+      "input_tokens": [
+        74
+      ],
+      "cached_tokens": [
+        0
+      ]
+    },
+    {
+      "panel": "short",
+      "mode": "off",
+      "phase": "repeat",
+      "median_ms": 365.1191575000041,
+      "run_medians_ms": [
+        848.7050305000139,
+        365.1191575000041,
+        356.81582949999324
+      ],
+      "input_tokens": [
+        74
+      ],
+      "cached_tokens": [
+        0
+      ]
+    },
+    {
+      "panel": "short",
+      "mode": "auto",
+      "phase": "first",
+      "median_ms": 1052.8853409999783,
+      "run_medians_ms": [
+        1052.8853409999783,
+        1118.8461799999914,
+        523.7394719999884
+      ],
+      "input_tokens": [
+        74
+      ],
+      "cached_tokens": [
+        0
+      ]
+    },
+    {
+      "panel": "short",
+      "mode": "auto",
+      "phase": "repeat",
+      "median_ms": 7.948932000005016,
+      "run_medians_ms": [
+        17.588213000010455,
+        7.948932000005016,
+        4.352658000016163
+      ],
+      "input_tokens": [
+        74
+      ],
+      "cached_tokens": [
+        74
+      ]
+    },
+    {
+      "panel": "long",
+      "mode": "off",
+      "phase": "first",
+      "median_ms": 1757.0047030000069,
+      "run_medians_ms": [
+        6438.092165,
+        1757.0047030000069,
+        1359.0998170000148
+      ],
+      "input_tokens": [
+        579
+      ],
+      "cached_tokens": [
+        0
+      ]
+    },
+    {
+      "panel": "long",
+      "mode": "off",
+      "phase": "repeat",
+      "median_ms": 1696.5590444999918,
+      "run_medians_ms": [
+        4319.237476000012,
+        1696.5590444999918,
+        1368.415135499987
+      ],
+      "input_tokens": [
+        579
+      ],
+      "cached_tokens": [
+        0
+      ]
+    },
+    {
+      "panel": "long",
+      "mode": "auto",
+      "phase": "first",
+      "median_ms": 1476.1412359999895,
+      "run_medians_ms": [
+        6981.252291999965,
+        1476.1412359999895,
+        1340.977496999983
+      ],
+      "input_tokens": [
+        579
+      ],
+      "cached_tokens": [
+        0
+      ]
+    },
+    {
+      "panel": "long",
+      "mode": "auto",
+      "phase": "repeat",
+      "median_ms": 7.0340940000335195,
+      "run_medians_ms": [
+        19.99190500001191,
+        7.0340940000335195,
+        4.066479000016443
+      ],
+      "input_tokens": [
+        579
+      ],
+      "cached_tokens": [
+        579
+      ]
+    },
+    {
+      "panel": "ticket-first",
+      "mode": "off",
+      "phase": "changed",
+      "median_ms": 169.42744249999464,
+      "run_medians_ms": [
+        787.0706759999848,
+        169.42744249999464,
+        166.80759799999123
+      ],
+      "input_tokens": [
+        60,
+        62,
+        64,
+        66,
+        67,
+        68,
+        70
+      ],
+      "cached_tokens": [
+        0
+      ]
+    },
+    {
+      "panel": "ticket-first",
+      "mode": "auto",
+      "phase": "changed",
+      "median_ms": 255.8650475000377,
+      "run_medians_ms": [
+        255.8650475000377,
+        268.0976624999971,
+        247.12489899999923
+      ],
+      "input_tokens": [
+        60,
+        62,
+        64,
+        66,
+        67,
+        68,
+        70
+      ],
+      "cached_tokens": [
+        0
+      ]
+    },
+    {
+      "panel": "rubric-first",
+      "mode": "off",
+      "phase": "unprimed",
+      "median_ms": 1899.476338999989,
+      "run_medians_ms": [
+        1899.476338999989,
+        2664.5452190000187,
+        449.60865950000084
+      ],
+      "input_tokens": [
+        170,
+        178
+      ],
+      "cached_tokens": [
+        0
+      ]
+    },
+    {
+      "panel": "rubric-first",
+      "mode": "off",
+      "phase": "prime",
+      "median_ms": 4192.946178,
+      "run_medians_ms": [
+        4192.946178,
+        5510.796679999999,
+        826.2765889999741
+      ],
+      "input_tokens": [
+        346
+      ],
+      "cached_tokens": [
+        0
+      ]
+    },
+    {
+      "panel": "rubric-first",
+      "mode": "off",
+      "phase": "new",
+      "median_ms": 1932.1819544999812,
+      "run_medians_ms": [
+        1932.1819544999812,
+        2175.0547464999954,
+        419.5295395000187
+      ],
+      "input_tokens": [
+        168,
+        172,
+        173,
+        175,
+        176
+      ],
+      "cached_tokens": [
+        0
+      ]
+    },
+    {
+      "panel": "rubric-first",
+      "mode": "auto",
+      "phase": "unprimed",
+      "median_ms": 2247.3921785000075,
+      "run_medians_ms": [
+        2247.3921785000075,
+        567.4411004999911,
+        2419.5435874999876
+      ],
+      "input_tokens": [
+        170,
+        178
+      ],
+      "cached_tokens": [
+        0
+      ]
+    },
+    {
+      "panel": "rubric-first",
+      "mode": "auto",
+      "phase": "prime",
+      "median_ms": 3470.9330459999705,
+      "run_medians_ms": [
+        3418.8697260000254,
+        3470.9330459999705,
+        3771.7045279999866
+      ],
+      "input_tokens": [
+        346
+      ],
+      "cached_tokens": [
+        121
+      ]
+    },
+    {
+      "panel": "rubric-first",
+      "mode": "auto",
+      "phase": "new",
+      "median_ms": 1134.5759149999992,
+      "run_medians_ms": [
+        1134.5759149999992,
+        1270.4481525000233,
+        307.31514600003607
+      ],
+      "input_tokens": [
+        168,
+        172,
+        173,
+        175,
+        176
+      ],
+      "cached_tokens": [
+        121
+      ]
+    }
+  ]
+}

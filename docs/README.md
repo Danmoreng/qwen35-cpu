@@ -48,7 +48,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 - [AVX2 prefill follow-up on the i7-8750H](benchmarks/avx2-prefill-followup-i7.md) compares paired DOT4 scheduling, DeltaNet state reuse and attention PV tiles.
 - [AVX2 cloud VM tuning](benchmarks/avx2-cloud.md): prompt processing, decode experiments and bitwise checks on an EPYC VM.
 - [Standard model calibration](benchmarks/calibration.md).
-- [Decision quality](benchmarks/decision-quality.md) and [HTTP latency](benchmarks/decision-http.md).
+- [Decision quality](benchmarks/decision-quality.md), [HTTP latency](benchmarks/decision-http.md) and [exact-prefix caching with fixed rubrics](benchmarks/qev-exact-prefix.md).
 - [Four decision models on GPU](benchmarks/decision-models-gpu.md) compares public JevBench accuracy, probability consistency and When2Call tool routing before CPU integration.
 - [Liquid and Qev on full JevBench, German routing and CPU](benchmarks/decision-model-followup.md) compares Qev encodings, Liquid Q4 versus Q8 and resident llama.cpp latency.
 - [BA Research and Labqoat Qev at 0.8B](benchmarks/qev-08-comparison.md) compares both decision models at BF16, the Labqoat Q8 configuration and the effect of BA's released context limit.

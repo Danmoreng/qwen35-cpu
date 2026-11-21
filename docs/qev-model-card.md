@@ -61,9 +61,12 @@ See the [API documentation](@ENGINE_URL@/blob/@ENGINE_REVISION@/docs/server.md).
 `per_question` matches the quality evaluation and keeps each question independent
 of the other questions. The compatibility default is `joint`; either encoding
 can be selected in the request or as the server default. In this implementation,
-joint questions evaluate separate causal prefixes, and per-question requests
-repeat the state. There is no decision prefix cache or single-pass multi-slot
-optimization. The native server projects only the required option-letter logits for this
+joint questions evaluate separate causal prefixes. The server can restore a
+registered exact token prefix across decision requests, including the full
+attention KV and the GatedDeltaNet state. Each rendered row starts with the
+state, followed by the question and options. Changing the ticket in the state
+typically rules out reuse of a later fixed rubric. The response reports the
+number of restored tokens in `cache.read_tokens`. The native server projects only the required option-letter logits for this
 checkpoint, with no autoregressive continuation. `--decision-head full` restores
 the full-vocabulary reference; other supported head formats use it automatically.
 The adaptive prefill chunk default is 64 tokens for short prompts and 128 for
