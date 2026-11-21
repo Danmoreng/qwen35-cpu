@@ -57,14 +57,18 @@ The table above uses the measured payload for the shared file.
 
 The first two workloads time the first request after a fresh server is ready.
 The German routing panel sends 64 distinct requests serially to one resident
-server. The table uses the final native core and the median of three per-run
-HTTP p50 and p95 timings.
+server. The chart and table use the final native core and the median of
+three measured runs. Latency uses each run's HTTP p50 or p95. Throughput
+divides completed decisions by the elapsed time of the run. For the first
+two workloads, the rate describes the first request after readiness.
 
-| Workload | Input tokens | i7 p50 | Ryzen p50 | i7 p95 | Ryzen p95 | i7 / Ryzen p50 |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| First short ticket | 74 | 218.40 ms | 40.29 ms | 218.40 ms | 40.29 ms | 5.42× |
-| First long ticket | 579 | 1,359.79 ms | 180.07 ms | 1,359.79 ms | 180.07 ms | 7.55× |
-| German routing panel | 178–216 | 504.92 ms | 57.50 ms | 555.97 ms | 62.86 ms | 8.78× |
+![Qev HTTP milliseconds per decision and decisions per second on the i7 and Ryzen.](../results/i7-ryzen-comparison-2026-11-21/qev-decision-comparison.png)
+
+| Workload | Input tokens | i7 p50 | Ryzen p50 | i7 p95 | Ryzen p95 | i7 / Ryzen p50 | i7 decisions/s | Ryzen decisions/s |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| First short ticket | 74 | 218.40 ms | 40.29 ms | 218.40 ms | 40.29 ms | 5.42× | 4.58 | 24.82 |
+| First long ticket | 579 | 1,359.79 ms | 180.07 ms | 1,359.79 ms | 180.07 ms | 7.55× | 0.74 | 5.55 |
+| German routing panel | 178–216 | 504.92 ms | 57.50 ms | 555.97 ms | 62.86 ms | 8.78× | 1.97 | 17.22 |
 
 Median HTTP p50 changed as follows from the baseline to the final native core.
 
@@ -85,7 +89,7 @@ For routing input `2d933707a9`, the i7 chose B
 (31.84%) and the Ryzen chose A (32.81%).
 The choices were stable across repetitions and core revisions on each host.
 
-[Per-run p50 and p95](../results/i7-ryzen-comparison-2026-11-21/decision-samples.csv) · [Decision summary](../results/i7-ryzen-comparison-2026-11-21/decisions.csv) · [Per-input equivalence](../results/i7-ryzen-comparison-2026-11-21/decision-parity.csv) · [Ryzen profile hashes and parity summary](../results/i7-ryzen-comparison-2026-11-21/decision-parity.json)
+[Per-run p50 and p95](../results/i7-ryzen-comparison-2026-11-21/decision-samples.csv) · [Per-run chart data](../results/i7-ryzen-comparison-2026-11-21/decision-rate-samples.csv) · [Decision summary](../results/i7-ryzen-comparison-2026-11-21/decisions.csv) · [Per-input equivalence](../results/i7-ryzen-comparison-2026-11-21/decision-parity.csv) · [Ryzen profile hashes and parity summary](../results/i7-ryzen-comparison-2026-11-21/decision-parity.json)
 
 ## Setup and reproduction
 
