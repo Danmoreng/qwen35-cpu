@@ -24,6 +24,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 - [Core i7-8750H vs Ryzen 9 9955HX3D](benchmarks/i7-8750h-vs-ryzen-9955hx3d.md) compares the README workloads on six Intel cores and eight Ryzen V-Cache cores with identical checkpoints.
 - [Qev decision servers on the i7](benchmarks/qev-i7-server-comparison.md) compares native H128/Q4-G32-DOT4, llama.cpp and ik_llama.cpp over System One HTTP.
 - [Qev Q4 quality on Benchmark Heaven](benchmarks/qev-heaven-i7.md) compares six checkpoint and server combinations on 231 labeled tasks.
+- [Qev precision comparison on the i7](benchmarks/qev-heaven-precision-i7.md) compares native H128 with llama.cpp Q4_K_M, Q8_0 and BF16 for decision quality and speed.
 - [0.8B on the Ryzen 9 9955HX3D](benchmarks/ryzen-9955hx3d.md) compares the native engine with llama.cpp and ik_llama.cpp.
 - [2B and 4B on the same laptop](benchmarks/ryzen-9955hx3d-large.md) compares the three engines with matched tensor sizes, single requests and batches of 16.
 - [Hadamard cost and DeltaNet prefill on the same laptop](benchmarks/prefill-9955hx3d.md) profiles the three model sizes and compares the optimized kernel with ik_llama.cpp. The [Q4 matrix kernel follow-up](benchmarks/q4-prefill-9955hx3d.md) isolates the next change.

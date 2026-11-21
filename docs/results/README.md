@@ -6,6 +6,7 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
+| `qev-heaven-precision-i7-2026-11-21` | [Qev precision comparison on the i7](../benchmarks/qev-heaven-precision-i7.md), 924 scored predictions, repeated timing samples and provenance |
 | `qev-heaven-i7-2026-11-21` | [Qev Q4 quality on Benchmark Heaven](../benchmarks/qev-heaven-i7.md), 1,386 scored predictions, paired comparisons and provenance |
 | `qev-i7-servers-2026-11-21` | [Qev decision servers on the i7](../benchmarks/qev-i7-server-comparison.md), matched-size Q4 speed, Q8_0 measurements, response agreement and provenance |
 | `i7-ryzen-comparison-2026-11-21` | [Core i7-8750H vs Ryzen 9 9955HX3D](../benchmarks/i7-8750h-vs-ryzen-9955hx3d.md), six-core throughput, qev HTTP latency and response parity, and verified checkpoint provenance |

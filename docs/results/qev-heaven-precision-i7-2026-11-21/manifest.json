@@ -1,0 +1,654 @@
+{
+  "raw_directory": "benchmarks/i7-qev-heaven-precision-QTzBYwxf",
+  "host": {
+    "cpu": "Intel Core i7-8750H",
+    "cpus": "0-5",
+    "threads": 6,
+    "affinity_decimal": 63,
+    "omp_num_threads": 6,
+    "power_source": "AC",
+    "power_settings": {
+      "/sys/devices/system/cpu/cpu0/cpufreq/scaling_driver": "intel_pstate",
+      "/sys/devices/system/cpu/cpu1/cpufreq/scaling_driver": "intel_pstate",
+      "/sys/devices/system/cpu/cpu2/cpufreq/scaling_driver": "intel_pstate",
+      "/sys/devices/system/cpu/cpu3/cpufreq/scaling_driver": "intel_pstate",
+      "/sys/devices/system/cpu/cpu4/cpufreq/scaling_driver": "intel_pstate",
+      "/sys/devices/system/cpu/cpu5/cpufreq/scaling_driver": "intel_pstate",
+      "/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor": "powersave",
+      "/sys/devices/system/cpu/cpu1/cpufreq/scaling_governor": "powersave",
+      "/sys/devices/system/cpu/cpu2/cpufreq/scaling_governor": "powersave",
+      "/sys/devices/system/cpu/cpu3/cpufreq/scaling_governor": "powersave",
+      "/sys/devices/system/cpu/cpu4/cpufreq/scaling_governor": "powersave",
+      "/sys/devices/system/cpu/cpu5/cpufreq/scaling_governor": "powersave",
+      "/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference": "balance_power",
+      "/sys/devices/system/cpu/cpu1/cpufreq/energy_performance_preference": "balance_power",
+      "/sys/devices/system/cpu/cpu2/cpufreq/energy_performance_preference": "balance_power",
+      "/sys/devices/system/cpu/cpu3/cpufreq/energy_performance_preference": "balance_power",
+      "/sys/devices/system/cpu/cpu4/cpufreq/energy_performance_preference": "balance_power",
+      "/sys/devices/system/cpu/cpu5/cpufreq/energy_performance_preference": "balance_power",
+      "/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq": "800000",
+      "/sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq": "800000",
+      "/sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq": "800000",
+      "/sys/devices/system/cpu/cpu3/cpufreq/scaling_min_freq": "800000",
+      "/sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq": "800000",
+      "/sys/devices/system/cpu/cpu5/cpufreq/scaling_min_freq": "800000",
+      "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq": "4100000",
+      "/sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq": "4100000",
+      "/sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq": "4100000",
+      "/sys/devices/system/cpu/cpu3/cpufreq/scaling_max_freq": "4100000",
+      "/sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq": "4100000",
+      "/sys/devices/system/cpu/cpu5/cpufreq/scaling_max_freq": "4100000",
+      "/sys/devices/system/cpu/intel_pstate/status": "active",
+      "/sys/devices/system/cpu/intel_pstate/no_turbo": "0",
+      "/sys/devices/system/cpu/intel_pstate/min_perf_pct": "19",
+      "/sys/devices/system/cpu/intel_pstate/max_perf_pct": "80"
+    },
+    "kernel": "7.0.0-43-generic",
+    "os": "Ubuntu 26.04.1 LTS",
+    "snapshot_sha256": {
+      "before": "2ff61657c75238cfa7314d410ebdd2dce0c8ffccaffcdda9e44e613cabc18975",
+      "after": "56a995402945323d5147528a8141d1c39ca7bc245ff54179102faa36c60f9a1e"
+    }
+  },
+  "dataset": {
+    "repository": "https://github.com/fstandhartinger/jevbench",
+    "revision": "1bcc55eb6c8cffde2306b3db03ede39b61c6152a",
+    "sha256": "771ea8ac252af155606eeb09cad920b32b326c5c2b1e9c9af868be00fe8e2fad",
+    "requests_sha256": "16303375e90eb1ec9572de5e993650e18cacbdb5a532cdd06fd0c5488c92e5ae",
+    "cases": 231,
+    "source_sha256": {
+      "base.py": "fdddc42e4f71d774096f806c4ee844cc4c4b428385f01a017cb64153d7c089f4",
+      "tasks.py": "b9c2f8ba9a7301519656d79d47c31b8ab0542a5545498ce3b339d5e93b976812",
+      "scoring.py": "6aa17d212ea20a3eeb6876149367842e8462c11dcb54d73df062fb406368331e",
+      "metrics.py": "4038c8423ad1cf28601afb6babe777b71f08e379b9ca125b09b52c0ac7d60515"
+    }
+  },
+  "native_quality_reference": {
+    "commit": "8da081309de6ef8da0e04e4f4ca1b59f2aff48c6",
+    "file": "benchmarks/i7-qev-heaven-GSWcvNoQ/run/case-0-run-0.json",
+    "sha256": "10d45064f8ce5ea61a54a9355bd97401cddaba2a1eac73a3125b92ef7e8edd40"
+  },
+  "speed_panel": {
+    "sha256": "e9c02a8bf62a17132ff3e433852bf032c62f96d8a590eba6b206870cff6abec1",
+    "ordered_ids": [
+      "original-policy-01-1",
+      "original-intent-04-1",
+      "original-ordinal-05-1",
+      "original-extraction-06-1",
+      "original-adequacy-01-0",
+      "original-adequacy-06-0",
+      "original-routing-05-0",
+      "easy-intent-08",
+      "easy-extraction-00",
+      "easy-extraction-11",
+      "easy-tool_selection-01",
+      "easy-tool_selection-06",
+      "hard-opus-a-long_policy-04",
+      "hard-opus-a-probability-03",
+      "hard-opus-b-ambiguous-02",
+      "hard-opus-b-multi_hop-04",
+      "hard-opus-b-probability-06",
+      "hard-opus-b-tradeoff-03",
+      "hard-opus-c-long_policy-11",
+      "hard-sol-a-multi_hop-10",
+      "hard-sol-a-trap-02",
+      "hard-sol-b-judge_hard-15",
+      "hard-sol-b-temporal_numeric-04",
+      "hard-sol-c-judge_hard-13"
+    ],
+    "selection": [
+      {
+        "id": "original-adequacy-01-0",
+        "tier": "original",
+        "length_rank_zero_based": 5,
+        "llama_q4_0_input_tokens": 75
+      },
+      {
+        "id": "original-extraction-06-1",
+        "tier": "original",
+        "length_rank_zero_based": 15,
+        "llama_q4_0_input_tokens": 79
+      },
+      {
+        "id": "original-adequacy-06-0",
+        "tier": "original",
+        "length_rank_zero_based": 25,
+        "llama_q4_0_input_tokens": 84
+      },
+      {
+        "id": "original-intent-04-1",
+        "tier": "original",
+        "length_rank_zero_based": 36,
+        "llama_q4_0_input_tokens": 88
+      },
+      {
+        "id": "original-policy-01-1",
+        "tier": "original",
+        "length_rank_zero_based": 46,
+        "llama_q4_0_input_tokens": 96
+      },
+      {
+        "id": "original-ordinal-05-1",
+        "tier": "original",
+        "length_rank_zero_based": 56,
+        "llama_q4_0_input_tokens": 104
+      },
+      {
+        "id": "original-routing-05-0",
+        "tier": "original",
+        "length_rank_zero_based": 66,
+        "llama_q4_0_input_tokens": 115
+      },
+      {
+        "id": "easy-extraction-00",
+        "tier": "easy",
+        "length_rank_zero_based": 4,
+        "llama_q4_0_input_tokens": 64
+      },
+      {
+        "id": "easy-extraction-11",
+        "tier": "easy",
+        "length_rank_zero_based": 14,
+        "llama_q4_0_input_tokens": 70
+      },
+      {
+        "id": "easy-intent-08",
+        "tier": "easy",
+        "length_rank_zero_based": 24,
+        "llama_q4_0_input_tokens": 91
+      },
+      {
+        "id": "easy-tool_selection-01",
+        "tier": "easy",
+        "length_rank_zero_based": 33,
+        "llama_q4_0_input_tokens": 100
+      },
+      {
+        "id": "easy-tool_selection-06",
+        "tier": "easy",
+        "length_rank_zero_based": 43,
+        "llama_q4_0_input_tokens": 107
+      },
+      {
+        "id": "hard-sol-b-judge_hard-15",
+        "tier": "hard",
+        "length_rank_zero_based": 4,
+        "llama_q4_0_input_tokens": 189
+      },
+      {
+        "id": "hard-sol-b-temporal_numeric-04",
+        "tier": "hard",
+        "length_rank_zero_based": 13,
+        "llama_q4_0_input_tokens": 231
+      },
+      {
+        "id": "hard-sol-a-trap-02",
+        "tier": "hard",
+        "length_rank_zero_based": 23,
+        "llama_q4_0_input_tokens": 275
+      },
+      {
+        "id": "hard-sol-c-judge_hard-13",
+        "tier": "hard",
+        "length_rank_zero_based": 32,
+        "llama_q4_0_input_tokens": 319
+      },
+      {
+        "id": "hard-opus-a-probability-03",
+        "tier": "hard",
+        "length_rank_zero_based": 41,
+        "llama_q4_0_input_tokens": 412
+      },
+      {
+        "id": "hard-opus-b-ambiguous-02",
+        "tier": "hard",
+        "length_rank_zero_based": 50,
+        "llama_q4_0_input_tokens": 518
+      },
+      {
+        "id": "hard-opus-b-tradeoff-03",
+        "tier": "hard",
+        "length_rank_zero_based": 60,
+        "llama_q4_0_input_tokens": 738
+      },
+      {
+        "id": "hard-opus-b-probability-06",
+        "tier": "hard",
+        "length_rank_zero_based": 69,
+        "llama_q4_0_input_tokens": 997
+      },
+      {
+        "id": "hard-opus-b-multi_hop-04",
+        "tier": "hard",
+        "length_rank_zero_based": 78,
+        "llama_q4_0_input_tokens": 2327
+      },
+      {
+        "id": "hard-sol-a-multi_hop-10",
+        "tier": "hard",
+        "length_rank_zero_based": 87,
+        "llama_q4_0_input_tokens": 2428
+      },
+      {
+        "id": "hard-opus-a-long_policy-04",
+        "tier": "hard",
+        "length_rank_zero_based": 97,
+        "llama_q4_0_input_tokens": 2602
+      },
+      {
+        "id": "hard-opus-c-long_policy-11",
+        "tier": "hard",
+        "length_rank_zero_based": 106,
+        "llama_q4_0_input_tokens": 3382
+      }
+    ]
+  },
+  "gguf_publication": {
+    "repo": "labqoat/qev-0.8b-GGUF",
+    "revision": "9550cc0d3f0e8f651cced8469ddfb89acc58c26d"
+  },
+  "weights": {
+    "native-h128": {
+      "path": "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/model.q35h",
+      "sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69",
+      "tensor_payload_bytes": 424934656,
+      "file_bytes": 424964864
+    },
+    "llama-q4-k-m": {
+      "path": "benchmarks/i7-qev-heaven-precision-QTzBYwxf/qev-0.8b-Q4_K_M.gguf",
+      "sha256": "b8d290ebbb7c59a876ade633f225826d5e1db61d166a003defa63e4fb227995e",
+      "file_bytes": 529299616,
+      "tensor_payload_bytes": 518335744,
+      "tensor_count": 320,
+      "data_offset_bytes": 10963872,
+      "alignment_bytes": 32,
+      "reader": "llama.cpp gguf_get_tensor_size"
+    },
+    "llama-q8-0": {
+      "path": "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-text-Q8_0.gguf",
+      "sha256": "07856dd5d6c7d1e19a9579ef324e5377649890a6438f7735ea5ac8935f2b2140",
+      "file_bytes": 811845792,
+      "tensor_payload_bytes": 800881920,
+      "tensor_count": 320,
+      "data_offset_bytes": 10963872,
+      "alignment_bytes": 32,
+      "reader": "llama.cpp gguf_get_tensor_size"
+    },
+    "llama-bf16": {
+      "path": "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-bf16.gguf",
+      "sha256": "47a3e93109187add85f7905d507024ade0fc4c957a503183f3cc6106c68a9980",
+      "file_bytes": 1516746912,
+      "tensor_payload_bytes": 1505783040,
+      "tensor_count": 320,
+      "data_offset_bytes": 10963872,
+      "alignment_bytes": 32,
+      "reader": "llama.cpp gguf_get_tensor_size"
+    }
+  },
+  "native_model_assets_sha256": {
+    "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/config.json": "d9ab6f1698a46bbf04895d171fa0666816745e0d7209b9493d44d3df0caa1b5f",
+    "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/tokenizer.json": "466f27fefa1f44a7bb82cb1b42163c761e01dc6f7f51fc4f3d0a499a5a9b4249",
+    "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/tokenizer_config.json": "e611fbccc7c29ef3b1cafb1cb7ea548d189968632901d678fd62be68c47885de"
+  },
+  "engine_revisions": {
+    "native": "a3e993555c949f12e6b28f5707684eac352b4937",
+    "llama": "7170cad4d02f7907517613931840cbb2367399a3"
+  },
+  "server_sha256": {
+    "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_server": "cc99e51a6a282d08d396b9686c947ba7937aa4b325e21b56914831560e5f389c",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/llama-server": "9eca86ae444bee2f0b1881fd7a3a3433d7c6a43d79416a2ef73f5eb1a1bfbad9"
+  },
+  "shared_libraries_sha256": {
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/libllama-server-impl.so": "0e4591f2be1c43fecb347449307443f152b59c4ed3ccc45b75627e339cf8a2ad",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/libllama-common.so.0": "8ae8bdc8e3212cb4d976ff23e5e01af96f89cd53bee109cd071914f914a31fa0",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/libmtmd.so.0": "58ed84d10367fddefd57361a7aa000db97c10a80f875fb6c003cb52dde327299",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/libllama.so.0": "45faea669ce19f9201ffaeca9e8f3dd2dd393d40c29534f1e101561c91333ad0",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/libggml.so.0": "0a8e6795bb7806ba5f1232e711afa8f86215b96819f62af04a05fb6d7dc1eaba",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/libggml-base.so.0": "54b00579abaf1c1a3a8eeb441c9cb9e3dbebb085318812c8aea8b7dc08ef1f2a",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/libggml-cpu.so.0": "5e538ca17ad6150e438ebae24dbf8861f17dd1657baf65597b94427450cf7db6"
+  },
+  "server_commands": {
+    "llama-q4-k-m": [
+      "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/llama-server",
+      "--model",
+      "benchmarks/i7-qev-heaven-precision-QTzBYwxf/qev-0.8b-Q4_K_M.gguf",
+      "--n-gpu-layers",
+      "0",
+      "--threads",
+      "6",
+      "--threads-batch",
+      "6",
+      "--parallel",
+      "1",
+      "--ctx-size",
+      "8192",
+      "--no-warmup",
+      "--cache-ram",
+      "0",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "<ephemeral-port>",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "256",
+      "--slot-save-path",
+      "<run-output-directory>",
+      "--metrics"
+    ],
+    "llama-q8-0": [
+      "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/llama-server",
+      "--model",
+      "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-text-Q8_0.gguf",
+      "--n-gpu-layers",
+      "0",
+      "--threads",
+      "6",
+      "--threads-batch",
+      "6",
+      "--parallel",
+      "1",
+      "--ctx-size",
+      "8192",
+      "--no-warmup",
+      "--cache-ram",
+      "0",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "<ephemeral-port>",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "256",
+      "--slot-save-path",
+      "<run-output-directory>",
+      "--metrics"
+    ],
+    "llama-bf16": [
+      "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/llama-server",
+      "--model",
+      "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-bf16.gguf",
+      "--n-gpu-layers",
+      "0",
+      "--threads",
+      "6",
+      "--threads-batch",
+      "6",
+      "--parallel",
+      "1",
+      "--ctx-size",
+      "8192",
+      "--no-warmup",
+      "--cache-ram",
+      "0",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "<ephemeral-port>",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "256",
+      "--slot-save-path",
+      "<run-output-directory>",
+      "--metrics"
+    ],
+    "native-h128": [
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_server",
+      "--model-dir",
+      "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final",
+      "--weights",
+      "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/model.q35h",
+      "--threads",
+      "6",
+      "--residents",
+      "1",
+      "--max-context",
+      "8192",
+      "--port",
+      "<ephemeral-port>",
+      "--prefix-cache",
+      "off"
+    ]
+  },
+  "q4_k_m_quantizer": {
+    "sha256": "d8c310178261aaa2aa2f2cfe06fa0ddb09657c01660274f39678fb5f57569f68",
+    "log_sha256": "245bf76c86d3ecff19092850ced74ace0eaef02dc2a448267d277b531e5b6d36",
+    "args": [
+      "taskset",
+      "-c",
+      "0-5",
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-quantize",
+      "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-bf16.gguf",
+      "benchmarks/i7-qev-heaven-precision-QTzBYwxf/qev-0.8b-Q4_K_M.gguf",
+      "Q4_K_M",
+      "6"
+    ]
+  },
+  "runner_sha256": "4fb8a8c55a904c5bcc4b16f79eb8f9109844806a51eedb02b8120cd19dad3df2",
+  "harness_sha256": "0910517016ffc094e41c92319900eaba842dc2aa9fac2d5d909715e906086e92",
+  "harness_patch": "--- benchmark-systemone-http.py\n+++ benchmark-quality-http.py\n@@ -10,6 +10,7 @@\n import json\n import os\n import math\n+import re\n from pathlib import Path\n import socket\n import subprocess\n@@ -37,6 +38,9 @@\n     p.add_argument('--concurrency', type=int, default=1)\n     p.add_argument('--requests', type=int, help='Total requests in the sample; defaults to concurrency')\n     p.add_argument('--distinct-states', action='store_true')\n+    p.add_argument('--disable-gguf-checkpoints', action='store_true')\n+    p.add_argument('--clear-gguf-slot', action='store_true')\n+    p.add_argument('--inspect-upstream-cache', action='store_true')\n     p.add_argument('--profile-json', type=Path, required=True)\n     args = p.parse_args()\n     if not 1 <= args.concurrency <= 16:raise ValueError('concurrency must be 1..16')\n@@ -63,6 +67,14 @@\n               '--no-warmup','--cache-ram','0','--host','127.0.0.1','--port',str(port)]\n         if args.batch_size:cmd+=['--batch-size',str(args.batch_size)]\n         if args.ubatch_size:cmd+=['--ubatch-size',str(args.ubatch_size)]\n+    if args.backend == 'native':\n+        cmd += ['--prefix-cache', 'off']\n+    if args.disable_gguf_checkpoints:\n+        cmd += ['--ctx-checkpoints', '0']\n+    if args.clear_gguf_slot:\n+        cmd += ['--slot-save-path', str(args.profile_json.parent.resolve())]\n+    if args.inspect_upstream_cache:\n+        cmd += ['--metrics']\n     body=args.request.read_bytes()\n     # Concurrency matrices use a different state per request, including B1,\n     # so identical prefixes/results cannot turn the test into a cache benchmark.\n@@ -99,7 +111,26 @@\n                 with urllib.request.urlopen(req,timeout=120) as response:raw=response.read()\n                 return (time.perf_counter()-start)*1000,json.loads(raw)\n             start=time.perf_counter()\n-            if args.concurrency == 1:results=[decide(payload) for payload in bodies]\n+            if args.concurrency == 1:\n+                results = []\n+                with args.profile_json.with_suffix('.responses.jsonl').open('w', buffering=1) as partial:\n+                    for index, payload in enumerate(bodies):\n+                        if index and args.clear_gguf_slot:\n+                            clear = urllib.request.Request(base+'/slots/0?action=erase', data=b'{}', method='POST')\n+                            with urllib.request.urlopen(clear, timeout=10) as reply:\n+                                erased = json.load(reply)\n+                            assert erased.get('id_slot') == 0 and erased.get('n_erased', 0) >= 0\n+                        stamp = time.perf_counter()\n+                        try:\n+                            result = decide(payload)\n+                        except urllib.error.HTTPError as error:\n+                            result = ((time.perf_counter()-stamp)*1000,\n+                                      {'error': {'status': error.code, 'detail': error.read().decode(errors='replace')},\n+                                       'usage': {'input_tokens': 0, 'output_tokens': 0}})\n+                        results.append(result)\n+                        partial.write(json.dumps({'id': ids[index], 'latency_ms': result[0], 'response': result[1]})+'\\n')\n+                        if (index + 1) % 25 == 0:\n+                            print(f'Completed {index + 1}/{len(bodies)} requests', flush=True)\n             else:\n                 with concurrent.futures.ThreadPoolExecutor(max_workers=args.concurrency) as pool:\n                     results=list(pool.map(decide,bodies))\n@@ -115,6 +146,13 @@\n                     fields = dict(line.split(':', 1) for line in status.read_text().splitlines())\n                     panel_info['server_peak_rss_bytes'] = int(fields['VmHWM'].split()[0]) * 1024\n                     panel_info['server_allowed_cpus'] = fields['Cpus_allowed_list'].strip()\n+            if args.inspect_upstream_cache:\n+                with urllib.request.urlopen(base+'/metrics', timeout=5) as response:\n+                    metrics = response.read().decode()\n+                match = re.search(r'^llamacpp:prompt_tokens_cached_total\\s+(\\d+(?:\\.\\d+)?)$', metrics, re.MULTILINE)\n+                if match is None:\n+                    raise RuntimeError('Cached prompt token counter absent: '+metrics)\n+                panel_info['cached_prompt_tokens_total'] = int(float(match.group(1)))\n             if args.prefill_requests:\n                 with urllib.request.urlopen(base+'/v1/cache', timeout=5) as response:\n                     stats = json.load(response)\n",
+  "powershell": "PowerShell 7.7.0",
+  "series": {
+    "quality": {
+      "output": "benchmarks/i7-qev-heaven-precision-QTzBYwxf/quality",
+      "start_utc": "2026-11-21T19:54:45+00:00",
+      "end_utc": "2026-11-21T20:35:45+00:00",
+      "runner_metadata_sha256": "d7fb87ec759f73fad00ffa5e3a100f830f78b94ee73702b5b8283d87a0231fcd",
+      "git_revision_at_measurement": "8da081309de6ef8da0e04e4f4ca1b59f2aff48c6",
+      "git_diff_sha256_at_measurement": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matrix_sha256": "6a0f7f06cf05627964c19106dc9f902fd2f650022e329b2460e2bebf3ced7142",
+      "thermal_log_sha256": "55af81cf0eb17d752bd290a48104238df00ec5744d7eb2f744560bcb4b1d617d",
+      "warmup_runs": 0,
+      "measured_runs": 1,
+      "peak_package_c": 66.0,
+      "throttle_deltas": {
+        "package_throttle_count": 0,
+        "package_throttle_total_ms": 0,
+        "cpu0_core_throttle_count": 0,
+        "cpu1_core_throttle_count": 0,
+        "cpu2_core_throttle_count": 0,
+        "cpu3_core_throttle_count": 0,
+        "cpu4_core_throttle_count": 0,
+        "cpu5_core_throttle_count": 0
+      },
+      "matrix": [
+        {
+          "name": "llama-q4-k-m",
+          "executable": "/usr/bin/python3",
+          "args": [
+            "benchmarks/i7-qev-heaven-GSWcvNoQ/benchmark-quality-http.py",
+            "--backend",
+            "llama",
+            "--server",
+            "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/llama-server",
+            "--threads",
+            "6",
+            "--weights",
+            "benchmarks/i7-qev-heaven-precision-QTzBYwxf/qev-0.8b-Q4_K_M.gguf",
+            "--request",
+            "benchmarks/i7-qev-heaven-GSWcvNoQ/requests.jsonl",
+            "--jsonl-panel",
+            "--batch-size",
+            "2048",
+            "--ubatch-size",
+            "256",
+            "--clear-gguf-slot",
+            "--inspect-upstream-cache"
+          ]
+        },
+        {
+          "name": "llama-q8-0",
+          "executable": "/usr/bin/python3",
+          "args": [
+            "benchmarks/i7-qev-heaven-GSWcvNoQ/benchmark-quality-http.py",
+            "--backend",
+            "llama",
+            "--server",
+            "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/llama-server",
+            "--threads",
+            "6",
+            "--weights",
+            "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-text-Q8_0.gguf",
+            "--request",
+            "benchmarks/i7-qev-heaven-GSWcvNoQ/requests.jsonl",
+            "--jsonl-panel",
+            "--batch-size",
+            "2048",
+            "--ubatch-size",
+            "256",
+            "--clear-gguf-slot",
+            "--inspect-upstream-cache"
+          ]
+        },
+        {
+          "name": "llama-bf16",
+          "executable": "/usr/bin/python3",
+          "args": [
+            "benchmarks/i7-qev-heaven-GSWcvNoQ/benchmark-quality-http.py",
+            "--backend",
+            "llama",
+            "--server",
+            "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/llama-server",
+            "--threads",
+            "6",
+            "--weights",
+            "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-bf16.gguf",
+            "--request",
+            "benchmarks/i7-qev-heaven-GSWcvNoQ/requests.jsonl",
+            "--jsonl-panel",
+            "--batch-size",
+            "2048",
+            "--ubatch-size",
+            "256",
+            "--clear-gguf-slot",
+            "--inspect-upstream-cache"
+          ]
+        }
+      ]
+    },
+    "speed": {
+      "output": "benchmarks/i7-qev-heaven-precision-QTzBYwxf/speed",
+      "start_utc": "2026-11-21T20:35:45+00:00",
+      "end_utc": "2026-11-21T20:56:19+00:00",
+      "runner_metadata_sha256": "a35f1d896c1e061a6de330ab26229d1c5b7e005e8562541638ebeb9ade507803",
+      "git_revision_at_measurement": "8da081309de6ef8da0e04e4f4ca1b59f2aff48c6",
+      "git_diff_sha256_at_measurement": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matrix_sha256": "6cd32e833eb8d10170bf29b511ce28a4918be561d3d42ee3888315ef134c5ea3",
+      "thermal_log_sha256": "25f0470e6335aa27da27a52030d4e0a7092d4812210bac5b07f7ac8ade91b1c1",
+      "warmup_runs": 1,
+      "measured_runs": 3,
+      "peak_package_c": 66.0,
+      "throttle_deltas": {
+        "package_throttle_count": 0,
+        "package_throttle_total_ms": 0,
+        "cpu0_core_throttle_count": 0,
+        "cpu1_core_throttle_count": 0,
+        "cpu2_core_throttle_count": 0,
+        "cpu3_core_throttle_count": 0,
+        "cpu4_core_throttle_count": 0,
+        "cpu5_core_throttle_count": 0
+      },
+      "matrix": [
+        {
+          "name": "native-h128",
+          "executable": "/usr/bin/python3",
+          "args": [
+            "benchmarks/i7-qev-heaven-GSWcvNoQ/benchmark-quality-http.py",
+            "--backend",
+            "native",
+            "--server",
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_server",
+            "--threads",
+            "6",
+            "--weights",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/model.q35h",
+            "--request",
+            "benchmarks/i7-qev-heaven-precision-QTzBYwxf/speed-requests.jsonl",
+            "--jsonl-panel",
+            "--model-dir",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final"
+          ]
+        },
+        {
+          "name": "llama-q4-k-m",
+          "executable": "/usr/bin/python3",
+          "args": [
+            "benchmarks/i7-qev-heaven-GSWcvNoQ/benchmark-quality-http.py",
+            "--backend",
+            "llama",
+            "--server",
+            "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/llama-server",
+            "--threads",
+            "6",
+            "--weights",
+            "benchmarks/i7-qev-heaven-precision-QTzBYwxf/qev-0.8b-Q4_K_M.gguf",
+            "--request",
+            "benchmarks/i7-qev-heaven-precision-QTzBYwxf/speed-requests.jsonl",
+            "--jsonl-panel",
+            "--batch-size",
+            "2048",
+            "--ubatch-size",
+            "256",
+            "--clear-gguf-slot",
+            "--inspect-upstream-cache"
+          ]
+        },
+        {
+          "name": "llama-q8-0",
+          "executable": "/usr/bin/python3",
+          "args": [
+            "benchmarks/i7-qev-heaven-GSWcvNoQ/benchmark-quality-http.py",
+            "--backend",
+            "llama",
+            "--server",
+            "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/llama-server",
+            "--threads",
+            "6",
+            "--weights",
+            "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-text-Q8_0.gguf",
+            "--request",
+            "benchmarks/i7-qev-heaven-precision-QTzBYwxf/speed-requests.jsonl",
+            "--jsonl-panel",
+            "--batch-size",
+            "2048",
+            "--ubatch-size",
+            "256",
+            "--clear-gguf-slot",
+            "--inspect-upstream-cache"
+          ]
+        },
+        {
+          "name": "llama-bf16",
+          "executable": "/usr/bin/python3",
+          "args": [
+            "benchmarks/i7-qev-heaven-GSWcvNoQ/benchmark-quality-http.py",
+            "--backend",
+            "llama",
+            "--server",
+            "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/llama-server",
+            "--threads",
+            "6",
+            "--weights",
+            "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-bf16.gguf",
+            "--request",
+            "benchmarks/i7-qev-heaven-precision-QTzBYwxf/speed-requests.jsonl",
+            "--jsonl-panel",
+            "--batch-size",
+            "2048",
+            "--ubatch-size",
+            "256",
+            "--clear-gguf-slot",
+            "--inspect-upstream-cache"
+          ]
+        }
+      ]
+    }
+  },
+  "host_services": {
+    "journal_sha256": "95d64d23edfd56a6abe7aec78efad1ab6d52e78e2f77cf903c5072b323d2ec25",
+    "events_during_speed": []
+  }
+}

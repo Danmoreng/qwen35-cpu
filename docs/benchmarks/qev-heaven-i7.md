@@ -8,6 +8,9 @@ ran on ik_llama.cpp. All three GGUF formats were generated with the pinned
 quantizers in pure mode from the same publisher BF16 source.
 [Previous latency comparison](qev-i7-server-comparison.md) · [Qev BF16 source](https://huggingface.co/labqoat/qev-0.8b-GGUF/tree/9550cc0d3f0e8f651cced8469ddfb89acc58c26d)
 
+The [precision comparison](qev-heaven-precision-i7.md) measures decision
+quality and speed with native H128 and llama.cpp Q4_K_M, Q8_0 and BF16.
+
 ![Correct decisions and mean Brier score for all six Qev Q4 configurations.](../results/qev-heaven-i7-2026-11-21/qev-heaven-quality.png)
 
 ## Accuracy and probability error

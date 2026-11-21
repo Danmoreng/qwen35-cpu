@@ -1,0 +1,7 @@
+first,second,total,first_only_correct,second_only_correct,same_prediction
+native-h128,llama-q4-k-m,231,10,3,216
+native-h128,llama-q8-0,231,6,2,218
+native-h128,llama-bf16,231,4,2,220
+llama-q4-k-m,llama-q8-0,231,3,6,218
+llama-q4-k-m,llama-bf16,231,2,7,218
+llama-q8-0,llama-bf16,231,0,2,229
