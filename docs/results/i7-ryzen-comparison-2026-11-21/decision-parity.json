@@ -1,0 +1,80 @@
+{
+  "comparisons": 594,
+  "same_choice": 585,
+  "same_usage": 594,
+  "same_cache_reads": 594,
+  "same_probabilities": 0,
+  "same_probabilities_atol_1e_6": 0,
+  "unique_requests": 66,
+  "probability_abs_tolerance": 1e-06,
+  "max_abs_probability_difference": 0.021399999999999975,
+  "i7_stable_across_runs_and_revisions": true,
+  "ryzen_stable_across_runs_and_revisions": true,
+  "verified_ryzen_raw_sha256": {
+    "metadata.json": "26a72745cc2ba3494b457d5c0f2c02ccd26b22584be0f64e1a1f8df28ffe6e69",
+    "case-0-run-0.json": "0c1416e392991a451b78a6da1e5cfc95aa14ed61bbcb581d6ec8d7542ecdbf64",
+    "case-0-run-1.json": "5aa2cfb1874326537a45ed75b4b88f8810bee2c1c5d21d8836d29c3d3992cec2",
+    "case-0-run-2.json": "46e0398d39189c8ebfa8c432ba0465fa5dbb3223151a232cdefa7602667b5e02",
+    "case-0-run-3.json": "9eee17c9dac436787b911248a84ac776ca774a27f4ba5c6755cdb888abad939b",
+    "case-1-run-0.json": "f6ddaec127e507a622ceab4fbe76fa2f93044e36cbffc65223aee08f84131252",
+    "case-1-run-1.json": "58fa3fdfe03efac8bfc76cdcedd58b95c94f9496915d55a8b4a47cbcfb0a7221",
+    "case-1-run-2.json": "ddac32f9c8d4ff13e1f3bc785c5da880e07207806c488d16814df95c598ebda4",
+    "case-1-run-3.json": "1a8daea97bf37eb9bac60dedb01d981d8ab8460abb87549ff0a83d95216dd5f9",
+    "case-2-run-0.json": "181c7ff279e45edf749027f3db3b6b46c8a43edb439c3d917c73582bc5232909",
+    "case-2-run-1.json": "86d345366b220b016a8445cecfbfc313fb8d600fe180f7cab9ec440735aecb6e",
+    "case-2-run-2.json": "02c9640dcdc41a68b88574ab6ebb2b974b91a690ee7e69fc7a64d276d447e0f0",
+    "case-2-run-3.json": "9f347b79611ad9850776c1efd013744d0a843c8e7e54b0519e7a3debab4b414a",
+    "case-3-run-0.json": "10b93aa2ef07f28808af2fcae9434c3aed46f73f6a3d789c092e31720519d540",
+    "case-3-run-1.json": "a3c6b0d6348ab15f91ac6ec5e8514b4c075024a6a6f8354e1b157ef613b2ec93",
+    "case-3-run-2.json": "ce4bbc31afa58c8e025fcd7e288b93ea8df8a680b97cdd5af539473ed4d4c9f5",
+    "case-3-run-3.json": "dcb3b06536d75025a766718f78fec42176d043d9b4a818dde691f95c73b048ea",
+    "case-4-run-0.json": "1fd9464a004dc0add37336578105f23437d31a3cfba2c5a707f95fe83c729d4b",
+    "case-4-run-1.json": "9fd13c0d33c6a30cc79605afba91fee806c1bd755d68a457c69beb5f8fdcdc87",
+    "case-4-run-2.json": "413cf9d27b01666036cfc15bbc482cd22b61fbd29a8f41b844e776cc1f79cbaf",
+    "case-4-run-3.json": "e0d2117f7e51929f127af09ba0f136a85fef7f4ab6f3a6b6e87e1287c6b12bb2",
+    "case-5-run-0.json": "60c1d4d69191a0da037c2257a597269e3d79062f6778b3f155287772bd6d8c38",
+    "case-5-run-1.json": "287c44b372cc39746c951acdfb203d67cdcbe40852b7b518e765038b610ffd8b",
+    "case-5-run-2.json": "db783503643eb7d3421461211987913642b9ef2c98789d1e261384c439d1d797",
+    "case-5-run-3.json": "6d6be0d7208382d64f6a80fd3a51b2d5e475ff8711909f1543c7e2414ffc5e22",
+    "case-6-run-0.json": "a4d40fb05719ad00ed45fc5f0245002cb3f06deda7f93520050277f4b6dc3c4e",
+    "case-6-run-1.json": "7c14817690e73965540ab7ba0fbbf8a6b7cfee0e2f6819f6f07c33d9ac37d646",
+    "case-6-run-2.json": "b4c6b7d0fd4c45b2b4153538d7dfaaed1222f806c8f6d6a74cd3d3dcb29af098",
+    "case-6-run-3.json": "407981d93ad3c81b9242670c587283cc97a313cebffdc38e6769982c1fb8dba6",
+    "case-7-run-0.json": "96afd36bdd26159b5f36fd9be8fec58204a72ec6e4505cd7092829d5d1589ab9",
+    "case-7-run-1.json": "1f838c2aa7866d8d6b580bfe9f275c05e466c16247587a226a02b642e8badddb",
+    "case-7-run-2.json": "4a26c00913aab355b8135b7af642757422f8a281277ccd6e4631417b97e98313",
+    "case-7-run-3.json": "854fc463225add7ea26f8a340d6df0a734eee8f00e729898771a6de287127d23",
+    "case-8-run-0.json": "091c908591dd505a5c854473c3269d7d3122ccfb2ddc865842ffb31504ad5163",
+    "case-8-run-1.json": "b7f49956b3819466aecf8d6473ee529a105a4b5191874d60279961b3521bf878",
+    "case-8-run-2.json": "8b4ee3d30bfd6b132686968d70e1f0deb6a9d21875bd526a791366ad6e6f9fb2",
+    "case-8-run-3.json": "a665c3f9f86e928d0e9fba295c8f27fae2fb054302577c96c09ddd756ed48a1f"
+  },
+  "choice_differences": [
+    {
+      "workload": "routing-de",
+      "item_id": "2d933707a9",
+      "answers": {
+        "entscheidung": {
+          "i7": {
+            "choice": "B",
+            "probabilities": {
+              "A": 0.3119,
+              "B": 0.3184,
+              "C": 0.1163,
+              "D": 0.2535
+            }
+          },
+          "ryzen": {
+            "choice": "A",
+            "probabilities": {
+              "A": 0.3281,
+              "B": 0.2991,
+              "C": 0.1174,
+              "D": 0.2553
+            }
+          }
+        }
+      }
+    }
+  ]
+}

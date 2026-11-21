@@ -1,0 +1,1756 @@
+{
+  "date": "2026-11-21",
+  "reference_directory": "docs/results/laptop-refresh-2026-11-20",
+  "superseded_i7_commit": "23a89ca",
+  "raw_directory": "benchmarks/i7-six-core-run-PGBziM0e",
+  "source_and_build": {
+    "engine_revisions": {
+      "native": "a3e993555c949f12e6b28f5707684eac352b4937",
+      "llama": "7170cad4d02f7907517613931840cbb2367399a3",
+      "ik": "98aca8692ae334e6e23e4d39ac43ce0d21029c35",
+      "ik_b16": "98aca8692ae334e6e23e4d39ac43ce0d21029c35"
+    },
+    "decision_core_revisions": {
+      "before": "8b0d6426aa4bf3a2fbc4f648d29eeb0b4b2fadb6",
+      "deltanet": "2498e51621bc0d3f275771abf578005119a6ac81",
+      "current": "a3e993555c949f12e6b28f5707684eac352b4937"
+    },
+    "ik_b16_patch": "tools/ik-llama-comparison/patches/qwen35-multi-sequence-graph.patch",
+    "ik_b16_link": {
+      "cwd": "<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build",
+      "commands": [
+        [
+          "/usr/bin/c++",
+          "-DLLAMA_BUILD",
+          "-DLLAMA_SHARED",
+          "-Dllama_EXPORTS",
+          "-I<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-src/src/.",
+          "-I<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-src/src/../include",
+          "-I<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-src/src/../ggml/src",
+          "-I<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-src/ggml/src/../include",
+          "-O3",
+          "-DNDEBUG",
+          "-std=gnu++20",
+          "-fPIC",
+          "-Wmissing-declarations",
+          "-Wmissing-noreturn",
+          "-Wall",
+          "-Wextra",
+          "-Wpedantic",
+          "-Wcast-qual",
+          "-Wno-unused-function",
+          "-Wno-sign-compare",
+          "-Wno-array-bounds",
+          "-Wno-format-truncation",
+          "-Wextra-semi",
+          "-MD",
+          "-MT",
+          "<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/llama-patched.o",
+          "-MF",
+          "<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/llama-patched.o.d",
+          "-o",
+          "<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/llama-patched.o",
+          "-c",
+          "<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-src/src/llama.cpp"
+        ],
+        [
+          "/usr/bin/c++",
+          "-fPIC",
+          "-O3",
+          "-DNDEBUG",
+          "-shared",
+          "-Wl,--dependency-file=<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/ik/src/libllama.so.d",
+          "-Wl,-soname,libllama.so",
+          "-o",
+          "<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/ik/src/libllama.so",
+          "<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/llama-patched.o",
+          "ik/src/CMakeFiles/llama.dir/llama-spec-features.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-spec-features-dflash.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-dflash.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-dsv4.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-vocab.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-grammar.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-sampling.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-mmap.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-model-loader.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-load-tensors.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-build-context.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-moe-cache.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-model.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-reload.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-quantize.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-arch.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-hparams.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-delta-net.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/llama-kda.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/unicode.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/unicode-data.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/unicode-script-data.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_llama.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_muse_glimmer.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_mistral3.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_deci.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_baichuan.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_xverse.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_falcon.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_grok.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_dbrx.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_starcoder.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_starcoder2.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_refact.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_bert.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_bloom.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_mpt.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_stablelm.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_seedoss.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_laguna.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_k2horizon.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_step35.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_qwen.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_qwen2.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_qwen3.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_mellum.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_maple.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_qwen3next.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_lfm2.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_qwen4exp.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_qwen35.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_phi2.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_phi3.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_plamo.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_gpt2.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_codeshell.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_orion.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_internlm2.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_minicpm.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_gemma.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_gemma2.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_gemma3.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_gemma4.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_dflash.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_mamba.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_command_r.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_olmo.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_openelm.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_gptneox.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_arctic.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_deepseek2.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_deepseek4.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_openpangu.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_glm4.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_bitnet.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_cohere2.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_cohere2_moe.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_t5.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_jais.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_chatglm.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_dots1.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_ernie45.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_hunyuan.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_mimo2.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_openai.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_bailingmoe2.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_bailingmoe3.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_glm5next.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_minimaxm2.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_minimaxm3.cpp.o",
+          "ik/src/CMakeFiles/llama.dir/graphs/build_smollm3.cpp.o",
+          "-Wl,-rpath,<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build/ik/ggml/src:",
+          "ik/ggml/src/libggml.so"
+        ],
+        [
+          "/usr/bin/c++",
+          "-O3",
+          "-DNDEBUG",
+          "-Wl,--dependency-file=<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/bin/ik-fixed-cpu-bench.d",
+          "CMakeFiles/ik-fixed-cpu-bench.dir<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/native-src/tools/llama-comparison/main.cpp.o",
+          "-o",
+          "<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/bin/ik-fixed-cpu-bench",
+          "-Wl,-rpath,<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/ik/src:<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build/ik/src:<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build/ik/ggml/src",
+          "<repo-root>/benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/ik/src/libllama.so",
+          "ik/ggml/src/libggml.so"
+        ]
+      ]
+    },
+    "decision_link_commands": [
+      {
+        "cwd": "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build",
+        "args": [
+          "/usr/bin/c++",
+          "-O3",
+          "-DNDEBUG",
+          "-static-libgcc",
+          "-static-libstdc++",
+          "-Wl,--dependency-file=CMakeFiles/qwen35_cpu_server.dir/link.d",
+          "CMakeFiles/qwen35_cpu_server.dir/src/server.cpp.o",
+          "-o",
+          "benchmarks/i7-ryzen-repeat-I7kZv6kK/decision-before-server",
+          "libqwen35_chat.a",
+          "benchmarks/i7-ryzen-repeat-I7kZv6kK/decision-before-build/libqwen35x_core.a",
+          "libqwen35_batch_sqlite.a",
+          "libqwen35_utf8proc.a"
+        ]
+      },
+      {
+        "cwd": "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build",
+        "args": [
+          "/usr/bin/c++",
+          "-O3",
+          "-DNDEBUG",
+          "-static-libgcc",
+          "-static-libstdc++",
+          "-Wl,--dependency-file=CMakeFiles/qwen35_cpu_server.dir/link.d",
+          "CMakeFiles/qwen35_cpu_server.dir/src/server.cpp.o",
+          "-o",
+          "benchmarks/i7-ryzen-repeat-I7kZv6kK/decision-deltanet-server",
+          "libqwen35_chat.a",
+          "benchmarks/i7-ryzen-repeat-I7kZv6kK/decision-deltanet-build/libqwen35x_core.a",
+          "libqwen35_batch_sqlite.a",
+          "libqwen35_utf8proc.a"
+        ]
+      }
+    ],
+    "build_configuration": {
+      "native": {
+        "generator": "Ninja",
+        "build_type": "Release",
+        "build_server": true
+      },
+      "comparator": {
+        "generator": "Ninja",
+        "build_type": "Release",
+        "ggml_native": true,
+        "ggml_blas": false,
+        "llama_curl": false,
+        "gpu_backends": false
+      }
+    },
+    "binaries_and_libraries": {
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build/bin/ik-fixed-cpu-bench": "5e03c6a3c100dfd71c1bd2bed5ff3d4922ebb172c2c87aeed33230d479f0886b",
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_bench": "7de9d0e6c14dc2d4a5a5dd604ec3559ef376512f1460aaf3f73bd755cba31ded",
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-fixed-cpu-bench": "207d0c9e847c35e3efe90eca55e4867647ef2ac270cabf72af434d16061f982b",
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/bin/ik-fixed-cpu-bench": "736350b1f0a2c676cefb58dd68e9a5fcb5b8ec53ba997c8067584406da433a69",
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/libllama.so.0": "9360cca3fa2eccc8d6df41e1cc6277ce63c3a924e87fa7d309ad37940c8c69f6",
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/libggml.so.0": "38bfcb6f93228526acaa5f711e428a4bd135034fdd3e37c33590b1c674231118",
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/libggml-base.so.0": "54b00579abaf1c1a3a8eeb441c9cb9e3dbebb085318812c8aea8b7dc08ef1f2a",
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/libggml-cpu.so.0": "d5e619b4989e4c8837237f9ee258be1c0b13c34c33581c343f7a2ce04f158e79",
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build/ik/src/libllama.so": "7c15ae17a1cc6aadf435de0cd7288b62459d7d531cbda4429547e46ffdc4e1a0",
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build/ik/ggml/src/libggml.so": "b18623ee4daf654a430d350ec0f903aba1fcb73d24f1fa02336e3742cf7b9d19",
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/ik/src/libllama.so": "dc8e376bb0f8d129536f9007dcc9f68d2b18943ca429ef9a14407ab089abd5f7",
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/decision-before-server": "69694e70d9d157865a3363493095de2fe7a9d6920b36ba72bf4e558adb77e7cb",
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/decision-deltanet-server": "9615cb32dac178a916c2aec7fe77e582aa5400b121a9e934adbce74007af88ac",
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_server": "cc99e51a6a282d08d396b9686c947ba7937aa4b325e21b56914831560e5f389c"
+    },
+    "runner_sha256": "4fb8a8c55a904c5bcc4b16f79eb8f9109844806a51eedb02b8120cd19dad3df2",
+    "http_harness_sha256": "b08e4c61e6fc85e0f6096ac46ebab91594ba5605b4241bb621a670ab2087e0db"
+  },
+  "throughput_checkpoints": {
+    "models/qwen3.5-0.8b-linux/model.q35h": {
+      "bytes": 424964864,
+      "sha256": "013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a"
+    },
+    "models/llama-comparison/Qwen3.5-0.8B-Q4_0-pure.gguf": {
+      "bytes": 435896352,
+      "sha256": "2e41f95fca5f3e3a8dc91c1407c572f3cff5d060cbfdf835cd2d4d9913f95e7d"
+    },
+    "models/ik-comparison/Qwen3.5-0.8B-IQ4_K_R4-pure.gguf": {
+      "bytes": 435896352,
+      "sha256": "420af5bcfb8f2d9faae05068e51f686bfb6912d89aa40e65a603de455f541c80"
+    },
+    "models/ik-comparison/Qwen3.5-0.8B-IQ4_KS_R4-pure.gguf": {
+      "bytes": 414992672,
+      "sha256": "033500e8a91d0761c05aeffd47e5ddb3f91b0a3c87048f397c36b27912a37cdc"
+    },
+    "models/llama-comparison/Qwen3.5-0.8B-Q4_K_M.gguf": {
+      "bytes": 532517120,
+      "sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517"
+    },
+    "models/qwen3.5-2b/model.q35h": {
+      "bytes": 1060442880,
+      "sha256": "1084c3a2751d3813a2aa686337f717e56291e6a1a79ff8be1b6d1665d22892a3"
+    },
+    "models/qwen3.5-4b/model-mse16.q35h": {
+      "bytes": 2369080576,
+      "sha256": "7db1dd7be2e74444465f833d6b639d895ff09e0b8226fb06eb925a5729a85eae"
+    },
+    "models/llama-comparison/Qwen3.5-2B-Q4_0-pure.gguf": {
+      "bytes": 1071373824,
+      "sha256": "cf87670f77bb584aa8f7dcd101bc590a5c6325388fda09503f094d58834409fa"
+    },
+    "models/llama-comparison/Qwen3.5-4B-Q4_0-pure.gguf": {
+      "bytes": 2380008224,
+      "sha256": "dc1eeb6988eb446136f6ebc2555149fde3ea772575b63b8f313d0789f85c6f82"
+    },
+    "models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-pure.gguf": {
+      "bytes": 1071373824,
+      "sha256": "aadb22150a70a44268ded65ef0ca14401d85a5e60e4c109f5985de1fea53969d"
+    },
+    "models/ik-comparison/Qwen3.5-4B-IQ4_K_R4-pure.gguf": {
+      "bytes": 2380008224,
+      "sha256": "331c1b98432e8177c88792b36f7d299949b999abcdf346c7f0d7102010d4894a"
+    }
+  },
+  "throughput_supporting_inputs": {
+    "models/ik-comparison/Qwen3.5-0.8B-IQ4_K_R4-pure.gguf": {
+      "bytes": 435896352,
+      "sha256": "420af5bcfb8f2d9faae05068e51f686bfb6912d89aa40e65a603de455f541c80"
+    },
+    "models/llama-comparison/Qwen3.5-2B-Q4_0-pure.gguf": {
+      "bytes": 1071373824,
+      "sha256": "cf87670f77bb584aa8f7dcd101bc590a5c6325388fda09503f094d58834409fa"
+    },
+    "models/qwen3.5-0.8b-linux/model.q35h": {
+      "bytes": 424964864,
+      "sha256": "013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a"
+    },
+    "models/qwen3.5-4b/tokenizer_config.json": {
+      "bytes": 16710,
+      "sha256": "316230d6a809701f4db5ea8f8fc862bc3a6f3229c937c174e674ff3ca0a64ac8"
+    },
+    "models/qwen3.5-0.8b-linux/tokenizer.json": {
+      "bytes": 12807982,
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+    },
+    "models/qwen3.5-0.8b-linux/config.json": {
+      "bytes": 2907,
+      "sha256": "b90b86f35c8e6925ef74ee04d0e758f0a845c83a42089ad82bbaa948de9b4204"
+    },
+    "models/qwen3.5-4b/model-mse16.q35h": {
+      "bytes": 2369080576,
+      "sha256": "7db1dd7be2e74444465f833d6b639d895ff09e0b8226fb06eb925a5729a85eae"
+    },
+    "models/qwen3.5-0.8b-linux/tokenizer_config.json": {
+      "bytes": 16709,
+      "sha256": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c"
+    },
+    "models/llama-comparison/Qwen3.5-0.8B-Q4_0-pure.gguf": {
+      "bytes": 435896352,
+      "sha256": "2e41f95fca5f3e3a8dc91c1407c572f3cff5d060cbfdf835cd2d4d9913f95e7d"
+    },
+    "models/qwen3.5-2b/model.q35h": {
+      "bytes": 1060442880,
+      "sha256": "1084c3a2751d3813a2aa686337f717e56291e6a1a79ff8be1b6d1665d22892a3"
+    },
+    "models/qwen3.5-2b/config.json": {
+      "bytes": 2908,
+      "sha256": "ed1c1723241f23f7f4e23430759cbd7dcfb4103cbdfe052bfe7626b57c2615b4"
+    },
+    "docs/results/cpu-refresh-2026-10-22/prompt-512.csv": {
+      "bytes": 2311,
+      "sha256": "6baa0783f9ad2adea59013c948cd15a0a465e870837bf9a60e57eb73ef39bd81"
+    },
+    "models/qwen3.5-4b/tokenizer.json": {
+      "bytes": 12807982,
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+    },
+    "models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-pure.gguf": {
+      "bytes": 1071373824,
+      "sha256": "aadb22150a70a44268ded65ef0ca14401d85a5e60e4c109f5985de1fea53969d"
+    },
+    "models/qwen3.5-4b/config.json": {
+      "bytes": 3161,
+      "sha256": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670"
+    },
+    "models/llama-comparison/Qwen3.5-4B-Q4_0-pure.gguf": {
+      "bytes": 2380008224,
+      "sha256": "dc1eeb6988eb446136f6ebc2555149fde3ea772575b63b8f313d0789f85c6f82"
+    },
+    "models/ik-comparison/Qwen3.5-4B-IQ4_K_R4-pure.gguf": {
+      "bytes": 2380008224,
+      "sha256": "331c1b98432e8177c88792b36f7d299949b999abcdf346c7f0d7102010d4894a"
+    },
+    "models/ik-comparison/Qwen3.5-0.8B-IQ4_KS_R4-pure.gguf": {
+      "bytes": 414992672,
+      "sha256": "033500e8a91d0761c05aeffd47e5ddb3f91b0a3c87048f397c36b27912a37cdc"
+    },
+    "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv": {
+      "bytes": 18715,
+      "sha256": "bb1582bd818d65ba153c31116895c24fd69d9edd822bb7c5fb8873055e6cd435"
+    },
+    "models/llama-comparison/Qwen3.5-0.8B-Q4_K_M.gguf": {
+      "bytes": 532517120,
+      "sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517"
+    },
+    "models/qwen3.5-2b/tokenizer_config.json": {
+      "bytes": 16709,
+      "sha256": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c"
+    },
+    "models/qwen3.5-2b/tokenizer.json": {
+      "bytes": 12807982,
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+    }
+  },
+  "qev_checkpoint": {
+    "path": "dist/qev-h128-public-final/model.q35h",
+    "sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69"
+  },
+  "transfer_hashes": {
+    "dist/qev-h128-public-final/LICENSE": "50cbab8a892c5f2993b8c7351a99182507472def3b1374558308605d99b86b32",
+    "dist/qev-h128-public-final/NOTICE": "5eb5ba976dcd586c5af9071a9034b8dd72eef97f606ddaf2977c10e09b4cfdfa",
+    "dist/qev-h128-public-final/README.md": "3c28bfa057cf28063ac1c139a561be335ff7be934eaca9f21614a0ff09ac1bf3",
+    "dist/qev-h128-public-final/config.json": "d9ab6f1698a46bbf04895d171fa0666816745e0d7209b9493d44d3df0caa1b5f",
+    "dist/qev-h128-public-final/merges.txt": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d",
+    "dist/qev-h128-public-final/model.q35h": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69",
+    "dist/qev-h128-public-final/qev_config.json": "5260608d19e1d02c7a59d7ee0351ab4a5d57cf40154132e3122eb9b147f6adb7",
+    "dist/qev-h128-public-final/quantization.json": "b02c7a24af2a09fe5a34f1c070fc254b251fc9e292419e30aa311fdec91adfe8",
+    "dist/qev-h128-public-final/tokenizer.json": "466f27fefa1f44a7bb82cb1b42163c761e01dc6f7f51fc4f3d0a499a5a9b4249",
+    "dist/qev-h128-public-final/tokenizer_config.json": "e611fbccc7c29ef3b1cafb1cb7ea548d189968632901d678fd62be68c47885de",
+    "dist/qev-h128-public-final/vocab.json": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003",
+    "docs/results/cpu-refresh-2026-10-22/prompt-4096.csv": "bb1582bd818d65ba153c31116895c24fd69d9edd822bb7c5fb8873055e6cd435",
+    "docs/results/cpu-refresh-2026-10-22/prompt-512.csv": "6baa0783f9ad2adea59013c948cd15a0a465e870837bf9a60e57eb73ef39bd81",
+    "docs/results/decision-followup-2026-11-20/routing-de-inputs.jsonl": "571f48461fccc82271cff6ae395bf95c600620276b8bd933146fdf086506e172",
+    "docs/results/qev-api-2026-10-21/long-request.json": "4ea4b8f8fb73224a7d31a90700ac63093ae645f2f2590e19d5a5c62d1a14ee3d",
+    "docs/results/qev-api-2026-10-21/short-request.json": "1bb5833036e0cbc6a38c2a031657942aecad6b8e6a05b2428527d28450c70faa",
+    "models/ik-comparison/Qwen3.5-0.8B-IQ4_KS_R4-pure.gguf": "033500e8a91d0761c05aeffd47e5ddb3f91b0a3c87048f397c36b27912a37cdc",
+    "models/ik-comparison/Qwen3.5-0.8B-IQ4_K_R4-pure.gguf": "420af5bcfb8f2d9faae05068e51f686bfb6912d89aa40e65a603de455f541c80",
+    "models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-pure.gguf": "aadb22150a70a44268ded65ef0ca14401d85a5e60e4c109f5985de1fea53969d",
+    "models/ik-comparison/Qwen3.5-4B-IQ4_K_R4-pure.gguf": "331c1b98432e8177c88792b36f7d299949b999abcdf346c7f0d7102010d4894a",
+    "models/llama-comparison/Qwen3.5-0.8B-Q4_0-pure.gguf": "2e41f95fca5f3e3a8dc91c1407c572f3cff5d060cbfdf835cd2d4d9913f95e7d",
+    "models/llama-comparison/Qwen3.5-0.8B-Q4_K_M.gguf": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
+    "models/llama-comparison/Qwen3.5-2B-Q4_0-pure.gguf": "cf87670f77bb584aa8f7dcd101bc590a5c6325388fda09503f094d58834409fa",
+    "models/llama-comparison/Qwen3.5-4B-Q4_0-pure.gguf": "dc1eeb6988eb446136f6ebc2555149fde3ea772575b63b8f313d0789f85c6f82",
+    "models/qwen3.5-0.8b-linux/chat_template.jinja": "273d8e0e683b885071fb17e08d71e5f2a5ddfb5309756181681de4f5a1822d80",
+    "models/qwen3.5-0.8b-linux/config.json": "b90b86f35c8e6925ef74ee04d0e758f0a845c83a42089ad82bbaa948de9b4204",
+    "models/qwen3.5-0.8b-linux/merges.txt": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d",
+    "models/qwen3.5-0.8b-linux/model.q35h": "013fbfaa03760e759181301ddaf964bb5c200c50c50617afe72557fd65bcbf0a",
+    "models/qwen3.5-0.8b-linux/tokenizer.json": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+    "models/qwen3.5-0.8b-linux/tokenizer_config.json": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c",
+    "models/qwen3.5-0.8b-linux/vocab.json": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003",
+    "models/qwen3.5-2b/chat_template.jinja": "273d8e0e683b885071fb17e08d71e5f2a5ddfb5309756181681de4f5a1822d80",
+    "models/qwen3.5-2b/config.json": "ed1c1723241f23f7f4e23430759cbd7dcfb4103cbdfe052bfe7626b57c2615b4",
+    "models/qwen3.5-2b/merges.txt": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d",
+    "models/qwen3.5-2b/model.q35h": "1084c3a2751d3813a2aa686337f717e56291e6a1a79ff8be1b6d1665d22892a3",
+    "models/qwen3.5-2b/tokenizer.json": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+    "models/qwen3.5-2b/tokenizer_config.json": "49e2b6e395f959f077f1e992b338919c0d4a9732fc6e613995e06557f843500c",
+    "models/qwen3.5-2b/vocab.json": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003",
+    "models/qwen3.5-4b/chat_template.jinja": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+    "models/qwen3.5-4b/config.json": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670",
+    "models/qwen3.5-4b/merges.txt": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d",
+    "models/qwen3.5-4b/model-mse16.q35h": "7db1dd7be2e74444465f833d6b639d895ff09e0b8226fb06eb925a5729a85eae",
+    "models/qwen3.5-4b/tokenizer.json": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+    "models/qwen3.5-4b/tokenizer_config.json": "316230d6a809701f4db5ea8f8fc862bc3a6f3229c937c174e674ff3ca0a64ac8",
+    "models/qwen3.5-4b/vocab.json": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003"
+  },
+  "gguf_payloads": {
+    "models/ik-comparison/Qwen3.5-0.8B-IQ4_KS_R4-pure.gguf": {
+      "file_bytes": 414992672,
+      "tensor_payload_bytes": 404030976,
+      "tensor_count": 320,
+      "data_offset_bytes": 10961696,
+      "alignment_bytes": 32,
+      "reader": "ik_llama.cpp ggml_nbytes"
+    },
+    "models/ik-comparison/Qwen3.5-0.8B-IQ4_K_R4-pure.gguf": {
+      "file_bytes": 435896352,
+      "tensor_payload_bytes": 424934656,
+      "tensor_count": 320,
+      "data_offset_bytes": 10961696,
+      "alignment_bytes": 32,
+      "reader": "ik_llama.cpp ggml_nbytes"
+    },
+    "models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-pure.gguf": {
+      "file_bytes": 1071373824,
+      "tensor_payload_bytes": 1060412672,
+      "tensor_count": 320,
+      "data_offset_bytes": 10961152,
+      "alignment_bytes": 32,
+      "reader": "ik_llama.cpp ggml_nbytes"
+    },
+    "models/ik-comparison/Qwen3.5-4B-IQ4_K_R4-pure.gguf": {
+      "file_bytes": 2380008224,
+      "tensor_payload_bytes": 2369040384,
+      "tensor_count": 426,
+      "data_offset_bytes": 10967840,
+      "alignment_bytes": 32,
+      "reader": "ik_llama.cpp ggml_nbytes"
+    },
+    "models/llama-comparison/Qwen3.5-0.8B-Q4_0-pure.gguf": {
+      "file_bytes": 435896352,
+      "tensor_payload_bytes": 424934656,
+      "tensor_count": 320,
+      "data_offset_bytes": 10961696,
+      "alignment_bytes": 32,
+      "reader": "llama.cpp gguf_get_tensor_size"
+    },
+    "models/llama-comparison/Qwen3.5-0.8B-Q4_K_M.gguf": {
+      "file_bytes": 532517120,
+      "tensor_payload_bytes": 521555200,
+      "tensor_count": 320,
+      "data_offset_bytes": 10961920,
+      "alignment_bytes": 32,
+      "reader": "llama.cpp gguf_get_tensor_size"
+    },
+    "models/llama-comparison/Qwen3.5-2B-Q4_0-pure.gguf": {
+      "file_bytes": 1071373824,
+      "tensor_payload_bytes": 1060412672,
+      "tensor_count": 320,
+      "data_offset_bytes": 10961152,
+      "alignment_bytes": 32,
+      "reader": "llama.cpp gguf_get_tensor_size"
+    },
+    "models/llama-comparison/Qwen3.5-4B-Q4_0-pure.gguf": {
+      "file_bytes": 2380008224,
+      "tensor_payload_bytes": 2369040384,
+      "tensor_count": 426,
+      "data_offset_bytes": 10967840,
+      "alignment_bytes": 32,
+      "reader": "llama.cpp gguf_get_tensor_size"
+    }
+  },
+  "phase_metadata": {
+    "decision": {
+      "started_utc": "2026-11-21T08:34:23,036172516+00:00",
+      "finished_utc": "2026-11-21T08:42:14,700218886+00:00",
+      "raw_profiles": "benchmarks/i7-six-core-run-PGBziM0e/decision",
+      "runner_metadata_sha256": "fb3b93faf8ecbf6bbe87e741c8084e847bf9ddc3e8ff89f7a944e7b34280b567",
+      "results_csv_sha256": "c25b5d085ab303cf5320ee05fc86207d2e5771af3444d2005e8524e6ab3e53d4",
+      "matrix_file_sha256": "91e4ca67f0e6bd71e41bc26a091c576ce612e8a5745cce3810ee82596d594b62",
+      "runner_affinity_decimal": 63,
+      "binaries": {
+        "/usr/bin/python3": "52e0a13e60a981d8c4b6478be2ba5176f69da07948a056bf49cf6f077e30cb41"
+      },
+      "inputs": {
+        "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/model.q35h": {
+          "bytes": 424964864,
+          "sha256": "E7D61E7B191DE6C2AFB8663E8A1F8C5F4D52315E9492DB7A690708D744F8DC69"
+        },
+        "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/config.json": {
+          "bytes": 2485,
+          "sha256": "D9AB6F1698A46BBF04895D171FA0666816745E0D7209B9493D44D3DF0CAA1B5F"
+        },
+        "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/tokenizer_config.json": {
+          "bytes": 16712,
+          "sha256": "E611FBCCC7C29EF3B1CAFB1CB7EA548D189968632901D678FD62BE68C47885DE"
+        },
+        "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/tokenizer.json": {
+          "bytes": 12807181,
+          "sha256": "466F27FEFA1F44A7BB82CB1B42163C761E01DC6F7F51FC4F3D0A499A5A9B4249"
+        }
+      },
+      "matrix": [
+        {
+          "name": "short-before",
+          "executable": "/usr/bin/python3",
+          "args": [
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-src/scripts/benchmark-systemone-http.py",
+            "--backend",
+            "native",
+            "--server",
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/decision-before-server",
+            "--model-dir",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final",
+            "--weights",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/model.q35h",
+            "--threads",
+            "6",
+            "--request",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/qev-api-2026-10-21/short-request.json"
+          ]
+        },
+        {
+          "name": "short-deltanet",
+          "executable": "/usr/bin/python3",
+          "args": [
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-src/scripts/benchmark-systemone-http.py",
+            "--backend",
+            "native",
+            "--server",
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/decision-deltanet-server",
+            "--model-dir",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final",
+            "--weights",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/model.q35h",
+            "--threads",
+            "6",
+            "--request",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/qev-api-2026-10-21/short-request.json"
+          ]
+        },
+        {
+          "name": "short-current",
+          "executable": "/usr/bin/python3",
+          "args": [
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-src/scripts/benchmark-systemone-http.py",
+            "--backend",
+            "native",
+            "--server",
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_server",
+            "--model-dir",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final",
+            "--weights",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/model.q35h",
+            "--threads",
+            "6",
+            "--request",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/qev-api-2026-10-21/short-request.json"
+          ]
+        },
+        {
+          "name": "long-before",
+          "executable": "/usr/bin/python3",
+          "args": [
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-src/scripts/benchmark-systemone-http.py",
+            "--backend",
+            "native",
+            "--server",
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/decision-before-server",
+            "--model-dir",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final",
+            "--weights",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/model.q35h",
+            "--threads",
+            "6",
+            "--request",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/qev-api-2026-10-21/long-request.json"
+          ]
+        },
+        {
+          "name": "long-deltanet",
+          "executable": "/usr/bin/python3",
+          "args": [
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-src/scripts/benchmark-systemone-http.py",
+            "--backend",
+            "native",
+            "--server",
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/decision-deltanet-server",
+            "--model-dir",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final",
+            "--weights",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/model.q35h",
+            "--threads",
+            "6",
+            "--request",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/qev-api-2026-10-21/long-request.json"
+          ]
+        },
+        {
+          "name": "long-current",
+          "executable": "/usr/bin/python3",
+          "args": [
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-src/scripts/benchmark-systemone-http.py",
+            "--backend",
+            "native",
+            "--server",
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_server",
+            "--model-dir",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final",
+            "--weights",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/model.q35h",
+            "--threads",
+            "6",
+            "--request",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/qev-api-2026-10-21/long-request.json"
+          ]
+        },
+        {
+          "name": "routing-de-before",
+          "executable": "/usr/bin/python3",
+          "args": [
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-src/scripts/benchmark-systemone-http.py",
+            "--backend",
+            "native",
+            "--server",
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/decision-before-server",
+            "--model-dir",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final",
+            "--weights",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/model.q35h",
+            "--threads",
+            "6",
+            "--request",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/decision-followup-2026-11-20/routing-de-inputs.jsonl",
+            "--jsonl-panel"
+          ]
+        },
+        {
+          "name": "routing-de-deltanet",
+          "executable": "/usr/bin/python3",
+          "args": [
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-src/scripts/benchmark-systemone-http.py",
+            "--backend",
+            "native",
+            "--server",
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/decision-deltanet-server",
+            "--model-dir",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final",
+            "--weights",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/model.q35h",
+            "--threads",
+            "6",
+            "--request",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/decision-followup-2026-11-20/routing-de-inputs.jsonl",
+            "--jsonl-panel"
+          ]
+        },
+        {
+          "name": "routing-de-current",
+          "executable": "/usr/bin/python3",
+          "args": [
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-src/scripts/benchmark-systemone-http.py",
+            "--backend",
+            "native",
+            "--server",
+            "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_server",
+            "--model-dir",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final",
+            "--weights",
+            "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/model.q35h",
+            "--threads",
+            "6",
+            "--request",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/decision-followup-2026-11-20/routing-de-inputs.jsonl",
+            "--jsonl-panel"
+          ]
+        }
+      ]
+    },
+    "speed": {
+      "started_utc": "2026-11-21T08:42:14,707921079+00:00",
+      "finished_utc": "2026-11-21T11:15:31,598938802+00:00",
+      "raw_profiles": "benchmarks/i7-six-core-run-PGBziM0e/speed",
+      "runner_metadata_sha256": "6b0eb7d01fc3bfa7a2fb5d983c33485fe65ae38614593ee976d7b6ae6eda1a94",
+      "results_csv_sha256": "c3ef1fd2582986b21ad72ac0bffe6e080b64c5b4e5b32684580cb53b011a4bce",
+      "matrix_file_sha256": "32c8d4f10a8556fe4f88d51445e0adaa76a06eff66e3f4286f40fef3b455e8ab",
+      "runner_affinity_decimal": 63,
+      "binaries": {
+        "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/bin/ik-fixed-cpu-bench": "736350b1f0a2c676cefb58dd68e9a5fcb5b8ec53ba997c8067584406da433a69",
+        "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-fixed-cpu-bench": "207d0c9e847c35e3efe90eca55e4867647ef2ac270cabf72af434d16061f982b",
+        "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_bench": "7de9d0e6c14dc2d4a5a5dd604ec3559ef376512f1460aaf3f73bd755cba31ded",
+        "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build/bin/ik-fixed-cpu-bench": "5e03c6a3c100dfd71c1bd2bed5ff3d4922ebb172c2c87aeed33230d479f0886b"
+      },
+      "inputs": {
+        "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-4b/model-mse16.q35h": {
+          "bytes": 2369080576,
+          "sha256": "7DB1DD7BE2E74444465F833D6B639D895FF09E0B8226FB06EB925A5729A85EAE"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/llama-comparison/Qwen3.5-4B-Q4_0-pure.gguf": {
+          "bytes": 2380008224,
+          "sha256": "DC1EEB6988EB446136F6EBC2555149FDE3EA772575B63B8F313D0789F85C6F82"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-pure.gguf": {
+          "bytes": 1071373824,
+          "sha256": "AADB22150A70A44268DED65EF0CA14401D85A5E60E4C109F5985DE1FEA53969D"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-0.8b-linux/model.q35h": {
+          "bytes": 424964864,
+          "sha256": "013FBFAA03760E759181301DDAF964BB5C200C50C50617AFE72557FD65BCBF0A"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/ik-comparison/Qwen3.5-0.8B-IQ4_K_R4-pure.gguf": {
+          "bytes": 435896352,
+          "sha256": "420AF5BCFB8F2D9FAAE05068E51F686BFB6912D89AA40E65A603DE455F541C80"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-0.8b-linux/tokenizer_config.json": {
+          "bytes": 16709,
+          "sha256": "49E2B6E395F959F077F1E992B338919C0D4A9732FC6E613995E06557F843500C"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/llama-comparison/Qwen3.5-0.8B-Q4_K_M.gguf": {
+          "bytes": 532517120,
+          "sha256": "BD258782E35F7F458F8ACED1ADC053E6E92E89BC735BA3BE89D38A06121DC517"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-4b/tokenizer_config.json": {
+          "bytes": 16710,
+          "sha256": "316230D6A809701F4DB5EA8F8FC862BC3A6F3229C937C174E674FF3CA0A64AC8"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/ik-comparison/Qwen3.5-4B-IQ4_K_R4-pure.gguf": {
+          "bytes": 2380008224,
+          "sha256": "331C1B98432E8177C88792B36F7D299949B999ABCDF346C7F0D7102010D4894A"
+        },
+        "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv": {
+          "bytes": 2311,
+          "sha256": "6BAA0783F9AD2ADEA59013C948CD15A0A465E870837BF9A60E57EB73EF39BD81"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/llama-comparison/Qwen3.5-2B-Q4_0-pure.gguf": {
+          "bytes": 1071373824,
+          "sha256": "CF87670F77BB584AA8F7DCD101BC590A5C6325388FDA09503F094D58834409FA"
+        },
+        "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv": {
+          "bytes": 18715,
+          "sha256": "BB1582BD818D65BA153C31116895C24FD69D9EDD822BB7C5FB8873055E6CD435"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-0.8b-linux/config.json": {
+          "bytes": 2907,
+          "sha256": "B90B86F35C8E6925EF74EE04D0E758F0A845C83A42089AD82BBAA948DE9B4204"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-2b/model.q35h": {
+          "bytes": 1060442880,
+          "sha256": "1084C3A2751D3813A2AA686337F717E56291E6A1A79FF8BE1B6D1665D22892A3"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/ik-comparison/Qwen3.5-0.8B-IQ4_KS_R4-pure.gguf": {
+          "bytes": 414992672,
+          "sha256": "033500E8A91D0761C05AEFFD47E5DDB3F91B0A3C87048F397C36B27912A37CDC"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-4b/tokenizer.json": {
+          "bytes": 12807982,
+          "sha256": "5F9E4D4901A92B997E463C1F46055088B6CCA5CA61A6522D1B9F64C4BB81CB42"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/llama-comparison/Qwen3.5-0.8B-Q4_0-pure.gguf": {
+          "bytes": 435896352,
+          "sha256": "2E41F95FCA5F3E3A8DC91C1407C572F3CFF5D060CBFDF835CD2D4D9913F95E7D"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-2b/tokenizer.json": {
+          "bytes": 12807982,
+          "sha256": "5F9E4D4901A92B997E463C1F46055088B6CCA5CA61A6522D1B9F64C4BB81CB42"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-2b/config.json": {
+          "bytes": 2908,
+          "sha256": "ED1C1723241F23F7F4E23430759CBD7DCFB4103CBDFE052BFE7626B57C2615B4"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-4b/config.json": {
+          "bytes": 3161,
+          "sha256": "DDC63E1C717AFA86C865BB5E01313D89D72BB53B97AD4A8A03BA8510C0621670"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-2b/tokenizer_config.json": {
+          "bytes": 16709,
+          "sha256": "49E2B6E395F959F077F1E992B338919C0D4A9732FC6E613995E06557F843500C"
+        },
+        "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-0.8b-linux/tokenizer.json": {
+          "bytes": 12807982,
+          "sha256": "5F9E4D4901A92B997E463C1F46055088B6CCA5CA61A6522D1B9F64C4BB81CB42"
+        }
+      },
+      "matrix": [
+        {
+          "name": "0.8B-native-H128-linux-b1-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-0.8b-linux",
+            "--cpu-q4-h128",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-0.8b-linux/model.q35h",
+            "--cpu-batch-full-logits",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "0.8B-llama-Q4_0-pure-linux-b1-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/llama-comparison/Qwen3.5-0.8B-Q4_0-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "0.8B-ik-IQ4_K_R4-pure-linux-b1-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build/bin/ik-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/ik-comparison/Qwen3.5-0.8B-IQ4_K_R4-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128",
+            "--ik-repack"
+          ]
+        },
+        {
+          "name": "0.8B-ik-IQ4_KS_R4-pure-linux-b1-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build/bin/ik-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/ik-comparison/Qwen3.5-0.8B-IQ4_KS_R4-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128",
+            "--ik-repack"
+          ]
+        },
+        {
+          "name": "0.8B-llama-Q4_K_M-linux-b1-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/llama-comparison/Qwen3.5-0.8B-Q4_K_M.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "0.8B-native-H128-linux-b1-t6-p4096-n2",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-0.8b-linux",
+            "--cpu-q4-h128",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-0.8b-linux/model.q35h",
+            "--cpu-batch-full-logits",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+            "--forced-output-tokens",
+            "248045,846",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "2"
+          ]
+        },
+        {
+          "name": "0.8B-llama-Q4_0-pure-linux-b1-t6-p4096-n2",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/llama-comparison/Qwen3.5-0.8B-Q4_0-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+            "--forced-output-tokens",
+            "248045,846",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "2"
+          ]
+        },
+        {
+          "name": "0.8B-ik-IQ4_K_R4-pure-linux-b1-t6-p4096-n2",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build/bin/ik-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/ik-comparison/Qwen3.5-0.8B-IQ4_K_R4-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+            "--forced-output-tokens",
+            "248045,846",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "2",
+            "--ik-repack"
+          ]
+        },
+        {
+          "name": "0.8B-ik-IQ4_KS_R4-pure-linux-b1-t6-p4096-n2",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build/bin/ik-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/ik-comparison/Qwen3.5-0.8B-IQ4_KS_R4-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+            "--forced-output-tokens",
+            "248045,846",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "2",
+            "--ik-repack"
+          ]
+        },
+        {
+          "name": "0.8B-llama-Q4_K_M-linux-b1-t6-p4096-n2",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/llama-comparison/Qwen3.5-0.8B-Q4_K_M.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+            "--forced-output-tokens",
+            "248045,846",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "2"
+          ]
+        },
+        {
+          "name": "0.8B-native-H128-linux-b16-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-0.8b-linux",
+            "--cpu-q4-h128",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-0.8b-linux/model.q35h",
+            "--cpu-batch-full-logits",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "16",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "0.8B-llama-Q4_0-pure-linux-b16-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/llama-comparison/Qwen3.5-0.8B-Q4_0-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "16",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "0.8B-llama-Q4_K_M-linux-b16-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/llama-comparison/Qwen3.5-0.8B-Q4_K_M.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "16",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "0.8B-ik-IQ4_K_R4-pure-linux-b16-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/bin/ik-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/ik-comparison/Qwen3.5-0.8B-IQ4_K_R4-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "16",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128",
+            "--ik-repack"
+          ]
+        },
+        {
+          "name": "0.8B-ik-IQ4_KS_R4-pure-linux-b16-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/bin/ik-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/ik-comparison/Qwen3.5-0.8B-IQ4_KS_R4-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "16",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128",
+            "--ik-repack"
+          ]
+        },
+        {
+          "name": "2B-native-H128-linux-b1-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-2b",
+            "--cpu-q4-h128",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-2b/model.q35h",
+            "--cpu-batch-full-logits",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "4B-native-H128-linux-b1-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-4b",
+            "--cpu-q4-h128",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-4b/model-mse16.q35h",
+            "--cpu-batch-full-logits",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "2B-llama-Q4_0-pure-linux-b1-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/llama-comparison/Qwen3.5-2B-Q4_0-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "4B-llama-Q4_0-pure-linux-b1-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/llama-comparison/Qwen3.5-4B-Q4_0-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "2B-ik-IQ4_K_R4-pure-linux-b1-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build/bin/ik-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128",
+            "--ik-repack"
+          ]
+        },
+        {
+          "name": "4B-ik-IQ4_K_R4-pure-linux-b1-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build/bin/ik-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/ik-comparison/Qwen3.5-4B-IQ4_K_R4-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128",
+            "--ik-repack"
+          ]
+        },
+        {
+          "name": "2B-native-H128-linux-b1-t6-p4096-n2",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-2b",
+            "--cpu-q4-h128",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-2b/model.q35h",
+            "--cpu-batch-full-logits",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+            "--forced-output-tokens",
+            "248045,846",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "2"
+          ]
+        },
+        {
+          "name": "4B-native-H128-linux-b1-t6-p4096-n2",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-4b",
+            "--cpu-q4-h128",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-4b/model-mse16.q35h",
+            "--cpu-batch-full-logits",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+            "--forced-output-tokens",
+            "248045,846",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "2"
+          ]
+        },
+        {
+          "name": "2B-llama-Q4_0-pure-linux-b1-t6-p4096-n2",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/llama-comparison/Qwen3.5-2B-Q4_0-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+            "--forced-output-tokens",
+            "248045,846",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "2"
+          ]
+        },
+        {
+          "name": "4B-llama-Q4_0-pure-linux-b1-t6-p4096-n2",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/llama-comparison/Qwen3.5-4B-Q4_0-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+            "--forced-output-tokens",
+            "248045,846",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "2"
+          ]
+        },
+        {
+          "name": "2B-ik-IQ4_K_R4-pure-linux-b1-t6-p4096-n2",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build/bin/ik-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+            "--forced-output-tokens",
+            "248045,846",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "2",
+            "--ik-repack"
+          ]
+        },
+        {
+          "name": "4B-ik-IQ4_K_R4-pure-linux-b1-t6-p4096-n2",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build/bin/ik-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/ik-comparison/Qwen3.5-4B-IQ4_K_R4-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-4096.csv",
+            "--forced-output-tokens",
+            "248045,846",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "1",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "2",
+            "--ik-repack"
+          ]
+        },
+        {
+          "name": "2B-native-H128-linux-b16-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-2b",
+            "--cpu-q4-h128",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-2b/model.q35h",
+            "--cpu-batch-full-logits",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "16",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "4B-native-H128-linux-b16-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_bench",
+          "args": [
+            "--hf-model-dir",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-4b",
+            "--cpu-q4-h128",
+            "benchmarks/i7-six-core-reference-20261121/models/qwen3.5-4b/model-mse16.q35h",
+            "--cpu-batch-full-logits",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "16",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "2B-llama-Q4_0-pure-linux-b16-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/llama-comparison/Qwen3.5-2B-Q4_0-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "16",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "4B-llama-Q4_0-pure-linux-b16-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/llama-comparison/Qwen3.5-4B-Q4_0-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "16",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128"
+          ]
+        },
+        {
+          "name": "2B-ik-IQ4_K_R4-pure-linux-b16-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/bin/ik-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/ik-comparison/Qwen3.5-2B-IQ4_K_R4-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "16",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128",
+            "--ik-repack"
+          ]
+        },
+        {
+          "name": "4B-ik-IQ4_K_R4-pure-linux-b16-t6-p512-n128",
+          "executable": "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-b16-build/bin/ik-fixed-cpu-bench",
+          "args": [
+            "--cpu-gguf",
+            "benchmarks/i7-six-core-reference-20261121/models/ik-comparison/Qwen3.5-4B-IQ4_K_R4-pure.gguf",
+            "--prompt-tokens-file",
+            "benchmarks/i7-six-core-reference-20261121/docs/results/cpu-refresh-2026-10-22/prompt-512.csv",
+            "--forced-output-tokens",
+            "303,22461,4843,57900,13,1049,39388,264,5145,5614,716,539,4642,3629,426,13,22911,303,3114,220,16,24,21,16,11,852,995,27949,279,3516,4042,310,4128,264,855,383,279,16820,321,460,1384,20359,1518,279,809,314,279,12828,13,561,1957,888,5825,264,14938,76119,440,279,18023,33986,220,16,6830,12858,3807,303,5869,220,16,24,21,22,321,22819,383,13900,7633,1472,279,36497,42120,321,82751,7233,13,561,18802,8872,11,8552,3988,11177,303,3433,37116,11,557,11550,310,2353,279,47503,629,23542,11,321,1141,632,37335,290,54814,21059,48130,220,16,20,32635,383,279,16820,383,5589,220,17,16,11,1345,32022",
+            "--cpu-threads",
+            "6",
+            "--cpu-batch",
+            "16",
+            "--max-context",
+            "16384",
+            "--max-new-tokens",
+            "128",
+            "--ik-repack"
+          ]
+        }
+      ]
+    }
+  },
+  "host": {
+    "cpu": "Intel Core i7-8750H",
+    "kernel": "7.0.0-43-generic",
+    "os": "Ubuntu 26.04.1 LTS",
+    "build_compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "logical_cpu_topology": [
+      {
+        "cpu": 0,
+        "core": 0,
+        "socket": 0
+      },
+      {
+        "cpu": 1,
+        "core": 1,
+        "socket": 0
+      },
+      {
+        "cpu": 2,
+        "core": 2,
+        "socket": 0
+      },
+      {
+        "cpu": 3,
+        "core": 3,
+        "socket": 0
+      },
+      {
+        "cpu": 4,
+        "core": 4,
+        "socket": 0
+      },
+      {
+        "cpu": 5,
+        "core": 5,
+        "socket": 0
+      },
+      {
+        "cpu": 6,
+        "core": 0,
+        "socket": 0
+      },
+      {
+        "cpu": 7,
+        "core": 1,
+        "socket": 0
+      },
+      {
+        "cpu": 8,
+        "core": 2,
+        "socket": 0
+      },
+      {
+        "cpu": 9,
+        "core": 3,
+        "socket": 0
+      },
+      {
+        "cpu": 10,
+        "core": 4,
+        "socket": 0
+      },
+      {
+        "cpu": 11,
+        "core": 5,
+        "socket": 0
+      }
+    ],
+    "selected_cpus": "0-5",
+    "physical_cores": 6,
+    "threads": 6,
+    "affinity_decimal": 63,
+    "omp_num_threads": 6,
+    "powershell": "PowerShell 7.7.0",
+    "live_affinity": {
+      "decision": "PID 8750\nName:\tdecision-before\nThreads:\t40\nCpus_allowed_list:\t0-5\n",
+      "speed": "PID 11358\nName:\tqwen35_cpu_benc\nThreads:\t6\nCpus_allowed_list:\t0-5\n"
+    },
+    "power": {
+      "at-start": {
+        "cpu0/cpufreq/scaling_driver": "intel_pstate",
+        "cpu1/cpufreq/scaling_driver": "intel_pstate",
+        "cpu2/cpufreq/scaling_driver": "intel_pstate",
+        "cpu3/cpufreq/scaling_driver": "intel_pstate",
+        "cpu4/cpufreq/scaling_driver": "intel_pstate",
+        "cpu5/cpufreq/scaling_driver": "intel_pstate",
+        "cpu0/cpufreq/scaling_governor": "powersave",
+        "cpu1/cpufreq/scaling_governor": "powersave",
+        "cpu2/cpufreq/scaling_governor": "powersave",
+        "cpu3/cpufreq/scaling_governor": "powersave",
+        "cpu4/cpufreq/scaling_governor": "powersave",
+        "cpu5/cpufreq/scaling_governor": "powersave",
+        "cpu0/cpufreq/energy_performance_preference": "balance_power",
+        "cpu1/cpufreq/energy_performance_preference": "balance_power",
+        "cpu2/cpufreq/energy_performance_preference": "balance_power",
+        "cpu3/cpufreq/energy_performance_preference": "balance_power",
+        "cpu4/cpufreq/energy_performance_preference": "balance_power",
+        "cpu5/cpufreq/energy_performance_preference": "balance_power",
+        "cpu0/cpufreq/scaling_min_freq": "800000",
+        "cpu1/cpufreq/scaling_min_freq": "800000",
+        "cpu2/cpufreq/scaling_min_freq": "800000",
+        "cpu3/cpufreq/scaling_min_freq": "800000",
+        "cpu4/cpufreq/scaling_min_freq": "800000",
+        "cpu5/cpufreq/scaling_min_freq": "800000",
+        "cpu0/cpufreq/scaling_max_freq": "4100000",
+        "cpu1/cpufreq/scaling_max_freq": "4100000",
+        "cpu2/cpufreq/scaling_max_freq": "4100000",
+        "cpu3/cpufreq/scaling_max_freq": "4100000",
+        "cpu4/cpufreq/scaling_max_freq": "4100000",
+        "cpu5/cpufreq/scaling_max_freq": "4100000",
+        "intel_pstate/status": "active",
+        "intel_pstate/no_turbo": "0",
+        "intel_pstate/min_perf_pct": "19",
+        "intel_pstate/max_perf_pct": "80",
+        "/sys/class/powercap/intel-rapl:0/constraint_0_power_limit_uw": "30000000",
+        "/sys/class/powercap/intel-rapl:0/constraint_1_power_limit_uw": "38000000",
+        "ac_online": 1
+      },
+      "after": {
+        "cpu0/cpufreq/scaling_driver": "intel_pstate",
+        "cpu1/cpufreq/scaling_driver": "intel_pstate",
+        "cpu2/cpufreq/scaling_driver": "intel_pstate",
+        "cpu3/cpufreq/scaling_driver": "intel_pstate",
+        "cpu4/cpufreq/scaling_driver": "intel_pstate",
+        "cpu5/cpufreq/scaling_driver": "intel_pstate",
+        "cpu0/cpufreq/scaling_governor": "powersave",
+        "cpu1/cpufreq/scaling_governor": "powersave",
+        "cpu2/cpufreq/scaling_governor": "powersave",
+        "cpu3/cpufreq/scaling_governor": "powersave",
+        "cpu4/cpufreq/scaling_governor": "powersave",
+        "cpu5/cpufreq/scaling_governor": "powersave",
+        "cpu0/cpufreq/energy_performance_preference": "balance_power",
+        "cpu1/cpufreq/energy_performance_preference": "balance_power",
+        "cpu2/cpufreq/energy_performance_preference": "balance_power",
+        "cpu3/cpufreq/energy_performance_preference": "balance_power",
+        "cpu4/cpufreq/energy_performance_preference": "balance_power",
+        "cpu5/cpufreq/energy_performance_preference": "balance_power",
+        "cpu0/cpufreq/scaling_min_freq": "800000",
+        "cpu1/cpufreq/scaling_min_freq": "800000",
+        "cpu2/cpufreq/scaling_min_freq": "800000",
+        "cpu3/cpufreq/scaling_min_freq": "800000",
+        "cpu4/cpufreq/scaling_min_freq": "800000",
+        "cpu5/cpufreq/scaling_min_freq": "800000",
+        "cpu0/cpufreq/scaling_max_freq": "4100000",
+        "cpu1/cpufreq/scaling_max_freq": "4100000",
+        "cpu2/cpufreq/scaling_max_freq": "4100000",
+        "cpu3/cpufreq/scaling_max_freq": "4100000",
+        "cpu4/cpufreq/scaling_max_freq": "4100000",
+        "cpu5/cpufreq/scaling_max_freq": "4100000",
+        "intel_pstate/status": "active",
+        "intel_pstate/no_turbo": "0",
+        "intel_pstate/min_perf_pct": "19",
+        "intel_pstate/max_perf_pct": "80",
+        "/sys/class/powercap/intel-rapl:0/constraint_0_power_limit_uw": "30000000",
+        "/sys/class/powercap/intel-rapl:0/constraint_1_power_limit_uw": "38000000",
+        "ac_online": 1
+      }
+    },
+    "environment_at-start_sha256": "dda35ee2346e80d8903791caccddc957a7193d8d6c59ddc447855aa84c6829ff",
+    "environment_after_sha256": "1fc59b60877f7d70b4e26a35d1ee3f22eb12136dc9a0b74a08cfbaaacb8fb96a"
+  },
+  "interference": {
+    "decision": {
+      "peak_package_c": 62.0,
+      "throttle_deltas": {
+        "package_throttle_count": 0,
+        "package_throttle_total_ms": 0,
+        "cpu0_core_throttle_count": 0,
+        "cpu1_core_throttle_count": 0,
+        "cpu2_core_throttle_count": 0,
+        "cpu3_core_throttle_count": 0,
+        "cpu4_core_throttle_count": 0,
+        "cpu5_core_throttle_count": 0
+      },
+      "sample_overlaps": []
+    },
+    "speed": {
+      "peak_package_c": 66.0,
+      "throttle_deltas": {
+        "package_throttle_count": 0,
+        "package_throttle_total_ms": 0,
+        "cpu0_core_throttle_count": 0,
+        "cpu1_core_throttle_count": 0,
+        "cpu2_core_throttle_count": 0,
+        "cpu3_core_throttle_count": 0,
+        "cpu4_core_throttle_count": 0,
+        "cpu5_core_throttle_count": 0
+      },
+      "sample_overlaps": [
+        {
+          "case": "2B-ik-IQ4_K_R4-pure-linux-b1-t6-p4096-n2",
+          "run": 0,
+          "warmup": true,
+          "overlapping_services": [
+            {
+              "unit": "logrotate.service - Rotate log files",
+              "seconds": 0.094763,
+              "start_utc": "2026-11-21T08:57:26.699600+00:00",
+              "end_utc": "2026-11-21T08:57:26.794363+00:00"
+            }
+          ],
+          "throttle_deltas": {}
+        },
+        {
+          "case": "2B-ik-IQ4_K_R4-pure-linux-b16-t6-p512-n128",
+          "run": 0,
+          "warmup": true,
+          "overlapping_services": [
+            {
+              "unit": "fwupd-refresh.service - Refresh fwupd metadata and update motd",
+              "seconds": 2.002771,
+              "start_utc": "2026-11-21T09:13:26.693599+00:00",
+              "end_utc": "2026-11-21T09:13:28.696370+00:00"
+            }
+          ],
+          "throttle_deltas": {}
+        },
+        {
+          "case": "2B-llama-Q4_0-pure-linux-b16-t6-p512-n128",
+          "run": 3,
+          "warmup": false,
+          "overlapping_services": [
+            {
+              "unit": "fwupd-refresh.service - Refresh fwupd metadata and update motd",
+              "seconds": 0.136504,
+              "start_utc": "2026-11-21T10:54:26.693456+00:00",
+              "end_utc": "2026-11-21T10:54:26.829960+00:00"
+            }
+          ],
+          "throttle_deltas": {}
+        }
+      ]
+    }
+  },
+  "interference_notes": [
+    "2026-11-21T08:36:03,858917973+00:00 Stopped bulky GGUF Python reader during Qev warmup. Metadata-only parser will run after the measurement if necessary.",
+    "2026-11-21T08:43:24,668620928+00:00 Began metadata-only GGUF sizing during throughput warmup.",
+    "2026-11-21T08:43:25,861926529+00:00 Finished GGUF sizing.",
+    "2026-11-21T08:34:22+00:00 Restarted the decision warmup because the thermal-zone number for x86_pkg_temp had changed since the previous boot. The aborted warmups remain under decision-unmonitored.",
+    "2026-11-21T08:36:44+00:00 Received the 652 KiB Ryzen decision reference metadata and profiles. Recorded file creation spans 2 ms. The background sampler showed no sustained competing process.",
+    "A 137 ms firmware-metadata refresh overlapped the end of a measured 2B llama.cpp batch-16 sample. The sampled rates stayed within that case\u2019s normal measured range."
+  ],
+  "replacements": {}
+}

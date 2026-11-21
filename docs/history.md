@@ -13,6 +13,9 @@ No Git history was rewritten.
   preserves the previously committed raw runs, manifests, checksums and source snapshots.
 - [Historical scripts](https://github.com/Danmoreng/qwen35-cpu/tree/3680efb33bf6975ce6722d64d20c641cb7490b06/scripts)
   preserve the generators for those fixed experiment layouts.
+- The first Intel/Ryzen comparison used eight workers on the i7 and six regenerated
+  GGUF files. The original report and evidence are preserved in Git history.
+  [Report](https://github.com/Danmoreng/qwen35-cpu/blob/23a89ca34a26fae45ba10f7144df153e7b26d170/docs/benchmarks/i7-8750h-vs-ryzen-9955hx3d.md) · [Evidence](https://github.com/Danmoreng/qwen35-cpu/tree/23a89ca34a26fae45ba10f7144df153e7b26d170/docs/results/i7-ryzen-comparison-2026-11-20)
 
 Use that snapshot as a whole when reproducing an old experiment. Its commands,
 paths and assumptions need not match current source. Large raw captures that
