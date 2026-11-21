@@ -91,6 +91,9 @@ The choices were stable across repetitions and core revisions on each host.
 
 [Per-run p50 and p95](../results/i7-ryzen-comparison-2026-11-21/decision-samples.csv) · [Per-run chart data](../results/i7-ryzen-comparison-2026-11-21/decision-rate-samples.csv) · [Decision summary](../results/i7-ryzen-comparison-2026-11-21/decisions.csv) · [Per-input equivalence](../results/i7-ryzen-comparison-2026-11-21/decision-parity.csv) · [Ryzen profile hashes and parity summary](../results/i7-ryzen-comparison-2026-11-21/decision-parity.json)
 
+The same i7 workloads were repeated on llama.cpp and ik_llama.cpp with
+size-matched Q4_0 and the publisher's Q8_0 GGUF. [Qev server comparison](qev-i7-server-comparison.md)
+
 ## Setup and reproduction
 
 | Setting | Core i7-8750H | Ryzen 9 9955HX3D |

@@ -1,0 +1,542 @@
+[
+  {
+    "first": "llama-q4",
+    "second": "ik-q4",
+    "matching_choices": 62,
+    "total": 66,
+    "max_abs_probability_delta": 0.04427514212328765,
+    "mismatches": [
+      {
+        "workload": "routing-de",
+        "item_id": "21413c1ea3",
+        "first_choice": "B",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "35fa04bad3",
+        "first_choice": "A",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "f767910c29",
+        "first_choice": "B",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "3fe84c2053",
+        "first_choice": "D",
+        "second_choice": "B"
+      }
+    ]
+  },
+  {
+    "first": "llama-q8",
+    "second": "ik-q8",
+    "matching_choices": 62,
+    "total": 66,
+    "max_abs_probability_delta": 0.030936959701266475,
+    "mismatches": [
+      {
+        "workload": "routing-de",
+        "item_id": "1d35e9454d",
+        "first_choice": "C",
+        "second_choice": "A"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "35728a2efa",
+        "first_choice": "B",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "6eb7e74e1c",
+        "first_choice": "C",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "e9ac457fb2",
+        "first_choice": "D",
+        "second_choice": "C"
+      }
+    ]
+  },
+  {
+    "first": "native-h128",
+    "second": "llama-q4",
+    "matching_choices": 50,
+    "total": 66,
+    "max_abs_probability_delta": 0.4338520831545084,
+    "mismatches": [
+      {
+        "workload": "routing-de",
+        "item_id": "5a80c81bce",
+        "first_choice": "B",
+        "second_choice": "A"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "bede337de4",
+        "first_choice": "A",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "ff9917d51d",
+        "first_choice": "B",
+        "second_choice": "A"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "1c2a7b9b28",
+        "first_choice": "B",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "8ea1c23802",
+        "first_choice": "D",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "38a0c05704",
+        "first_choice": "B",
+        "second_choice": "A"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "bd408fef16",
+        "first_choice": "C",
+        "second_choice": "D"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "66c1143d8e",
+        "first_choice": "A",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "f767910c29",
+        "first_choice": "C",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "d2c055b13c",
+        "first_choice": "B",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "bde0f6b02d",
+        "first_choice": "C",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "12ce4743f8",
+        "first_choice": "D",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "e9ac457fb2",
+        "first_choice": "C",
+        "second_choice": "D"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "13a956383f",
+        "first_choice": "B",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "cfae73a98f",
+        "first_choice": "D",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "e1d0740db9",
+        "first_choice": "C",
+        "second_choice": "D"
+      }
+    ]
+  },
+  {
+    "first": "native-h128",
+    "second": "ik-q4",
+    "matching_choices": 48,
+    "total": 66,
+    "max_abs_probability_delta": 0.4586180125290622,
+    "mismatches": [
+      {
+        "workload": "routing-de",
+        "item_id": "5a80c81bce",
+        "first_choice": "B",
+        "second_choice": "A"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "bede337de4",
+        "first_choice": "A",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "ff9917d51d",
+        "first_choice": "B",
+        "second_choice": "A"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "1c2a7b9b28",
+        "first_choice": "B",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "8ea1c23802",
+        "first_choice": "D",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "38a0c05704",
+        "first_choice": "B",
+        "second_choice": "A"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "21413c1ea3",
+        "first_choice": "B",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "bd408fef16",
+        "first_choice": "C",
+        "second_choice": "D"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "66c1143d8e",
+        "first_choice": "A",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "35fa04bad3",
+        "first_choice": "A",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "d2c055b13c",
+        "first_choice": "B",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "bde0f6b02d",
+        "first_choice": "C",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "3fe84c2053",
+        "first_choice": "D",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "12ce4743f8",
+        "first_choice": "D",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "e9ac457fb2",
+        "first_choice": "C",
+        "second_choice": "D"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "13a956383f",
+        "first_choice": "B",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "cfae73a98f",
+        "first_choice": "D",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "e1d0740db9",
+        "first_choice": "C",
+        "second_choice": "D"
+      }
+    ]
+  },
+  {
+    "first": "llama-q4",
+    "second": "llama-q8",
+    "matching_choices": 47,
+    "total": 66,
+    "max_abs_probability_delta": 0.4832034975616053,
+    "mismatches": [
+      {
+        "workload": "routing-de",
+        "item_id": "5a80c81bce",
+        "first_choice": "A",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "f7a55b5101",
+        "first_choice": "A",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "bede337de4",
+        "first_choice": "B",
+        "second_choice": "A"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "ff9917d51d",
+        "first_choice": "A",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "1c2a7b9b28",
+        "first_choice": "C",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "b34fce45a4",
+        "first_choice": "C",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "1d35e9454d",
+        "first_choice": "D",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "38a0c05704",
+        "first_choice": "A",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "bd408fef16",
+        "first_choice": "D",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "66c1143d8e",
+        "first_choice": "C",
+        "second_choice": "A"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "35728a2efa",
+        "first_choice": "C",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "8a8be1a670",
+        "first_choice": "D",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "f767910c29",
+        "first_choice": "B",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "d2c055b13c",
+        "first_choice": "C",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "6eb7e74e1c",
+        "first_choice": "B",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "bde0f6b02d",
+        "first_choice": "B",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "12ce4743f8",
+        "first_choice": "B",
+        "second_choice": "D"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "cfae73a98f",
+        "first_choice": "C",
+        "second_choice": "D"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "e1d0740db9",
+        "first_choice": "D",
+        "second_choice": "B"
+      }
+    ]
+  },
+  {
+    "first": "ik-q4",
+    "second": "ik-q8",
+    "matching_choices": 46,
+    "total": 66,
+    "max_abs_probability_delta": 0.5062366469680004,
+    "mismatches": [
+      {
+        "workload": "routing-de",
+        "item_id": "5a80c81bce",
+        "first_choice": "A",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "f7a55b5101",
+        "first_choice": "A",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "bede337de4",
+        "first_choice": "B",
+        "second_choice": "A"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "ff9917d51d",
+        "first_choice": "A",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "1c2a7b9b28",
+        "first_choice": "C",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "b34fce45a4",
+        "first_choice": "C",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "1d35e9454d",
+        "first_choice": "D",
+        "second_choice": "A"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "38a0c05704",
+        "first_choice": "A",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "21413c1ea3",
+        "first_choice": "C",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "bd408fef16",
+        "first_choice": "D",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "66c1143d8e",
+        "first_choice": "C",
+        "second_choice": "A"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "8a8be1a670",
+        "first_choice": "D",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "35fa04bad3",
+        "first_choice": "C",
+        "second_choice": "A"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "d2c055b13c",
+        "first_choice": "C",
+        "second_choice": "B"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "bde0f6b02d",
+        "first_choice": "B",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "3fe84c2053",
+        "first_choice": "B",
+        "second_choice": "D"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "12ce4743f8",
+        "first_choice": "B",
+        "second_choice": "D"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "e9ac457fb2",
+        "first_choice": "D",
+        "second_choice": "C"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "cfae73a98f",
+        "first_choice": "C",
+        "second_choice": "D"
+      },
+      {
+        "workload": "routing-de",
+        "item_id": "e1d0740db9",
+        "first_choice": "D",
+        "second_choice": "B"
+      }
+    ]
+  }
+]

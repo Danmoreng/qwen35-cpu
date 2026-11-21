@@ -6,6 +6,7 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
+| `qev-i7-servers-2026-11-21` | [Qev decision servers on the i7](../benchmarks/qev-i7-server-comparison.md), matched-size Q4 speed, Q8_0 measurements, response agreement and provenance |
 | `i7-ryzen-comparison-2026-11-21` | [Core i7-8750H vs Ryzen 9 9955HX3D](../benchmarks/i7-8750h-vs-ryzen-9955hx3d.md), six-core throughput, qev HTTP latency and response parity, and verified checkpoint provenance |
 | `i7-avx2-followup-2026-11-20` | [AVX2 prefill follow-up on the i7-8750H](../benchmarks/avx2-prefill-followup-i7.md), paired and instrumented timings, build provenance and logit parity |
 | `i7-dot4-pair4-2026-11-20` | [Four-token AVX2 DOT4 on the i7-8750H](../benchmarks/dot4-pair4-i7.md), sequential samples, build provenance and logit parity |
