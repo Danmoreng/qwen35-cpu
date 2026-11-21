@@ -1,0 +1,153 @@
+{
+  "publisher": {
+    "repo": "SupersonicLabs/Julia-2",
+    "revision": "b3e610b47d140cc4fcbd00d7b58b86184a13bcff",
+    "checkpoint": {
+      "sha256": "c3ca206b91e7e490221ee85b098141e26f89ded2987510c82aeb84d6821994a2",
+      "bytes": 2139582620
+    }
+  },
+  "protocol": {
+    "host": "Intel Core i7-8750H",
+    "cpu_affinity": "0-5",
+    "threads": 6,
+    "max_context": 8192,
+    "reference_backend": "publisher runtime, PyTorch 2.11.0+cpu, FP32 arithmetic from official BF16 trunk",
+    "native_backend": "native CPU H128/Q4-G32-DOT4 trunk, uncalibrated MSE16 and original FP32 readout",
+    "decode_forwards": 0,
+    "tokenizer_parity": {
+      "cases": 30,
+      "identical_token_ids": 30,
+      "mismatches": []
+    },
+    "measured_latency": false
+  },
+  "engine_revision": "1b2348ba793e5c75e4ccb9ffa387d48b5505d58f",
+  "archive_revision": "fc7e413101cea078ebd36cb2e2cb37fd8022938b",
+  "native_probe_note": "Compiled the current runtime and AVX2 DOT4 translation unit plus the existing archive. The isolated runtime copy exposes the normalized final hidden state through CpuPrefix. The updated AVX2 build matched all 30 rows from the previous AVX2 object byte for byte.",
+  "raw_directory": "benchmarks/julia-2-feasibility-fwJerCZR",
+  "artifacts": {
+    "benchmarks/julia-2-feasibility-fwJerCZR/text/model.safetensors": {
+      "sha256": "b721809ff75f7825b0bed07728a4dd829f9da8750f85fb2bf61010fadff825d2",
+      "bytes": 1504827608
+    },
+    "benchmarks/julia-2-feasibility-fwJerCZR/text/trunk.q35h": {
+      "sha256": "fb1017cd31a17d8fd7d5ef5c450ac0b972fb18b99733fd5d84605ac0e3b31f26",
+      "bytes": 424964864
+    },
+    "benchmarks/julia-2-feasibility-fwJerCZR/text/readout.f32": {
+      "sha256": "5aff5b247d32e92ae4f7aa4df7e4375897ff574aacab7f46cad2f871f22cbc3b",
+      "bytes": 1045500
+    }
+  },
+  "binaries": {
+    "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_pack": {
+      "sha256": "b8f8922e978eb50089f8a6473d1dbbcb87ba62fd12393146b4a519da210b62c6",
+      "bytes": 654104
+    },
+    "benchmarks/i7-dot4-6FugJsNr/main-pair4/build-i7/libqwen35x_core.a": {
+      "sha256": "7552a813129bf687452aea15291976706ca60e53ff7ad674dd44901622d8855e",
+      "bytes": 1913930
+    },
+    "benchmarks/julia-2-feasibility-fwJerCZR/probe-current": {
+      "sha256": "8e647246a2d0db7ed6205fbf47a330e4d3b0878f63055dfe495ba4bbe9fae1b6",
+      "bytes": 1081272
+    },
+    "benchmarks/julia-2-feasibility-fwJerCZR/tokenizer-probe": {
+      "sha256": "66fbf9de52e19612b5a5c4d602cc2f8e4fc38db8b5eddcf84d46a2b4af9e56b4",
+      "bytes": 487832
+    }
+  },
+  "inputs": {
+    "benchmarks/i7-qev-heaven-precision-QTzBYwxf/speed-requests.jsonl": {
+      "sha256": "e9c02a8bf62a17132ff3e433852bf032c62f96d8a590eba6b206870cff6abec1",
+      "bytes": 62564
+    },
+    "docs/results/qev-heaven-precision-i7-2026-11-21/predictions.csv": {
+      "sha256": "d25affa97e1dbd5e37d73482c6d09fe3848ece01d48ad3c0546fae8673b3b7ed",
+      "bytes": 206828
+    },
+    "benchmarks/julia-2-feasibility-fwJerCZR/token-rows.txt": {
+      "sha256": "4b3d4cc004eb914b68bfe29e310b0a2a8bc7ff93041d6b268a1453bfc7f33829",
+      "bytes": 71059
+    },
+    "benchmarks/julia-2-feasibility-fwJerCZR/runtime/tests/text_ref.json": {
+      "sha256": "3dd559d6a290d772a1b31bac0f6c59ce060d45f1440e409ae1f78356c2d4b76f",
+      "bytes": 273928
+    },
+    "benchmarks/julia-2-feasibility-fwJerCZR/trunk/config.json": {
+      "sha256": "b90b86f35c8e6925ef74ee04d0e758f0a845c83a42089ad82bbaa948de9b4204",
+      "bytes": 2907
+    },
+    "benchmarks/julia-2-feasibility-fwJerCZR/tokenizer/tokenizer.json": {
+      "sha256": "fe000e3ed39ed12b8d2481d527d44f93c65d37e87645d2dcc80d1bf9d50d2927",
+      "bytes": 12807196
+    },
+    "benchmarks/julia-2-feasibility-fwJerCZR/tokenizer/tokenizer_config.json": {
+      "sha256": "e611fbccc7c29ef3b1cafb1cb7ea548d189968632901d678fd62be68c47885de",
+      "bytes": 16712
+    }
+  },
+  "local_scripts": {
+    "benchmarks/julia-2-feasibility-fwJerCZR/extract-text.py": {
+      "sha256": "a70fb2c9d0f24065f7199b560efcd134f868ca46819d91678c653e6fe38bca45",
+      "bytes": 1913
+    },
+    "benchmarks/julia-2-feasibility-fwJerCZR/reference.py": {
+      "sha256": "fadcb3bfc5e31286b36219486b8eb27b3d0707c4d832202ba79114c50df64439",
+      "bytes": 2774
+    },
+    "benchmarks/julia-2-feasibility-fwJerCZR/probe.cpp": {
+      "sha256": "9520697caf9a5648c8cd78e83db5232e41dca1a62388fcd0a8dc027545e9deb6",
+      "bytes": 3034
+    },
+    "benchmarks/julia-2-feasibility-fwJerCZR/tokenizer-probe.cpp": {
+      "sha256": "99bc185d3a482a3f4161bff70e61090d5dd540ae01e3a18cd04c3d6f4404eb5c",
+      "bytes": 792
+    },
+    "benchmarks/julia-2-feasibility-fwJerCZR/tokenizer-probe.py": {
+      "sha256": "a98b01998eadbb61d15f12d8ccb5d9494a816075a337ab689a4a1f2a3d3deec8",
+      "bytes": 1461
+    },
+    "benchmarks/julia-2-feasibility-fwJerCZR/summarize.py": {
+      "sha256": "a682a45e133e49e8893944757c22e14a53baa82c909221bcc9a2b70d06f8a0f5",
+      "bytes": 3956
+    }
+  },
+  "raw_results": {
+    "benchmarks/julia-2-feasibility-fwJerCZR/reference.jsonl": {
+      "sha256": "e83f3f2ae7f4bf13fdb5e6ead33755cf9fbf43881809d1f2784e4048d171597b",
+      "bytes": 168799
+    },
+    "benchmarks/julia-2-feasibility-fwJerCZR/native-current-logits.txt": {
+      "sha256": "b016ea2a2f582227a7f3a5e8d1dd2b999bc80f46370c2ae9f705351e674c7b6f",
+      "bytes": 97283
+    },
+    "benchmarks/julia-2-feasibility-fwJerCZR/pack.log": {
+      "sha256": "f01b35e14bf5412699b4d296d7a23018e2933b1df0919ece797e9639cd72bfc2",
+      "bytes": 18273
+    }
+  },
+  "pack_command": [
+    "taskset",
+    "-c",
+    "0-5",
+    "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_pack",
+    "--hf-model-dir",
+    "benchmarks/julia-2-feasibility-fwJerCZR/text",
+    "--output",
+    "benchmarks/julia-2-feasibility-fwJerCZR/text/trunk.q35h",
+    "--quantizer",
+    "mse16"
+  ],
+  "native_command": [
+    "taskset",
+    "-c",
+    "0-5",
+    "benchmarks/julia-2-feasibility-fwJerCZR/probe-current",
+    "benchmarks/julia-2-feasibility-fwJerCZR/text",
+    "benchmarks/julia-2-feasibility-fwJerCZR/text/trunk.q35h",
+    "benchmarks/julia-2-feasibility-fwJerCZR/text/readout.f32",
+    "benchmarks/julia-2-feasibility-fwJerCZR/token-rows.txt"
+  ]
+}

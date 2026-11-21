@@ -1,0 +1,882 @@
+{
+  "summary": {
+    "benchmark_heaven": {
+      "cases": 24,
+      "types": {
+        "noul": 8,
+        "choice": 15,
+        "score": 1
+      },
+      "tokens": [
+        68,
+        3387
+      ],
+      "same_prediction": 23,
+      "median_max_probability_delta": 0.018981963606417428,
+      "worst_max_probability_delta": 0.14373076283448288,
+      "reference_correct": 13,
+      "reference_brier": 0.5645112578631828,
+      "native_correct": 13,
+      "native_brier": 0.5347649764530338
+    },
+    "publisher_smoke": {
+      "cases": 6,
+      "types": {
+        "choice": 2,
+        "noul": 2,
+        "score": 2
+      },
+      "tokens": [
+        39,
+        256
+      ],
+      "same_prediction": 6,
+      "median_max_probability_delta": 0.00594838050562535,
+      "worst_max_probability_delta": 0.03425055158389645,
+      "reference_publisher_agreement": 6,
+      "reference_publisher_max_delta": 0.0022319257259368896
+    }
+  },
+  "rows": [
+    {
+      "id": "original-policy-01-1",
+      "question_type": "noul",
+      "tokens": 101,
+      "expected": "false",
+      "reference_prediction": "false",
+      "native_prediction": "false",
+      "max_probability_delta": 0.0017155489652981425,
+      "labels": [
+        "true",
+        "false"
+      ],
+      "reference_probabilities": [
+        0.013592906296253204,
+        0.9864071011543274
+      ],
+      "native_probabilities": [
+        0.011877357330955062,
+        0.9881226426690448
+      ],
+      "reference_brier": 0.0003695340006074077,
+      "native_brier": 0.0002821432343343868
+    },
+    {
+      "id": "original-intent-04-1",
+      "question_type": "choice",
+      "tokens": 92,
+      "expected": "cancel",
+      "reference_prediction": "cancel",
+      "native_prediction": "cancel",
+      "max_probability_delta": 0.005694714235030207,
+      "labels": [
+        "cancel",
+        "change_address",
+        "other",
+        "refund",
+        "status"
+      ],
+      "reference_probabilities": [
+        0.9776042699813843,
+        0.00010062586807180196,
+        0.022197691723704338,
+        3.916288915206678e-05,
+        5.824017716804519e-05
+      ],
+      "native_probabilities": [
+        0.9719095557463541,
+        0.00011267993875408152,
+        0.027871312122436057,
+        3.639558876301218e-05,
+        7.005660369263895e-05
+      ],
+      "reference_brier": 0.000994321292142786,
+      "native_brier": 0.0015659020271286406
+    },
+    {
+      "id": "original-ordinal-05-1",
+      "question_type": "score",
+      "tokens": 108,
+      "expected": "0",
+      "reference_prediction": "2",
+      "native_prediction": "2",
+      "max_probability_delta": 0.08914811424418756,
+      "labels": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "reference_probabilities": [
+        0.25549712777137756,
+        0.03347225487232208,
+        0.7053906321525574,
+        0.005639972165226936
+      ],
+      "native_probabilities": [
+        0.3369171532101492,
+        0.04199740660840682,
+        0.6162425179083698,
+        0.004842922273074141
+      ],
+      "reference_brier": 1.0530126718175152,
+      "native_brier": 0.8212209386429552
+    },
+    {
+      "id": "original-extraction-06-1",
+      "question_type": "choice",
+      "tokens": 83,
+      "expected": "courier",
+      "reference_prediction": "courier",
+      "native_prediction": "courier",
+      "max_probability_delta": 0.0020490841156599604,
+      "labels": [
+        "courier",
+        "pickup",
+        "post",
+        "unknown"
+      ],
+      "reference_probabilities": [
+        0.9917648434638977,
+        0.0015204014489427209,
+        0.0024774051271378994,
+        0.004237257409840822
+      ],
+      "native_probabilities": [
+        0.9938139275795577,
+        0.0010309714813925366,
+        0.0017513297079790934,
+        0.003403771231070706
+      ],
+      "reference_brier": 9.422131026127558e-05,
+      "native_brier": 5.398320852591673e-05
+    },
+    {
+      "id": "original-adequacy-01-0",
+      "question_type": "noul",
+      "tokens": 80,
+      "expected": "true",
+      "reference_prediction": "true",
+      "native_prediction": "true",
+      "max_probability_delta": 0.005171801731269063,
+      "labels": [
+        "true",
+        "false"
+      ],
+      "reference_probabilities": [
+        0.9175841212272644,
+        0.08241584897041321
+      ],
+      "native_probabilities": [
+        0.9124123492983177,
+        0.08758765070168227
+      ],
+      "reference_brier": 0.01358474923539621,
+      "native_brier": 0.015343193110879807
+    },
+    {
+      "id": "original-adequacy-06-0",
+      "question_type": "noul",
+      "tokens": 89,
+      "expected": "true",
+      "reference_prediction": "true",
+      "native_prediction": "true",
+      "max_probability_delta": 0.027260470866610487,
+      "labels": [
+        "true",
+        "false"
+      ],
+      "reference_probabilities": [
+        0.655287504196167,
+        0.34471243619918823
+      ],
+      "native_probabilities": [
+        0.6280270929342012,
+        0.3719729070657987
+      ],
+      "reference_brier": 0.237653368433687,
+      "native_brier": 0.2767276871819627
+    },
+    {
+      "id": "original-routing-05-0",
+      "question_type": "choice",
+      "tokens": 119,
+      "expected": "tools",
+      "reference_prediction": "general",
+      "native_prediction": "general",
+      "max_probability_delta": 0.07231032916067215,
+      "labels": [
+        "coding",
+        "coding_agent",
+        "document",
+        "general",
+        "math",
+        "tools"
+      ],
+      "reference_probabilities": [
+        0.1932477205991745,
+        0.007257871329784393,
+        0.008411813527345657,
+        0.6087768077850342,
+        0.0013089164858683944,
+        0.1809968799352646
+      ],
+      "native_probabilities": [
+        0.2210224651300837,
+        0.00790763001876316,
+        0.007998185940458922,
+        0.536466478624362,
+        0.0017443943159470507,
+        0.22486084597038522
+      ],
+      "reference_brier": 1.07884514245491,
+      "native_brier": 0.9376174653919302
+    },
+    {
+      "id": "easy-intent-08",
+      "question_type": "choice",
+      "tokens": 95,
+      "expected": "weather",
+      "reference_prediction": "weather",
+      "native_prediction": "weather",
+      "max_probability_delta": 4.914251813481485e-06,
+      "labels": [
+        "play_music",
+        "send_message",
+        "set_alarm",
+        "turn_off_lights",
+        "weather"
+      ],
+      "reference_probabilities": [
+        5.0759099394781515e-06,
+        8.316901585203595e-06,
+        8.164816790667828e-06,
+        6.0882462094014045e-06,
+        0.9999723434448242
+      ],
+      "native_probabilities": [
+        5.524548179682591e-06,
+        1.0212552456035612e-05,
+        9.631758413787309e-06,
+        7.201947939812116e-06,
+        0.9999674291930107
+      ],
+      "reference_brier": 9.635517330141497e-10,
+      "native_brier": 1.340313152458046e-09
+    },
+    {
+      "id": "easy-extraction-00",
+      "question_type": "choice",
+      "tokens": 68,
+      "expected": "paypal",
+      "reference_prediction": "paypal",
+      "native_prediction": "paypal",
+      "max_probability_delta": 4.404317926798296e-05,
+      "labels": [
+        "bank_transfer",
+        "cash",
+        "credit_card",
+        "paypal"
+      ],
+      "reference_probabilities": [
+        0.00021721266966778785,
+        6.95732087478973e-05,
+        0.00031135769677348435,
+        0.9994018077850342
+      ],
+      "native_probabilities": [
+        0.00021961282646682393,
+        7.41944015299967e-05,
+        0.0003484281662370193,
+        0.9993577646057662
+      ],
+      "reference_brier": 5.067993166254892e-07,
+      "native_brier": 5.876030914010824e-07
+    },
+    {
+      "id": "easy-extraction-11",
+      "question_type": "choice",
+      "tokens": 74,
+      "expected": "credit_card",
+      "reference_prediction": "credit_card",
+      "native_prediction": "credit_card",
+      "max_probability_delta": 0.0011869190336859514,
+      "labels": [
+        "bank_transfer",
+        "cash",
+        "credit_card",
+        "paypal"
+      ],
+      "reference_probabilities": [
+        0.005181220360100269,
+        0.001277025556191802,
+        0.9884982705116272,
+        0.00504348985850811
+      ],
+      "native_probabilities": [
+        0.005057365988853355,
+        0.0012950657838495258,
+        0.9896851895453131,
+        0.003962378681984055
+      ],
+      "reference_brier": 0.0001862024098676632,
+      "native_brier": 0.00014934990566526732
+    },
+    {
+      "id": "easy-tool_selection-01",
+      "question_type": "choice",
+      "tokens": 104,
+      "expected": "send_email",
+      "reference_prediction": "send_email",
+      "native_prediction": "send_email",
+      "max_probability_delta": 2.350285269492325e-05,
+      "labels": [
+        "convert_currency",
+        "create_calendar_event",
+        "get_weather",
+        "send_email",
+        "translate_text"
+      ],
+      "reference_probabilities": [
+        1.7299691535299644e-05,
+        3.9795002521714196e-05,
+        2.6850435460801236e-05,
+        0.9998703002929688,
+        4.582784458762035e-05
+      ],
+      "native_probabilities": [
+        1.86024714150216e-05,
+        4.977940048954937e-05,
+        3.139870825423486e-05,
+        0.9998467974402738,
+        5.342197956745052e-05
+      ],
+      "reference_brier": 2.1526072780893574e-08,
+      "native_brier": 3.0134851743436987e-08
+    },
+    {
+      "id": "easy-tool_selection-06",
+      "question_type": "choice",
+      "tokens": 111,
+      "expected": "search_flights",
+      "reference_prediction": "search_flights",
+      "native_prediction": "search_flights",
+      "max_probability_delta": 2.057245294118104e-06,
+      "labels": [
+        "book_restaurant",
+        "call_taxi",
+        "get_stock_price",
+        "search_flights",
+        "set_reminder"
+      ],
+      "reference_probabilities": [
+        4.6006025513634086e-06,
+        4.021298082079738e-06,
+        4.284986971470062e-06,
+        0.9999756813049316,
+        1.1410395927669015e-05
+      ],
+      "native_probabilities": [
+        4.872831971208003e-06,
+        4.447302762721885e-06,
+        4.5322670265550076e-06,
+        0.9999736240596375,
+        1.2523538601945277e-05
+      ],
+      "reference_brier": 7.772935605002301e-10,
+      "native_brier": 9.165936868023205e-10
+    },
+    {
+      "id": "hard-opus-a-long_policy-04",
+      "question_type": "choice",
+      "tokens": 2607,
+      "expected": "cfo",
+      "reference_prediction": "vp_and_finance_director",
+      "native_prediction": "vp_and_finance_director",
+      "max_probability_delta": 0.019103337918063512,
+      "labels": [
+        "budget_holder",
+        "cfo",
+        "department_head",
+        "executive_committee",
+        "vp_and_finance_director"
+      ],
+      "reference_probabilities": [
+        0.007290742825716734,
+        0.021618811413645744,
+        0.28445664048194885,
+        0.010049755685031414,
+        0.6765840649604797
+      ],
+      "native_probabilities": [
+        0.009155451234859224,
+        0.029027264580511806,
+        0.26535330256388534,
+        0.013371670875078075,
+        0.6830923107456656
+      ],
+      "reference_brier": 1.4960654799726503,
+      "native_brier": 1.4800781569787225
+    },
+    {
+      "id": "hard-opus-a-probability-03",
+      "question_type": "noul",
+      "tokens": 417,
+      "expected": "true",
+      "reference_prediction": "true",
+      "native_prediction": "true",
+      "max_probability_delta": 0.003015489286830042,
+      "labels": [
+        "true",
+        "false"
+      ],
+      "reference_probabilities": [
+        0.9237328171730042,
+        0.07626713812351227
+      ],
+      "native_probabilities": [
+        0.9267483064598342,
+        0.07325169354016574
+      ],
+      "reference_brier": 0.011633359533917309,
+      "native_brier": 0.010731621213004729
+    },
+    {
+      "id": "hard-opus-b-ambiguous-02",
+      "question_type": "choice",
+      "tokens": 522,
+      "expected": "real_incident",
+      "reference_prediction": "false_positive",
+      "native_prediction": "false_positive",
+      "max_probability_delta": 0.08116097518026205,
+      "labels": [
+        "cannot_determine",
+        "false_positive",
+        "real_incident"
+      ],
+      "reference_probabilities": [
+        0.10028167068958282,
+        0.6644371747970581,
+        0.2352810800075531
+      ],
+      "native_probabilities": [
+        0.1269756515405039,
+        0.7189042436322051,
+        0.15412010482729105
+      ],
+      "reference_brier": 1.0363281993230047,
+      "native_brier": 1.2484589246539213
+    },
+    {
+      "id": "hard-opus-b-multi_hop-04",
+      "question_type": "choice",
+      "tokens": 2331,
+      "expected": "bjorn",
+      "reference_prediction": "dmitri",
+      "native_prediction": "no_page_ticket_only",
+      "max_probability_delta": 0.12454922501409271,
+      "labels": [
+        "ana",
+        "bjorn",
+        "chen",
+        "dmitri",
+        "esra",
+        "no_page_ticket_only"
+      ],
+      "reference_probabilities": [
+        0.13123081624507904,
+        0.23650555312633514,
+        0.09585914760828018,
+        0.2702566981315613,
+        0.05520951747894287,
+        0.21093836426734924
+      ],
+      "native_probabilities": [
+        0.08773307541832204,
+        0.2444973753317805,
+        0.09589684706396125,
+        0.18571743594253862,
+        0.050667676961955614,
+        0.33548758928144196
+      ],
+      "reference_brier": 0.7299160409444756,
+      "native_brier": 0.7372876157433997
+    },
+    {
+      "id": "hard-opus-b-probability-06",
+      "question_type": "choice",
+      "tokens": 1001,
+      "expected": "upheld",
+      "reference_prediction": "overturned",
+      "native_prediction": "overturned",
+      "max_probability_delta": 0.12085659399712734,
+      "labels": [
+        "modified",
+        "overturned",
+        "upheld"
+      ],
+      "reference_probabilities": [
+        0.24531598389148712,
+        0.6265195608139038,
+        0.12816444039344788
+      ],
+      "native_probabilities": [
+        0.3496224870287234,
+        0.5056629668167765,
+        0.14471454615450016
+      ],
+      "reference_brier": 1.2128039350295652,
+      "native_brier": 1.1094441270057969
+    },
+    {
+      "id": "hard-opus-b-tradeoff-03",
+      "question_type": "choice",
+      "tokens": 742,
+      "expected": "order_b",
+      "reference_prediction": "order_c",
+      "native_prediction": "order_c",
+      "max_probability_delta": 0.06734600488570325,
+      "labels": [
+        "order_a",
+        "order_b",
+        "order_c",
+        "order_d"
+      ],
+      "reference_probabilities": [
+        0.11152695119380951,
+        0.3196992874145508,
+        0.4313114285469055,
+        0.13746234774589539
+      ],
+      "native_probabilities": [
+        0.09501341969288248,
+        0.38704529230025403,
+        0.40523420768830326,
+        0.1127070803185602
+      ],
+      "reference_brier": 0.6801727658298422,
+      "native_brier": 0.5616586726477181
+    },
+    {
+      "id": "hard-opus-c-long_policy-11",
+      "question_type": "noul",
+      "tokens": 3387,
+      "expected": "false",
+      "reference_prediction": "true",
+      "native_prediction": "true",
+      "max_probability_delta": 0.02421862155217136,
+      "labels": [
+        "true",
+        "false"
+      ],
+      "reference_probabilities": [
+        0.8392987251281738,
+        0.16070128977298737
+      ],
+      "native_probabilities": [
+        0.8150801035760025,
+        0.1849198964239976
+      ],
+      "reference_brier": 1.4088446749905048,
+      "native_brier": 1.328711150490934
+    },
+    {
+      "id": "hard-sol-a-multi_hop-10",
+      "question_type": "choice",
+      "tokens": 2322,
+      "expected": "approve_45_days",
+      "reference_prediction": "reduce_to_30_days",
+      "native_prediction": "reduce_to_30_days",
+      "max_probability_delta": 0.14373076283448288,
+      "labels": [
+        "approve_45_days",
+        "deny_sensitive",
+        "needs_field_review",
+        "reduce_to_30_days"
+      ],
+      "reference_probabilities": [
+        0.07179653644561768,
+        0.1065516397356987,
+        0.4049440622329712,
+        0.4167077839374542
+      ],
+      "native_probabilities": [
+        0.11227300997307431,
+        0.14707255335254338,
+        0.2612132993984883,
+        0.47944113727589394
+      ],
+      "reference_brier": 1.210539992416522,
+      "native_brier": 1.107785736666949
+    },
+    {
+      "id": "hard-sol-a-trap-02",
+      "question_type": "noul",
+      "tokens": 280,
+      "expected": "false",
+      "reference_prediction": "false",
+      "native_prediction": "false",
+      "max_probability_delta": 0.10939675294398118,
+      "labels": [
+        "true",
+        "false"
+      ],
+      "reference_probabilities": [
+        0.342350572347641,
+        0.6576494574546814
+      ],
+      "native_probabilities": [
+        0.2329538194036598,
+        0.7670461805963402
+      ],
+      "reference_brier": 0.23440780836783137,
+      "native_brier": 0.10853496394950589
+    },
+    {
+      "id": "hard-sol-b-judge_hard-15",
+      "question_type": "noul",
+      "tokens": 194,
+      "expected": "true",
+      "reference_prediction": "true",
+      "native_prediction": "true",
+      "max_probability_delta": 0.04264642312331368,
+      "labels": [
+        "true",
+        "false"
+      ],
+      "reference_probabilities": [
+        0.8373331427574158,
+        0.16266684234142303
+      ],
+      "native_probabilities": [
+        0.8799795658807295,
+        0.12002043411927053
+      ],
+      "reference_brier": 0.052921008042508655,
+      "native_brier": 0.02880980921235632
+    },
+    {
+      "id": "hard-sol-b-temporal_numeric-04",
+      "question_type": "choice",
+      "tokens": 235,
+      "expected": "pass",
+      "reference_prediction": "narrow_fail",
+      "native_prediction": "narrow_fail",
+      "max_probability_delta": 0.018860589294771343,
+      "labels": [
+        "clear_fail",
+        "narrow_fail",
+        "pass"
+      ],
+      "reference_probabilities": [
+        0.09071897715330124,
+        0.8137860298156738,
+        0.09549492597579956
+      ],
+      "native_probabilities": [
+        0.0718583878585299,
+        0.8255820014805404,
+        0.10255961066092982
+      ],
+      "reference_brier": 1.4886070640744222,
+      "native_brier": 1.4921485214913037
+    },
+    {
+      "id": "hard-sol-c-judge_hard-13",
+      "question_type": "noul",
+      "tokens": 324,
+      "expected": "false",
+      "reference_prediction": "true",
+      "native_prediction": "true",
+      "max_probability_delta": 0.009420614311162076,
+      "labels": [
+        "true",
+        "false"
+      ],
+      "reference_probabilities": [
+        0.8947874307632446,
+        0.10521255433559418
+      ],
+      "native_probabilities": [
+        0.8853668313532439,
+        0.11463316864675625
+      ],
+      "reference_brier": 1.6012891191705203,
+      "native_brier": 1.5677488521209666
+    },
+    {
+      "id": "publisher-0",
+      "question_type": "choice",
+      "tokens": 182,
+      "expected": null,
+      "reference_prediction": "option_06",
+      "native_prediction": "option_06",
+      "max_probability_delta": 1.1417231399191152e-06,
+      "labels": [
+        "option_00",
+        "option_01",
+        "option_02",
+        "option_03",
+        "option_04",
+        "option_05",
+        "option_06",
+        "option_07"
+      ],
+      "reference_probabilities": [
+        5.080575533611409e-07,
+        3.481284807094198e-07,
+        6.008085620123893e-07,
+        2.4648389285175654e-07,
+        1.4196618849382503e-06,
+        3.44958749565194e-07,
+        0.9999960660934448,
+        4.813032887795998e-07
+      ],
+      "native_probabilities": [
+        7.106090514792828e-07,
+        4.802412737711749e-07,
+        8.755799714526997e-07,
+        3.385475249959988e-07,
+        1.834961430201181e-06,
+        4.1184121365146677e-07,
+        0.9999949243703049,
+        4.23849229547117e-07
+      ],
+      "publisher_agreement": true,
+      "publisher_max_probability_delta": 2.384185791015625e-07
+    },
+    {
+      "id": "publisher-1",
+      "question_type": "choice",
+      "tokens": 58,
+      "expected": null,
+      "reference_prediction": "positive",
+      "native_prediction": "positive",
+      "max_probability_delta": 0.03425055158389645,
+      "labels": [
+        "negative",
+        "neutral",
+        "positive"
+      ],
+      "reference_probabilities": [
+        0.045342378318309784,
+        0.3998337388038635,
+        0.5548238754272461
+      ],
+      "native_probabilities": [
+        0.05320597494677408,
+        0.4262207012098764,
+        0.5205733238433496
+      ],
+      "publisher_agreement": true,
+      "publisher_max_probability_delta": 0.0022319257259368896
+    },
+    {
+      "id": "publisher-2",
+      "question_type": "noul",
+      "tokens": 39,
+      "expected": null,
+      "reference_prediction": "false",
+      "native_prediction": "false",
+      "max_probability_delta": 1.3848854499842744e-06,
+      "labels": [
+        "true",
+        "false"
+      ],
+      "reference_probabilities": [
+        1.842429264797829e-05,
+        0.9999815225601196
+      ],
+      "native_probabilities": [
+        1.7092554430434213e-05,
+        0.9999829074455696
+      ],
+      "publisher_agreement": true,
+      "publisher_max_probability_delta": 5.008550942875445e-07
+    },
+    {
+      "id": "publisher-3",
+      "question_type": "noul",
+      "tokens": 75,
+      "expected": null,
+      "reference_prediction": "false",
+      "native_prediction": "false",
+      "max_probability_delta": 0.023681648560404334,
+      "labels": [
+        "true",
+        "false"
+      ],
+      "reference_probabilities": [
+        0.08150741457939148,
+        0.9184925556182861
+      ],
+      "native_probabilities": [
+        0.05782579582130959,
+        0.9421742041786905
+      ],
+      "publisher_agreement": true,
+      "publisher_max_probability_delta": 0.0017845183610916138
+    },
+    {
+      "id": "publisher-8",
+      "question_type": "score",
+      "tokens": 159,
+      "expected": null,
+      "reference_prediction": "0",
+      "native_prediction": "0",
+      "max_probability_delta": 0.0003788415471549511,
+      "labels": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "reference_probabilities": [
+        0.9991412162780762,
+        0.0006487281061708927,
+        0.00017524705617688596,
+        3.475974517641589e-05
+      ],
+      "native_probabilities": [
+        0.9987623747309212,
+        0.0009254852089539705,
+        0.0002782098725793444,
+        3.3930187545486033e-05
+      ],
+      "publisher_agreement": true,
+      "publisher_max_probability_delta": 4.76837158203125e-06
+    },
+    {
+      "id": "publisher-115",
+      "question_type": "score",
+      "tokens": 256,
+      "expected": null,
+      "reference_prediction": "1",
+      "native_prediction": "1",
+      "max_probability_delta": 0.01151791946409575,
+      "labels": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "reference_probabilities": [
+        0.019910158589482307,
+        0.7592352628707886,
+        0.21478556096553802,
+        0.005664255935698748,
+        0.0004047781403642148
+      ],
+      "native_probabilities": [
+        0.019070044505621532,
+        0.7477173434066928,
+        0.22612684285775642,
+        0.006620326661788275,
+        0.0004654425681410592
+      ],
+      "publisher_agreement": true,
+      "publisher_max_probability_delta": 0.0008672475814819336
+    }
+  ]
+}

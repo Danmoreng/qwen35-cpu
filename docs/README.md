@@ -66,6 +66,7 @@ dates. They are not measurements of every subsequent commit.
 ## Contribute and release
 
 - [Liquid d1-2B CPU port feasibility](liquid-d1-port.md) covers the text architecture, the first native mixer test and a proposed implementation scope.
+- [Julia-2 text port feasibility](julia-2-port.md) covers the native H128 trunk probe, the Julia decision head and the serving changes.
 - [Validation](validation.md): automated checks and optional model/browser suites.
 - [Tooling](../scripts/README.md): build, calibration, evaluation and publishing scripts.
 - [Publication](publishing.md): model packages, binary releases and CI requirements.
