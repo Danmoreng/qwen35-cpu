@@ -17,6 +17,8 @@ native file uses its published calibration and tensor representation.
 
 ![Matched-size qev HTTP p50 and decisions per second on three CPU servers.](../results/qev-i7-servers-2026-11-21/qev-q4-server-comparison.png)
 
+The [Benchmark Heaven comparison](qev-heaven-i7.md) reports accuracy and Brier scores for these Q4 checkpoints, IQ4_NL and IQ4_K_R4 on 231 labeled tasks.
+
 Each cell shows HTTP p50 in milliseconds and measured decisions per second.
 Both are medians of three runs.
 

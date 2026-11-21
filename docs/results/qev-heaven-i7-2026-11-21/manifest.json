@@ -1,0 +1,905 @@
+{
+  "dataset": {
+    "repository": "https://github.com/fstandhartinger/jevbench",
+    "revision": "1bcc55eb6c8cffde2306b3db03ede39b61c6152a",
+    "sha256": "771ea8ac252af155606eeb09cad920b32b326c5c2b1e9c9af868be00fe8e2fad",
+    "requests_sha256": "16303375e90eb1ec9572de5e993650e18cacbdb5a532cdd06fd0c5488c92e5ae",
+    "cases": 231,
+    "source_sha256": {
+      "base.py": "fdddc42e4f71d774096f806c4ee844cc4c4b428385f01a017cb64153d7c089f4",
+      "tasks.py": "b9c2f8ba9a7301519656d79d47c31b8ab0542a5545498ce3b339d5e93b976812",
+      "scoring.py": "6aa17d212ea20a3eeb6876149367842e8462c11dcb54d73df062fb406368331e",
+      "metrics.py": "4038c8423ad1cf28601afb6babe777b71f08e379b9ca125b09b52c0ac7d60515"
+    }
+  },
+  "raw_directory": "benchmarks/i7-qev-heaven-GSWcvNoQ",
+  "started_utc": "2026-11-21T18:42:21+00:00",
+  "finished_utc": "2026-11-21T19:40:36+00:00",
+  "host": {
+    "cpu": "Intel Core i7-8750H",
+    "cpus": "0-5",
+    "affinity_decimal": 63,
+    "threads": 6,
+    "omp_num_threads": 6,
+    "power_settings": {
+      "/sys/devices/system/cpu/cpu0/cpufreq/scaling_driver": "intel_pstate",
+      "/sys/devices/system/cpu/cpu1/cpufreq/scaling_driver": "intel_pstate",
+      "/sys/devices/system/cpu/cpu2/cpufreq/scaling_driver": "intel_pstate",
+      "/sys/devices/system/cpu/cpu3/cpufreq/scaling_driver": "intel_pstate",
+      "/sys/devices/system/cpu/cpu4/cpufreq/scaling_driver": "intel_pstate",
+      "/sys/devices/system/cpu/cpu5/cpufreq/scaling_driver": "intel_pstate",
+      "/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor": "powersave",
+      "/sys/devices/system/cpu/cpu1/cpufreq/scaling_governor": "powersave",
+      "/sys/devices/system/cpu/cpu2/cpufreq/scaling_governor": "powersave",
+      "/sys/devices/system/cpu/cpu3/cpufreq/scaling_governor": "powersave",
+      "/sys/devices/system/cpu/cpu4/cpufreq/scaling_governor": "powersave",
+      "/sys/devices/system/cpu/cpu5/cpufreq/scaling_governor": "powersave",
+      "/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference": "balance_power",
+      "/sys/devices/system/cpu/cpu1/cpufreq/energy_performance_preference": "balance_power",
+      "/sys/devices/system/cpu/cpu2/cpufreq/energy_performance_preference": "balance_power",
+      "/sys/devices/system/cpu/cpu3/cpufreq/energy_performance_preference": "balance_power",
+      "/sys/devices/system/cpu/cpu4/cpufreq/energy_performance_preference": "balance_power",
+      "/sys/devices/system/cpu/cpu5/cpufreq/energy_performance_preference": "balance_power",
+      "/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq": "800000",
+      "/sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq": "800000",
+      "/sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq": "800000",
+      "/sys/devices/system/cpu/cpu3/cpufreq/scaling_min_freq": "800000",
+      "/sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq": "800000",
+      "/sys/devices/system/cpu/cpu5/cpufreq/scaling_min_freq": "800000",
+      "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq": "4100000",
+      "/sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq": "4100000",
+      "/sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq": "4100000",
+      "/sys/devices/system/cpu/cpu3/cpufreq/scaling_max_freq": "4100000",
+      "/sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq": "4100000",
+      "/sys/devices/system/cpu/cpu5/cpufreq/scaling_max_freq": "4100000",
+      "/sys/devices/system/cpu/intel_pstate/status": "active",
+      "/sys/devices/system/cpu/intel_pstate/no_turbo": "0",
+      "/sys/devices/system/cpu/intel_pstate/min_perf_pct": "19",
+      "/sys/devices/system/cpu/intel_pstate/max_perf_pct": "80"
+    }
+  },
+  "engine_revisions": {
+    "native": "a3e993555c949f12e6b28f5707684eac352b4937",
+    "llama": "7170cad4d02f7907517613931840cbb2367399a3",
+    "ik": "98aca8692ae334e6e23e4d39ac43ce0d21029c35"
+  },
+  "server_sha256": {
+    "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_server": "cc99e51a6a282d08d396b9686c947ba7937aa4b325e21b56914831560e5f389c",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/llama-server": "9eca86ae444bee2f0b1881fd7a3a3433d7c6a43d79416a2ef73f5eb1a1bfbad9",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/ik-build/bin/llama-server": "e72ef0fcdf1a02426a513eb52b3c12d7e9d3bc8141ce6041344c0a0b167c6a65"
+  },
+  "shared_libraries_sha256": {
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/libllama-server-impl.so": "0e4591f2be1c43fecb347449307443f152b59c4ed3ccc45b75627e339cf8a2ad",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/libllama-common.so.0": "8ae8bdc8e3212cb4d976ff23e5e01af96f89cd53bee109cd071914f914a31fa0",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/libmtmd.so.0": "58ed84d10367fddefd57361a7aa000db97c10a80f875fb6c003cb52dde327299",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/libllama.so.0": "45faea669ce19f9201ffaeca9e8f3dd2dd393d40c29534f1e101561c91333ad0",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/libggml.so.0": "0a8e6795bb7806ba5f1232e711afa8f86215b96819f62af04a05fb6d7dc1eaba",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/libggml-base.so.0": "54b00579abaf1c1a3a8eeb441c9cb9e3dbebb085318812c8aea8b7dc08ef1f2a",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/libggml-cpu.so.0": "5e538ca17ad6150e438ebae24dbf8861f17dd1657baf65597b94427450cf7db6",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/ik-build/examples/mtmd/libmtmd.so": "cdb55378f38734953df6199f6055ed260268e9ed1e699c80d41a437b484bb57c",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/ik-build/src/libllama.so": "92d1c69eaad9f3f5830018911b0912385adba8cf4efe3d67b32f06b2d899381c",
+    "benchmarks/i7-qev-server-comparison-S3TtHyEu/ik-build/ggml/src/libggml.so": "b18623ee4daf654a430d350ec0f903aba1fcb73d24f1fa02336e3742cf7b9d19"
+  },
+  "weights": {
+    "native-h128": {
+      "path": "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/model.q35h",
+      "sha256": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69",
+      "file_bytes": 424964864,
+      "tensor_bytes": 424934656
+    },
+    "llama-q4-0": {
+      "path": "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-text-Q4_0-pure.gguf",
+      "sha256": "a444401106a7fcaadfc573b5ed56b9e3532e7f4fac027dd8966725e13ef9c3b3",
+      "file_bytes": 435898528,
+      "tensor_bytes": 424934656
+    },
+    "ik-q4-0": {
+      "path": "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-text-Q4_0-pure.gguf",
+      "sha256": "a444401106a7fcaadfc573b5ed56b9e3532e7f4fac027dd8966725e13ef9c3b3",
+      "file_bytes": 435898528,
+      "tensor_bytes": 424934656
+    },
+    "llama-iq4-nl": {
+      "path": "benchmarks/i7-qev-q4-probe-dTZs56RH/IQ4_NL.gguf",
+      "sha256": "044082ebe20bc16e4a1b54a6cdcfbea80a97d5361ea92964d00afd536b2e913e",
+      "file_bytes": 435898528,
+      "tensor_bytes": 424934656
+    },
+    "ik-iq4-nl": {
+      "path": "benchmarks/i7-qev-q4-probe-dTZs56RH/IQ4_NL.gguf",
+      "sha256": "044082ebe20bc16e4a1b54a6cdcfbea80a97d5361ea92964d00afd536b2e913e",
+      "file_bytes": 435898528,
+      "tensor_bytes": 424934656
+    },
+    "ik-iq4-k-r4": {
+      "path": "benchmarks/i7-qev-q4-probe-dTZs56RH/IQ4_K_R4.gguf",
+      "sha256": "b4a2d3c1c34ebc6970bb8b97dd8a7ca65ab8bfe1507c3c438ea587850271ce4f",
+      "file_bytes": 435898528,
+      "tensor_bytes": 424934656
+    }
+  },
+  "quantizer": "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-quantize",
+  "quantizer_commands": [
+    [
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/llama-build/bin/llama-quantize",
+      "--pure",
+      "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-bf16.gguf",
+      "benchmarks/i7-qev-q4-probe-dTZs56RH/IQ4_NL.gguf",
+      "IQ4_NL",
+      "6"
+    ],
+    [
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/ik-build/bin/llama-quantize",
+      "--pure",
+      "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-bf16.gguf",
+      "benchmarks/i7-qev-q4-probe-dTZs56RH/IQ4_K_R4.gguf",
+      "IQ4_K_R4",
+      "6"
+    ]
+  ],
+  "quantizer_sha256": {
+    "llama": "d8c310178261aaa2aa2f2cfe06fa0ddb09657c01660274f39678fb5f57569f68",
+    "ik": "f451236d37358ed5574c34da21338df55c4a0073e0f9c8a21bba2ca106b71002"
+  },
+  "source_bf16_sha256": "47a3e93109187add85f7905d507024ade0fc4c957a503183f3cc6106c68a9980",
+  "runner": {
+    "metadata_sha256": "4142aaa49d8fea1532ca65abb75f8a945a34b6cb13efdaaba0775f3c661af42b",
+    "warmup_runs": 0,
+    "scored_passes": 1,
+    "runner_sha256": "4fb8a8c55a904c5bcc4b16f79eb8f9109844806a51eedb02b8120cd19dad3df2",
+    "harness_sha256": "0910517016ffc094e41c92319900eaba842dc2aa9fac2d5d909715e906086e92",
+    "patch": "--- benchmark-systemone-http.py\n+++ benchmark-quality-http.py\n@@ -10,6 +10,7 @@\n import json\n import os\n import math\n+import re\n from pathlib import Path\n import socket\n import subprocess\n@@ -37,6 +38,9 @@\n     p.add_argument('--concurrency', type=int, default=1)\n     p.add_argument('--requests', type=int, help='Total requests in the sample; defaults to concurrency')\n     p.add_argument('--distinct-states', action='store_true')\n+    p.add_argument('--disable-gguf-checkpoints', action='store_true')\n+    p.add_argument('--clear-gguf-slot', action='store_true')\n+    p.add_argument('--inspect-upstream-cache', action='store_true')\n     p.add_argument('--profile-json', type=Path, required=True)\n     args = p.parse_args()\n     if not 1 <= args.concurrency <= 16:raise ValueError('concurrency must be 1..16')\n@@ -63,6 +67,14 @@\n               '--no-warmup','--cache-ram','0','--host','127.0.0.1','--port',str(port)]\n         if args.batch_size:cmd+=['--batch-size',str(args.batch_size)]\n         if args.ubatch_size:cmd+=['--ubatch-size',str(args.ubatch_size)]\n+    if args.backend == 'native':\n+        cmd += ['--prefix-cache', 'off']\n+    if args.disable_gguf_checkpoints:\n+        cmd += ['--ctx-checkpoints', '0']\n+    if args.clear_gguf_slot:\n+        cmd += ['--slot-save-path', str(args.profile_json.parent.resolve())]\n+    if args.inspect_upstream_cache:\n+        cmd += ['--metrics']\n     body=args.request.read_bytes()\n     # Concurrency matrices use a different state per request, including B1,\n     # so identical prefixes/results cannot turn the test into a cache benchmark.\n@@ -99,7 +111,26 @@\n                 with urllib.request.urlopen(req,timeout=120) as response:raw=response.read()\n                 return (time.perf_counter()-start)*1000,json.loads(raw)\n             start=time.perf_counter()\n-            if args.concurrency == 1:results=[decide(payload) for payload in bodies]\n+            if args.concurrency == 1:\n+                results = []\n+                with args.profile_json.with_suffix('.responses.jsonl').open('w', buffering=1) as partial:\n+                    for index, payload in enumerate(bodies):\n+                        if index and args.clear_gguf_slot:\n+                            clear = urllib.request.Request(base+'/slots/0?action=erase', data=b'{}', method='POST')\n+                            with urllib.request.urlopen(clear, timeout=10) as reply:\n+                                erased = json.load(reply)\n+                            assert erased.get('id_slot') == 0 and erased.get('n_erased', 0) >= 0\n+                        stamp = time.perf_counter()\n+                        try:\n+                            result = decide(payload)\n+                        except urllib.error.HTTPError as error:\n+                            result = ((time.perf_counter()-stamp)*1000,\n+                                      {'error': {'status': error.code, 'detail': error.read().decode(errors='replace')},\n+                                       'usage': {'input_tokens': 0, 'output_tokens': 0}})\n+                        results.append(result)\n+                        partial.write(json.dumps({'id': ids[index], 'latency_ms': result[0], 'response': result[1]})+'\\n')\n+                        if (index + 1) % 25 == 0:\n+                            print(f'Completed {index + 1}/{len(bodies)} requests', flush=True)\n             else:\n                 with concurrent.futures.ThreadPoolExecutor(max_workers=args.concurrency) as pool:\n                     results=list(pool.map(decide,bodies))\n@@ -115,6 +146,13 @@\n                     fields = dict(line.split(':', 1) for line in status.read_text().splitlines())\n                     panel_info['server_peak_rss_bytes'] = int(fields['VmHWM'].split()[0]) * 1024\n                     panel_info['server_allowed_cpus'] = fields['Cpus_allowed_list'].strip()\n+            if args.inspect_upstream_cache:\n+                with urllib.request.urlopen(base+'/metrics', timeout=5) as response:\n+                    metrics = response.read().decode()\n+                match = re.search(r'^llamacpp:prompt_tokens_cached_total\\s+(\\d+(?:\\.\\d+)?)$', metrics, re.MULTILINE)\n+                if match is None:\n+                    raise RuntimeError('Cached prompt token counter absent: '+metrics)\n+                panel_info['cached_prompt_tokens_total'] = int(float(match.group(1)))\n             if args.prefill_requests:\n                 with urllib.request.urlopen(base+'/v1/cache', timeout=5) as response:\n                     stats = json.load(response)\n"
+  },
+  "matrix": [
+    {
+      "name": "native-h128",
+      "executable": "/usr/bin/python3",
+      "args": [
+        "benchmarks/i7-qev-heaven-GSWcvNoQ/benchmark-quality-http.py",
+        "--backend",
+        "native",
+        "--server",
+        "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_server",
+        "--threads",
+        "6",
+        "--weights",
+        "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/model.q35h",
+        "--request",
+        "benchmarks/i7-qev-heaven-GSWcvNoQ/requests.jsonl",
+        "--jsonl-panel",
+        "--model-dir",
+        "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final"
+      ]
+    },
+    {
+      "name": "llama-q4-0",
+      "executable": "/usr/bin/python3",
+      "args": [
+        "benchmarks/i7-qev-heaven-GSWcvNoQ/benchmark-quality-http.py",
+        "--backend",
+        "llama",
+        "--server",
+        "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/llama-server",
+        "--threads",
+        "6",
+        "--weights",
+        "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-text-Q4_0-pure.gguf",
+        "--request",
+        "benchmarks/i7-qev-heaven-GSWcvNoQ/requests.jsonl",
+        "--jsonl-panel",
+        "--batch-size",
+        "2048",
+        "--ubatch-size",
+        "256",
+        "--clear-gguf-slot",
+        "--inspect-upstream-cache"
+      ]
+    },
+    {
+      "name": "ik-q4-0",
+      "executable": "/usr/bin/python3",
+      "args": [
+        "benchmarks/i7-qev-heaven-GSWcvNoQ/benchmark-quality-http.py",
+        "--backend",
+        "llama",
+        "--server",
+        "benchmarks/i7-qev-server-comparison-S3TtHyEu/ik-build/bin/llama-server",
+        "--threads",
+        "6",
+        "--weights",
+        "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-text-Q4_0-pure.gguf",
+        "--request",
+        "benchmarks/i7-qev-heaven-GSWcvNoQ/requests.jsonl",
+        "--jsonl-panel",
+        "--batch-size",
+        "2048",
+        "--ubatch-size",
+        "256",
+        "--disable-gguf-checkpoints"
+      ]
+    },
+    {
+      "name": "llama-iq4-nl",
+      "executable": "/usr/bin/python3",
+      "args": [
+        "benchmarks/i7-qev-heaven-GSWcvNoQ/benchmark-quality-http.py",
+        "--backend",
+        "llama",
+        "--server",
+        "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/llama-server",
+        "--threads",
+        "6",
+        "--weights",
+        "benchmarks/i7-qev-q4-probe-dTZs56RH/IQ4_NL.gguf",
+        "--request",
+        "benchmarks/i7-qev-heaven-GSWcvNoQ/requests.jsonl",
+        "--jsonl-panel",
+        "--batch-size",
+        "2048",
+        "--ubatch-size",
+        "256",
+        "--clear-gguf-slot",
+        "--inspect-upstream-cache"
+      ]
+    },
+    {
+      "name": "ik-iq4-nl",
+      "executable": "/usr/bin/python3",
+      "args": [
+        "benchmarks/i7-qev-heaven-GSWcvNoQ/benchmark-quality-http.py",
+        "--backend",
+        "llama",
+        "--server",
+        "benchmarks/i7-qev-server-comparison-S3TtHyEu/ik-build/bin/llama-server",
+        "--threads",
+        "6",
+        "--weights",
+        "benchmarks/i7-qev-q4-probe-dTZs56RH/IQ4_NL.gguf",
+        "--request",
+        "benchmarks/i7-qev-heaven-GSWcvNoQ/requests.jsonl",
+        "--jsonl-panel",
+        "--batch-size",
+        "2048",
+        "--ubatch-size",
+        "256",
+        "--disable-gguf-checkpoints"
+      ]
+    },
+    {
+      "name": "ik-iq4-k-r4",
+      "executable": "/usr/bin/python3",
+      "args": [
+        "benchmarks/i7-qev-heaven-GSWcvNoQ/benchmark-quality-http.py",
+        "--backend",
+        "llama",
+        "--server",
+        "benchmarks/i7-qev-server-comparison-S3TtHyEu/ik-build/bin/llama-server",
+        "--threads",
+        "6",
+        "--weights",
+        "benchmarks/i7-qev-q4-probe-dTZs56RH/IQ4_K_R4.gguf",
+        "--request",
+        "benchmarks/i7-qev-heaven-GSWcvNoQ/requests.jsonl",
+        "--jsonl-panel",
+        "--batch-size",
+        "2048",
+        "--ubatch-size",
+        "256",
+        "--disable-gguf-checkpoints"
+      ]
+    }
+  ],
+  "server_commands": {
+    "native-h128": [
+      "benchmarks/i7-ryzen-repeat-I7kZv6kK/native-build/qwen35_cpu_server",
+      "--model-dir",
+      "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final",
+      "--weights",
+      "benchmarks/i7-six-core-reference-20261121/dist/qev-h128-public-final/model.q35h",
+      "--threads",
+      "6",
+      "--residents",
+      "1",
+      "--max-context",
+      "8192",
+      "--port",
+      "<ephemeral-port>",
+      "--prefix-cache",
+      "off"
+    ],
+    "llama-q4-0": [
+      "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/llama-server",
+      "--model",
+      "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-text-Q4_0-pure.gguf",
+      "--n-gpu-layers",
+      "0",
+      "--threads",
+      "6",
+      "--threads-batch",
+      "6",
+      "--parallel",
+      "1",
+      "--ctx-size",
+      "8192",
+      "--no-warmup",
+      "--cache-ram",
+      "0",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "<ephemeral-port>",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "256",
+      "--slot-save-path",
+      "benchmarks/i7-qev-heaven-GSWcvNoQ/run",
+      "--metrics"
+    ],
+    "ik-q4-0": [
+      "benchmarks/i7-qev-server-comparison-S3TtHyEu/ik-build/bin/llama-server",
+      "--model",
+      "benchmarks/i7-qev-server-comparison-S3TtHyEu/qev-0.8b-text-Q4_0-pure.gguf",
+      "--n-gpu-layers",
+      "0",
+      "--threads",
+      "6",
+      "--threads-batch",
+      "6",
+      "--parallel",
+      "1",
+      "--ctx-size",
+      "8192",
+      "--no-warmup",
+      "--cache-ram",
+      "0",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "<ephemeral-port>",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "256",
+      "--ctx-checkpoints",
+      "0"
+    ],
+    "llama-iq4-nl": [
+      "benchmarks/i7-qev-server-comparison-S3TtHyEu/llama-build/bin/llama-server",
+      "--model",
+      "benchmarks/i7-qev-q4-probe-dTZs56RH/IQ4_NL.gguf",
+      "--n-gpu-layers",
+      "0",
+      "--threads",
+      "6",
+      "--threads-batch",
+      "6",
+      "--parallel",
+      "1",
+      "--ctx-size",
+      "8192",
+      "--no-warmup",
+      "--cache-ram",
+      "0",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "<ephemeral-port>",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "256",
+      "--slot-save-path",
+      "benchmarks/i7-qev-heaven-GSWcvNoQ/run",
+      "--metrics"
+    ],
+    "ik-iq4-nl": [
+      "benchmarks/i7-qev-server-comparison-S3TtHyEu/ik-build/bin/llama-server",
+      "--model",
+      "benchmarks/i7-qev-q4-probe-dTZs56RH/IQ4_NL.gguf",
+      "--n-gpu-layers",
+      "0",
+      "--threads",
+      "6",
+      "--threads-batch",
+      "6",
+      "--parallel",
+      "1",
+      "--ctx-size",
+      "8192",
+      "--no-warmup",
+      "--cache-ram",
+      "0",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "<ephemeral-port>",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "256",
+      "--ctx-checkpoints",
+      "0"
+    ],
+    "ik-iq4-k-r4": [
+      "benchmarks/i7-qev-server-comparison-S3TtHyEu/ik-build/bin/llama-server",
+      "--model",
+      "benchmarks/i7-qev-q4-probe-dTZs56RH/IQ4_K_R4.gguf",
+      "--n-gpu-layers",
+      "0",
+      "--threads",
+      "6",
+      "--threads-batch",
+      "6",
+      "--parallel",
+      "1",
+      "--ctx-size",
+      "8192",
+      "--no-warmup",
+      "--cache-ram",
+      "0",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "<ephemeral-port>",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "256",
+      "--ctx-checkpoints",
+      "0"
+    ]
+  },
+  "profile_sha256": {
+    "native-h128": "10d45064f8ce5ea61a54a9355bd97401cddaba2a1eac73a3125b92ef7e8edd40",
+    "llama-q4-0": "fd93c498589f8674b33f3fa9d2cf52672687578ce46f2913c405d94e5d4ffeec",
+    "ik-q4-0": "1fa1e63e64b9d72784231fb66ce6b4b2217b2e1cf5153c940d00ecc342d8a75c",
+    "llama-iq4-nl": "b66a6946186686a23f1c607e6de9e4f4332cfa0a9cd36a622f1d6beadedce224",
+    "ik-iq4-nl": "2b28f0d13715011ef48388ce3259dce860822069765e0569dbde3a1d9ce50b5a",
+    "ik-iq4-k-r4": "9d89870ca364657fe97425b370d6651bc5c24d185b22e703eeac24315d3cd5bd"
+  },
+  "server_log_sha256": {
+    "native-h128": "95421bba2a13ec44f4f296496bb6ab886c4a3e3c20ea08b43c2708259546cadc",
+    "llama-q4-0": "7c172f2bbfb6d699e68d982af15f7d218dc32e76628d5fd3c5f4428042a89808",
+    "ik-q4-0": "93827a4713dbc4c01ba55c9d7b66fc82c2285e4e3c90260b58490e6dc9de33f9",
+    "llama-iq4-nl": "6df48b39109e0b670fc5f17ee95f3677c1a77c8025ea8c7919a717725f43766c",
+    "ik-iq4-nl": "bb26f4068995d817d20556e6f50ab4cf1a571b630473424f2710b4d533ab22d9",
+    "ik-iq4-k-r4": "6cb37f771c2ad2167c033cde33b3116ab66ed0c803f0db55ee6d81b5a7263c42"
+  },
+  "matched_input_token_counts": 177,
+  "matched_gguf_input_token_counts": 231,
+  "token_count_mismatches": {
+    "original-ordinal-01-1": {
+      "native-h128": 101,
+      "llama-q4-0": 100,
+      "ik-q4-0": 100,
+      "llama-iq4-nl": 100,
+      "ik-iq4-nl": 100,
+      "ik-iq4-k-r4": 100
+    },
+    "hard-opus-a-long_policy-01": {
+      "native-h128": 3911,
+      "llama-q4-0": 3910,
+      "ik-q4-0": 3910,
+      "llama-iq4-nl": 3910,
+      "ik-iq4-nl": 3910,
+      "ik-iq4-k-r4": 3910
+    },
+    "hard-opus-a-long_policy-04": {
+      "native-h128": 2603,
+      "llama-q4-0": 2602,
+      "ik-q4-0": 2602,
+      "llama-iq4-nl": 2602,
+      "ik-iq4-nl": 2602,
+      "ik-iq4-k-r4": 2602
+    },
+    "hard-opus-a-long_policy-08": {
+      "native-h128": 2377,
+      "llama-q4-0": 2376,
+      "ik-q4-0": 2376,
+      "llama-iq4-nl": 2376,
+      "ik-iq4-nl": 2376,
+      "ik-iq4-k-r4": 2376
+    },
+    "hard-opus-a-long_policy-09": {
+      "native-h128": 2506,
+      "llama-q4-0": 2505,
+      "ik-q4-0": 2505,
+      "llama-iq4-nl": 2505,
+      "ik-iq4-nl": 2505,
+      "ik-iq4-k-r4": 2505
+    },
+    "hard-opus-a-long_policy-11": {
+      "native-h128": 2318,
+      "llama-q4-0": 2317,
+      "ik-q4-0": 2317,
+      "llama-iq4-nl": 2317,
+      "ik-iq4-nl": 2317,
+      "ik-iq4-k-r4": 2317
+    },
+    "hard-opus-a-long_policy-13": {
+      "native-h128": 2410,
+      "llama-q4-0": 2409,
+      "ik-q4-0": 2409,
+      "llama-iq4-nl": 2409,
+      "ik-iq4-nl": 2409,
+      "ik-iq4-k-r4": 2409
+    },
+    "hard-opus-a-long_policy-17": {
+      "native-h128": 2338,
+      "llama-q4-0": 2337,
+      "ik-q4-0": 2337,
+      "llama-iq4-nl": 2337,
+      "ik-iq4-nl": 2337,
+      "ik-iq4-k-r4": 2337
+    },
+    "hard-opus-a-long_policy-19": {
+      "native-h128": 2309,
+      "llama-q4-0": 2308,
+      "ik-q4-0": 2308,
+      "llama-iq4-nl": 2308,
+      "ik-iq4-nl": 2308,
+      "ik-iq4-k-r4": 2308
+    },
+    "hard-opus-a-probability-03": {
+      "native-h128": 413,
+      "llama-q4-0": 412,
+      "ik-q4-0": 412,
+      "llama-iq4-nl": 412,
+      "ik-iq4-nl": 412,
+      "ik-iq4-k-r4": 412
+    },
+    "hard-opus-a-probability-04": {
+      "native-h128": 1083,
+      "llama-q4-0": 1082,
+      "ik-q4-0": 1082,
+      "llama-iq4-nl": 1082,
+      "ik-iq4-nl": 1082,
+      "ik-iq4-k-r4": 1082
+    },
+    "hard-opus-a-probability-07": {
+      "native-h128": 1197,
+      "llama-q4-0": 1196,
+      "ik-q4-0": 1196,
+      "llama-iq4-nl": 1196,
+      "ik-iq4-nl": 1196,
+      "ik-iq4-k-r4": 1196
+    },
+    "hard-opus-a-probability-08": {
+      "native-h128": 375,
+      "llama-q4-0": 374,
+      "ik-q4-0": 374,
+      "llama-iq4-nl": 374,
+      "ik-iq4-nl": 374,
+      "ik-iq4-k-r4": 374
+    },
+    "hard-opus-a-temporal_numeric-03": {
+      "native-h128": 471,
+      "llama-q4-0": 470,
+      "ik-q4-0": 470,
+      "llama-iq4-nl": 470,
+      "ik-iq4-nl": 470,
+      "ik-iq4-k-r4": 470
+    },
+    "hard-opus-a-temporal_numeric-06": {
+      "native-h128": 506,
+      "llama-q4-0": 505,
+      "ik-q4-0": 505,
+      "llama-iq4-nl": 505,
+      "ik-iq4-nl": 505,
+      "ik-iq4-k-r4": 505
+    },
+    "hard-opus-a-temporal_numeric-07": {
+      "native-h128": 1284,
+      "llama-q4-0": 1283,
+      "ik-q4-0": 1283,
+      "llama-iq4-nl": 1283,
+      "ik-iq4-nl": 1283,
+      "ik-iq4-k-r4": 1283
+    },
+    "hard-opus-a-temporal_numeric-09": {
+      "native-h128": 503,
+      "llama-q4-0": 502,
+      "ik-q4-0": 502,
+      "llama-iq4-nl": 502,
+      "ik-iq4-nl": 502,
+      "ik-iq4-k-r4": 502
+    },
+    "hard-opus-a-temporal_numeric-12": {
+      "native-h128": 576,
+      "llama-q4-0": 575,
+      "ik-q4-0": 575,
+      "llama-iq4-nl": 575,
+      "ik-iq4-nl": 575,
+      "ik-iq4-k-r4": 575
+    },
+    "hard-opus-b-ambiguous-02": {
+      "native-h128": 519,
+      "llama-q4-0": 518,
+      "ik-q4-0": 518,
+      "llama-iq4-nl": 518,
+      "ik-iq4-nl": 518,
+      "ik-iq4-k-r4": 518
+    },
+    "hard-opus-b-ambiguous-03": {
+      "native-h128": 473,
+      "llama-q4-0": 472,
+      "ik-q4-0": 472,
+      "llama-iq4-nl": 472,
+      "ik-iq4-nl": 472,
+      "ik-iq4-k-r4": 472
+    },
+    "hard-opus-b-ambiguous-07": {
+      "native-h128": 476,
+      "llama-q4-0": 475,
+      "ik-q4-0": 475,
+      "llama-iq4-nl": 475,
+      "ik-iq4-nl": 475,
+      "ik-iq4-k-r4": 475
+    },
+    "hard-opus-b-ambiguous-09": {
+      "native-h128": 614,
+      "llama-q4-0": 613,
+      "ik-q4-0": 613,
+      "llama-iq4-nl": 613,
+      "ik-iq4-nl": 613,
+      "ik-iq4-k-r4": 613
+    },
+    "hard-opus-b-ambiguous-11": {
+      "native-h128": 443,
+      "llama-q4-0": 442,
+      "ik-q4-0": 442,
+      "llama-iq4-nl": 442,
+      "ik-iq4-nl": 442,
+      "ik-iq4-k-r4": 442
+    },
+    "hard-opus-b-ambiguous-13": {
+      "native-h128": 581,
+      "llama-q4-0": 580,
+      "ik-q4-0": 580,
+      "llama-iq4-nl": 580,
+      "ik-iq4-nl": 580,
+      "ik-iq4-k-r4": 580
+    },
+    "hard-opus-b-multi_hop-03": {
+      "native-h128": 2944,
+      "llama-q4-0": 2943,
+      "ik-q4-0": 2943,
+      "llama-iq4-nl": 2943,
+      "ik-iq4-nl": 2943,
+      "ik-iq4-k-r4": 2943
+    },
+    "hard-opus-b-multi_hop-04": {
+      "native-h128": 2328,
+      "llama-q4-0": 2327,
+      "ik-q4-0": 2327,
+      "llama-iq4-nl": 2327,
+      "ik-iq4-nl": 2327,
+      "ik-iq4-k-r4": 2327
+    },
+    "hard-opus-b-multi_hop-05": {
+      "native-h128": 2572,
+      "llama-q4-0": 2571,
+      "ik-q4-0": 2571,
+      "llama-iq4-nl": 2571,
+      "ik-iq4-nl": 2571,
+      "ik-iq4-k-r4": 2571
+    },
+    "hard-opus-b-multi_hop-07": {
+      "native-h128": 2623,
+      "llama-q4-0": 2622,
+      "ik-q4-0": 2622,
+      "llama-iq4-nl": 2622,
+      "ik-iq4-nl": 2622,
+      "ik-iq4-k-r4": 2622
+    },
+    "hard-opus-b-multi_hop-08": {
+      "native-h128": 2296,
+      "llama-q4-0": 2295,
+      "ik-q4-0": 2295,
+      "llama-iq4-nl": 2295,
+      "ik-iq4-nl": 2295,
+      "ik-iq4-k-r4": 2295
+    },
+    "hard-opus-b-probability-01": {
+      "native-h128": 1898,
+      "llama-q4-0": 1897,
+      "ik-q4-0": 1897,
+      "llama-iq4-nl": 1897,
+      "ik-iq4-nl": 1897,
+      "ik-iq4-k-r4": 1897
+    },
+    "hard-opus-b-probability-02": {
+      "native-h128": 479,
+      "llama-q4-0": 478,
+      "ik-q4-0": 478,
+      "llama-iq4-nl": 478,
+      "ik-iq4-nl": 478,
+      "ik-iq4-k-r4": 478
+    },
+    "hard-opus-b-probability-03": {
+      "native-h128": 1197,
+      "llama-q4-0": 1196,
+      "ik-q4-0": 1196,
+      "llama-iq4-nl": 1196,
+      "ik-iq4-nl": 1196,
+      "ik-iq4-k-r4": 1196
+    },
+    "hard-opus-b-probability-04": {
+      "native-h128": 580,
+      "llama-q4-0": 579,
+      "ik-q4-0": 579,
+      "llama-iq4-nl": 579,
+      "ik-iq4-nl": 579,
+      "ik-iq4-k-r4": 579
+    },
+    "hard-opus-b-probability-06": {
+      "native-h128": 998,
+      "llama-q4-0": 997,
+      "ik-q4-0": 997,
+      "llama-iq4-nl": 997,
+      "ik-iq4-nl": 997,
+      "ik-iq4-k-r4": 997
+    },
+    "hard-opus-b-tradeoff-01": {
+      "native-h128": 821,
+      "llama-q4-0": 820,
+      "ik-q4-0": 820,
+      "llama-iq4-nl": 820,
+      "ik-iq4-nl": 820,
+      "ik-iq4-k-r4": 820
+    },
+    "hard-opus-b-tradeoff-03": {
+      "native-h128": 739,
+      "llama-q4-0": 738,
+      "ik-q4-0": 738,
+      "llama-iq4-nl": 738,
+      "ik-iq4-nl": 738,
+      "ik-iq4-k-r4": 738
+    },
+    "hard-opus-b-tradeoff-06": {
+      "native-h128": 774,
+      "llama-q4-0": 773,
+      "ik-q4-0": 773,
+      "llama-iq4-nl": 773,
+      "ik-iq4-nl": 773,
+      "ik-iq4-k-r4": 773
+    },
+    "hard-opus-b-tradeoff-07": {
+      "native-h128": 699,
+      "llama-q4-0": 698,
+      "ik-q4-0": 698,
+      "llama-iq4-nl": 698,
+      "ik-iq4-nl": 698,
+      "ik-iq4-k-r4": 698
+    },
+    "hard-opus-b-tradeoff-08": {
+      "native-h128": 585,
+      "llama-q4-0": 584,
+      "ik-q4-0": 584,
+      "llama-iq4-nl": 584,
+      "ik-iq4-nl": 584,
+      "ik-iq4-k-r4": 584
+    },
+    "hard-opus-b-tradeoff-12": {
+      "native-h128": 574,
+      "llama-q4-0": 573,
+      "ik-q4-0": 573,
+      "llama-iq4-nl": 573,
+      "ik-iq4-nl": 573,
+      "ik-iq4-k-r4": 573
+    },
+    "hard-opus-c-long_policy-02": {
+      "native-h128": 3564,
+      "llama-q4-0": 3563,
+      "ik-q4-0": 3563,
+      "llama-iq4-nl": 3563,
+      "ik-iq4-nl": 3563,
+      "ik-iq4-k-r4": 3563
+    },
+    "hard-opus-c-long_policy-03": {
+      "native-h128": 3489,
+      "llama-q4-0": 3488,
+      "ik-q4-0": 3488,
+      "llama-iq4-nl": 3488,
+      "ik-iq4-nl": 3488,
+      "ik-iq4-k-r4": 3488
+    },
+    "hard-opus-c-long_policy-04": {
+      "native-h128": 3296,
+      "llama-q4-0": 3295,
+      "ik-q4-0": 3295,
+      "llama-iq4-nl": 3295,
+      "ik-iq4-nl": 3295,
+      "ik-iq4-k-r4": 3295
+    },
+    "hard-opus-c-long_policy-05": {
+      "native-h128": 3228,
+      "llama-q4-0": 3227,
+      "ik-q4-0": 3227,
+      "llama-iq4-nl": 3227,
+      "ik-iq4-nl": 3227,
+      "ik-iq4-k-r4": 3227
+    },
+    "hard-opus-c-long_policy-08": {
+      "native-h128": 3232,
+      "llama-q4-0": 3231,
+      "ik-q4-0": 3231,
+      "llama-iq4-nl": 3231,
+      "ik-iq4-nl": 3231,
+      "ik-iq4-k-r4": 3231
+    },
+    "hard-opus-c-long_policy-10": {
+      "native-h128": 3614,
+      "llama-q4-0": 3613,
+      "ik-q4-0": 3613,
+      "llama-iq4-nl": 3613,
+      "ik-iq4-nl": 3613,
+      "ik-iq4-k-r4": 3613
+    },
+    "hard-opus-c-long_policy-11": {
+      "native-h128": 3383,
+      "llama-q4-0": 3382,
+      "ik-q4-0": 3382,
+      "llama-iq4-nl": 3382,
+      "ik-iq4-nl": 3382,
+      "ik-iq4-k-r4": 3382
+    },
+    "hard-opus-c-probability-03": {
+      "native-h128": 529,
+      "llama-q4-0": 528,
+      "ik-q4-0": 528,
+      "llama-iq4-nl": 528,
+      "ik-iq4-nl": 528,
+      "ik-iq4-k-r4": 528
+    },
+    "hard-opus-c-temporal_numeric-02": {
+      "native-h128": 920,
+      "llama-q4-0": 919,
+      "ik-q4-0": 919,
+      "llama-iq4-nl": 919,
+      "ik-iq4-nl": 919,
+      "ik-iq4-k-r4": 919
+    },
+    "hard-opus-c-temporal_numeric-03": {
+      "native-h128": 850,
+      "llama-q4-0": 849,
+      "ik-q4-0": 849,
+      "llama-iq4-nl": 849,
+      "ik-iq4-nl": 849,
+      "ik-iq4-k-r4": 849
+    },
+    "hard-opus-c-temporal_numeric-04": {
+      "native-h128": 765,
+      "llama-q4-0": 764,
+      "ik-q4-0": 764,
+      "llama-iq4-nl": 764,
+      "ik-iq4-nl": 764,
+      "ik-iq4-k-r4": 764
+    },
+    "hard-opus-c-temporal_numeric-06": {
+      "native-h128": 968,
+      "llama-q4-0": 967,
+      "ik-q4-0": 967,
+      "llama-iq4-nl": 967,
+      "ik-iq4-nl": 967,
+      "ik-iq4-k-r4": 967
+    },
+    "hard-opus-c-temporal_numeric-08": {
+      "native-h128": 969,
+      "llama-q4-0": 968,
+      "ik-q4-0": 968,
+      "llama-iq4-nl": 968,
+      "ik-iq4-nl": 968,
+      "ik-iq4-k-r4": 968
+    },
+    "hard-opus-c-temporal_numeric-12": {
+      "native-h128": 803,
+      "llama-q4-0": 802,
+      "ik-q4-0": 802,
+      "llama-iq4-nl": 802,
+      "ik-iq4-nl": 802,
+      "ik-iq4-k-r4": 802
+    }
+  }
+}

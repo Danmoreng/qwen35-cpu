@@ -1,0 +1,16 @@
+first,second,total,both_correct,first_only_correct,second_only_correct,both_wrong,same_prediction
+native-h128,llama-q4-0,231,173,9,6,43,213
+native-h128,ik-q4-0,231,173,9,6,43,213
+native-h128,llama-iq4-nl,231,174,8,1,48,215
+native-h128,ik-iq4-nl,231,173,9,2,47,214
+native-h128,ik-iq4-k-r4,231,175,7,2,47,217
+llama-q4-0,ik-q4-0,231,179,0,0,52,231
+llama-q4-0,llama-iq4-nl,231,170,9,5,47,212
+llama-q4-0,ik-iq4-nl,231,170,9,5,47,213
+llama-q4-0,ik-iq4-k-r4,231,172,7,5,47,217
+ik-q4-0,llama-iq4-nl,231,170,9,5,47,212
+ik-q4-0,ik-iq4-nl,231,170,9,5,47,213
+ik-q4-0,ik-iq4-k-r4,231,172,7,5,47,217
+llama-iq4-nl,ik-iq4-nl,231,174,1,1,55,228
+llama-iq4-nl,ik-iq4-k-r4,231,171,4,6,50,217
+ik-iq4-nl,ik-iq4-k-r4,231,171,4,6,50,218
