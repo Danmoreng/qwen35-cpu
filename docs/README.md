@@ -23,6 +23,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 - [Current laptop throughput and qev decision latency](benchmarks/laptop-refresh-9955hx3d.md) covers the three base-model sizes and the before/after decision tests.
 - [Core i7-8750H vs Ryzen 9 9955HX3D](benchmarks/i7-8750h-vs-ryzen-9955hx3d.md) compares the README workloads on six Intel cores and eight Ryzen V-Cache cores with identical checkpoints.
 - [Qev decision servers on the i7](benchmarks/qev-i7-server-comparison.md) compares native H128/Q4-G32-DOT4, llama.cpp and ik_llama.cpp over System One HTTP.
+- [Ryzen and i7 Qev server comparison](benchmarks/qev-ryzen-server-comparison.md) pairs HTTP latency, throughput and per-ticket choices across the same three servers and 66 inputs.
 - [Qev Q4 quality on Benchmark Heaven](benchmarks/qev-heaven-i7.md) compares six checkpoint and server combinations on 231 labeled tasks.
 - [Qev precision comparison on the i7](benchmarks/qev-heaven-precision-i7.md) compares native H128 with llama.cpp Q4_K_M, Q8_0 and BF16 for decision quality and speed.
 - [0.8B on the Ryzen 9 9955HX3D](benchmarks/ryzen-9955hx3d.md) compares the native engine with llama.cpp and ik_llama.cpp.
