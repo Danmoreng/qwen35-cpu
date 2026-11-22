@@ -57,8 +57,8 @@ values was 0.22 pp.
 
 The sample combines the fixed 24 tasks from the earlier precision study
 and two publisher fixture rows per question type. It verifies the
-end-to-end forward path and records probability drift. Full-suite
-accuracy and serving latency require separate measurements.
+end-to-end forward path and records probability drift. The [complete Jev Skills GPU evaluation](benchmarks/julia2-jev-skills.md)
+compares Julia and Qev on 15,154 text questions. Native serving latency remains unmeasured.
 [Probe data](results/qev-julia-2-probe-2026-11-21/comparison.json) · [Artifact and binary hashes](results/qev-julia-2-probe-2026-11-21/manifest.json)
 
 ## Native serving work

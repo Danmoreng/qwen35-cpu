@@ -1,0 +1,16 @@
+{
+  "publisher_text_fixtures": {
+    "argmax_agree": 0.9967,
+    "maxdp_p50": 0.0001,
+    "maxdp_p95": 0.003,
+    "maxdp_max": 0.0103,
+    "n": 300
+  },
+  "torch_fp32_30": {
+    "rows": 30,
+    "top1_matches": 30,
+    "median_max_abs_probability_delta": 6.990713621525535e-05,
+    "max_abs_probability_delta": 0.0006009096009044201
+  },
+  "archived_evaluator_bitwise_logits_match_on_30": true
+}

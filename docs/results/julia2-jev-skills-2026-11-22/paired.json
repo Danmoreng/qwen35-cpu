@@ -1,0 +1,33 @@
+{
+  "method": "Julia minus Qev; 1000 paired cluster bootstrap replicates grouped by request, game variants and missing-fact pairs",
+  "seed": 20261021,
+  "groups": 8463,
+  "skills": 21,
+  "labeled_questions": 13051,
+  "comparisons": {
+    "qev_bf16": {
+      "accuracy_delta_pp": -11.986385548545469,
+      "accuracy_ci95_pp": [
+        -13.054218598600073,
+        -10.932557107081827
+      ],
+      "brier_delta": 0.15484332002297282,
+      "brier_ci95": [
+        0.1448498927768469,
+        0.16479435568556153
+      ]
+    },
+    "qev_h128": {
+      "accuracy_delta_pp": -11.801959428674385,
+      "accuracy_ci95_pp": [
+        -12.952509633935605,
+        -10.802268630122047
+      ],
+      "brier_delta": 0.1520540727215122,
+      "brier_ci95": [
+        0.14155679833801796,
+        0.16253150026182853
+      ]
+    }
+  }
+}

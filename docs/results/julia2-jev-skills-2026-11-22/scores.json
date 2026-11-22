@@ -1,0 +1,1283 @@
+{
+  "julia": {
+    "skills": {
+      "agents/agent_action": {
+        "n": 541,
+        "accuracy": 0.3198,
+        "brier": 1.0635,
+        "ece": 0.4529
+      },
+      "agents/browser": {
+        "n": 1444,
+        "accuracy": 0.7299,
+        "brier": 0.3732,
+        "ece": 0.0524
+      },
+      "agents/tools": {
+        "n": 526,
+        "accuracy": 0.8023,
+        "brier": 0.298,
+        "ece": 0.091
+      },
+      "games_spatial/chess": {
+        "n": 555,
+        "accuracy": 0.1333,
+        "brier": 0.9408,
+        "ece": 0.063
+      },
+      "games_spatial/game_moves_facts_in_question": {
+        "n": 1496,
+        "accuracy": 0.6898,
+        "brier": 0.396,
+        "ece": 0.0746
+      },
+      "games_spatial/game_moves_facts_in_state": {
+        "n": 1757,
+        "accuracy": 0.7223,
+        "brier": 0.3719,
+        "ece": 0.0588
+      },
+      "games_spatial/game_rules": {
+        "n": 1035,
+        "accuracy": 0.6889,
+        "brier": 0.4162,
+        "ece": 0.0948
+      },
+      "games_spatial/small_games": {
+        "n": 335,
+        "accuracy": 0.391,
+        "brier": 0.6764,
+        "ece": 0.0664
+      },
+      "games_spatial/spatial_coordinates": {
+        "n": 375,
+        "accuracy": 0.5147,
+        "brier": 0.5888,
+        "ece": 0.1263
+      },
+      "games_spatial/spatial_grids": {
+        "n": 375,
+        "accuracy": 0.4347,
+        "brier": 0.6358,
+        "ece": 0.0434
+      },
+      "judging/grounding": {
+        "n": 877,
+        "accuracy": 0.6169,
+        "brier": 0.5562,
+        "ece": 0.1562
+      },
+      "judging/response_judging": {
+        "n": 542,
+        "accuracy": 0.5867,
+        "brier": 0.5047,
+        "ece": 0.1175
+      },
+      "rules/admission": {
+        "n": 355,
+        "accuracy": 0.9324,
+        "brier": 0.1273,
+        "ece": 0.0572
+      },
+      "rules/agent_rules": {
+        "n": 355,
+        "accuracy": 0.8732,
+        "brier": 0.1901,
+        "ece": 0.0437
+      },
+      "rules/authority": {
+        "n": 355,
+        "accuracy": 0.4958,
+        "brier": 0.696,
+        "ece": 0.0608
+      },
+      "rules/fraud_points": {
+        "n": 355,
+        "accuracy": 0.2958,
+        "brier": 1.1535,
+        "ece": 0.5416
+      },
+      "rules/missing_facts": {
+        "n": 275,
+        "accuracy": 0.5455,
+        "brier": 0.7362,
+        "ece": 0.3485
+      },
+      "rules/patent_phrases": {
+        "n": 355,
+        "accuracy": 0.3972,
+        "brier": 0.729,
+        "ece": 0.0862
+      },
+      "rules/rental": {
+        "n": 355,
+        "accuracy": 0.262,
+        "brier": 0.8328,
+        "ece": 0.2876
+      },
+      "rules/sharc": {
+        "n": 355,
+        "accuracy": 0.6789,
+        "brier": 0.4769,
+        "ece": 0.163
+      },
+      "safety/content_safety": {
+        "n": 390,
+        "accuracy": 0.6744,
+        "brier": 0.4055,
+        "ece": 0.1223
+      },
+      "safety/prompt_injection": {
+        "n": 318,
+        "accuracy": 0.717,
+        "brier": 0.4229,
+        "ece": 0.1567
+      }
+    },
+    "pooled_by_category": {
+      "agents": 0.6173,
+      "rules": 0.5622,
+      "games_spatial": 0.5107,
+      "safety": 0.6957,
+      "judging": 0.6018
+    },
+    "pooled_all": 0.5694,
+    "per_source": {
+      "bfcl:irrelevance": 0.6966,
+      "bfcl:live_irrelevance": 0.5333,
+      "bfcl:live_multiple": 0.9306,
+      "bfcl:multiple": 0.9845,
+      "browser:conference_registration:easy": 0.8197,
+      "browser:conference_registration:hard": 0.6667,
+      "browser:conference_registration:medium": 0.6935,
+      "browser:event_tickets:easy": 0.8793,
+      "browser:event_tickets:hard": 0.7288,
+      "browser:event_tickets:medium": 0.7368,
+      "browser:fitness_classes:easy": 0.7692,
+      "browser:fitness_classes:hard": 0.6491,
+      "browser:fitness_classes:medium": 0.7333,
+      "browser:food_delivery:easy": 0.8448,
+      "browser:food_delivery:hard": 0.6,
+      "browser:food_delivery:medium": 0.6364,
+      "browser:insurance_claims:easy": 0.8871,
+      "browser:insurance_claims:hard": 0.6452,
+      "browser:insurance_claims:medium": 0.6935,
+      "browser:pet_adoption:easy": 0.8615,
+      "browser:pet_adoption:hard": 0.6667,
+      "browser:pet_adoption:medium": 0.8,
+      "browser:ride_hailing:easy": 0.75,
+      "browser:ride_hailing:hard": 0.5645,
+      "browser:ride_hailing:medium": 0.6825,
+      "browser:utility_billing:easy": 0.9077,
+      "browser:utility_billing:hard": 0.6491,
+      "browser:utility_billing:medium": 0.6,
+      "chessbench:puzzle:band0": 0.1927,
+      "chessbench:puzzle:band1": 0.1316,
+      "chessbench:puzzle:band2": 0.0541,
+      "chessbench:puzzle:band3": 0.1504,
+      "chessbench:puzzle:band4": 0.1389,
+      "deepset:direct:0": 1.0,
+      "deepset:direct:1": 0.1739,
+      "deepset:indirect:0": 1.0,
+      "deepset:indirect:1": 0.3333,
+      "gen:games:c4_move": 0.2222,
+      "gen:games:c4_win_now": 0.5556,
+      "gen:games:maze_reachable": 0.3529,
+      "gen:games:maze_step": 0.1765,
+      "gen:games:mines_mine": 0.4444,
+      "gen:games:mines_safe": 0.3529,
+      "gen:games:nim_move": 0.6316,
+      "gen:games:nim_winning": 0.5,
+      "gen:games:ttt_move": 0.1111,
+      "gen:games:ttt_outcome": 0.5,
+      "gen:sudoku:candidates": 0.1842,
+      "gen:sudoku:correct": 0.4412,
+      "gen:sudoku:digit": 0.5429,
+      "gen:sudoku:legal": 0.5294,
+      "gen:sudoku:status": 0.2571,
+      "hf:aegis2:prompt_safety": 0.7073,
+      "hf:ragtruth:summary_clean": 1.0,
+      "hf:ragtruth:summary_hallucinated": 0.3864,
+      "hf:wice:claim_support": 0.4389,
+      "jailbreak_cls:direct:0": 0.9722,
+      "jailbreak_cls:direct:1": 0.7143,
+      "missing:admission:complete": 0.8273,
+      "missing:fraud_points:complete": 0.2574,
+      "neuralchemy:direct:0": 1.0,
+      "neuralchemy:direct:1": 0.1562,
+      "neuralchemy:indirect:0": 0.9737,
+      "neuralchemy:indirect:1": 0.2581,
+      "openai_moderation:0": 0.4779,
+      "openai_moderation:1": 0.823,
+      "patent_phrases:test": 0.3972,
+      "rewardbench:chat:alpacaeval-easy": 0.5294,
+      "rewardbench:chat:alpacaeval-hard": 0.5641,
+      "rewardbench:chat:alpacaeval-length": 0.4595,
+      "rewardbench:chat:mt-bench-easy": 0.5385,
+      "rewardbench:chat:mt-bench-med": 0.6875,
+      "rewardbench:chat_hard:llmbar-adver-GPTInst": 0.7,
+      "rewardbench:chat_hard:llmbar-adver-GPTOut": 0.5385,
+      "rewardbench:chat_hard:llmbar-adver-manual": 0.5,
+      "rewardbench:chat_hard:llmbar-adver-neighbor": 0.6486,
+      "rewardbench:chat_hard:llmbar-natural": 0.7037,
+      "rewardbench:chat_hard:mt-bench-hard": 0.5,
+      "rewardbench:reasoning:hep-cpp": 0.75,
+      "rewardbench:reasoning:hep-go": 0.5385,
+      "rewardbench:reasoning:hep-java": 0.6,
+      "rewardbench:reasoning:hep-js": 0.6429,
+      "rewardbench:reasoning:hep-python": 0.6316,
+      "rewardbench:reasoning:hep-rust": 0.25,
+      "rewardbench:reasoning:math-prm": 0.5,
+      "rewardbench:safety:donotanswer": 0.4444,
+      "rewardbench:safety:refusals-dangerous": 0.5882,
+      "rewardbench:safety:refusals-offensive": 0.9474,
+      "rewardbench:safety:xstest-should-refuse": 0.7857,
+      "rewardbench:safety:xstest-should-respond": 0.5273,
+      "rules7:admission": 0.9324,
+      "rules7:agent_rules": 0.8732,
+      "rules7:authority": 0.4958,
+      "rules7:fraud_points": 0.2958,
+      "rules7:rental": 0.262,
+      "sharc:dev": 0.6789,
+      "spatial:coord:best_dir": 0.2759,
+      "spatial:coord:inside": 0.6984,
+      "spatial:coord:nearer": 0.4308,
+      "spatial:coord:reduce": 0.5303,
+      "spatial:coord:side": 0.6032,
+      "spatial:coord:within": 0.5333,
+      "spatial:game_q:2048": 0.4786,
+      "spatial:game_q:Breakout": 0.4667,
+      "spatial:game_q:Dino": 0.619,
+      "spatial:game_q:Knife Hit": 0.625,
+      "spatial:game_q:Pac-Man": 0.9583,
+      "spatial:game_q:Snake": 0.8513,
+      "spatial:game_q:Tetris": 0.6483,
+      "spatial:game_q:Whac-A-Mole": 0.4904,
+      "spatial:game_rule:Breakout": 0.4298,
+      "spatial:game_rule:Dino": 0.6522,
+      "spatial:game_rule:Pac-Man": 0.9344,
+      "spatial:game_rule:Whac-A-Mole": 0.7538,
+      "spatial:game_s:2048": 0.7429,
+      "spatial:game_s:Breakout": 0.8033,
+      "spatial:game_s:Dino": 0.5437,
+      "spatial:game_s:Knife Hit": 0.4819,
+      "spatial:game_s:Pac-Man": 0.7126,
+      "spatial:game_s:Snake": 0.9002,
+      "spatial:game_s:Tetris": 0.5944,
+      "spatial:game_s:Whac-A-Mole": 0.7151,
+      "spatial:grid:adjacent": 0.5541,
+      "spatial:grid:count_col": 0.2692,
+      "spatial:grid:count_row": 0.2838,
+      "spatial:grid:free": 0.507,
+      "spatial:grid:relative": 0.5641,
+      "when2call:cannot_answer": 0.011,
+      "when2call:request_for_info": 0.0552,
+      "when2call:tool_call": 0.9045
+    },
+    "per_split": {
+      "agents/agent_action/public": {
+        "n": 541,
+        "accuracy": 0.3198
+      },
+      "agents/browser/generated": {
+        "n": 1444,
+        "accuracy": 0.7299
+      },
+      "agents/tools/public": {
+        "n": 526,
+        "accuracy": 0.8023
+      },
+      "games_spatial/chess/public": {
+        "n": 555,
+        "accuracy": 0.1333
+      },
+      "games_spatial/game_moves_facts_in_question/seen_game": {
+        "n": 653,
+        "accuracy": 0.7841
+      },
+      "games_spatial/game_moves_facts_in_question/unseen_game": {
+        "n": 843,
+        "accuracy": 0.6168
+      },
+      "games_spatial/game_moves_facts_in_state/seen_game": {
+        "n": 803,
+        "accuracy": 0.7883
+      },
+      "games_spatial/game_moves_facts_in_state/unseen_game": {
+        "n": 954,
+        "accuracy": 0.6667
+      },
+      "games_spatial/game_rules/seen_game": {
+        "n": 368,
+        "accuracy": 0.6522
+      },
+      "games_spatial/game_rules/unseen_game": {
+        "n": 667,
+        "accuracy": 0.7091
+      },
+      "games_spatial/small_games/generated": {
+        "n": 335,
+        "accuracy": 0.391
+      },
+      "games_spatial/spatial_coordinates/generic": {
+        "n": 375,
+        "accuracy": 0.5147
+      },
+      "games_spatial/spatial_grids/generic": {
+        "n": 375,
+        "accuracy": 0.4347
+      },
+      "judging/grounding/public": {
+        "n": 877,
+        "accuracy": 0.6169
+      },
+      "judging/response_judging/public": {
+        "n": 542,
+        "accuracy": 0.5867
+      },
+      "rules/admission/generated": {
+        "n": 355,
+        "accuracy": 0.9324
+      },
+      "rules/agent_rules/generated": {
+        "n": 355,
+        "accuracy": 0.8732
+      },
+      "rules/authority/generated": {
+        "n": 355,
+        "accuracy": 0.4958
+      },
+      "rules/fraud_points/generated": {
+        "n": 355,
+        "accuracy": 0.2958
+      },
+      "rules/missing_facts/generated": {
+        "n": 275,
+        "accuracy": 0.5455
+      },
+      "rules/patent_phrases/public": {
+        "n": 355,
+        "accuracy": 0.3972
+      },
+      "rules/rental/generated": {
+        "n": 355,
+        "accuracy": 0.262
+      },
+      "rules/sharc/public": {
+        "n": 355,
+        "accuracy": 0.6789
+      },
+      "safety/content_safety/public": {
+        "n": 390,
+        "accuracy": 0.6744
+      },
+      "safety/prompt_injection/public": {
+        "n": 318,
+        "accuracy": 0.717
+      }
+    },
+    "extras": {
+      "games_spatial/game_moves_facts_in_question": {
+        "balanced_accuracy": 0.7122,
+        "pick_accuracy/seen_game": 0.7709,
+        "pick_accuracy/unseen_game": 0.7778
+      },
+      "games_spatial/game_moves_facts_in_state": {
+        "balanced_accuracy": 0.7862,
+        "pick_accuracy/seen_game": 0.8045,
+        "pick_accuracy/unseen_game": 0.7222
+      },
+      "games_spatial/game_rules": {
+        "balanced_accuracy": 0.6993,
+        "pick_accuracy/seen_game": 0.4022,
+        "pick_accuracy/unseen_game": 0.6995
+      },
+      "games_spatial/spatial_coordinates": {
+        "balanced_accuracy": 0.5898
+      },
+      "games_spatial/spatial_grids": {
+        "balanced_accuracy": 0.5428
+      },
+      "games_spatial/small_games": {
+        "balanced_accuracy": 0.4979
+      },
+      "judging/grounding": {
+        "balanced_accuracy": 0.5
+      },
+      "rules/admission": {
+        "balanced_accuracy": 0.9325
+      },
+      "rules/agent_rules": {
+        "balanced_accuracy": 0.8731
+      },
+      "rules/sharc": {
+        "balanced_accuracy": 0.6789
+      },
+      "rules/missing_facts": {
+        "balanced_accuracy": 0.8247,
+        "auroc/admission": 0.5841,
+        "auroc/fraud_points": 0.4856
+      },
+      "safety/prompt_injection": {
+        "balanced_accuracy": 0.6329
+      },
+      "safety/content_safety": {
+        "balanced_accuracy": 0.6781
+      }
+    }
+  },
+  "qev_bf16": {
+    "skills": {
+      "agents/agent_action": {
+        "n": 541,
+        "accuracy": 0.464,
+        "brier": 0.7617,
+        "ece": 0.2684
+      },
+      "agents/browser": {
+        "n": 1444,
+        "accuracy": 0.8927,
+        "brier": 0.1752,
+        "ece": 0.0239
+      },
+      "agents/tools": {
+        "n": 526,
+        "accuracy": 0.8688,
+        "brier": 0.2148,
+        "ece": 0.077
+      },
+      "games_spatial/chess": {
+        "n": 555,
+        "accuracy": 0.445,
+        "brier": 0.6953,
+        "ece": 0.0983
+      },
+      "games_spatial/game_moves_facts_in_question": {
+        "n": 1496,
+        "accuracy": 0.8382,
+        "brier": 0.2643,
+        "ece": 0.1325
+      },
+      "games_spatial/game_moves_facts_in_state": {
+        "n": 1757,
+        "accuracy": 0.8924,
+        "brier": 0.1427,
+        "ece": 0.0358
+      },
+      "games_spatial/game_rules": {
+        "n": 1035,
+        "accuracy": 0.7758,
+        "brier": 0.3062,
+        "ece": 0.0556
+      },
+      "games_spatial/small_games": {
+        "n": 335,
+        "accuracy": 0.5373,
+        "brier": 0.5603,
+        "ece": 0.0904
+      },
+      "games_spatial/spatial_coordinates": {
+        "n": 375,
+        "accuracy": 0.6027,
+        "brier": 0.4983,
+        "ece": 0.0902
+      },
+      "games_spatial/spatial_grids": {
+        "n": 375,
+        "accuracy": 0.6613,
+        "brier": 0.4628,
+        "ece": 0.0992
+      },
+      "judging/grounding": {
+        "n": 877,
+        "accuracy": 0.7389,
+        "brier": 0.3642,
+        "ece": 0.0551
+      },
+      "judging/response_judging": {
+        "n": 542,
+        "accuracy": 0.6993,
+        "brier": 0.4153,
+        "ece": 0.1094
+      },
+      "rules/admission": {
+        "n": 355,
+        "accuracy": 0.893,
+        "brier": 0.1426,
+        "ece": 0.031
+      },
+      "rules/agent_rules": {
+        "n": 355,
+        "accuracy": 0.8817,
+        "brier": 0.1713,
+        "ece": 0.0267
+      },
+      "rules/authority": {
+        "n": 355,
+        "accuracy": 0.6732,
+        "brier": 0.4722,
+        "ece": 0.0682
+      },
+      "rules/fraud_points": {
+        "n": 355,
+        "accuracy": 0.4394,
+        "brier": 0.6531,
+        "ece": 0.0656
+      },
+      "rules/missing_facts": {
+        "n": 275,
+        "accuracy": 0.6473,
+        "brier": 0.4196,
+        "ece": 0.0561
+      },
+      "rules/patent_phrases": {
+        "n": 355,
+        "accuracy": 0.3577,
+        "brier": 0.7355,
+        "ece": 0.0791
+      },
+      "rules/rental": {
+        "n": 355,
+        "accuracy": 0.4394,
+        "brier": 0.6787,
+        "ece": 0.0716
+      },
+      "rules/sharc": {
+        "n": 355,
+        "accuracy": 0.7606,
+        "brier": 0.3399,
+        "ece": 0.0792
+      },
+      "safety/content_safety": {
+        "n": 390,
+        "accuracy": 0.7256,
+        "brier": 0.3683,
+        "ece": 0.1086
+      },
+      "safety/prompt_injection": {
+        "n": 318,
+        "accuracy": 0.8868,
+        "brier": 0.1813,
+        "ece": 0.0711
+      }
+    },
+    "pooled_by_category": {
+      "agents": 0.7418,
+      "rules": 0.635,
+      "games_spatial": 0.679,
+      "safety": 0.8062,
+      "judging": 0.7191
+    },
+    "pooled_all": 0.6892,
+    "per_source": {
+      "bfcl:irrelevance": 0.7753,
+      "bfcl:live_irrelevance": 0.6667,
+      "bfcl:live_multiple": 0.9769,
+      "bfcl:multiple": 1.0,
+      "browser:conference_registration:easy": 0.9836,
+      "browser:conference_registration:hard": 0.8095,
+      "browser:conference_registration:medium": 0.9032,
+      "browser:event_tickets:easy": 1.0,
+      "browser:event_tickets:hard": 0.8136,
+      "browser:event_tickets:medium": 0.8596,
+      "browser:fitness_classes:easy": 1.0,
+      "browser:fitness_classes:hard": 0.8246,
+      "browser:fitness_classes:medium": 0.8667,
+      "browser:food_delivery:easy": 1.0,
+      "browser:food_delivery:hard": 0.8222,
+      "browser:food_delivery:medium": 0.8727,
+      "browser:insurance_claims:easy": 1.0,
+      "browser:insurance_claims:hard": 0.8387,
+      "browser:insurance_claims:medium": 0.8226,
+      "browser:pet_adoption:easy": 1.0,
+      "browser:pet_adoption:hard": 0.7833,
+      "browser:pet_adoption:medium": 0.9077,
+      "browser:ride_hailing:easy": 1.0,
+      "browser:ride_hailing:hard": 0.7903,
+      "browser:ride_hailing:medium": 0.8254,
+      "browser:utility_billing:easy": 1.0,
+      "browser:utility_billing:hard": 0.7895,
+      "browser:utility_billing:medium": 0.8769,
+      "chessbench:puzzle:band0": 0.789,
+      "chessbench:puzzle:band1": 0.5789,
+      "chessbench:puzzle:band2": 0.3333,
+      "chessbench:puzzle:band3": 0.2655,
+      "chessbench:puzzle:band4": 0.2593,
+      "deepset:direct:0": 1.0,
+      "deepset:direct:1": 0.6957,
+      "deepset:indirect:0": 0.9583,
+      "deepset:indirect:1": 0.9524,
+      "gen:games:c4_move": 0.5556,
+      "gen:games:c4_win_now": 0.5556,
+      "gen:games:maze_reachable": 0.5294,
+      "gen:games:maze_step": 0.2941,
+      "gen:games:mines_mine": 0.4444,
+      "gen:games:mines_safe": 0.8235,
+      "gen:games:nim_move": 0.5789,
+      "gen:games:nim_winning": 0.4286,
+      "gen:games:ttt_move": 0.6667,
+      "gen:games:ttt_outcome": 0.6667,
+      "gen:sudoku:candidates": 0.2632,
+      "gen:sudoku:correct": 0.5,
+      "gen:sudoku:digit": 0.6,
+      "gen:sudoku:legal": 0.5,
+      "gen:sudoku:status": 0.8,
+      "hf:aegis2:prompt_safety": 0.7378,
+      "hf:ragtruth:summary_clean": 0.9577,
+      "hf:ragtruth:summary_hallucinated": 0.5649,
+      "hf:wice:claim_support": 0.687,
+      "jailbreak_cls:direct:0": 0.6944,
+      "jailbreak_cls:direct:1": 1.0,
+      "missing:admission:complete": 0.8921,
+      "missing:fraud_points:complete": 0.3971,
+      "neuralchemy:direct:0": 0.975,
+      "neuralchemy:direct:1": 0.9688,
+      "neuralchemy:indirect:0": 1.0,
+      "neuralchemy:indirect:1": 0.9032,
+      "openai_moderation:0": 0.6903,
+      "openai_moderation:1": 0.7434,
+      "patent_phrases:test": 0.3577,
+      "rewardbench:chat:alpacaeval-easy": 0.9706,
+      "rewardbench:chat:alpacaeval-hard": 0.9487,
+      "rewardbench:chat:alpacaeval-length": 0.9189,
+      "rewardbench:chat:mt-bench-easy": 1.0,
+      "rewardbench:chat:mt-bench-med": 0.875,
+      "rewardbench:chat_hard:llmbar-adver-GPTInst": 0.3333,
+      "rewardbench:chat_hard:llmbar-adver-GPTOut": 0.5385,
+      "rewardbench:chat_hard:llmbar-adver-manual": 0.25,
+      "rewardbench:chat_hard:llmbar-adver-neighbor": 0.4595,
+      "rewardbench:chat_hard:llmbar-natural": 0.8148,
+      "rewardbench:chat_hard:mt-bench-hard": 0.5,
+      "rewardbench:reasoning:hep-cpp": 0.75,
+      "rewardbench:reasoning:hep-go": 0.6923,
+      "rewardbench:reasoning:hep-java": 0.8667,
+      "rewardbench:reasoning:hep-js": 0.7857,
+      "rewardbench:reasoning:hep-python": 0.7368,
+      "rewardbench:reasoning:hep-rust": 0.5,
+      "rewardbench:reasoning:math-prm": 0.54,
+      "rewardbench:safety:donotanswer": 0.3889,
+      "rewardbench:safety:refusals-dangerous": 0.2941,
+      "rewardbench:safety:refusals-offensive": 0.7895,
+      "rewardbench:safety:xstest-should-refuse": 0.7857,
+      "rewardbench:safety:xstest-should-respond": 0.8,
+      "rules7:admission": 0.893,
+      "rules7:agent_rules": 0.8817,
+      "rules7:authority": 0.6732,
+      "rules7:fraud_points": 0.4394,
+      "rules7:rental": 0.4394,
+      "sharc:dev": 0.7606,
+      "spatial:coord:best_dir": 0.5517,
+      "spatial:coord:inside": 0.8571,
+      "spatial:coord:nearer": 0.5077,
+      "spatial:coord:reduce": 0.5455,
+      "spatial:coord:side": 0.619,
+      "spatial:coord:within": 0.5333,
+      "spatial:game_q:2048": 0.6071,
+      "spatial:game_q:Breakout": 0.781,
+      "spatial:game_q:Dino": 0.8677,
+      "spatial:game_q:Knife Hit": 0.5987,
+      "spatial:game_q:Pac-Man": 0.75,
+      "spatial:game_q:Snake": 0.9547,
+      "spatial:game_q:Tetris": 0.8966,
+      "spatial:game_q:Whac-A-Mole": 0.9618,
+      "spatial:game_rule:Breakout": 0.7281,
+      "spatial:game_rule:Dino": 0.8424,
+      "spatial:game_rule:Pac-Man": 0.7828,
+      "spatial:game_rule:Whac-A-Mole": 0.6974,
+      "spatial:game_s:2048": 0.9929,
+      "spatial:game_s:Breakout": 0.8033,
+      "spatial:game_s:Dino": 0.9524,
+      "spatial:game_s:Knife Hit": 0.7892,
+      "spatial:game_s:Pac-Man": 0.7784,
+      "spatial:game_s:Snake": 0.9492,
+      "spatial:game_s:Tetris": 0.7111,
+      "spatial:game_s:Whac-A-Mole": 1.0,
+      "spatial:grid:adjacent": 0.6757,
+      "spatial:grid:count_col": 0.4487,
+      "spatial:grid:count_row": 0.6622,
+      "spatial:grid:free": 0.7042,
+      "spatial:grid:relative": 0.8205,
+      "when2call:cannot_answer": 0.1264,
+      "when2call:request_for_info": 0.3204,
+      "when2call:tool_call": 0.9551
+    },
+    "per_split": {
+      "agents/agent_action/public": {
+        "n": 541,
+        "accuracy": 0.464
+      },
+      "agents/browser/generated": {
+        "n": 1444,
+        "accuracy": 0.8927
+      },
+      "agents/tools/public": {
+        "n": 526,
+        "accuracy": 0.8688
+      },
+      "games_spatial/chess/public": {
+        "n": 555,
+        "accuracy": 0.445
+      },
+      "games_spatial/game_moves_facts_in_question/seen_game": {
+        "n": 653,
+        "accuracy": 0.9296
+      },
+      "games_spatial/game_moves_facts_in_question/unseen_game": {
+        "n": 843,
+        "accuracy": 0.7675
+      },
+      "games_spatial/game_moves_facts_in_state/seen_game": {
+        "n": 803,
+        "accuracy": 0.9502
+      },
+      "games_spatial/game_moves_facts_in_state/unseen_game": {
+        "n": 954,
+        "accuracy": 0.8438
+      },
+      "games_spatial/game_rules/seen_game": {
+        "n": 368,
+        "accuracy": 0.8424
+      },
+      "games_spatial/game_rules/unseen_game": {
+        "n": 667,
+        "accuracy": 0.7391
+      },
+      "games_spatial/small_games/generated": {
+        "n": 335,
+        "accuracy": 0.5373
+      },
+      "games_spatial/spatial_coordinates/generic": {
+        "n": 375,
+        "accuracy": 0.6027
+      },
+      "games_spatial/spatial_grids/generic": {
+        "n": 375,
+        "accuracy": 0.6613
+      },
+      "judging/grounding/public": {
+        "n": 877,
+        "accuracy": 0.7389
+      },
+      "judging/response_judging/public": {
+        "n": 542,
+        "accuracy": 0.6993
+      },
+      "rules/admission/generated": {
+        "n": 355,
+        "accuracy": 0.893
+      },
+      "rules/agent_rules/generated": {
+        "n": 355,
+        "accuracy": 0.8817
+      },
+      "rules/authority/generated": {
+        "n": 355,
+        "accuracy": 0.6732
+      },
+      "rules/fraud_points/generated": {
+        "n": 355,
+        "accuracy": 0.4394
+      },
+      "rules/missing_facts/generated": {
+        "n": 275,
+        "accuracy": 0.6473
+      },
+      "rules/patent_phrases/public": {
+        "n": 355,
+        "accuracy": 0.3577
+      },
+      "rules/rental/generated": {
+        "n": 355,
+        "accuracy": 0.4394
+      },
+      "rules/sharc/public": {
+        "n": 355,
+        "accuracy": 0.7606
+      },
+      "safety/content_safety/public": {
+        "n": 390,
+        "accuracy": 0.7256
+      },
+      "safety/prompt_injection/public": {
+        "n": 318,
+        "accuracy": 0.8868
+      }
+    },
+    "extras": {
+      "games_spatial/game_moves_facts_in_question": {
+        "balanced_accuracy": 0.8044,
+        "pick_accuracy/seen_game": 0.9721,
+        "pick_accuracy/unseen_game": 0.8194
+      },
+      "games_spatial/game_moves_facts_in_state": {
+        "balanced_accuracy": 0.9156,
+        "pick_accuracy/seen_game": 0.9888,
+        "pick_accuracy/unseen_game": 0.9815
+      },
+      "games_spatial/game_rules": {
+        "balanced_accuracy": 0.7726,
+        "pick_accuracy/seen_game": 0.7391,
+        "pick_accuracy/unseen_game": 0.7486
+      },
+      "games_spatial/spatial_coordinates": {
+        "balanced_accuracy": 0.6378
+      },
+      "games_spatial/spatial_grids": {
+        "balanced_accuracy": 0.7358
+      },
+      "games_spatial/small_games": {
+        "balanced_accuracy": 0.516
+      },
+      "judging/grounding": {
+        "balanced_accuracy": 0.6363
+      },
+      "rules/admission": {
+        "balanced_accuracy": 0.8935
+      },
+      "rules/agent_rules": {
+        "balanced_accuracy": 0.8813
+      },
+      "rules/sharc": {
+        "balanced_accuracy": 0.761
+      },
+      "rules/missing_facts": {
+        "balanced_accuracy": 0.8922,
+        "auroc/admission": 0.5953,
+        "auroc/fraud_points": 0.5026
+      },
+      "safety/prompt_injection": {
+        "balanced_accuracy": 0.8895
+      },
+      "safety/content_safety": {
+        "balanced_accuracy": 0.7243
+      }
+    }
+  },
+  "qev_h128": {
+    "skills": {
+      "agents/agent_action": {
+        "n": 541,
+        "accuracy": 0.4492,
+        "brier": 0.7716,
+        "ece": 0.2702
+      },
+      "agents/browser": {
+        "n": 1444,
+        "accuracy": 0.885,
+        "brier": 0.1816,
+        "ece": 0.0163
+      },
+      "agents/tools": {
+        "n": 526,
+        "accuracy": 0.8555,
+        "brier": 0.233,
+        "ece": 0.0797
+      },
+      "games_spatial/chess": {
+        "n": 555,
+        "accuracy": 0.4577,
+        "brier": 0.6997,
+        "ece": 0.1258
+      },
+      "games_spatial/game_moves_facts_in_question": {
+        "n": 1496,
+        "accuracy": 0.8275,
+        "brier": 0.2642,
+        "ece": 0.1568
+      },
+      "games_spatial/game_moves_facts_in_state": {
+        "n": 1757,
+        "accuracy": 0.9061,
+        "brier": 0.1343,
+        "ece": 0.0527
+      },
+      "games_spatial/game_rules": {
+        "n": 1035,
+        "accuracy": 0.771,
+        "brier": 0.3165,
+        "ece": 0.0524
+      },
+      "games_spatial/small_games": {
+        "n": 335,
+        "accuracy": 0.5134,
+        "brier": 0.5688,
+        "ece": 0.0806
+      },
+      "games_spatial/spatial_coordinates": {
+        "n": 375,
+        "accuracy": 0.6107,
+        "brier": 0.4881,
+        "ece": 0.0701
+      },
+      "games_spatial/spatial_grids": {
+        "n": 375,
+        "accuracy": 0.6427,
+        "brier": 0.4815,
+        "ece": 0.1046
+      },
+      "judging/grounding": {
+        "n": 877,
+        "accuracy": 0.7275,
+        "brier": 0.3756,
+        "ece": 0.0467
+      },
+      "judging/response_judging": {
+        "n": 542,
+        "accuracy": 0.7048,
+        "brier": 0.4204,
+        "ece": 0.1118
+      },
+      "rules/admission": {
+        "n": 355,
+        "accuracy": 0.8958,
+        "brier": 0.1422,
+        "ece": 0.0306
+      },
+      "rules/agent_rules": {
+        "n": 355,
+        "accuracy": 0.8986,
+        "brier": 0.1651,
+        "ece": 0.037
+      },
+      "rules/authority": {
+        "n": 355,
+        "accuracy": 0.6479,
+        "brier": 0.467,
+        "ece": 0.0844
+      },
+      "rules/fraud_points": {
+        "n": 355,
+        "accuracy": 0.4423,
+        "brier": 0.6585,
+        "ece": 0.072
+      },
+      "rules/missing_facts": {
+        "n": 275,
+        "accuracy": 0.6655,
+        "brier": 0.4174,
+        "ece": 0.057
+      },
+      "rules/patent_phrases": {
+        "n": 355,
+        "accuracy": 0.3465,
+        "brier": 0.731,
+        "ece": 0.0972
+      },
+      "rules/rental": {
+        "n": 355,
+        "accuracy": 0.462,
+        "brier": 0.689,
+        "ece": 0.0997
+      },
+      "rules/sharc": {
+        "n": 355,
+        "accuracy": 0.7634,
+        "brier": 0.3388,
+        "ece": 0.0671
+      },
+      "safety/content_safety": {
+        "n": 390,
+        "accuracy": 0.741,
+        "brier": 0.356,
+        "ece": 0.0829
+      },
+      "safety/prompt_injection": {
+        "n": 318,
+        "accuracy": 0.8868,
+        "brier": 0.1794,
+        "ece": 0.0751
+      }
+    },
+    "pooled_by_category": {
+      "agents": 0.7299,
+      "rules": 0.6366,
+      "games_spatial": 0.6756,
+      "safety": 0.8139,
+      "judging": 0.7162
+    },
+    "pooled_all": 0.6874,
+    "per_source": {
+      "bfcl:irrelevance": 0.7303,
+      "bfcl:live_irrelevance": 0.6444,
+      "bfcl:live_multiple": 0.9769,
+      "bfcl:multiple": 1.0,
+      "browser:conference_registration:easy": 0.9672,
+      "browser:conference_registration:hard": 0.7778,
+      "browser:conference_registration:medium": 0.871,
+      "browser:event_tickets:easy": 0.9828,
+      "browser:event_tickets:hard": 0.8305,
+      "browser:event_tickets:medium": 0.8596,
+      "browser:fitness_classes:easy": 1.0,
+      "browser:fitness_classes:hard": 0.7895,
+      "browser:fitness_classes:medium": 0.8833,
+      "browser:food_delivery:easy": 1.0,
+      "browser:food_delivery:hard": 0.7556,
+      "browser:food_delivery:medium": 0.8727,
+      "browser:insurance_claims:easy": 1.0,
+      "browser:insurance_claims:hard": 0.8387,
+      "browser:insurance_claims:medium": 0.8387,
+      "browser:pet_adoption:easy": 1.0,
+      "browser:pet_adoption:hard": 0.7333,
+      "browser:pet_adoption:medium": 0.9077,
+      "browser:ride_hailing:easy": 1.0,
+      "browser:ride_hailing:hard": 0.7903,
+      "browser:ride_hailing:medium": 0.8254,
+      "browser:utility_billing:easy": 0.9846,
+      "browser:utility_billing:hard": 0.8421,
+      "browser:utility_billing:medium": 0.8462,
+      "chessbench:puzzle:band0": 0.7982,
+      "chessbench:puzzle:band1": 0.5702,
+      "chessbench:puzzle:band2": 0.3694,
+      "chessbench:puzzle:band3": 0.2743,
+      "chessbench:puzzle:band4": 0.2778,
+      "deepset:direct:0": 1.0,
+      "deepset:direct:1": 0.7391,
+      "deepset:indirect:0": 0.9583,
+      "deepset:indirect:1": 0.9524,
+      "gen:games:c4_move": 0.5556,
+      "gen:games:c4_win_now": 0.6111,
+      "gen:games:maze_reachable": 0.4118,
+      "gen:games:maze_step": 0.2941,
+      "gen:games:mines_mine": 0.4444,
+      "gen:games:mines_safe": 0.8235,
+      "gen:games:nim_move": 0.5789,
+      "gen:games:nim_winning": 0.5,
+      "gen:games:ttt_move": 0.2222,
+      "gen:games:ttt_outcome": 0.6667,
+      "gen:sudoku:candidates": 0.2632,
+      "gen:sudoku:correct": 0.5,
+      "gen:sudoku:digit": 0.6,
+      "gen:sudoku:legal": 0.4412,
+      "gen:sudoku:status": 0.7429,
+      "hf:aegis2:prompt_safety": 0.75,
+      "hf:ragtruth:summary_clean": 0.9642,
+      "hf:ragtruth:summary_hallucinated": 0.5584,
+      "hf:wice:claim_support": 0.6489,
+      "jailbreak_cls:direct:0": 0.7083,
+      "jailbreak_cls:direct:1": 1.0,
+      "missing:admission:complete": 0.8921,
+      "missing:fraud_points:complete": 0.4338,
+      "neuralchemy:direct:0": 0.95,
+      "neuralchemy:direct:1": 0.9688,
+      "neuralchemy:indirect:0": 1.0,
+      "neuralchemy:indirect:1": 0.871,
+      "openai_moderation:0": 0.7345,
+      "openai_moderation:1": 0.7345,
+      "patent_phrases:test": 0.3465,
+      "rewardbench:chat:alpacaeval-easy": 0.9706,
+      "rewardbench:chat:alpacaeval-hard": 0.9487,
+      "rewardbench:chat:alpacaeval-length": 0.9189,
+      "rewardbench:chat:mt-bench-easy": 1.0,
+      "rewardbench:chat:mt-bench-med": 0.875,
+      "rewardbench:chat_hard:llmbar-adver-GPTInst": 0.4,
+      "rewardbench:chat_hard:llmbar-adver-GPTOut": 0.6154,
+      "rewardbench:chat_hard:llmbar-adver-manual": 0.25,
+      "rewardbench:chat_hard:llmbar-adver-neighbor": 0.4595,
+      "rewardbench:chat_hard:llmbar-natural": 0.8148,
+      "rewardbench:chat_hard:mt-bench-hard": 0.5,
+      "rewardbench:reasoning:hep-cpp": 0.8333,
+      "rewardbench:reasoning:hep-go": 0.6154,
+      "rewardbench:reasoning:hep-java": 0.7333,
+      "rewardbench:reasoning:hep-js": 0.7857,
+      "rewardbench:reasoning:hep-python": 0.7368,
+      "rewardbench:reasoning:hep-rust": 0.625,
+      "rewardbench:reasoning:math-prm": 0.5,
+      "rewardbench:safety:donotanswer": 0.5,
+      "rewardbench:safety:refusals-dangerous": 0.2353,
+      "rewardbench:safety:refusals-offensive": 0.7895,
+      "rewardbench:safety:xstest-should-refuse": 0.75,
+      "rewardbench:safety:xstest-should-respond": 0.8364,
+      "rules7:admission": 0.8958,
+      "rules7:agent_rules": 0.8986,
+      "rules7:authority": 0.6479,
+      "rules7:fraud_points": 0.4423,
+      "rules7:rental": 0.462,
+      "sharc:dev": 0.7634,
+      "spatial:coord:best_dir": 0.4828,
+      "spatial:coord:inside": 0.7778,
+      "spatial:coord:nearer": 0.6,
+      "spatial:coord:reduce": 0.6061,
+      "spatial:coord:side": 0.6349,
+      "spatial:coord:within": 0.55,
+      "spatial:game_q:2048": 0.6214,
+      "spatial:game_q:Breakout": 0.8,
+      "spatial:game_q:Dino": 0.963,
+      "spatial:game_q:Knife Hit": 0.5066,
+      "spatial:game_q:Pac-Man": 0.8472,
+      "spatial:game_q:Snake": 0.8319,
+      "spatial:game_q:Tetris": 0.9862,
+      "spatial:game_q:Whac-A-Mole": 1.0,
+      "spatial:game_rule:Breakout": 0.693,
+      "spatial:game_rule:Dino": 0.8451,
+      "spatial:game_rule:Pac-Man": 0.7664,
+      "spatial:game_rule:Whac-A-Mole": 0.7282,
+      "spatial:game_s:2048": 0.9857,
+      "spatial:game_s:Breakout": 0.7869,
+      "spatial:game_s:Dino": 0.9444,
+      "spatial:game_s:Knife Hit": 0.8193,
+      "spatial:game_s:Pac-Man": 0.8563,
+      "spatial:game_s:Snake": 0.951,
+      "spatial:game_s:Tetris": 0.7667,
+      "spatial:game_s:Whac-A-Mole": 1.0,
+      "spatial:grid:adjacent": 0.6757,
+      "spatial:grid:count_col": 0.4359,
+      "spatial:grid:count_row": 0.6351,
+      "spatial:grid:free": 0.6761,
+      "spatial:grid:relative": 0.7949,
+      "when2call:cannot_answer": 0.1429,
+      "when2call:request_for_info": 0.2597,
+      "when2call:tool_call": 0.9551
+    },
+    "per_split": {
+      "agents/agent_action/public": {
+        "n": 541,
+        "accuracy": 0.4492
+      },
+      "agents/browser/generated": {
+        "n": 1444,
+        "accuracy": 0.885
+      },
+      "agents/tools/public": {
+        "n": 526,
+        "accuracy": 0.8555
+      },
+      "games_spatial/chess/public": {
+        "n": 555,
+        "accuracy": 0.4577
+      },
+      "games_spatial/game_moves_facts_in_question/seen_game": {
+        "n": 653,
+        "accuracy": 0.8698
+      },
+      "games_spatial/game_moves_facts_in_question/unseen_game": {
+        "n": 843,
+        "accuracy": 0.7948
+      },
+      "games_spatial/game_moves_facts_in_state/seen_game": {
+        "n": 803,
+        "accuracy": 0.9489
+      },
+      "games_spatial/game_moves_facts_in_state/unseen_game": {
+        "n": 954,
+        "accuracy": 0.87
+      },
+      "games_spatial/game_rules/seen_game": {
+        "n": 368,
+        "accuracy": 0.8451
+      },
+      "games_spatial/game_rules/unseen_game": {
+        "n": 667,
+        "accuracy": 0.7301
+      },
+      "games_spatial/small_games/generated": {
+        "n": 335,
+        "accuracy": 0.5134
+      },
+      "games_spatial/spatial_coordinates/generic": {
+        "n": 375,
+        "accuracy": 0.6107
+      },
+      "games_spatial/spatial_grids/generic": {
+        "n": 375,
+        "accuracy": 0.6427
+      },
+      "judging/grounding/public": {
+        "n": 877,
+        "accuracy": 0.7275
+      },
+      "judging/response_judging/public": {
+        "n": 542,
+        "accuracy": 0.7048
+      },
+      "rules/admission/generated": {
+        "n": 355,
+        "accuracy": 0.8958
+      },
+      "rules/agent_rules/generated": {
+        "n": 355,
+        "accuracy": 0.8986
+      },
+      "rules/authority/generated": {
+        "n": 355,
+        "accuracy": 0.6479
+      },
+      "rules/fraud_points/generated": {
+        "n": 355,
+        "accuracy": 0.4423
+      },
+      "rules/missing_facts/generated": {
+        "n": 275,
+        "accuracy": 0.6655
+      },
+      "rules/patent_phrases/public": {
+        "n": 355,
+        "accuracy": 0.3465
+      },
+      "rules/rental/generated": {
+        "n": 355,
+        "accuracy": 0.462
+      },
+      "rules/sharc/public": {
+        "n": 355,
+        "accuracy": 0.7634
+      },
+      "safety/content_safety/public": {
+        "n": 390,
+        "accuracy": 0.741
+      },
+      "safety/prompt_injection/public": {
+        "n": 318,
+        "accuracy": 0.8868
+      }
+    },
+    "extras": {
+      "games_spatial/game_moves_facts_in_question": {
+        "balanced_accuracy": 0.7786,
+        "pick_accuracy/seen_game": 0.9944,
+        "pick_accuracy/unseen_game": 0.8519
+      },
+      "games_spatial/game_moves_facts_in_state": {
+        "balanced_accuracy": 0.9282,
+        "pick_accuracy/seen_game": 0.9721,
+        "pick_accuracy/unseen_game": 1.0
+      },
+      "games_spatial/game_rules": {
+        "balanced_accuracy": 0.7848,
+        "pick_accuracy/seen_game": 0.913,
+        "pick_accuracy/unseen_game": 0.7377
+      },
+      "games_spatial/spatial_coordinates": {
+        "balanced_accuracy": 0.6423
+      },
+      "games_spatial/spatial_grids": {
+        "balanced_accuracy": 0.7178
+      },
+      "games_spatial/small_games": {
+        "balanced_accuracy": 0.4987
+      },
+      "judging/grounding": {
+        "balanced_accuracy": 0.6363
+      },
+      "rules/admission": {
+        "balanced_accuracy": 0.896
+      },
+      "rules/agent_rules": {
+        "balanced_accuracy": 0.8991
+      },
+      "rules/sharc": {
+        "balanced_accuracy": 0.7639
+      },
+      "rules/missing_facts": {
+        "balanced_accuracy": 0.89,
+        "auroc/admission": 0.5964,
+        "auroc/fraud_points": 0.471
+      },
+      "safety/prompt_injection": {
+        "balanced_accuracy": 0.8895
+      },
+      "safety/content_safety": {
+        "balanced_accuracy": 0.7394
+      }
+    }
+  }
+}

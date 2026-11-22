@@ -1,0 +1,274 @@
+{
+  "model": {
+    "repo": "SupersonicLabs/Julia-2",
+    "revision": "b3e610b47d140cc4fcbd00d7b58b86184a13bcff",
+    "text": "320 BF16 tensors expanded to F32 GGUF by llama.cpp",
+    "head": "FP32 [255,1024] weight and [255] bias"
+  },
+  "suite": {
+    "repo": "labqoat/jev-skills",
+    "revision": "fda80b2a75fca3fa3e5d3f6378acc2a6c04d4032",
+    "panels": {
+      "final": {
+        "requests": 9133,
+        "questions": 13601,
+        "input_tokens": 4819093,
+        "min_tokens": 45,
+        "max_tokens": 8607,
+        "types": {
+          "choice": 5985,
+          "noul": 6522,
+          "score": 1094
+        },
+        "excluded": 0,
+        "truncated": 0,
+        "start_utc": "2026-11-22T08:51:56Z",
+        "finish_utc": "2026-11-22T08:56:40Z",
+        "evaluator_wall_seconds": 284.0
+      },
+      "development": {
+        "requests": 1035,
+        "questions": 1553,
+        "input_tokens": 473184,
+        "min_tokens": 45,
+        "max_tokens": 5362,
+        "types": {
+          "choice": 574,
+          "noul": 829,
+          "score": 150
+        },
+        "excluded": 0,
+        "truncated": 0,
+        "start_utc": "2026-11-22T08:58:51Z",
+        "finish_utc": "2026-11-22T08:59:19Z",
+        "evaluator_wall_seconds": 28.0
+      }
+    }
+  },
+  "runtime": {
+    "llama_cpp": "9b56ccf00d755b0bf780140f6352a67db1ac0378",
+    "engine_repository": "dafa0d51193e9499307cc7e36ed64e65578710ba",
+    "device": "NVIDIA GeForce RTX 5080 Laptop GPU",
+    "driver": "620.70.06",
+    "cuda_toolkit": "13.4.92",
+    "compiler": "GCC 16.2.1",
+    "offloaded_layers": "26/26",
+    "kv": "F32",
+    "flash_attention": false,
+    "context": 16384,
+    "batch": 16384,
+    "microbatch": 512,
+    "threads": 4,
+    "cpu_pinning": "none",
+    "readout": "FP32 cuBLAS SGEMV, CUBLAS_PEDANTIC_MATH",
+    "final_evaluator": "julia-last",
+    "development_evaluator": "readout"
+  },
+  "qev": {
+    "source": "labqoat/qev-0.8b",
+    "revision": "6334efd2d556cad22a3040049efb2887a60e7fb2",
+    "bf16_repo": "labqoat/qev-0.8b-GGUF",
+    "bf16_revision": "79caef6979f61c4ee4fa6e894424789ce66042db",
+    "h128": "e7d61e7b191de6c2afb8663e8a1f8c5f4d52315e9492db7a690708d744f8dc69",
+    "reused_logits": true
+  },
+  "raw_directory": "benchmarks/julia2-jev-skills",
+  "artifacts": {
+    "benchmarks/julia2-jev-skills/model/model.safetensors": {
+      "bytes": 2139582620,
+      "sha256": "c3ca206b91e7e490221ee85b098141e26f89ded2987510c82aeb84d6821994a2"
+    },
+    "benchmarks/julia2-jev-skills/model/text/model.safetensors": {
+      "bytes": 1504827608,
+      "sha256": "b721809ff75f7825b0bed07728a4dd829f9da8750f85fb2bf61010fadff825d2"
+    },
+    "benchmarks/julia2-jev-skills/model/text/readout.f32": {
+      "bytes": 1045500,
+      "sha256": "5aff5b247d32e92ae4f7aa4df7e4375897ff574aacab7f46cad2f871f22cbc3b"
+    },
+    "benchmarks/julia2-jev-skills/model/tokenizer/tokenizer.json": {
+      "bytes": 12807196,
+      "sha256": "fe000e3ed39ed12b8d2481d527d44f93c65d37e87645d2dcc80d1bf9d50d2927"
+    },
+    "benchmarks/julia2-jev-skills/model/tokenizer/tokenizer_config.json": {
+      "bytes": 16712,
+      "sha256": "e611fbccc7c29ef3b1cafb1cb7ea548d189968632901d678fd62be68c47885de"
+    },
+    "benchmarks/julia2-jev-skills/model/runtime/julia2/prompt.py": {
+      "bytes": 2501,
+      "sha256": "50e554889996373261cc7729db5a54e6b5967b7de90b1b1d45b2b2579a96bb9c"
+    },
+    "benchmarks/julia2-jev-skills/model/runtime/tests/text_ref.json": {
+      "bytes": 273928,
+      "sha256": "3dd559d6a290d772a1b31bac0f6c59ce060d45f1440e409ae1f78356c2d4b76f"
+    },
+    "benchmarks/julia2-jev-skills/julia-text-f32.gguf": {
+      "bytes": 3020533344,
+      "sha256": "258533515900966bcfef5e5a49ac2d28c604bbaddd85355b18198b986d8c04d3"
+    },
+    "benchmarks/julia2-jev-skills/julia-last": {
+      "bytes": 34952,
+      "sha256": "c09c1aa3893d76e194f83bd9575b6a3b3de20e04584614d39421c837b96c6343"
+    },
+    "benchmarks/julia2-jev-skills/readout": {
+      "bytes": 34872,
+      "sha256": "3c4f18ecc990cd5dc8b71474b9ba3c6ca6d9894362569d689ecd41c7c04d92e8"
+    },
+    "benchmarks/julia2-jev-skills/final-tokens.txt": {
+      "bytes": 20891204,
+      "sha256": "009b1ae68d3cff9aed0d1e1dd4f00596d25d2f947fc38909fcbd732ba989c9a9"
+    },
+    "benchmarks/julia2-jev-skills/mapping.jsonl": {
+      "bytes": 1852089,
+      "sha256": "f24c5d7314f7cdc673d1b8f768e6d8c1d4373ec7eb582c1a90e504e913a70b6d"
+    },
+    "benchmarks/julia2-jev-skills/development-tokens.txt": {
+      "bytes": 2049239,
+      "sha256": "02135f633399ef2093b720d4c4fb8ce590b446e528d91d5f6a011e5caf26f704"
+    },
+    "benchmarks/julia2-jev-skills/development-mapping.jsonl": {
+      "bytes": 203723,
+      "sha256": "f4ae0962b89bd04f446ceddd094eca2810b211129c01566d052c86791c213804"
+    },
+    "benchmarks/julia2-jev-skills/final-logits.tsv": {
+      "bytes": 44710532,
+      "sha256": "3e377a6a0a8522461c796e27cd9c674e5e34c1920866d09ed5c318a3d77407f5"
+    },
+    "benchmarks/julia2-jev-skills/development-logits.tsv": {
+      "bytes": 5110784,
+      "sha256": "40712401cfc7fc68ade863e1f3f0732083e70c0c969afb0b19582ba4e8b9b6f9"
+    },
+    "benchmarks/julia2-jev-skills/full.log": {
+      "bytes": 160755,
+      "sha256": "fc9e2bb9fdacce7731deced424a4ccffc140780de31f4d594597c02b0f89b529"
+    },
+    "benchmarks/julia2-jev-skills/development.log": {
+      "bytes": 160756,
+      "sha256": "6b5e8d5b1fe86ad4ca539c16d249da460e01ab0b1b6d788710683754f1db9df5"
+    },
+    "benchmarks/julia2-jev-skills/control.tsv": {
+      "bytes": 97270,
+      "sha256": "4f0b30155c92ed176204014b537cd6424de97c64ec74ef00d9757c6c5a7562a6"
+    },
+    "benchmarks/julia2-jev-skills/repro-control.tsv": {
+      "bytes": 97270,
+      "sha256": "4f0b30155c92ed176204014b537cd6424de97c64ec74ef00d9757c6c5a7562a6"
+    },
+    "benchmarks/julia2-jev-skills/reference.jsonl": {
+      "bytes": 168799,
+      "sha256": "e83f3f2ae7f4bf13fdb5e6ead33755cf9fbf43881809d1f2784e4048d171597b"
+    },
+    "benchmarks/julia2-jev-skills/token-rows.txt": {
+      "bytes": 71059,
+      "sha256": "4b3d4cc004eb914b68bfe29e310b0a2a8bc7ff93041d6b268a1453bfc7f33829"
+    },
+    "benchmarks/julia2-jev-skills/publisher.tsv": {
+      "bytes": 948541,
+      "sha256": "65d5fd28df373aea75d889828a358ae83f7e88975dd825d830cc6359b741dacd"
+    },
+    "benchmarks/qev-calibration-2026-10-21/current-bf16-gpu.tsv": {
+      "bytes": 42626081,
+      "sha256": "206143041d9a4c68564bb0c286bc75b88cfba0c06dc886cbf999725878c7c6d5"
+    },
+    "benchmarks/qev-calibration-2026-10-21/selected-pure-all.tsv": {
+      "bytes": 42591524,
+      "sha256": "1386156bf3da384181b59d72f9331ae9d9ba855cb489fe74b04d5b402579e624"
+    },
+    "benchmarks/qev-calibration-2026-10-21/upstream/code/score.py": {
+      "bytes": 9732,
+      "sha256": "8bd5edf3cc543bde9a37c153a611ba7e2674650e8bda94650f5f456b09d48eb3"
+    },
+    "benchmarks/qev-calibration-2026-10-21/eval/items.json": {
+      "bytes": 19435742,
+      "sha256": "1eb88eeec7384969818aa22a7c8eed8a094d9ccc4171207038bf60e757805c25"
+    },
+    "benchmarks/qev-calibration-2026-10-21/eval/rows.json": {
+      "bytes": 7523732,
+      "sha256": "ac5f5912d40d5cbaf82e951c5af4f13e54f7cabc1b76ddba9b9e558b68cdb55e"
+    },
+    "benchmarks/qev-calibration-2026-10-21/panels/final/items.json": {
+      "bytes": 17675097,
+      "sha256": "85256e72501687555a7c135788e020acf85f0bbbaada851df0d96e1ce70ad7a9"
+    },
+    "benchmarks/qev-calibration-2026-10-21/panels/final/rows.json": {
+      "bytes": 6766876,
+      "sha256": "a84e41db3fd62a662314228f90ee840797498fa193c2fb9c9de28213ce442bb2"
+    },
+    "benchmarks/qev-calibration-2026-10-21/panels/development/items.json": {
+      "bytes": 1760645,
+      "sha256": "3be46a3f6547c999df90970f29e4fe6f09ae95e26c330fcd73a0598e70bf3c80"
+    },
+    "benchmarks/qev-calibration-2026-10-21/panels/development/rows.json": {
+      "bytes": 755045,
+      "sha256": "336cf804988654ecc41f40a4f9f2309b4f77ec848655b786cdea8fdfbd3d1276"
+    },
+    "benchmarks/qev-calibration-2026-10-21/upstream/data/agents.parquet": {
+      "bytes": 1485948,
+      "sha256": "fcfab0768e21869d1b72d7e62e517fcaa210269fd941629a3388f1f32857f596"
+    },
+    "benchmarks/qev-calibration-2026-10-21/upstream/data/games_spatial_jevspatial.parquet": {
+      "bytes": 128823,
+      "sha256": "dbf1c7ac2077482e549a04965a8e719a7b5c667f413be381d515d40d6e86ba7b"
+    },
+    "benchmarks/qev-calibration-2026-10-21/upstream/data/games_spatial_other.parquet": {
+      "bytes": 228232,
+      "sha256": "37b5ee9767ce858458233aedfe777ebe7e465a772918f8c51805f3649f95f214"
+    },
+    "benchmarks/qev-calibration-2026-10-21/upstream/data/judging.parquet": {
+      "bytes": 2244405,
+      "sha256": "f752ec5654e91e4a71fe55cbcc94b1cf2af635d32298d6a1535263c761ce7092"
+    },
+    "benchmarks/qev-calibration-2026-10-21/upstream/data/rules.parquet": {
+      "bytes": 348637,
+      "sha256": "b4c20acfd9d658e869343cf830db9013c8ae659b14d6a20c90fb5912f1b7081a"
+    },
+    "benchmarks/qev-calibration-2026-10-21/upstream/data/safety.parquet": {
+      "bytes": 228799,
+      "sha256": "9901e8b90dc90eb19e332c2ba3ededa3680122679258532eca364eb10ce2ac38"
+    },
+    "build-qev-cuda-current/bin/libllama.so": {
+      "bytes": 5174144,
+      "sha256": "7214e90321eba659bf4cf220931387d43475c5de786e7517a15e3df9994d26df"
+    },
+    "build-qev-cuda-current/bin/libggml.so": {
+      "bytes": 55312,
+      "sha256": "27923244fdc179e4f48c180d663ddad705d5eb382ab210eebc5bff53effba4e1"
+    },
+    "build-qev-cuda-current/bin/libggml-base.so": {
+      "bytes": 929352,
+      "sha256": "a0099ced7b5dedfe4bc86a04d297bf4e8a97f0682ff33f918cf3495e21bb2625"
+    },
+    "build-qev-cuda-current/bin/libggml-cuda.so": {
+      "bytes": 71862520,
+      "sha256": "e1ab14283fde668056c1951aaf96882fe25f892dcc95ced1fbdd2cef66843721"
+    },
+    "build-qev-cuda-current/bin/libggml-cpu.so": {
+      "bytes": 1612800,
+      "sha256": "2ccc71dffc4682217b115d11060fc2593fc743f524bd5f28760982f62f76debb"
+    },
+    "docs/results/julia2-jev-skills-2026-11-22/julia-predictions.jsonl.gz": {
+      "bytes": 810601,
+      "sha256": "cf127a278441aa67c816ad05e570504a57c443dbe5a0c6cd5309dce9cab370e2"
+    },
+    "docs/results/julia2-jev-skills-2026-11-22/development-predictions.jsonl.gz": {
+      "bytes": 90199,
+      "sha256": "f6d0549843a3dbdbb891f48e662eb3ac8bbacb024703776ff358909a5cc4f764"
+    },
+    "docs/results/julia2-jev-skills-2026-11-22/scores.json": {
+      "bytes": 37651,
+      "sha256": "2cb0e99fb9006dfcfa9e9c7bdfcd215b7e6b233c176b64dc7e62c12ac6edeaeb"
+    },
+    "docs/results/julia2-jev-skills-2026-11-22/paired.json": {
+      "bytes": 830,
+      "sha256": "07581cadc78bdae659c247845a3052e9e47f0acfd854d3c9e2ec036e4bb0acac"
+    },
+    "docs/results/julia2-jev-skills-2026-11-22/complete-suite.json": {
+      "bytes": 37569,
+      "sha256": "32d51d0655adb412c8b45085d8227a2d23f582843c6461d1399c26bbe4e992b1"
+    },
+    "docs/results/julia2-jev-skills-2026-11-22/validation.json": {
+      "bytes": 395,
+      "sha256": "835ebf207402ec0efc09c3eaeb3b37783e881a8c24f237a8cb4884e712383cf2"
+    }
+  }
+}

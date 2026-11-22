@@ -6,6 +6,7 @@ build versions. Existing evidence files are preserved byte for byte.
 
 | Directories | Used by |
 | --- | --- |
+| `julia2-jev-skills-2026-11-22` | [Julia-2 and Qev on Jev Skills](../benchmarks/julia2-jev-skills.md), per-question probabilities, paired quality scores, reference checks and reproduction |
 | `qev-ryzen-servers-2026-11-22` | [Ryzen and i7 Qev server comparison](../benchmarks/qev-ryzen-server-comparison.md), paired latencies, throughput, answer distributions and provenance |
 | `qev-julia-2-probe-2026-11-21` | [Julia-2 text port feasibility](../julia-2-port.md), native H128 decision parity, probability drift and provenance |
 | `qev-heaven-precision-i7-2026-11-21` | [Qev precision comparison on the i7](../benchmarks/qev-heaven-precision-i7.md), 924 scored predictions, repeated timing samples and provenance |
