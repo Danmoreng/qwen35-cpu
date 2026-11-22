@@ -2,6 +2,8 @@
 
 Qev remains the better choice for the engine's text decision endpoint. On the frozen final panel, shipped Qev H128 leads unquantized Julia-2 by **11.80 percentage points** in macro accuracy. Qev wins 19 of the 21 skills that contribute to the score, including tool selection, browser actions, grounding and prompt-injection detection. Julia wins on admission rules and patent phrases. The [earlier native probe](../julia-2-port.md) establishes that a Julia text port is feasible. These quality results give little reason to prioritize it for general text routing.
 
+The [transfer comparison](julia2-transfer.md) tests whether the ranking holds on NVIDIA When2Call and newly generated German tickets and examines shared sources and checkpoint selection.
+
 ## Results
 
 | Model | Final macro accuracy ↑ | Final macro Brier ↓ | Entire suite macro accuracy ↑ |

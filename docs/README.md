@@ -51,6 +51,7 @@ headline benchmarks. The guides below describe the supported engine and tools.
 - [Standard model calibration](benchmarks/calibration.md).
 - [QEV prompt order on 50 German tickets](benchmarks/qev-ticket-order.md) compares placing the ticket before or after the question and all options.
 - [Decision quality](benchmarks/decision-quality.md), [HTTP latency](benchmarks/decision-http.md) and [exact-prefix caching with fixed rubrics](benchmarks/qev-exact-prefix.md).
+- [Julia-2 and Qev beyond Jev Skills](benchmarks/julia2-transfer.md) tests transfer to NVIDIA When2Call and German routing, with source-overlap checks and fresh counterfactual tickets.
 - [Julia-2 and Qev on Jev Skills](benchmarks/julia2-jev-skills.md) compares unquantized Julia-2 with Qev BF16 and native H128 on all 15,154 text questions.
 - [Four decision models on GPU](benchmarks/decision-models-gpu.md) compares public JevBench accuracy, probability consistency and When2Call tool routing before CPU integration.
 - [Liquid and Qev on full JevBench, German routing and CPU](benchmarks/decision-model-followup.md) compares Qev encodings, Liquid Q4 versus Q8 and resident llama.cpp latency.
